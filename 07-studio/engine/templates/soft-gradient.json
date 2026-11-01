@@ -1,0 +1,27 @@
+{
+  "id": "soft-gradient",
+  "name": "Soft Gradient Glass",
+  "category": "illustrated-2d",
+  "description": "Bright pastel mesh gradients that drift slowly, glassy rounded cards with a frosted fill, a light rim and soft long shadows, floating blurred orbs in two parallax layers, and calm rise-in motion. Rounded heavy type with a gradient accent word. Friendly, premium, app-launch feel. No emoji.",
+  "prompt_hint": "Write 8-12 short scenes (3-5 s each) that present a product, feature or habit calmly. title.kicker is a small pill label and title.main the headline (max ~26 chars). Use 1-3 elements per scene: card for features, stat for one figure, panels for options (winner index), checklist for steps, timeline, meter (shape gauge or battery) for progress, chart for a simple comparison, icon with a label for a single idea. Never use emoji.",
+  "best_for": ["app and product launches", "feature tours", "wellness and habits", "soft explainers", "announcements"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#F6E9FF", "#DDEBFF", "#7B5CFF"],
+    "accent": "#7B5CFF",
+    "sample_text": "SIMPLE"
+  },
+  "defaults": {
+    "theme": {
+      "look": "soft-gradient",
+      "palette": { "bg": ["#F7EAFE", "#DCEBFF"], "text": "#2A2340", "accent": "#7B5CFF", "accent2": "#FF7FA8", "accent3": "#22B8B0" },
+      "font": "Poppins",
+      "captionStyle": "pills"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.0 },
+    "music": { "track": "auto", "volume": 0.1, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.8 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "pop"
+  }
+}

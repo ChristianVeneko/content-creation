@@ -1,0 +1,625 @@
+{
+  "version": 1,
+  "title": "SDD vs ODD: cómo funcionan y cuál usar",
+  "template": "illustrated",
+  "language": "es",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "voice": {
+    "provider": "kokoro",
+    "voiceId": "ef_dora",
+    "speed": 1.12
+  },
+  "music": {
+    "track": "auto",
+    "volume": 0.12,
+    "duck": true
+  },
+  "sfx": {
+    "enabled": true,
+    "volume": 1
+  },
+  "captions": {
+    "enabled": true,
+    "wordsPerPage": 3
+  },
+  "hud": {
+    "items": [
+      {
+        "id": "mode",
+        "type": "chip",
+        "value": "SDD vs ODD"
+      },
+      {
+        "id": "spec",
+        "type": "bar",
+        "label": "SPEC",
+        "value": 0,
+        "color": "accent2"
+      },
+      {
+        "id": "code",
+        "type": "bar",
+        "label": "CÓDIGO",
+        "value": 0,
+        "color": "accent3"
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "SDD y ODD suenan parecido, pero trabajan al revés.",
+      "title": {
+        "kicker": "Dos formas de",
+        "main": "programar con IA"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "divider": "vs",
+            "left": [
+              {
+                "type": "icon",
+                "name": "file-text",
+                "label": "SDD",
+                "size": "l",
+                "color": "accent2"
+              }
+            ],
+            "right": [
+              {
+                "type": "icon",
+                "name": "magnifying-glass",
+                "label": "ODD",
+                "size": "l",
+                "color": "accent3"
+              }
+            ]
+          },
+          {
+            "type": "badge",
+            "text": "¿Cuál usar?",
+            "icon": "question"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdd-spec",
+      "narration": "SDD es desarrollo guiado por especificación: primero escribes qué debe hacer el sistema.",
+      "title": {
+        "kicker": "SDD significa",
+        "main": "spec primero"
+      },
+      "hud": {
+        "mode": {
+          "value": "SDD"
+        },
+        "spec": {
+          "value": 0.45
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "doc",
+            "id": "spec",
+            "title": "spec.md",
+            "lines": [
+              "Exportar pedidos a CSV",
+              "Máximo 10.000 filas",
+              "Error claro si falla"
+            ],
+            "stamp": "APROBADA"
+          },
+          {
+            "type": "callout",
+            "target": "spec",
+            "shape": "underline",
+            "label": "el qué, no el cómo"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdd-flow",
+      "narration": "La spec se vuelve un plan, el plan en tareas, y cada tarea se implementa siguiendo la spec.",
+      "title": {
+        "kicker": "El camino SDD",
+        "main": "spec → plan → tareas"
+      },
+      "hud": {
+        "spec": {
+          "value": 1
+        },
+        "code": {
+          "value": 0.2
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "id": "flow",
+            "direction": "vertical",
+            "nodes": [
+              {
+                "label": "Spec",
+                "icon": "file-text"
+              },
+              {
+                "label": "Plan",
+                "icon": "map-trifold"
+              },
+              {
+                "label": "Tareas",
+                "icon": "list-checks"
+              },
+              {
+                "label": "Código",
+                "icon": "code"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdd-code",
+      "narration": "La IA escribe el código mirando la spec, sin improvisar.",
+      "title": {
+        "kicker": "La IA implementa",
+        "main": "fiel a la spec"
+      },
+      "hud": {
+        "code": {
+          "value": 0.6
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "code",
+            "id": "code",
+            "title": "export.ts",
+            "lines": [
+              "// spec: máximo 10.000 filas",
+              "const MAX = 10_000;",
+              "if (rows > MAX) {",
+              "  throw new Error(\"Límite\");",
+              "}"
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "code",
+            "shape": "box",
+            "label": "sale de la spec"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdd-when",
+      "narration": "Brilla cuando todo está claro y varios equipos deben acordar antes de programar.",
+      "title": {
+        "kicker": "SDD brilla cuando",
+        "main": "todo está claro"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "Requisitos claros",
+              "Varios equipos",
+              "Contratos de API"
+            ]
+          },
+          {
+            "type": "counter",
+            "value": 1,
+            "label": "fuente de verdad",
+            "color": "accent2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdd-risk",
+      "narration": "El riesgo: el código cambia, la spec no, y termina describiendo un sistema que ya no existe.",
+      "title": {
+        "kicker": "Pero cuidado",
+        "main": "la spec envejece"
+      },
+      "hud": {
+        "spec": {
+          "value": 0.35
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "id": "drift",
+            "title": "Desfase spec vs código",
+            "unit": "%",
+            "max": 100,
+            "items": [
+              {
+                "label": "Mes 1",
+                "value": 10,
+                "color": "accent3"
+              },
+              {
+                "label": "Mes 3",
+                "value": 45,
+                "color": "accent2"
+              },
+              {
+                "label": "Mes 6",
+                "value": 80,
+                "color": "bad"
+              }
+            ]
+          },
+          {
+            "type": "stamp",
+            "text": "DESACTUALIZADA",
+            "target": "drift"
+          }
+        ]
+      }
+    },
+    {
+      "id": "odd-explore",
+      "narration": "ODD hace lo contrario: primero explora el código real y entiende cómo funciona.",
+      "title": {
+        "kicker": "ODD empieza",
+        "main": "por el código real"
+      },
+      "hud": {
+        "mode": {
+          "value": "ODD",
+          "color": "accent3"
+        },
+        "spec": {
+          "value": 0
+        },
+        "code": {
+          "value": 0.3
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "terminal",
+            "id": "term",
+            "title": "explorar",
+            "lines": [
+              "$ rg exportCsv src/",
+              "src/orders/export.ts:42",
+              "$ git log -3 --oneline",
+              "a1f3 fix: timeout export"
+            ]
+          },
+          {
+            "type": "icon",
+            "name": "magnifying-glass",
+            "label": "Explora primero",
+            "size": "s",
+            "color": "accent3"
+          }
+        ]
+      }
+    },
+    {
+      "id": "odd-size",
+      "narration": "Luego mide la tarea. Pequeña: se hace directo. Grande: abre un archivo de tareas.",
+      "title": {
+        "kicker": "En ODD",
+        "main": "el tamaño decide"
+      },
+      "hud": {
+        "code": {
+          "value": 0.5
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "divider": "vs",
+            "left": [
+              {
+                "type": "card",
+                "title": "Pequeña",
+                "icon": "lightning",
+                "body": [
+                  "Directo",
+                  "Sin papeleo"
+                ],
+                "color": "accent3"
+              }
+            ],
+            "right": [
+              {
+                "type": "card",
+                "title": "Grande",
+                "icon": "clipboard-text",
+                "body": [
+                  "Archivo de tareas",
+                  "Paso a paso"
+                ],
+                "color": "accent2"
+              }
+            ]
+          },
+          {
+            "type": "badge",
+            "text": "Proceso a medida",
+            "icon": "ruler"
+          }
+        ]
+      }
+    },
+    {
+      "id": "odd-words",
+      "narration": "Ese archivo guarda tus palabras exactas, sin resumirlas.",
+      "title": {
+        "kicker": "La tarea guarda",
+        "main": "tus palabras",
+        "quote": true
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "chat",
+            "id": "chat",
+            "messages": [
+              {
+                "role": "user",
+                "text": "Exporta los pedidos a CSV, máximo diez mil filas."
+              },
+              {
+                "role": "assistant",
+                "text": "Guardado tal cual en la tarea T1."
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "chat",
+            "shape": "circle",
+            "label": "sin resumir"
+          }
+        ]
+      }
+    },
+    {
+      "id": "odd-evidence",
+      "narration": "Y cada tarea cierra con evidencia: un test que falla en rojo y luego pasa en verde.",
+      "title": {
+        "kicker": "Cada tarea cierra",
+        "main": "con evidencia"
+      },
+      "hud": {
+        "code": {
+          "value": 0.9
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "id": "tl",
+            "steps": [
+              {
+                "label": "RED",
+                "sub": "el test falla"
+              },
+              {
+                "label": "Arreglo",
+                "sub": "código mínimo"
+              },
+              {
+                "label": "GREEN",
+                "sub": "el test pasa"
+              }
+            ]
+          },
+          {
+            "type": "checklist",
+            "items": [
+              {
+                "text": "exporta 10.000 filas",
+                "state": "cross"
+              },
+              {
+                "text": "exporta 10.000 filas",
+                "state": "check"
+              }
+            ]
+          },
+          {
+            "type": "stamp",
+            "text": "VERIFICADO"
+          }
+        ]
+      }
+    },
+    {
+      "id": "which",
+      "narration": "¿Proyecto nuevo y requisitos claros? Usa SDD.",
+      "title": {
+        "kicker": "Entonces",
+        "main": "¿cuál usar?"
+      },
+      "hud": {
+        "mode": {
+          "value": "SDD vs ODD",
+          "color": "accent"
+        },
+        "spec": {
+          "value": 0.8
+        },
+        "code": {
+          "value": 0.8
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "id": "cmp",
+            "left": {
+              "title": "SDD",
+              "icon": "file-text",
+              "items": [
+                "Proyecto nuevo",
+                "Requisitos claros",
+                "Muchos equipos"
+              ]
+            },
+            "right": {
+              "title": "ODD",
+              "icon": "magnifying-glass",
+              "items": [
+                "Código existente",
+                "Cambios reales",
+                "Evidencia por tarea"
+              ]
+            },
+            "winner": "left"
+          }
+        ]
+      }
+    },
+    {
+      "id": "which-odd",
+      "narration": "¿Código que ya existe y no conoces bien? Usa ODD.",
+      "title": {
+        "kicker": "Y si ya hay código",
+        "main": "usa ODD"
+      },
+      "hud": {
+        "mode": {
+          "value": "ODD",
+          "color": "accent3"
+        }
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "divider": "line",
+            "left": [
+              {
+                "type": "icon",
+                "name": "git-branch",
+                "label": "Repo existente",
+                "size": "m",
+                "color": "accent3"
+              }
+            ],
+            "right": [
+              {
+                "type": "checklist",
+                "items": [
+                  "Explora",
+                  "Mide",
+                  "Verifica"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "badge",
+            "text": "Código real primero",
+            "icon": "magnifying-glass",
+            "color": "accent3"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cta",
+      "narration": "Guárdalo para elegir bien en tu próximo proyecto.",
+      "title": {
+        "kicker": "Guárdalo para",
+        "main": "tu próximo proyecto"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "svg",
+            "viewBox": "0 0 400 300",
+            "height": 340,
+            "paths": [
+              {
+                "d": "M150 30 H250 A12 12 0 0 1 262 42 V270 L200 225 L138 270 V42 A12 12 0 0 1 150 30 Z",
+                "stroke": "accent",
+                "fill": "accent",
+                "width": 8
+              },
+              {
+                "d": "M172 120 L194 144 L232 100",
+                "stroke": "#0B1020",
+                "width": 14
+              },
+              {
+                "d": "M70 90 L100 105 M60 150 H95 M70 210 L100 195",
+                "stroke": "accent2",
+                "width": 8
+              },
+              {
+                "d": "M330 90 L300 105 M340 150 H305 M330 210 L300 195",
+                "stroke": "accent2",
+                "width": 8
+              }
+            ]
+          },
+          {
+            "type": "badge",
+            "text": "Guárdalo",
+            "icon": "bookmark-simple",
+            "color": "accent"
+          }
+        ]
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "SDD vs ODD: suenan igual pero trabajan al revés. ¿Cuál usas tú? #programacion #ia #desarrollo #claudecode",
+    "instagram": "SDD escribe la spec primero. ODD explora el código real primero.\nUno brilla en proyectos nuevos, el otro en código que ya existe.\nGuárdalo para tu próximo proyecto.\n\n#programacion #ia #desarrollo #softwareengineering #claudecode",
+    "youtube": {
+      "title": "SDD vs ODD: cómo funcionan y cuál usar #shorts",
+      "description": "Spec Driven Development vs Organic Driven Development: el flujo de cada uno, cuándo usarlos y por qué la evidencia RED→GREEN importa."
+    },
+    "hashtags": [
+      "programacion",
+      "ia",
+      "desarrollo",
+      "softwareengineering",
+      "claudecode"
+    ]
+  }
+}

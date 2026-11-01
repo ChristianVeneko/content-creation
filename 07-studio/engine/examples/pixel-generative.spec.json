@@ -1,0 +1,989 @@
+{
+  "version": 1,
+  "title": "Byte y el bug de medianoche",
+  "template": "pixel-night",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Esta es Byte, una bot que nunca duerme.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "sprites": [
+            {
+              "id": "byte",
+              "palette": [
+                "ink",
+                "metal1",
+                "paper",
+                "glow2",
+                "accent",
+                "metal0",
+                "accent2"
+              ],
+              "mirror": "odd",
+              "glow": "34",
+              "frames": [
+                [
+                  ".......4",
+                  ".......0",
+                  "..000000",
+                  ".0111111",
+                  "01155555",
+                  "01153555",
+                  "01153555",
+                  "01155555",
+                  ".0111111",
+                  "..000000",
+                  "..000000",
+                  "01011111",
+                  "01013333",
+                  "01013334",
+                  "06013333",
+                  "..011111",
+                  "..000000",
+                  "....00..",
+                  "....00..",
+                  "...000.."
+                ],
+                [
+                  ".......4",
+                  ".......0",
+                  "..000000",
+                  ".0111111",
+                  "01155555",
+                  "01155555",
+                  "01133555",
+                  "01155555",
+                  ".0111111",
+                  "..000000",
+                  "..000000",
+                  "01011111",
+                  "01013333",
+                  "01013334",
+                  "06013333",
+                  "..011111",
+                  "..000000",
+                  "....00..",
+                  "....00..",
+                  "...000.."
+                ]
+              ]
+            },
+            {
+              "id": "byte-walk",
+              "palette": [
+                "ink",
+                "metal1",
+                "paper",
+                "glow2",
+                "accent",
+                "metal0",
+                "accent2"
+              ],
+              "mirror": "odd",
+              "glow": "34",
+              "fps": 8,
+              "frames": [
+                [
+                  ".......4",
+                  ".......0",
+                  "..000000",
+                  ".0111111",
+                  "01155555",
+                  "01153555",
+                  "01153555",
+                  "01155555",
+                  ".0111111",
+                  "..000000",
+                  "..000000",
+                  "01011111",
+                  "01013333",
+                  "01013334",
+                  "06013333",
+                  "..011111",
+                  "..000000",
+                  "....00..",
+                  "....00..",
+                  "...000.."
+                ],
+                [
+                  ".......4",
+                  ".......0",
+                  "..000000",
+                  ".0111111",
+                  "01155555",
+                  "01153555",
+                  "01153555",
+                  "01155555",
+                  ".0111111",
+                  "..000000",
+                  "..000000",
+                  "01011111",
+                  "01013333",
+                  "01013334",
+                  "06013333",
+                  "..011111",
+                  "..000000",
+                  ".....0..",
+                  ".....0..",
+                  "....00.."
+                ]
+              ]
+            },
+            {
+              "id": "bug",
+              "palette": [
+                "ink",
+                "#FF3B3B",
+                "#9E1B2F",
+                "glow",
+                "paper"
+              ],
+              "mirror": "odd",
+              "glow": "3",
+              "fps": 10,
+              "frames": [
+                [
+                  "..0...",
+                  "...0..",
+                  "...000",
+                  "..0330",
+                  ".00000",
+                  "011112",
+                  "011412",
+                  "011112",
+                  ".01112",
+                  "0.0.0."
+                ],
+                [
+                  ".0....",
+                  "..00..",
+                  "...000",
+                  "..0330",
+                  ".00000",
+                  "011112",
+                  "011412",
+                  "011112",
+                  ".01112",
+                  ".0.0.0"
+                ]
+              ]
+            },
+            {
+              "id": "chip",
+              "mirror": "odd",
+              "glow": "45",
+              "frames": [
+                [
+                  "..a.a",
+                  ".0000",
+                  "a0999",
+                  ".0955",
+                  "a0954",
+                  ".0955",
+                  "a0999",
+                  ".0000",
+                  "..a.a"
+                ]
+              ]
+            },
+            {
+              "id": "rack",
+              "palette": [
+                "ink",
+                "metal0",
+                "metal1",
+                "glow2",
+                "accent",
+                "glow"
+              ],
+              "glow": "345",
+              "fps": 3,
+              "frames": [
+                [
+                  "00000000",
+                  "02222220",
+                  "01111110",
+                  "01311510",
+                  "01111110",
+                  "01141310",
+                  "01111110",
+                  "01311110",
+                  "01111110",
+                  "01151310",
+                  "01111110",
+                  "01111410",
+                  "01111110",
+                  "01313110",
+                  "01111110",
+                  "01111110",
+                  "02222220",
+                  "00000000",
+                  "0......0",
+                  "00....00"
+                ],
+                [
+                  "00000000",
+                  "02222220",
+                  "01111110",
+                  "01111310",
+                  "01111110",
+                  "01151110",
+                  "01111110",
+                  "01111110",
+                  "01111110",
+                  "01131110",
+                  "01111110",
+                  "01111510",
+                  "01111110",
+                  "01111110",
+                  "01111110",
+                  "01111110",
+                  "02222220",
+                  "00000000",
+                  "0......0",
+                  "00....00"
+                ]
+              ]
+            }
+          ],
+          "set": {
+            "sky": {
+              "gradient": [
+                "sky0",
+                "sky1",
+                "#5B2A86",
+                "#C2457A"
+              ],
+              "stars": 140,
+              "moon": {
+                "x": 0.78,
+                "y": 0.12,
+                "r": 0.06
+              },
+              "aurora": "glow2",
+              "horizon": 0.56
+            },
+            "floor": 0.6,
+            "layers": [
+              {
+                "type": "skyline",
+                "seed": 4127,
+                "variant": "towers",
+                "color": "far0",
+                "lit": 0.25,
+                "y": 0.54,
+                "height": 0.32
+              },
+              {
+                "type": "skyline",
+                "seed": 913,
+                "variant": "city",
+                "color": "far1",
+                "lit": 0.45,
+                "y": 0.6,
+                "height": 0.2
+              },
+              {
+                "type": "ground",
+                "variant": "metal",
+                "color": "metal0",
+                "color2": "metal1",
+                "y": 0.6
+              },
+              {
+                "type": "sprite",
+                "sprite": "rack",
+                "depth": "near",
+                "x": 0.06,
+                "y": 1.08,
+                "scale": 4
+              },
+              {
+                "type": "circle",
+                "x": 0.2,
+                "y": 0.3,
+                "r": 0.012,
+                "color": "accent",
+                "glow": true,
+                "motion": "flicker"
+              }
+            ]
+          },
+          "actors": [
+            {
+              "sprite": "byte",
+              "x": 0.5,
+              "scale": 4,
+              "motion": [
+                "bob",
+                "blink"
+              ]
+            },
+            {
+              "sprite": "chip",
+              "x": 0.72,
+              "y": 0.55,
+              "scale": 2,
+              "at": "bot",
+              "motion": [
+                "float",
+                {
+                  "type": "spin",
+                  "speed": 0.4
+                }
+              ]
+            }
+          ],
+          "banner": {
+            "text": "Byte no duerme",
+            "accent": "Byte",
+            "big": true,
+            "motion": "pulse"
+          },
+          "fx": [
+            {
+              "type": "pixelate-in",
+              "duration": 0.5
+            },
+            {
+              "type": "fireflies",
+              "area": {
+                "x": 0,
+                "y": 0.35,
+                "w": 1,
+                "h": 0.25
+              },
+              "intensity": 0.5
+            },
+            {
+              "type": "rays",
+              "x": 0.78,
+              "y": 0.12,
+              "angle": 115,
+              "intensity": 0.5
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "rise",
+          "transition": "diamond"
+        }
+      }
+    },
+    {
+      "id": "codigo",
+      "narration": "Cada noche revisa un millón de líneas de código.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": {
+            "sky": {
+              "gradient": [
+                "#0B0420",
+                "#2A0B4A",
+                "#7A1E6E",
+                "#FF6A88"
+              ],
+              "stars": 60,
+              "sun": {
+                "x": 0.5,
+                "y": 0.47,
+                "r": 0.17
+              },
+              "horizon": 0.56
+            },
+            "floor": 0.6,
+            "layers": [
+              {
+                "type": "mountains",
+                "seed": 2207,
+                "color": "#2A0B4A",
+                "color2": "accent",
+                "y": 0.56,
+                "height": 0.16
+              },
+              {
+                "type": "clouds",
+                "seed": 51,
+                "variant": "streaks",
+                "color": "#FF6A88",
+                "y": 0.4,
+                "density": 0.5,
+                "speed": 5
+              },
+              {
+                "type": "grid",
+                "y": 0.56,
+                "color": "#12052A",
+                "color2": "accent",
+                "speed": 1.6
+              }
+            ]
+          },
+          "actors": [
+            {
+              "sprite": "byte-walk",
+              "scale": 4,
+              "motion": [
+                {
+                  "type": "walk-across",
+                  "at": 0.2
+                }
+              ]
+            }
+          ],
+          "counter": {
+            "value": 1000000,
+            "from": 0,
+            "label": "lineas revisadas",
+            "motion": "slide-in-right"
+          },
+          "fx": [
+            {
+              "type": "rain",
+              "color": "glow2",
+              "intensity": 0.7,
+              "angle": 0,
+              "depth": "back"
+            },
+            {
+              "type": "glitch",
+              "at": "código",
+              "duration": 0.4,
+              "intensity": 0.5
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "push-in",
+          "transition": "glitch"
+        }
+      }
+    },
+    {
+      "id": "rojo",
+      "narration": "Hasta que una línea empieza a brillar en rojo.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": {
+            "sky": {
+              "gradient": [
+                "#05060F",
+                "#0E1530"
+              ]
+            },
+            "floor": 0.6,
+            "layers": [
+              {
+                "type": "tiles",
+                "variant": "grid",
+                "y": 0,
+                "height": 0.6,
+                "color": "#0B1024",
+                "color2": "#16234A",
+                "scale": 6
+              },
+              {
+                "type": "sprite",
+                "sprite": "rack",
+                "count": 5,
+                "depth": "far",
+                "y": 0.56,
+                "scale": 3
+              },
+              {
+                "type": "sprite",
+                "sprite": "rack",
+                "count": 3,
+                "depth": "mid",
+                "y": 0.6,
+                "scale": 4,
+                "seed": 77
+              },
+              {
+                "type": "ground",
+                "variant": "planks",
+                "color": "#0B1024",
+                "color2": "#1C2A55",
+                "y": 0.6
+              },
+              {
+                "type": "rect",
+                "x": 0,
+                "y": 0.36,
+                "w": 1,
+                "height": 0.006,
+                "color": "#FF3B3B",
+                "glow": true,
+                "motion": {
+                  "presets": [
+                    {
+                      "type": "flicker",
+                      "at": "rojo",
+                      "amount": 0.4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "actors": [
+            {
+              "sprite": "byte",
+              "x": 0.3,
+              "scale": 4,
+              "motion": [
+                "blink",
+                {
+                  "type": "jump",
+                  "at": "brillar",
+                  "amount": 20
+                }
+              ]
+            },
+            {
+              "sprite": "bug",
+              "x": 0.7,
+              "y": 0.36,
+              "scale": 4,
+              "at": "rojo",
+              "glow": false,
+              "motion": [
+                "shake",
+                "bob"
+              ]
+            }
+          ],
+          "fx": [
+            {
+              "type": "burst",
+              "at": "rojo",
+              "x": 0.7,
+              "y": 0.32,
+              "color": "#FF3B3B",
+              "intensity": 0.9
+            },
+            {
+              "type": "flash",
+              "at": "rojo",
+              "color": "#FF3B3B",
+              "intensity": 0.5
+            },
+            {
+              "type": "smoke",
+              "depth": "back",
+              "area": {
+                "x": 0.5,
+                "y": 0.3,
+                "w": 0.4,
+                "h": 0.4
+              },
+              "intensity": 0.4
+            },
+            {
+              "type": "chromatic",
+              "at": "rojo",
+              "duration": 1.2,
+              "intensity": 0.4
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "static",
+          "transition": "wipe"
+        }
+      }
+    },
+    {
+      "id": "caza",
+      "narration": "Un bug. Byte lo persigue por todo el sistema.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": {
+            "sky": {
+              "gradient": [
+                "#021018",
+                "#06303A",
+                "#0F5C5C"
+              ],
+              "stars": 30,
+              "horizon": 0.54
+            },
+            "floor": 0.6,
+            "layers": [
+              {
+                "type": "mountains",
+                "seed": 8812,
+                "color": "#0A3640",
+                "color2": "glow2",
+                "y": 0.5,
+                "height": 0.22
+              },
+              {
+                "type": "forest",
+                "seed": 31,
+                "variant": "crystal",
+                "color": "glow2",
+                "y": 0.56,
+                "height": 0.14,
+                "density": 0.4,
+                "depth": "mid"
+              },
+              {
+                "type": "waves",
+                "seed": 5,
+                "color": "#0C4A5A",
+                "color2": "glow2",
+                "y": 0.555,
+                "height": 0.05
+              },
+              {
+                "type": "ground",
+                "variant": "stone",
+                "color": "#0A2A33",
+                "color2": "#145060",
+                "y": 0.6
+              },
+              {
+                "type": "forest",
+                "seed": 990,
+                "variant": "crystal",
+                "color": "accent",
+                "depth": "near",
+                "y": 1.05,
+                "height": 0.3,
+                "density": 0.25
+              }
+            ]
+          },
+          "actors": [
+            {
+              "sprite": "bug",
+              "scale": 4,
+              "motion": [
+                {
+                  "type": "walk-across",
+                  "amount": -1,
+                  "at": 0
+                },
+                {
+                  "type": "bob",
+                  "speed": 4
+                }
+              ]
+            },
+            {
+              "sprite": "byte-walk",
+              "scale": 4,
+              "motion": [
+                {
+                  "type": "walk-across",
+                  "amount": -1,
+                  "at": "persigue"
+                }
+              ]
+            }
+          ],
+          "fx": [
+            {
+              "type": "bubbles",
+              "intensity": 0.5,
+              "depth": "back",
+              "area": {
+                "x": 0,
+                "y": 0.4,
+                "w": 1,
+                "h": 0.2
+              }
+            },
+            {
+              "type": "sparks",
+              "x": 0.5,
+              "y": 0.6,
+              "intensity": 0.4
+            },
+            {
+              "type": "shake",
+              "at": "Byte",
+              "duration": 0.4,
+              "intensity": 0.4
+            },
+            {
+              "type": "lightning",
+              "at": "sistema",
+              "x": 0.3,
+              "y": 0.42,
+              "intensity": 0.8
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "pan-left",
+          "transition": "dissolve"
+        }
+      }
+    },
+    {
+      "id": "arregla",
+      "narration": "Lo atrapa, lo arregla y el sistema vuelve a vivir.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": {
+            "sky": {
+              "gradient": [
+                "#14204A",
+                "#3B4FA0",
+                "#F49A6B",
+                "#FFD98A"
+              ],
+              "sun": {
+                "x": 0.25,
+                "y": 0.44,
+                "r": 0.1
+              },
+              "horizon": 0.56
+            },
+            "floor": 0.6,
+            "layers": [
+              {
+                "type": "clouds",
+                "seed": 12,
+                "color": "#FFD1B0",
+                "color2": "paper",
+                "y": 0.22,
+                "density": 0.6,
+                "speed": 4
+              },
+              {
+                "type": "hills",
+                "seed": 404,
+                "color": "#2F5E5A",
+                "color2": "#5FA37A",
+                "y": 0.55,
+                "height": 0.08
+              },
+              {
+                "type": "forest",
+                "seed": 77,
+                "variant": "round",
+                "color": "#2B6E4A",
+                "color2": "#7CC46A",
+                "y": 0.59,
+                "height": 0.14,
+                "density": 0.5
+              },
+              {
+                "type": "ground",
+                "variant": "grass",
+                "color": "#244A2E",
+                "color2": "#5FA37A",
+                "y": 0.6
+              },
+              {
+                "type": "forest",
+                "seed": 3,
+                "variant": "pine",
+                "depth": "near",
+                "y": 1.04,
+                "height": 0.32,
+                "density": 0.15
+              }
+            ]
+          },
+          "actors": [
+            {
+              "sprite": "byte",
+              "x": 0.38,
+              "scale": 4,
+              "motion": [
+                "blink",
+                {
+                  "type": "jump",
+                  "at": "arregla",
+                  "amount": 26
+                }
+              ]
+            },
+            {
+              "sprite": "chip",
+              "x": 0.68,
+              "y": 0.44,
+              "scale": 3,
+              "at": "arregla",
+              "motion": [
+                {
+                  "type": "spin",
+                  "speed": 0.6
+                },
+                "float"
+              ]
+            }
+          ],
+          "popup": {
+            "title": "SISTEMA",
+            "text": "Bug arreglado. Todo vuelve a vivir.",
+            "accent": "vivir",
+            "at": 1,
+            "motion": "pop-in"
+          },
+          "fx": [
+            {
+              "type": "burst",
+              "at": "arregla",
+              "x": 0.68,
+              "y": 0.42,
+              "intensity": 0.8
+            },
+            {
+              "type": "confetti",
+              "at": "vivir",
+              "intensity": 0.8
+            },
+            {
+              "type": "bloom",
+              "intensity": 0.5
+            },
+            {
+              "type": "leaves",
+              "intensity": 0.3,
+              "depth": "back"
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "pan-right",
+          "transition": "iris"
+        }
+      }
+    },
+    {
+      "id": "cta",
+      "narration": "Sigue a Byte para la próxima misión.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": {
+            "sky": {
+              "gradient": [
+                "#000008",
+                "#0A0D24",
+                "#1C1450"
+              ],
+              "stars": 220,
+              "aurora": "accent",
+              "horizon": 1
+            },
+            "floor": 0.6,
+            "layers": [
+              {
+                "type": "circle",
+                "x": 0.78,
+                "y": 0.2,
+                "r": 0.16,
+                "color": "#4C3A8C",
+                "motion": {
+                  "presets": [
+                    {
+                      "type": "float",
+                      "amount": 3
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "circle",
+                "x": 0.78,
+                "y": 0.2,
+                "r": 0.24,
+                "color": "glow",
+                "ring": true,
+                "glow": true
+              },
+              {
+                "type": "circle",
+                "x": 0.15,
+                "y": 0.52,
+                "r": 0.05,
+                "color": "#FF6A88",
+                "glow": true,
+                "depth": "mid",
+                "motion": "pulse"
+              },
+              {
+                "type": "sprite",
+                "sprite": "chip",
+                "count": 6,
+                "depth": "far",
+                "y": 0.45,
+                "scale": 1,
+                "motion": {
+                  "presets": [
+                    "float",
+                    {
+                      "type": "spin",
+                      "speed": 0.3
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "actors": [
+            {
+              "sprite": "byte",
+              "x": 0.5,
+              "y": 0.6,
+              "scale": 5,
+              "motion": [
+                "float",
+                "blink",
+                {
+                  "type": "pop-in",
+                  "at": 0.2
+                }
+              ]
+            }
+          ],
+          "banner": {
+            "text": "Sigue a Byte",
+            "accent": "Byte",
+            "kicker": "Proxima mision",
+            "motion": "slide-in-left"
+          },
+          "fx": [
+            {
+              "type": "stars",
+              "intensity": 0.8
+            },
+            {
+              "type": "shockwave",
+              "at": "Sigue",
+              "x": 0.5,
+              "y": 0.55
+            },
+            {
+              "type": "crt",
+              "intensity": 0.6
+            },
+            {
+              "type": "dissolve-out",
+              "duration": 0.5
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "static"
+        }
+      }
+    }
+  ]
+}

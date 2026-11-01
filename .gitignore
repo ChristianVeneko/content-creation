@@ -1,0 +1,45 @@
+# Heavy media stays local
+03-assets/**/*.mp4
+03-assets/**/*.mov
+03-assets/**/*.wav
+03-assets/**/*.mp3
+06-exports/
+node_modules/
+.venv/
+__pycache__/
+.DS_Store
+.env
+**/node_modules/
+05-tools/cache/
+05-tools/models/
+05-tools/repos/
+05-tools/bin/ffmpeg
+05-tools/bin/ffprobe
+05-tools/bin/uv
+05-tools/bin/uvx
+05-tools/node/
+04-projects/*
+!04-projects/_template/
+07-studio/**/dist/
+07-studio/**/out/
+03-assets/music/.history.json
+.remotion/
+05-tools/apps/
+
+# Machine-local config (sourced by env.sh)
+env.local.sh
+
+# Local experiments: Blender launcher (configure BLENDER_BIN in env.local.sh)
+05-tools/bin/blender
+
+# Personal notes, planning and memory (stay on disk, never published)
+odd/
+.atl/
+
+# Personal data: content log (setup.sh creates it with its header), channels, brand assets
+00-docs/content-log.csv
+08-channels/*
+!08-channels/README.md
+!08-channels/_template/
+03-assets/brand/
+

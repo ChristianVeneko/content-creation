@@ -1,0 +1,341 @@
+// Types shared by the server and the browser UI.
+// The VideoSpec mirrors the engine contract in 07-studio/engine/spec.schema.json.
+
+import type { CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
+
+export type { CaptionColors, CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
+export type VoiceProvider = "elevenlabs" | "kokoro" | "none";
+export type VisualType = "gradient" | "image" | "video" | "emoji" | "icon" | "illustration" | "scene3d";
+
+/** One object of a 3D scene (engine-defined procedural kinds: phone, server, chart, lock, …). */
+export interface Scene3DObject {
+  kind: string;
+  id?: string;
+  label?: string;
+  [key: string]: unknown;
+}
+
+/** One drawn element of an illustrated scene (engine-defined vocabulary: card, flow, compare, …). */
+export interface IllustrationElement {
+  type: string;
+  id?: string;
+  at?: number;
+  [key: string]: unknown;
+}
+export type SceneAnimation = "pop" | "slide" | "typewriter" | "zoom";
+
+export interface Scene {
+  id: string;
+  narration: string;
+  onScreenText?: string;
+  durationSec?: number;
+  visual: { type: VisualType; src?: string; query?: string; emoji?: string; prompt?: string; elements?: IllustrationElement[]; objects?: Scene3DObject[]; layout?: string; camera?: string };
+  /** Two-tone headline used by the illustrated template. */
+  title?: { kicker?: string; main?: string };
+  animation?: SceneAnimation;
+}
+
+export interface VideoSpec {
+  version: 1;
+  title: string;
+  template: string;
+  language: string;
+  format: { width: number; height: number; fps: number };
+  theme: {
+    palette: Palette;
+    font: string;
+    captionStyle: CaptionStyle;
+  };
+  voice: { provider: VoiceProvider; voiceId?: string; speed?: number };
+  music?: MusicSpec;
+  sfx?: { enabled: boolean; volume: number };
+  /** Caption look (engine lib/captions.mjs); unset fields fall back to the template and palette. */
+  captions?: CaptionSettings;
+  /** Options of the reels-* templates (`subtitles`: "linea", "bloque" or "no"); other keys are kept as-is. */
+  reels?: { subtitles?: string; [key: string]: unknown };
+  scenes: Scene[];
+  post: {
+    tiktok: string;
+    instagram: string;
+    youtube: { title: string; description: string };
+    hashtags: string[];
+  };
+}
+
+/** spec.theme.palette: background stops plus text and up to three accents (hex). */
+export interface Palette {
+  bg: string[];
+  text: string;
+  accent: string;
+  accent2?: string;
+  accent3?: string;
+}
+
+/** A curated palette preset (engine lib/palettes.mjs). */
+export interface PalettePreset {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  palette: Palette;
+}
+
+/** A topic preset ("temática", engine lib/themes.mjs). Templates are filtered to ids the registry knows. */
+export interface ThemePreset {
+  id: string;
+  label: string;
+  description: string;
+  examplePrompt: string;
+  templates: string[];
+  palette: string;
+  mood: string;
+  /** Human label of the music mood (engine MOOD_LABELS). */
+  moodLabel?: string;
+  tone: string;
+}
+
+export type TemplateCategory = "illustrated-2d" | "3d" | "kinetic" | "reels-2d";
+
+export type ProviderId = "anthropic" | "openai" | "gemini" | "claudeCode";
+
+export interface ProviderInfo {
+  id: ProviderId;
+  label: string;
+  available: boolean;
+  model: string;
+  /** Human-readable reason when unavailable (never contains key values). */
+  reason?: string;
+  /** Alternative model ids the UI may offer (e.g. a faster option). */
+  models?: { id: string; label: string }[];
+}
+
+export interface TemplateInfo {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  /** Two or more CSS colors (engine preview data). */
+  gradient: string[];
+  accent?: string;
+  sampleText?: string;
+  promptHint?: string;
+  /** Preview style hint from the engine (e.g. "illustrated" draws a vector card instead of an emoji). */
+  style?: string;
+  /** Gallery family (engine `category`). */
+  category?: TemplateCategory | string;
+  bestFor?: string[];
+  /** The template's own palette (defaults.theme.palette), shown as "Original". */
+  palette?: Palette;
+  font?: string;
+}
+
+export type MusicProvider = "library" | "elevenlabs" | "none";
+
+/** `spec.music` (engine contract, see engine/spec.schema.json). */
+export interface MusicSpec {
+  provider?: MusicProvider;
+  /** Library mood id or "auto". */
+  mood?: string;
+  /** Library track id or "auto". */
+  track?: string;
+  file?: string;
+  /** 0.12 = 13 dB under the voice. */
+  volume: number;
+  duck?: boolean;
+  /** ElevenLabs Music only. */
+  prompt?: string;
+  tone?: string;
+}
+
+/** Music + SFX choices made in the UI (Create options or the storyboard). */
+export interface MusicOptions {
+  enabled: boolean;
+  provider: "library" | "elevenlabs";
+  /** Mood id or "auto". */
+  mood: string;
+  /** Specific track id, or "" for automatic. */
+  track: string;
+  volume: number;
+  sfxVolume: number;
+  prompt: string;
+}
+
+export interface MusicMood {
+  id: string;
+  label: string;
+  count: number;
+}
+
+export interface MusicTrack {
+  id: string;
+  mood: string;
+  title: string;
+  artist: string;
+  durationSec: number;
+  bpm?: number | null;
+  license: string;
+  credit: string;
+  sourceUrl?: string;
+}
+
+export interface MusicLibrary {
+  moods: MusicMood[];
+  tracks: MusicTrack[];
+  /** ElevenLabs Music can be used (key present on the server; the value is never sent). */
+  elevenlabs: { available: boolean; reason?: string };
+}
+
+/** A trending Latin American Spanish voice from the ElevenLabs library (preview via /api/voices/:id/preview). */
+export interface VoiceOption {
+  voiceId: string;
+  name: string;
+  accent: string;
+  locale: string;
+  gender: string;
+  useCase: string;
+  description: string;
+  uses7d: number;
+}
+
+export interface VoiceLibrary {
+  /** ElevenLabs key present on the server (the value is never sent). */
+  available: boolean;
+  reason?: string;
+  /** Most trending first; an empty voiceId means "auto": the engine picks one of the top five. */
+  voices: VoiceOption[];
+}
+
+export interface GenerateOptions {
+  language: string;
+  durationSec: 15 | 30 | 45 | 60;
+  tone: string;
+  voiceProvider: VoiceProvider;
+  voiceId?: string;
+  captionStyle: CaptionStyle;
+  platform: "all" | "tiktok" | "instagram" | "youtube";
+  music?: MusicOptions;
+  /** Overrides the template palette (written to spec.theme.palette). */
+  palette?: Palette;
+  /** Caption settings written over spec.captions; `captions.style` wins over `captionStyle`. */
+  captions?: CaptionSettings;
+  /** Subtitle mode of the reels-* templates (spec.reels.subtitles). */
+  reelsSubtitles?: ReelsSubtitleMode;
+}
+
+export interface GenerateRequest {
+  prompt: string;
+  /** Optional when `channel` has a default template. */
+  template: string;
+  provider: ProviderId;
+  model?: string;
+  /** Explicit choices. With a channel, options left out fall back to the channel defaults. */
+  options: GenerateOptions;
+  /** Channel slug: adds the channel context to the request and records the channel on the job. */
+  channel?: string;
+  /** Fill this existing idea (a job without a script) instead of creating a new folder. */
+  jobId?: string;
+}
+
+/** Content stage the user sets by hand (independent of the render status). */
+export type ContentStage = "idea" | "draft" | "ready" | "published";
+export const CONTENT_STAGES: ContentStage[] = ["idea", "draft", "ready", "published"];
+
+export type ChannelPlatform = "youtube" | "tiktok" | "instagram";
+export const CHANNEL_PLATFORMS: ChannelPlatform[] = ["youtube", "tiktok", "instagram"];
+
+/** `channel.json` defaults: applied to new videos of the channel unless the user picks otherwise. */
+export interface ChannelDefaults {
+  template?: string;
+  /** Palette preset id (engine lib/palettes.mjs). */
+  palette?: string | null;
+  voiceProvider?: VoiceProvider;
+  voiceId?: string;
+  captionStyle?: CaptionStyle | null;
+  /** Caption look for new videos (same fields as spec.captions); applied only when a video does not set its own. */
+  captions?: CaptionSettings;
+  /** Library mood id or "auto". */
+  musicMood?: string;
+  durationSec?: GenerateOptions["durationSec"];
+  tone?: string;
+}
+
+/** `08-channels/<slug>/channel.json` (shared contract with the terminal skills). */
+export interface Channel {
+  version: 1;
+  slug: string;
+  name: string;
+  handle?: string;
+  platforms: ChannelPlatform[];
+  language: string;
+  niche?: string;
+  audience?: string;
+  pillars: string[];
+  createdAt: string;
+  defaults: ChannelDefaults;
+  /** `avatar` is a path relative to the content-creation root. */
+  brand?: { avatar?: string; colors?: string[] };
+}
+
+/** A channel with its free-text voice guide (`voice.md`). */
+export interface ChannelDetail extends Channel {
+  voice: string;
+}
+
+/** List entry for the dashboard. */
+export interface ChannelSummary extends Channel {
+  counts: Record<ContentStage, number>;
+  total: number;
+  hasAvatar: boolean;
+  /** Most recent video of the channel that has a cover. */
+  lastCover?: { id: string; title: string };
+}
+
+/** Body of `PATCH /api/jobs/:id` (null clears a field). */
+export interface JobPatch {
+  title?: string;
+  notes?: string;
+  channel?: string | null;
+  stage?: ContentStage;
+  publishedAt?: string | null;
+  links?: string[];
+}
+
+export type JobStatus = "draft" | "rendering" | "done" | "failed";
+
+/** One engine progress line (`--json-logs`). */
+export interface EngineLog {
+  step: string;
+  status: string;
+  message?: string;
+  progress?: number;
+}
+
+export interface JobSummary {
+  id: string;
+  title: string;
+  template: string;
+  status: JobStatus;
+  createdAt: string;
+  updatedAt: string;
+  prompt?: string;
+  provider?: ProviderId;
+  dir: string;
+  hasVideo: boolean;
+  hasCover: boolean;
+  /** False for an idea that has no script yet. */
+  hasSpec: boolean;
+  error?: string;
+  channel?: string;
+  /** Stored stage, or derived for older jobs: ready with a video, else draft. */
+  stage: ContentStage;
+  notes?: string;
+  publishedAt?: string;
+  links?: string[];
+}
+
+export interface JobDetail extends JobSummary {
+  spec?: VideoSpec;
+  logs: EngineLog[];
+  progress: number;
+  postMarkdown?: string;
+}

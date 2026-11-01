@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "title": "Por qué el café te despierta",
+  "template": "whiteboard",
+  "language": "es",
+  "voice": { "provider": "none" },
+  "music": { "provider": "none" },
+  "sfx": { "enabled": true, "volume": 1 },
+  "captions": { "enabled": true, "wordsPerPage": 3 },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "¿Por qué el café te despierta tan rápido?",
+      "durationSec": 4.4,
+      "title": { "kicker": "La ciencia de", "main": "tu primer café" },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing", "id": "taza", "height": 520, "at": 0.3,
+            "parts": [
+              { "id": "saucer", "shape": "ellipse", "cx": 200, "cy": 352, "rx": 150, "ry": 22, "fill": "surface", "stroke": "ink", "width": 6 },
+              { "id": "cup", "shape": "group", "origin": [200, 345], "motion": [{ "type": "squash", "amp": 0.05 }],
+                "keys": [{ "at": 0, "y": 0 }, { "at": "despierta", "y": -46, "ease": "out" }, { "at": "despierta+9", "y": 0, "ease": "bounce" }] },
+              { "id": "steam-1", "shape": "path", "d": "M165 122 C148 96 186 80 168 50", "stroke": "muted", "width": 9, "fill": "none", "parent": "cup", "draw": true, "at": "café", "origin": [166, 122], "motion": ["sway"] },
+              { "id": "steam-2", "shape": "path", "d": "M200 118 C183 90 222 74 202 38", "stroke": "muted", "width": 9, "fill": "none", "parent": "cup", "draw": true, "at": "café+5", "origin": [200, 118], "motion": [{ "type": "sway", "speed": 1.3 }] },
+              { "id": "steam-3", "shape": "path", "d": "M235 122 C218 96 256 80 238 50", "stroke": "muted", "width": 9, "fill": "none", "parent": "cup", "draw": true, "at": "café+10", "origin": [236, 122], "motion": [{ "type": "sway", "speed": 0.8 }] },
+              { "id": "handle", "shape": "path", "d": "M288 188 C352 186 352 292 276 292", "stroke": "accent", "width": 22, "fill": "none", "parent": "cup" },
+              { "id": "body", "shape": "path", "d": "M105 150 L295 150 L276 318 Q271 345 246 345 L154 345 Q129 345 124 318 Z", "fill": "accent", "stroke": "ink", "width": 6, "parent": "cup" },
+              { "id": "coffee", "shape": "ellipse", "cx": 200, "cy": 150, "rx": 95, "ry": 17, "fill": "#6B3E26", "stroke": "ink", "width": 6, "parent": "cup" },
+              { "id": "shine", "shape": "path", "d": "M138 178 L146 300", "stroke": "#FFFFFF", "width": 10, "fill": "none", "opacity": 0.55, "parent": "cup" },
+              { "id": "eye-l", "shape": "ellipse", "cx": 165, "cy": 226, "rx": 11, "ry": 15, "fill": "ink", "parent": "cup", "keys": [{ "at": 0, "scale": 1 }, { "at": "despierta", "scale": 1.45, "ease": "back" }] },
+              { "id": "eye-r", "shape": "ellipse", "cx": 235, "cy": 226, "rx": 11, "ry": 15, "fill": "ink", "parent": "cup", "keys": [{ "at": 0, "scale": 1 }, { "at": "despierta", "scale": 1.45, "ease": "back" }] },
+              { "id": "glint-l", "shape": "circle", "cx": 169, "cy": 220, "r": 4, "fill": "#FFFFFF", "parent": "eye-l" },
+              { "id": "glint-r", "shape": "circle", "cx": 239, "cy": 220, "r": 4, "fill": "#FFFFFF", "parent": "eye-r" },
+              { "id": "cheek-l", "shape": "ellipse", "cx": 143, "cy": 258, "rx": 15, "ry": 8, "fill": "bad", "opacity": 0.45, "parent": "cup" },
+              { "id": "cheek-r", "shape": "ellipse", "cx": 257, "cy": 258, "rx": 15, "ry": 8, "fill": "bad", "opacity": 0.45, "parent": "cup" },
+              { "id": "mouth", "shape": "path", "d": "M178 262 Q200 287 222 262", "stroke": "ink", "width": 7, "fill": "none", "parent": "cup" }
+            ],
+            "motion": [{ "type": "pop-in", "at": 0.3 }, { "type": "blink", "parts": ["eye-l", "eye-r"] }]
+          },
+          { "type": "badge", "id": "spoiler", "text": "Spoiler: no da energía", "at": 2.6 }
+        ],
+        "fx": [
+          { "type": "sparkles", "target": "taza", "at": "despierta", "seed": 3 },
+          { "type": "zoom-punch", "at": "despierta" },
+          { "type": "stars", "target": "taza", "count": 8, "until": "fin", "seed": 21 }
+        ]
+      }
+    },
+    {
+      "id": "adenosina",
+      "narration": "Tu cerebro acumula adenosina, la molécula del cansancio.",
+      "durationSec": 4.8,
+      "title": { "kicker": "Mientras trabajas", "main": "se acumula sueño" },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing", "id": "sueno", "height": 500,
+            "parts": [
+              { "id": "blob", "shape": "path", "d": "M110 262 C68 262 58 200 104 190 C98 138 160 118 190 150 C210 108 282 114 292 166 C342 160 356 232 310 252 C322 292 260 302 240 282 C220 306 150 306 140 282 C120 292 104 282 110 262 Z", "fill": "accent3", "stroke": "ink", "width": 6, "motion": [{ "type": "squash", "amp": 0.04, "speed": 0.6 }], "origin": [205, 300] },
+              { "id": "eye-l", "shape": "path", "d": "M163 214 Q177 228 191 214", "stroke": "ink", "width": 7, "fill": "none", "parent": "blob" },
+              { "id": "eye-r", "shape": "path", "d": "M223 214 Q237 228 251 214", "stroke": "ink", "width": 7, "fill": "none", "parent": "blob" },
+              { "id": "mouth", "shape": "ellipse", "cx": 207, "cy": 252, "rx": 10, "ry": 12, "fill": "ink", "parent": "blob", "motion": [{ "type": "pulse", "amp": 0.3, "speed": 0.45 }] },
+              { "id": "z-1", "shape": "text", "text": "z", "x": 300, "y": 140, "size": 46, "fill": "text", "font": "hand", "motion": [{ "type": "float", "amp": 10 }] },
+              { "id": "z-2", "shape": "text", "text": "Z", "x": 336, "y": 92, "size": 64, "fill": "text", "font": "hand", "at": "cansancio", "motion": [{ "type": "float", "amp": 14, "speed": 1.3 }] },
+              { "id": "mol-1", "shape": "group", "motion": [{ "type": "orbit", "amp": 14 }], "at": "adenosina" },
+              { "id": "bond-1", "shape": "line", "x1": 62, "y1": 96, "x2": 98, "y2": 72, "stroke": "ink", "width": 6, "parent": "mol-1" },
+              { "id": "atom-1a", "shape": "circle", "cx": 62, "cy": 96, "r": 17, "fill": "accent2", "stroke": "ink", "width": 5, "parent": "mol-1" },
+              { "id": "atom-1b", "shape": "circle", "cx": 98, "cy": 72, "r": 12, "fill": "accent", "stroke": "ink", "width": 5, "parent": "mol-1" },
+              { "id": "mol-2", "shape": "group", "motion": [{ "type": "bob", "amp": 12, "speed": 0.7 }], "at": "adenosina+6" },
+              { "id": "bond-2", "shape": "line", "x1": 300, "y1": 330, "x2": 340, "y2": 352, "stroke": "ink", "width": 6, "parent": "mol-2" },
+              { "id": "atom-2a", "shape": "circle", "cx": 300, "cy": 330, "r": 15, "fill": "accent2", "stroke": "ink", "width": 5, "parent": "mol-2" },
+              { "id": "atom-2b", "shape": "circle", "cx": 340, "cy": 352, "r": 11, "fill": "accent", "stroke": "ink", "width": 5, "parent": "mol-2" },
+              { "id": "mol-3", "shape": "group", "motion": [{ "type": "float", "amp": 10 }], "at": "molécula" },
+              { "id": "bond-3", "shape": "line", "x1": 50, "y1": 320, "x2": 82, "y2": 346, "stroke": "ink", "width": 6, "parent": "mol-3" },
+              { "id": "atom-3a", "shape": "circle", "cx": 50, "cy": 320, "r": 14, "fill": "accent2", "stroke": "ink", "width": 5, "parent": "mol-3" },
+              { "id": "atom-3b", "shape": "circle", "cx": 82, "cy": 346, "r": 10, "fill": "accent", "stroke": "ink", "width": 5, "parent": "mol-3" }
+            ],
+            "motion": [{ "type": "slide-in-left", "at": 0.5 }]
+          },
+          { "type": "badge", "text": "Adenosina = cansancio", "at": 3 }
+        ],
+        "fx": [
+          { "type": "dust", "until": "fin" },
+          { "type": "scribbles", "target": "sueno", "at": "cansancio", "count": 3, "seed": 11 }
+        ]
+      }
+    },
+    {
+      "id": "forma",
+      "narration": "La cafeína tiene casi la misma forma que ella.",
+      "durationSec": 4.6,
+      "title": { "kicker": "El truco:", "main": "un disfraz perfecto" },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing", "id": "llave", "height": 470, "viewBox": "0 0 400 340",
+            "parts": [
+              { "id": "lock", "shape": "group", "motion": [{ "type": "shake", "at": "forma+2" }] },
+              { "id": "shackle", "shape": "path", "d": "M262 170 L262 130 C262 74 352 74 352 130 L352 170", "stroke": "ink", "width": 16, "fill": "none", "parent": "lock" },
+              { "id": "lock-body", "shape": "rect", "x": 236, "y": 165, "w": 142, "h": 128, "r": 18, "fill": "accent2", "stroke": "ink", "width": 6, "parent": "lock" },
+              { "id": "keyhole", "shape": "circle", "cx": 307, "cy": 215, "r": 14, "fill": "ink", "parent": "lock" },
+              { "id": "slot", "shape": "rect", "x": 300, "y": 220, "w": 14, "h": 40, "r": 5, "fill": "ink", "parent": "lock" },
+              { "id": "key", "shape": "group", "origin": [110, 230],
+                "keys": [{ "at": 0, "x": -70 }, { "at": "forma", "x": 52, "ease": "back" }],
+                "motion": [{ "type": "wiggle", "until": "forma" }] },
+              { "id": "ring", "shape": "polygon", "points": [[132, 230], [109, 270], [63, 270], [40, 230], [63, 190], [109, 190]], "fill": "none", "stroke": "accent", "width": 16, "parent": "key", "draw": true, "at": "cafeína" },
+              { "id": "ring-in", "shape": "circle", "cx": 86, "cy": 230, "r": 13, "fill": "accent", "parent": "key", "at": "cafeína+8" },
+              { "id": "shaft", "shape": "rect", "x": 130, "y": 222, "w": 112, "h": 17, "r": 7, "fill": "accent", "stroke": "ink", "width": 4, "parent": "key" },
+              { "id": "tooth-1", "shape": "rect", "x": 196, "y": 236, "w": 13, "h": 20, "r": 3, "fill": "accent", "stroke": "ink", "width": 4, "parent": "key" },
+              { "id": "tooth-2", "shape": "rect", "x": 218, "y": 236, "w": 13, "h": 28, "r": 3, "fill": "accent", "stroke": "ink", "width": 4, "parent": "key" }
+            ],
+            "motion": [{ "type": "pop-in", "at": 0.35 }]
+          },
+          { "type": "badge", "text": "Misma forma, otro efecto", "at": 3.1 }
+        ],
+        "fx": [
+          { "type": "ink-splash", "target": "llave/lock-body", "at": 0.5, "color": "accent3", "size": 1.5, "seed": 4 },
+          { "type": "burst", "target": "llave/keyhole", "at": "forma+2", "seed": 9 },
+          { "type": "flash", "at": "forma+2", "intensity": 0.35 }
+        ]
+      }
+    },
+    {
+      "id": "bloqueo",
+      "narration": "Entra en su receptor y bloquea la señal de sueño.",
+      "durationSec": 4.8,
+      "title": { "kicker": "Ocupa su lugar", "main": "y apaga el sueño" },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing", "id": "receptor", "height": 500, "viewBox": "40 100 330 220",
+            "parts": [
+              { "id": "membrane", "shape": "path", "d": "M20 300 C80 278 120 322 180 300 C240 278 290 322 380 300", "stroke": "accent3", "width": 14, "fill": "none", "draw": true, "at": 0.4 },
+              { "id": "socket", "shape": "path", "d": "M146 304 L146 226 L174 226 L174 268 L226 268 L226 226 L254 226 L254 304 Z", "fill": "accent2", "stroke": "ink", "width": 6, "at": 0.7 },
+              { "id": "caf", "shape": "polygon", "points": [[228, 240], [214, 264], [186, 264], [172, 240], [186, 216], [214, 216]], "fill": "accent", "stroke": "ink", "width": 6,
+                "keys": [{ "at": 0, "y": -170, "opacity": 0 }, { "at": "receptor", "y": -170, "opacity": 1 }, { "at": "bloquea", "y": 0, "ease": "bounce" }] },
+              { "id": "aden", "shape": "group", "origin": [330, 140],
+                "keys": [{ "at": 0, "x": 0, "y": 0 }, { "at": "bloquea", "x": -110, "y": 70, "ease": "in" }, { "at": "bloquea+10", "x": 30, "y": -50, "rot": 160, "ease": "out" }] },
+              { "id": "aden-bond", "shape": "line", "x1": 318, "y1": 150, "x2": 350, "y2": 126, "stroke": "ink", "width": 6, "parent": "aden" },
+              { "id": "aden-a", "shape": "circle", "cx": 318, "cy": 150, "r": 20, "fill": "muted", "stroke": "ink", "width": 5, "parent": "aden" },
+              { "id": "aden-b", "shape": "circle", "cx": 350, "cy": 126, "r": 14, "fill": "muted", "stroke": "ink", "width": 5, "parent": "aden" },
+              { "id": "zzz", "shape": "text", "text": "zzz", "x": 92, "y": 130, "size": 54, "fill": "muted", "font": "hand", "keys": [{ "at": 0, "opacity": 1 }, { "at": "sueño", "opacity": 0, "scale": 0.4 }] }
+            ]
+          },
+          { "type": "stamp", "text": "BLOQUEADO", "at": 3.1 }
+        ],
+        "fx": [
+          { "type": "shake", "at": "bloquea" },
+          { "type": "glitch", "at": "bloquea", "size": 0.5 },
+          { "type": "scribbles", "target": "receptor/caf", "at": "bloquea+4", "count": 4, "seed": 2 }
+        ]
+      }
+    },
+    {
+      "id": "horas",
+      "narration": "Por eso el efecto dura unas cinco horas.",
+      "durationSec": 4.4,
+      "title": { "kicker": "Cuánto dura", "main": "unas cinco horas" },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing", "id": "reloj", "height": 430,
+            "parts": [
+              { "id": "bell-l", "shape": "path", "d": "M70 110 A62 62 0 0 1 150 52 Z", "fill": "accent2", "stroke": "ink", "width": 6, "origin": [110, 95], "motion": [{ "type": "wiggle", "at": "cinco", "amp": 14, "speed": 3 }] },
+              { "id": "bell-r", "shape": "path", "d": "M330 110 A62 62 0 0 0 250 52 Z", "fill": "accent2", "stroke": "ink", "width": 6, "origin": [290, 95], "motion": [{ "type": "wiggle", "at": "cinco", "amp": 14, "speed": 3 }] },
+              { "id": "face", "shape": "circle", "cx": 200, "cy": 210, "r": 150, "fill": "surface", "stroke": "ink", "width": 10 },
+              { "id": "tick-12", "shape": "line", "x1": 200, "y1": 78, "x2": 200, "y2": 104, "stroke": "ink", "width": 8 },
+              { "id": "tick-3", "shape": "line", "x1": 332, "y1": 210, "x2": 306, "y2": 210, "stroke": "ink", "width": 8 },
+              { "id": "tick-6", "shape": "line", "x1": 200, "y1": 342, "x2": 200, "y2": 316, "stroke": "ink", "width": 8 },
+              { "id": "tick-9", "shape": "line", "x1": 68, "y1": 210, "x2": 94, "y2": 210, "stroke": "ink", "width": 8 },
+              { "id": "arc", "shape": "path", "d": "M200 110 A100 100 0 1 1 105 241", "stroke": "accent", "width": 14, "fill": "none", "draw": true, "at": "cinco", "opacity": 0.85 },
+              { "id": "hour", "shape": "line", "x1": 200, "y1": 210, "x2": 200, "y2": 140, "stroke": "ink", "width": 13, "origin": [200, 210], "motion": [{ "type": "spin", "amp": 40 }] },
+              { "id": "minute", "shape": "line", "x1": 200, "y1": 210, "x2": 290, "y2": 210, "stroke": "accent", "width": 8, "origin": [200, 210], "motion": [{ "type": "spin", "amp": 300 }] },
+              { "id": "hub", "shape": "circle", "cx": 200, "cy": 210, "r": 13, "fill": "accent", "stroke": "ink", "width": 5 }
+            ],
+            "motion": [{ "type": "fall", "at": 0.3 }, { "type": "shake", "at": "cinco", "amp": 5 }]
+          },
+          { "type": "counter", "value": 5, "suffix": " h", "label": "de efecto", "at": 2 }
+        ],
+        "fx": [
+          { "type": "speed-lines", "target": "reloj", "at": "cinco", "intensity": 0.6 },
+          { "type": "burst", "target": "reloj/hub", "at": "cinco", "seed": 5 }
+        ]
+      }
+    },
+    {
+      "id": "cta",
+      "narration": "Guárdalo y compártelo con tu amigo cafetero.",
+      "durationSec": 4.6,
+      "title": { "kicker": "Guárdalo para", "main": "tu amigo cafetero" },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing", "id": "grano", "height": 520,
+            "parts": [
+              { "id": "leg-l", "shape": "line", "x1": 178, "y1": 340, "x2": 166, "y2": 388, "stroke": "ink", "width": 11 },
+              { "id": "leg-r", "shape": "line", "x1": 222, "y1": 340, "x2": 234, "y2": 388, "stroke": "ink", "width": 11 },
+              { "id": "arm-l", "shape": "path", "d": "M104 232 Q66 252 60 292", "stroke": "ink", "width": 11, "fill": "none", "origin": [104, 232], "motion": [{ "type": "sway", "amp": 6 }] },
+              { "id": "arm-r", "shape": "path", "d": "M296 206 Q338 178 344 140", "stroke": "ink", "width": 11, "fill": "none", "origin": [296, 206], "motion": [{ "type": "wave", "at": "Guárdalo", "amp": 22, "lift": -10 }] },
+              { "id": "hand-r", "shape": "circle", "cx": 344, "cy": 134, "r": 15, "fill": "#8B5A36", "stroke": "ink", "width": 5, "parent": "arm-r" },
+              { "id": "body", "shape": "ellipse", "cx": 200, "cy": 215, "rx": 106, "ry": 132, "rot": -10, "fill": "#8B5A36", "stroke": "ink", "width": 6 },
+              { "id": "crease", "shape": "path", "d": "M206 88 C170 160 244 262 196 344", "stroke": "#4A2A16", "width": 10, "fill": "none", "parent": "body" },
+              { "id": "eye-l", "shape": "ellipse", "cx": 160, "cy": 196, "rx": 13, "ry": 17, "fill": "ink", "parent": "body" },
+              { "id": "eye-r", "shape": "ellipse", "cx": 240, "cy": 190, "rx": 13, "ry": 17, "fill": "ink", "parent": "body" },
+              { "id": "glint-l", "shape": "circle", "cx": 164, "cy": 189, "r": 5, "fill": "#FFFFFF", "parent": "eye-l" },
+              { "id": "glint-r", "shape": "circle", "cx": 244, "cy": 183, "r": 5, "fill": "#FFFFFF", "parent": "eye-r" },
+              { "id": "mouth", "shape": "path", "d": "M170 246 Q200 278 232 244", "stroke": "ink", "width": 8, "fill": "none", "parent": "body" },
+              { "id": "cheek-l", "shape": "ellipse", "cx": 138, "cy": 236, "rx": 15, "ry": 8, "fill": "bad", "opacity": 0.5, "parent": "body" },
+              { "id": "cheek-r", "shape": "ellipse", "cx": 262, "cy": 228, "rx": 15, "ry": 8, "fill": "bad", "opacity": 0.5, "parent": "body" }
+            ],
+            "motion": [{ "type": "pop-in", "at": 0.25 }, { "type": "blink", "parts": ["eye-l", "eye-r"] }, { "type": "bob", "amp": 6 }]
+          },
+          { "type": "badge", "text": "Guárdalo", "at": 2.4 }
+        ],
+        "fx": [
+          { "type": "confetti", "at": "Guárdalo", "seed": 8 },
+          { "type": "burst", "target": "grano", "at": "Guárdalo", "seed": 12 },
+          { "type": "light-leak", "seed": 3 }
+        ]
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "¿El café te da energía? No exactamente. #café #ciencia #cerebro",
+    "instagram": "El café no te da energía: te esconde el cansancio.\nLa cafeína ocupa el lugar de la adenosina durante unas 5 horas.\nGuárdalo para tu amigo cafetero.\n\n#café #ciencia #cerebro",
+    "youtube": { "title": "Por qué el café te despierta #shorts", "description": "La cafeína bloquea los receptores de adenosina, la molécula del cansancio." },
+    "hashtags": ["café", "ciencia", "cerebro"]
+  }
+}

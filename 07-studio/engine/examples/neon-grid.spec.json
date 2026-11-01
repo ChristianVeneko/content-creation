@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "title": "Por qué el lag te hace perder",
+  "template": "neon-grid",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Cuando juegas en línea, lo que ves en tu pantalla ya pasó hace un instante.",
+      "title": {
+        "kicker": "Cuando juegas",
+        "main": "en línea"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "glide",
+        "objects": [
+          {
+            "kind": "character",
+            "anim": "walk",
+            "label": "Tú",
+            "highlight": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "viaje",
+      "narration": "Cada movimiento viaja de tu consola a un servidor y vuelve.",
+      "title": {
+        "kicker": "El viaje",
+        "main": "ida y vuelta"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "monitor",
+            "id": "pc",
+            "icon": "game-controller",
+            "label": "Tu equipo"
+          },
+          {
+            "kind": "server",
+            "id": "srv",
+            "label": "Servidor"
+          }
+        ],
+        "connect": [
+          {
+            "from": "pc",
+            "to": "srv"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ping",
+      "narration": "Ese viaje tarda milisegundos, y a eso le llamamos ping.",
+      "title": {
+        "kicker": "Eso se llama",
+        "main": "ping"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "120 ms",
+            "label": "de retraso"
+          },
+          {
+            "kind": "chip",
+            "size": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "ventaja",
+      "narration": "Si tu rival tiene menos ping, el servidor ve su disparo primero.",
+      "title": {
+        "kicker": "Quien llega antes",
+        "main": "gana"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "camera": "orbit",
+        "objects": [
+          {
+            "kind": "character",
+            "model": "character-d",
+            "anim": "sprint",
+            "label": "20 ms"
+          },
+          {
+            "kind": "character",
+            "model": "character-k",
+            "anim": "no",
+            "label": "120 ms"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cable",
+      "narration": "Un cable de red y un servidor cercano bajan tu ping a la mitad.",
+      "title": {
+        "kicker": "La solución",
+        "main": "cable y cerca"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "gear",
+            "label": "Cable"
+          },
+          {
+            "kind": "globe",
+            "label": "Servidor cerca"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Menos ping, menos excusas. Síguenos para más trucos.",
+      "title": {
+        "kicker": "Menos ping",
+        "main": "más victorias"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "character",
+            "model": "character-a",
+            "anim": "yes",
+            "label": "Victoria",
+            "highlight": true
+          }
+        ]
+      }
+    }
+  ]
+}

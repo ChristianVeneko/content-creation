@@ -1,0 +1,321 @@
+{
+  "version": 1,
+  "title": "Última hora: caída mundial de NubeX",
+  "template": "broadcast",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "estado",
+        "type": "chip",
+        "value": "CAÍDA",
+        "color": "accent"
+      },
+      {
+        "id": "hora",
+        "type": "label",
+        "label": "Hora",
+        "value": "09:12"
+      },
+      {
+        "id": "serv",
+        "type": "bar",
+        "label": "Servicio",
+        "value": 0.1,
+        "color": "accent2"
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Última hora. NubeX, el proveedor de nube ficticio de este ejemplo, sufre una caída mundial.",
+      "title": {
+        "kicker": "Última hora",
+        "main": "NubeX se cae en todo el mundo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "cloud-x",
+            "size": "l",
+            "color": "accent"
+          },
+          {
+            "type": "stamp",
+            "text": "en curso"
+          }
+        ]
+      }
+    },
+    {
+      "id": "alcance",
+      "narration": "Miles de apps dejan de responder: tiendas, bancos y videojuegos.",
+      "title": {
+        "kicker": "Alcance",
+        "main": "Miles de apps sin servicio"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 4200,
+            "label": "apps afectadas",
+            "id": "n"
+          },
+          {
+            "type": "badge",
+            "text": "tiendas, bancos, juegos",
+            "icon": "warning"
+          }
+        ]
+      },
+      "hud": {
+        "hora": {
+          "value": "09:20"
+        }
+      }
+    },
+    {
+      "id": "cronologia",
+      "narration": "El fallo empezó a las nueve y doce, en una región, y en veinte minutos se extendió.",
+      "title": {
+        "kicker": "Cronología",
+        "main": "De una región al mundo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "steps": [
+              {
+                "label": "09:12",
+                "sub": "falla una región"
+              },
+              {
+                "label": "09:20",
+                "sub": "errores en cadena"
+              },
+              {
+                "label": "09:32",
+                "sub": "caída global"
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "hora": {
+          "value": "09:32"
+        },
+        "serv": {
+          "value": 0.05
+        }
+      }
+    },
+    {
+      "id": "causa",
+      "narration": "La empresa apunta a un cambio de configuración en su red interna.",
+      "title": {
+        "kicker": "La causa",
+        "main": "Un cambio de configuración"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "doc",
+            "title": "comunicado.txt",
+            "lines": [
+              "Detectamos un cambio de red",
+              "Revertimos la configuración",
+              "Sin pérdida de datos"
+            ],
+            "stamp": "oficial"
+          }
+        ]
+      },
+      "hud": {
+        "hora": {
+          "value": "10:05"
+        }
+      }
+    },
+    {
+      "id": "reaccion",
+      "narration": "Los desarrolladores reaccionan en redes: muchos no tenían plan de respaldo.",
+      "title": {
+        "kicker": "Reacciones",
+        "main": "Nadie tenía plan B"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "chat",
+            "messages": [
+              {
+                "role": "user",
+                "text": "Toda nuestra tienda está caída"
+              },
+              {
+                "role": "assistant",
+                "text": "Y nuestro respaldo estaba en la misma nube"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "impacto",
+      "narration": "Cada hora sin servicio cuesta dinero: estas son las pérdidas estimadas por sector.",
+      "title": {
+        "kicker": "Impacto",
+        "main": "Pérdidas por hora"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "unit": "M",
+            "items": [
+              {
+                "label": "comercio",
+                "value": 38
+              },
+              {
+                "label": "banca",
+                "value": 25
+              },
+              {
+                "label": "juegos",
+                "value": 12
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "serv": {
+          "value": 0.3
+        }
+      }
+    },
+    {
+      "id": "recupera",
+      "narration": "A las once el servicio vuelve poco a poco, región por región.",
+      "title": {
+        "kicker": "Recuperación",
+        "main": "El servicio vuelve"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              {
+                "text": "América",
+                "state": "check"
+              },
+              {
+                "text": "Europa",
+                "state": "check"
+              },
+              {
+                "text": "Asia",
+                "state": "todo"
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "estado": {
+          "value": "PARCIAL",
+          "color": "accent2"
+        },
+        "hora": {
+          "value": "11:00"
+        },
+        "serv": {
+          "value": 0.7
+        }
+      }
+    },
+    {
+      "id": "leccion",
+      "narration": "La lección: no pongas todo en una sola nube ni en una sola región.",
+      "title": {
+        "kicker": "Qué aprender",
+        "main": "No todo en una nube"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Una región",
+              "items": [
+                "un fallo, todo cae"
+              ]
+            },
+            "right": {
+              "title": "Multi región",
+              "items": [
+                "un fallo, sigues vivo"
+              ]
+            },
+            "winner": "right"
+          }
+        ]
+      },
+      "hud": {
+        "serv": {
+          "value": 0.9
+        }
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Seguiremos informando. Sigue la cuenta para la próxima actualización.",
+      "title": {
+        "kicker": "En vivo",
+        "main": "Seguiremos informando"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "badge",
+            "text": "sigue para más",
+            "icon": "bell-ringing"
+          },
+          {
+            "type": "stamp",
+            "text": "resuelto"
+          }
+        ]
+      },
+      "hud": {
+        "estado": {
+          "value": "RESUELTO",
+          "color": "accent3"
+        },
+        "serv": {
+          "value": 1
+        }
+      }
+    }
+  ],
+  "brand": {
+    "handle": "@estudio"
+  }
+}

@@ -1,0 +1,312 @@
+{
+  "version": 1,
+  "title": "Tu primera API con Node en 5 pasos",
+  "template": "editor-window",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "step",
+        "type": "chip",
+        "value": "0/5"
+      },
+      {
+        "id": "prog",
+        "type": "bar",
+        "label": "progreso",
+        "value": 0
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Vamos a crear una API real con Node en cinco pasos y menos de veinte líneas.",
+      "title": {
+        "kicker": "api.js",
+        "main": "Una API en 20 líneas"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "terminal",
+            "title": "zsh",
+            "lines": [
+              "$ curl localhost:3000/hola",
+              "{\"mensaje\":\"hola mundo\"}"
+            ]
+          },
+          {
+            "type": "badge",
+            "text": "Node + Express",
+            "icon": "lightning"
+          }
+        ]
+      }
+    },
+    {
+      "id": "init",
+      "narration": "Paso uno: crea la carpeta e inicia el proyecto con npm.",
+      "title": {
+        "kicker": "zsh",
+        "main": "Inicia el proyecto",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "terminal",
+            "title": "zsh",
+            "lines": [
+              "$ mkdir mi-api && cd mi-api",
+              "$ npm init -y",
+              "Wrote to package.json"
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "step": {
+          "value": "1/5"
+        },
+        "prog": {
+          "value": 0.2
+        }
+      }
+    },
+    {
+      "id": "install",
+      "narration": "Paso dos: instala Express, el framework web más usado en Node.",
+      "title": {
+        "kicker": "zsh",
+        "main": "Instala Express",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "terminal",
+            "title": "zsh",
+            "lines": [
+              "$ npm install express",
+              "added 64 packages in 2s"
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "e",
+            "shape": "underline",
+            "label": "una dependencia"
+          },
+          {
+            "type": "badge",
+            "id": "e",
+            "text": "express 4"
+          }
+        ]
+      },
+      "hud": {
+        "step": {
+          "value": "2/5"
+        },
+        "prog": {
+          "value": 0.4
+        }
+      }
+    },
+    {
+      "id": "server",
+      "narration": "Paso tres: crea el servidor en api punto js.",
+      "title": {
+        "kicker": "api.js",
+        "main": "Crea el servidor",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "code",
+            "title": "api.js",
+            "lines": [
+              "import express from \"express\";",
+              "const app = express();",
+              "",
+              "app.listen(3000);"
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "step": {
+          "value": "3/5"
+        },
+        "prog": {
+          "value": 0.6
+        }
+      }
+    },
+    {
+      "id": "ruta",
+      "narration": "Paso cuatro: añade una ruta que responda con JSON.",
+      "title": {
+        "kicker": "api.js",
+        "main": "Añade una ruta",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "code",
+            "title": "api.js",
+            "id": "c",
+            "lines": [
+              "const app = express();",
+              "+ app.get(\"/hola\", (req, res) => {",
+              "+   res.json({ mensaje: \"hola mundo\" });",
+              "+ });",
+              "app.listen(3000);"
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "c",
+            "shape": "box",
+            "label": "3 líneas nuevas"
+          }
+        ]
+      },
+      "hud": {
+        "step": {
+          "value": "4/5"
+        },
+        "prog": {
+          "value": 0.8
+        }
+      }
+    },
+    {
+      "id": "error",
+      "narration": "Un error típico: olvidar el tipo módulo en package punto json para usar import.",
+      "title": {
+        "kicker": "package.json",
+        "main": "Arregla el import"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "code",
+            "title": "package.json",
+            "lines": [
+              "{",
+              "-   \"type\": \"commonjs\",",
+              "+   \"type\": \"module\",",
+              "  \"main\": \"api.js\"",
+              "}"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "run",
+      "narration": "Paso cinco: arranca el servidor y pruébalo con curl.",
+      "title": {
+        "kicker": "zsh",
+        "main": "Arranca y prueba",
+        "number": 5
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "terminal",
+            "title": "zsh",
+            "lines": [
+              "$ node api.js",
+              "$ curl localhost:3000/hola",
+              "{\"mensaje\":\"hola mundo\"}"
+            ]
+          },
+          {
+            "type": "stamp",
+            "text": "funciona"
+          }
+        ]
+      },
+      "hud": {
+        "step": {
+          "value": "5/5"
+        },
+        "prog": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "siguiente",
+      "narration": "¿Y ahora? Añade más rutas, valida datos y despliega.",
+      "title": {
+        "kicker": "TODO.md",
+        "main": "Siguientes pasos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "title": "TODO.md",
+            "items": [
+              {
+                "text": "más rutas: POST y DELETE",
+                "state": "todo"
+              },
+              {
+                "text": "validar el body",
+                "state": "todo"
+              },
+              {
+                "text": "desplegar en la nube",
+                "state": "todo"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Cinco pasos, una API funcionando. Guarda el video y sígueme para la parte dos.",
+      "title": {
+        "kicker": "resumen",
+        "main": "API lista en 5 pasos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              "init",
+              "express",
+              "servidor",
+              "ruta",
+              "curl"
+            ]
+          },
+          {
+            "type": "badge",
+            "text": "parte 2 pronto",
+            "icon": "arrow-right"
+          }
+        ]
+      }
+    }
+  ]
+}

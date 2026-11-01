@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "title": "Tres hábitos para concentrarte mejor",
+  "template": "soft-gradient",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "foco",
+        "type": "bar",
+        "label": "Foco",
+        "value": 0.3,
+        "color": "accent"
+      },
+      {
+        "id": "dia",
+        "type": "chip",
+        "value": "DÍA 1",
+        "color": "accent2"
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tres hábitos simples para concentrarte mejor, sin apps raras.",
+      "title": {
+        "kicker": "Guía corta",
+        "main": "Concéntrate mejor"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stat",
+            "value": "3 hábitos",
+            "label": "sin apps raras"
+          }
+        ]
+      }
+    },
+    {
+      "id": "uno",
+      "narration": "Uno: trabaja en bloques de veinticinco minutos.",
+      "title": {
+        "kicker": "Hábito 1",
+        "main": "Bloques cortos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timer",
+            "text": "25:00",
+            "label": "un bloque",
+            "clock": true
+          }
+        ]
+      },
+      "hud": {
+        "foco": {
+          "value": 0.45
+        }
+      }
+    },
+    {
+      "id": "dos",
+      "narration": "Dos: deja el teléfono en otra habitación.",
+      "title": {
+        "kicker": "Hábito 2",
+        "main": "Teléfono lejos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "Fuera de la vista",
+            "body": [
+              "otra habitación",
+              "modo avión"
+            ],
+            "icon": "device-mobile-slash"
+          }
+        ]
+      },
+      "hud": {
+        "foco": {
+          "value": 0.6
+        }
+      }
+    },
+    {
+      "id": "tres",
+      "narration": "Tres: escribe una sola tarea antes de empezar.",
+      "title": {
+        "kicker": "Hábito 3",
+        "main": "Una sola tarea"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              {
+                "text": "Escribe la tarea",
+                "state": "check"
+              },
+              {
+                "text": "Cierra pestañas",
+                "state": "check"
+              },
+              {
+                "text": "Empieza",
+                "state": "todo"
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "foco": {
+          "value": 0.75
+        }
+      }
+    },
+    {
+      "id": "compara",
+      "narration": "Con y sin estos hábitos, la diferencia se nota en horas.",
+      "title": {
+        "kicker": "Antes y después",
+        "main": "Horas de foco"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "chart",
+            "unit": "h",
+            "items": [
+              {
+                "label": "Antes",
+                "value": 2
+              },
+              {
+                "label": "Después",
+                "value": 5,
+                "expected": 4
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "energia",
+      "narration": "Tu energía también cuenta: descansa cinco minutos entre bloques.",
+      "title": {
+        "kicker": "No te olvides",
+        "main": "Recarga energía"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "meter",
+            "shape": "gauge",
+            "value": 80,
+            "label": "energía"
+          }
+        ]
+      },
+      "hud": {
+        "dia": {
+          "value": "DÍA 7"
+        }
+      }
+    },
+    {
+      "id": "elige",
+      "narration": "¿Por dónde empezar? Elige el hábito que te cueste menos.",
+      "title": {
+        "kicker": "Elige uno",
+        "main": "Empieza fácil"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "panels",
+            "items": [
+              {
+                "title": "Bloques cortos",
+                "icon": "timer",
+                "tag": "fácil",
+                "color": "accent3"
+              },
+              {
+                "title": "Teléfono lejos",
+                "icon": "device-mobile",
+                "tag": "medio",
+                "color": "accent"
+              },
+              {
+                "title": "Una tarea",
+                "icon": "list-checks",
+                "tag": "fácil",
+                "color": "accent2"
+              }
+            ],
+            "winner": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Guarda esto y pruébalo mañana.",
+      "title": {
+        "kicker": "Para mañana",
+        "main": "Guárdalo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "badge",
+            "text": "guárdalo",
+            "icon": "bookmark-simple"
+          }
+        ]
+      },
+      "hud": {
+        "foco": {
+          "value": 1
+        }
+      }
+    }
+  ],
+  "brand": {
+    "handle": "@estudio"
+  }
+}

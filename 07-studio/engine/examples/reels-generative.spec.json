@@ -1,0 +1,2471 @@
+{
+  "version": 1,
+  "title": "Sin abejas no hay comida",
+  "template": "reels-noche",
+  "language": "es",
+  "voice": {
+    "provider": "none"
+  },
+  "reels": {
+    "subtitles": "linea",
+    "cover": {
+      "etiqueta": "NATURALEZA",
+      "lineas": [
+        "SIN ABEJAS",
+        "*NO COMES*"
+      ],
+      "icono": "leaf",
+      "pegatina": "dato real"
+    }
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Sin *abejas*, perderías un tercio de lo que comes.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "headline",
+          "etiqueta": "SABIAS QUE",
+          "texto": "Sin *abejas* / sin comida",
+          "icono": {
+            "viewBox": "20 40 360 320",
+            "parts": [
+              {
+                "id": "wing-b",
+                "shape": "ellipse",
+                "cx": 250,
+                "cy": 112,
+                "rx": 38,
+                "ry": 60,
+                "rot": 22,
+                "fill": "#FFFFFF",
+                "opacity": 0.85,
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  232,
+                  160
+                ],
+                "motion": [
+                  {
+                    "type": "wiggle",
+                    "amp": 16,
+                    "speed": 4
+                  }
+                ]
+              },
+              {
+                "id": "wing-f",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 104,
+                "rx": 42,
+                "ry": 64,
+                "rot": -24,
+                "fill": "#FFFFFF",
+                "opacity": 0.9,
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  214,
+                  160
+                ],
+                "motion": [
+                  {
+                    "type": "wiggle",
+                    "amp": 18,
+                    "speed": 4.4
+                  }
+                ]
+              },
+              {
+                "id": "sting",
+                "shape": "polygon",
+                "points": [
+                  [
+                    300,
+                    218
+                  ],
+                  [
+                    344,
+                    232
+                  ],
+                  [
+                    300,
+                    248
+                  ]
+                ],
+                "fill": "ink"
+              },
+              {
+                "id": "body",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 232,
+                "rx": 108,
+                "ry": 88,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 8
+              },
+              {
+                "id": "stripe-1",
+                "shape": "path",
+                "d": "M182 148 Q197 142 212 146 L212 318 Q197 322 182 316 Z",
+                "fill": "#2A2340",
+                "parent": "body"
+              },
+              {
+                "id": "stripe-2",
+                "shape": "path",
+                "d": "M244 152 Q258 158 270 166 L270 298 Q258 306 244 312 Z",
+                "fill": "#2A2340",
+                "parent": "body"
+              },
+              {
+                "id": "head",
+                "shape": "circle",
+                "cx": 112,
+                "cy": 214,
+                "r": 66,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 8
+              },
+              {
+                "id": "ant-l",
+                "shape": "path",
+                "d": "M92 156 Q78 116 58 104",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 7,
+                "origin": [
+                  92,
+                  156
+                ],
+                "parent": "head",
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 10,
+                    "speed": 1.4
+                  }
+                ]
+              },
+              {
+                "id": "ant-l-tip",
+                "shape": "circle",
+                "cx": 56,
+                "cy": 102,
+                "r": 10,
+                "fill": "ink",
+                "parent": "ant-l"
+              },
+              {
+                "id": "ant-r",
+                "shape": "path",
+                "d": "M128 152 Q136 110 154 94",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 7,
+                "origin": [
+                  128,
+                  152
+                ],
+                "parent": "head",
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 10,
+                    "speed": 1.1
+                  }
+                ]
+              },
+              {
+                "id": "ant-r-tip",
+                "shape": "circle",
+                "cx": 156,
+                "cy": 92,
+                "r": 10,
+                "fill": "ink",
+                "parent": "ant-r"
+              },
+              {
+                "id": "eye-l",
+                "shape": "ellipse",
+                "cx": 92,
+                "cy": 206,
+                "rx": 11,
+                "ry": 15,
+                "fill": "ink",
+                "parent": "head"
+              },
+              {
+                "id": "eye-r",
+                "shape": "ellipse",
+                "cx": 132,
+                "cy": 204,
+                "rx": 11,
+                "ry": 15,
+                "fill": "ink",
+                "parent": "head"
+              },
+              {
+                "id": "glint-l",
+                "shape": "circle",
+                "cx": 96,
+                "cy": 200,
+                "r": 4,
+                "fill": "#FFFFFF",
+                "parent": "eye-l"
+              },
+              {
+                "id": "glint-r",
+                "shape": "circle",
+                "cx": 136,
+                "cy": 198,
+                "r": 4,
+                "fill": "#FFFFFF",
+                "parent": "eye-r"
+              },
+              {
+                "id": "smile",
+                "shape": "path",
+                "d": "M94 236 Q112 254 132 236",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "head"
+              },
+              {
+                "id": "cheek",
+                "shape": "ellipse",
+                "cx": 150,
+                "cy": 232,
+                "rx": 12,
+                "ry": 7,
+                "fill": "bad",
+                "opacity": 0.45,
+                "parent": "head"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              },
+              {
+                "type": "float",
+                "amp": 10
+              }
+            ]
+          },
+          "en": [
+            "abejas"
+          ],
+          "sinSubtitulos": true
+        },
+        "fx": [
+          {
+            "type": "sparkles",
+            "at": "abejas",
+            "y": 0.55,
+            "x": 0.5,
+            "count": 12
+          },
+          {
+            "type": "zoom-punch",
+            "at": "tercio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "abi",
+      "narration": "Te presento a *Abi*, una abeja obrera que nunca deja de trabajar.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "dibujo",
+          "dibujo": {
+            "id": "abi",
+            "viewBox": "20 40 360 320",
+            "parts": [
+              {
+                "id": "wing-b",
+                "shape": "ellipse",
+                "cx": 250,
+                "cy": 112,
+                "rx": 38,
+                "ry": 60,
+                "rot": 22,
+                "fill": "#FFFFFF",
+                "opacity": 0.85,
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  232,
+                  160
+                ],
+                "motion": [
+                  {
+                    "type": "wiggle",
+                    "amp": 16,
+                    "speed": 4
+                  }
+                ]
+              },
+              {
+                "id": "wing-f",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 104,
+                "rx": 42,
+                "ry": 64,
+                "rot": -24,
+                "fill": "#FFFFFF",
+                "opacity": 0.9,
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  214,
+                  160
+                ],
+                "motion": [
+                  {
+                    "type": "wiggle",
+                    "amp": 18,
+                    "speed": 4.4
+                  }
+                ]
+              },
+              {
+                "id": "sting",
+                "shape": "polygon",
+                "points": [
+                  [
+                    300,
+                    218
+                  ],
+                  [
+                    344,
+                    232
+                  ],
+                  [
+                    300,
+                    248
+                  ]
+                ],
+                "fill": "ink"
+              },
+              {
+                "id": "body",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 232,
+                "rx": 108,
+                "ry": 88,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 8
+              },
+              {
+                "id": "stripe-1",
+                "shape": "path",
+                "d": "M182 148 Q197 142 212 146 L212 318 Q197 322 182 316 Z",
+                "fill": "#2A2340",
+                "parent": "body"
+              },
+              {
+                "id": "stripe-2",
+                "shape": "path",
+                "d": "M244 152 Q258 158 270 166 L270 298 Q258 306 244 312 Z",
+                "fill": "#2A2340",
+                "parent": "body"
+              },
+              {
+                "id": "head",
+                "shape": "circle",
+                "cx": 112,
+                "cy": 214,
+                "r": 66,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 8
+              },
+              {
+                "id": "ant-l",
+                "shape": "path",
+                "d": "M92 156 Q78 116 58 104",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 7,
+                "origin": [
+                  92,
+                  156
+                ],
+                "parent": "head",
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 10,
+                    "speed": 1.4
+                  }
+                ]
+              },
+              {
+                "id": "ant-l-tip",
+                "shape": "circle",
+                "cx": 56,
+                "cy": 102,
+                "r": 10,
+                "fill": "ink",
+                "parent": "ant-l"
+              },
+              {
+                "id": "ant-r",
+                "shape": "path",
+                "d": "M128 152 Q136 110 154 94",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 7,
+                "origin": [
+                  128,
+                  152
+                ],
+                "parent": "head",
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 10,
+                    "speed": 1.1
+                  }
+                ]
+              },
+              {
+                "id": "ant-r-tip",
+                "shape": "circle",
+                "cx": 156,
+                "cy": 92,
+                "r": 10,
+                "fill": "ink",
+                "parent": "ant-r"
+              },
+              {
+                "id": "eye-l",
+                "shape": "ellipse",
+                "cx": 92,
+                "cy": 206,
+                "rx": 11,
+                "ry": 15,
+                "fill": "ink",
+                "parent": "head"
+              },
+              {
+                "id": "eye-r",
+                "shape": "ellipse",
+                "cx": 132,
+                "cy": 204,
+                "rx": 11,
+                "ry": 15,
+                "fill": "ink",
+                "parent": "head"
+              },
+              {
+                "id": "glint-l",
+                "shape": "circle",
+                "cx": 96,
+                "cy": 200,
+                "r": 4,
+                "fill": "#FFFFFF",
+                "parent": "eye-l"
+              },
+              {
+                "id": "glint-r",
+                "shape": "circle",
+                "cx": 136,
+                "cy": 198,
+                "r": 4,
+                "fill": "#FFFFFF",
+                "parent": "eye-r"
+              },
+              {
+                "id": "smile",
+                "shape": "path",
+                "d": "M94 236 Q112 254 132 236",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "head"
+              },
+              {
+                "id": "cheek",
+                "shape": "ellipse",
+                "cx": 150,
+                "cy": 232,
+                "rx": 12,
+                "ry": 7,
+                "fill": "bad",
+                "opacity": 0.45,
+                "parent": "head"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              },
+              {
+                "type": "float",
+                "amp": 10
+              }
+            ]
+          },
+          "texto": "Esta es *Abi*",
+          "en": [
+            "presento",
+            "obrera"
+          ]
+        },
+        "fx": [
+          {
+            "type": "speed-lines",
+            "target": "abi",
+            "at": "nunca",
+            "intensity": 0.5,
+            "depth": "back"
+          },
+          {
+            "type": "burst",
+            "target": "abi/head",
+            "at": "Abi"
+          }
+        ]
+      }
+    },
+    {
+      "id": "flores",
+      "narration": "Cada día visita hasta *5000 flores* buscando néctar.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "counter",
+          "valor": 5000,
+          "desde": 0,
+          "etiqueta": "flores visitadas al día",
+          "icono": {
+            "viewBox": "0 40 400 360",
+            "parts": [
+              {
+                "id": "stem",
+                "shape": "path",
+                "d": "M200 392 Q186 300 200 214",
+                "fill": "none",
+                "stroke": "good",
+                "width": 14
+              },
+              {
+                "id": "leaf",
+                "shape": "path",
+                "d": "M196 318 Q140 296 128 262 Q176 262 196 300 Z",
+                "fill": "good",
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  196,
+                  316
+                ],
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 8
+                  }
+                ]
+              },
+              {
+                "id": "petals",
+                "shape": "group",
+                "origin": [
+                  200,
+                  170
+                ],
+                "motion": [
+                  {
+                    "type": "spin",
+                    "amp": 14
+                  }
+                ]
+              },
+              {
+                "id": "petal-0",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 0,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-1",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 60,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-2",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 120,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-3",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 180,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-4",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 240,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-5",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 300,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "center",
+                "shape": "circle",
+                "cx": 200,
+                "cy": 170,
+                "r": 46,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 7
+              },
+              {
+                "id": "f-eye-l",
+                "shape": "ellipse",
+                "cx": 184,
+                "cy": 164,
+                "rx": 7,
+                "ry": 10,
+                "fill": "ink",
+                "parent": "center"
+              },
+              {
+                "id": "f-eye-r",
+                "shape": "ellipse",
+                "cx": 216,
+                "cy": 164,
+                "rx": 7,
+                "ry": 10,
+                "fill": "ink",
+                "parent": "center"
+              },
+              {
+                "id": "f-smile",
+                "shape": "path",
+                "d": "M184 184 Q200 198 216 184",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 5,
+                "parent": "center"
+              }
+            ],
+            "motion": [
+              {
+                "type": "sway",
+                "amp": 3
+              },
+              {
+                "type": "blink",
+                "parts": [
+                  "f-eye-l",
+                  "f-eye-r"
+                ]
+              }
+            ]
+          },
+          "en": [
+            "visita",
+            "flores"
+          ]
+        },
+        "fx": [
+          {
+            "type": "leaves",
+            "depth": "back",
+            "intensity": 0.5
+          },
+          {
+            "type": "flash",
+            "at": "flores",
+            "intensity": 0.35
+          }
+        ]
+      }
+    },
+    {
+      "id": "polen",
+      "narration": "En cada flor se lleva *polen* y lo reparte en la siguiente.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "dibujo",
+          "dibujo": {
+            "viewBox": "-10 -10 420 410",
+            "parts": [
+              {
+                "id": "stem",
+                "shape": "path",
+                "d": "M200 392 Q186 300 200 214",
+                "fill": "none",
+                "stroke": "good",
+                "width": 14
+              },
+              {
+                "id": "leaf",
+                "shape": "path",
+                "d": "M196 318 Q140 296 128 262 Q176 262 196 300 Z",
+                "fill": "good",
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  196,
+                  316
+                ],
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 8
+                  }
+                ]
+              },
+              {
+                "id": "petals",
+                "shape": "group",
+                "origin": [
+                  200,
+                  170
+                ],
+                "motion": [
+                  {
+                    "type": "spin",
+                    "amp": 14
+                  }
+                ]
+              },
+              {
+                "id": "petal-0",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 0,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-1",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 60,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-2",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 120,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-3",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 180,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-4",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 240,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "petal-5",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 104,
+                "rx": 40,
+                "ry": 56,
+                "rot": 300,
+                "origin": [
+                  200,
+                  170
+                ],
+                "fill": "accent2",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "petals"
+              },
+              {
+                "id": "center",
+                "shape": "circle",
+                "cx": 200,
+                "cy": 170,
+                "r": 46,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 7
+              },
+              {
+                "id": "f-eye-l",
+                "shape": "ellipse",
+                "cx": 184,
+                "cy": 164,
+                "rx": 7,
+                "ry": 10,
+                "fill": "ink",
+                "parent": "center"
+              },
+              {
+                "id": "f-eye-r",
+                "shape": "ellipse",
+                "cx": 216,
+                "cy": 164,
+                "rx": 7,
+                "ry": 10,
+                "fill": "ink",
+                "parent": "center"
+              },
+              {
+                "id": "f-smile",
+                "shape": "path",
+                "d": "M184 184 Q200 198 216 184",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 5,
+                "parent": "center"
+              },
+              {
+                "id": "pollen-0",
+                "shape": "circle",
+                "cx": 176,
+                "cy": 140,
+                "r": 6,
+                "fill": "#FFF4C2",
+                "stroke": "ink",
+                "width": 3
+              },
+              {
+                "id": "pollen-1",
+                "shape": "circle",
+                "cx": 228,
+                "cy": 146,
+                "r": 6,
+                "fill": "#FFF4C2",
+                "stroke": "ink",
+                "width": 3
+              },
+              {
+                "id": "pollen-2",
+                "shape": "circle",
+                "cx": 214,
+                "cy": 202,
+                "r": 6,
+                "fill": "#FFF4C2",
+                "stroke": "ink",
+                "width": 3
+              },
+              {
+                "id": "pollen-3",
+                "shape": "circle",
+                "cx": 168,
+                "cy": 196,
+                "r": 6,
+                "fill": "#FFF4C2",
+                "stroke": "ink",
+                "width": 3
+              },
+              {
+                "id": "pollen-4",
+                "shape": "circle",
+                "cx": 242,
+                "cy": 180,
+                "r": 6,
+                "fill": "#FFF4C2",
+                "stroke": "ink",
+                "width": 3
+              },
+              {
+                "id": "pollen-5",
+                "shape": "circle",
+                "cx": 190,
+                "cy": 122,
+                "r": 6,
+                "fill": "#FFF4C2",
+                "stroke": "ink",
+                "width": 3
+              },
+              {
+                "id": "bee",
+                "shape": "group",
+                "pos": [
+                  118,
+                  -118
+                ],
+                "scale": 0.4,
+                "origin": [
+                  200,
+                  230
+                ],
+                "motion": [
+                  {
+                    "type": "orbit",
+                    "amp": 22,
+                    "speed": 1.2
+                  },
+                  {
+                    "type": "bob",
+                    "amp": 8
+                  }
+                ]
+              },
+              {
+                "id": "b-wing-b",
+                "shape": "ellipse",
+                "cx": 250,
+                "cy": 112,
+                "rx": 38,
+                "ry": 60,
+                "rot": 22,
+                "fill": "#FFFFFF",
+                "opacity": 0.85,
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  232,
+                  160
+                ],
+                "motion": [
+                  {
+                    "type": "wiggle",
+                    "amp": 16,
+                    "speed": 4
+                  }
+                ],
+                "parent": "bee"
+              },
+              {
+                "id": "b-wing-f",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 104,
+                "rx": 42,
+                "ry": 64,
+                "rot": -24,
+                "fill": "#FFFFFF",
+                "opacity": 0.9,
+                "stroke": "ink",
+                "width": 6,
+                "origin": [
+                  214,
+                  160
+                ],
+                "motion": [
+                  {
+                    "type": "wiggle",
+                    "amp": 18,
+                    "speed": 4.4
+                  }
+                ],
+                "parent": "bee"
+              },
+              {
+                "id": "b-sting",
+                "shape": "polygon",
+                "points": [
+                  [
+                    300,
+                    218
+                  ],
+                  [
+                    344,
+                    232
+                  ],
+                  [
+                    300,
+                    248
+                  ]
+                ],
+                "fill": "ink",
+                "parent": "bee"
+              },
+              {
+                "id": "b-body",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 232,
+                "rx": 108,
+                "ry": 88,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 8,
+                "parent": "bee"
+              },
+              {
+                "id": "b-stripe-1",
+                "shape": "path",
+                "d": "M182 148 Q197 142 212 146 L212 318 Q197 322 182 316 Z",
+                "fill": "#2A2340",
+                "parent": "b-body"
+              },
+              {
+                "id": "b-stripe-2",
+                "shape": "path",
+                "d": "M244 152 Q258 158 270 166 L270 298 Q258 306 244 312 Z",
+                "fill": "#2A2340",
+                "parent": "b-body"
+              },
+              {
+                "id": "b-head",
+                "shape": "circle",
+                "cx": 112,
+                "cy": 214,
+                "r": 66,
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 8,
+                "parent": "bee"
+              },
+              {
+                "id": "b-ant-l",
+                "shape": "path",
+                "d": "M92 156 Q78 116 58 104",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 7,
+                "origin": [
+                  92,
+                  156
+                ],
+                "parent": "b-head",
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 10,
+                    "speed": 1.4
+                  }
+                ]
+              },
+              {
+                "id": "b-ant-l-tip",
+                "shape": "circle",
+                "cx": 56,
+                "cy": 102,
+                "r": 10,
+                "fill": "ink",
+                "parent": "b-ant-l"
+              },
+              {
+                "id": "b-ant-r",
+                "shape": "path",
+                "d": "M128 152 Q136 110 154 94",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 7,
+                "origin": [
+                  128,
+                  152
+                ],
+                "parent": "b-head",
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 10,
+                    "speed": 1.1
+                  }
+                ]
+              },
+              {
+                "id": "b-ant-r-tip",
+                "shape": "circle",
+                "cx": 156,
+                "cy": 92,
+                "r": 10,
+                "fill": "ink",
+                "parent": "b-ant-r"
+              },
+              {
+                "id": "b-eye-l",
+                "shape": "ellipse",
+                "cx": 92,
+                "cy": 206,
+                "rx": 11,
+                "ry": 15,
+                "fill": "ink",
+                "parent": "b-head"
+              },
+              {
+                "id": "b-eye-r",
+                "shape": "ellipse",
+                "cx": 132,
+                "cy": 204,
+                "rx": 11,
+                "ry": 15,
+                "fill": "ink",
+                "parent": "b-head"
+              },
+              {
+                "id": "b-glint-l",
+                "shape": "circle",
+                "cx": 96,
+                "cy": 200,
+                "r": 4,
+                "fill": "#FFFFFF",
+                "parent": "b-eye-l"
+              },
+              {
+                "id": "b-glint-r",
+                "shape": "circle",
+                "cx": 136,
+                "cy": 198,
+                "r": 4,
+                "fill": "#FFFFFF",
+                "parent": "b-eye-r"
+              },
+              {
+                "id": "b-smile",
+                "shape": "path",
+                "d": "M94 236 Q112 254 132 236",
+                "fill": "none",
+                "stroke": "ink",
+                "width": 6,
+                "parent": "b-head"
+              },
+              {
+                "id": "b-cheek",
+                "shape": "ellipse",
+                "cx": 150,
+                "cy": 232,
+                "rx": 12,
+                "ry": 7,
+                "fill": "bad",
+                "opacity": 0.45,
+                "parent": "b-head"
+              }
+            ],
+            "motion": [
+              {
+                "type": "sway",
+                "amp": 3
+              },
+              {
+                "type": "pop-in",
+                "at": "polen",
+                "parts": [
+                  "pollen-0",
+                  "pollen-1",
+                  "pollen-2",
+                  "pollen-3",
+                  "pollen-4",
+                  "pollen-5"
+                ]
+              },
+              {
+                "type": "blink",
+                "parts": [
+                  "f-eye-l",
+                  "f-eye-r"
+                ]
+              },
+              {
+                "type": "blink",
+                "parts": [
+                  "b-eye-l",
+                  "b-eye-r"
+                ]
+              }
+            ],
+            "id": "flor"
+          },
+          "etiqueta": "POLINIZAR",
+          "texto": "Lleva *polen*",
+          "en": [
+            "cada",
+            "polen"
+          ],
+          "entrada": "semitono"
+        },
+        "fx": [
+          {
+            "type": "sparkles",
+            "target": "flor/center",
+            "at": "polen",
+            "count": 14
+          },
+          {
+            "type": "burst",
+            "target": "flor/center",
+            "at": "reparte",
+            "count": 16
+          }
+        ]
+      }
+    },
+    {
+      "id": "manzana",
+      "narration": "Sin abejas, la manzana sale *pequeña*; con ellas, sale *grande*.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "compare",
+          "izquierda": {
+            "titulo": "Sin abejas",
+            "texto": "pequeña y deforme",
+            "icono": {
+              "viewBox": "-10 -10 420 420",
+              "parts": [
+                {
+                  "id": "body",
+                  "shape": "path",
+                  "d": "M200 128 C150 88 70 118 76 206 C82 300 152 352 200 332 C248 352 318 300 324 206 C330 118 250 88 200 128 Z",
+                  "fill": "muted",
+                  "stroke": "ink",
+                  "width": 8
+                },
+                {
+                  "id": "shine",
+                  "shape": "ellipse",
+                  "cx": 136,
+                  "cy": 182,
+                  "rx": 16,
+                  "ry": 32,
+                  "rot": 18,
+                  "fill": "#FFFFFF",
+                  "opacity": 0.55,
+                  "parent": "body"
+                },
+                {
+                  "id": "stalk",
+                  "shape": "path",
+                  "d": "M200 128 Q204 96 218 76",
+                  "fill": "none",
+                  "stroke": "#6B4423",
+                  "width": 11
+                },
+                {
+                  "id": "leaf",
+                  "shape": "ellipse",
+                  "cx": 246,
+                  "cy": 92,
+                  "rx": 30,
+                  "ry": 13,
+                  "rot": -24,
+                  "fill": "good",
+                  "stroke": "ink",
+                  "width": 5,
+                  "origin": [
+                    220,
+                    96
+                  ],
+                  "motion": [
+                    {
+                      "type": "sway",
+                      "amp": 10
+                    }
+                  ]
+                },
+                {
+                  "id": "eye-l",
+                  "shape": "ellipse",
+                  "cx": 172,
+                  "cy": 214,
+                  "rx": 10,
+                  "ry": 14,
+                  "fill": "ink",
+                  "parent": "body"
+                },
+                {
+                  "id": "eye-r",
+                  "shape": "ellipse",
+                  "cx": 228,
+                  "cy": 214,
+                  "rx": 10,
+                  "ry": 14,
+                  "fill": "ink",
+                  "parent": "body"
+                },
+                {
+                  "id": "mouth",
+                  "shape": "path",
+                  "d": "M178 276 Q200 258 222 276",
+                  "fill": "none",
+                  "stroke": "ink",
+                  "width": 7,
+                  "parent": "body"
+                }
+              ],
+              "motion": [
+                {
+                  "type": "blink",
+                  "parts": [
+                    "eye-l",
+                    "eye-r"
+                  ]
+                },
+                {
+                  "type": "wiggle",
+                  "amp": 3
+                }
+              ]
+            }
+          },
+          "derecha": {
+            "titulo": "Con abejas",
+            "texto": "grande y redonda",
+            "icono": {
+              "viewBox": "40 40 320 320",
+              "parts": [
+                {
+                  "id": "body",
+                  "shape": "path",
+                  "d": "M200 128 C150 88 70 118 76 206 C82 300 152 352 200 332 C248 352 318 300 324 206 C330 118 250 88 200 128 Z",
+                  "fill": "bad",
+                  "stroke": "ink",
+                  "width": 8
+                },
+                {
+                  "id": "shine",
+                  "shape": "ellipse",
+                  "cx": 136,
+                  "cy": 182,
+                  "rx": 16,
+                  "ry": 32,
+                  "rot": 18,
+                  "fill": "#FFFFFF",
+                  "opacity": 0.55,
+                  "parent": "body"
+                },
+                {
+                  "id": "stalk",
+                  "shape": "path",
+                  "d": "M200 128 Q204 96 218 76",
+                  "fill": "none",
+                  "stroke": "#6B4423",
+                  "width": 11
+                },
+                {
+                  "id": "leaf",
+                  "shape": "ellipse",
+                  "cx": 246,
+                  "cy": 92,
+                  "rx": 30,
+                  "ry": 13,
+                  "rot": -24,
+                  "fill": "good",
+                  "stroke": "ink",
+                  "width": 5,
+                  "origin": [
+                    220,
+                    96
+                  ],
+                  "motion": [
+                    {
+                      "type": "sway",
+                      "amp": 10
+                    }
+                  ]
+                },
+                {
+                  "id": "eye-l",
+                  "shape": "ellipse",
+                  "cx": 172,
+                  "cy": 214,
+                  "rx": 10,
+                  "ry": 14,
+                  "fill": "ink",
+                  "parent": "body"
+                },
+                {
+                  "id": "eye-r",
+                  "shape": "ellipse",
+                  "cx": 228,
+                  "cy": 214,
+                  "rx": 10,
+                  "ry": 14,
+                  "fill": "ink",
+                  "parent": "body"
+                },
+                {
+                  "id": "mouth",
+                  "shape": "path",
+                  "d": "M176 262 Q200 286 224 262",
+                  "fill": "none",
+                  "stroke": "ink",
+                  "width": 7,
+                  "parent": "body"
+                }
+              ],
+              "motion": [
+                {
+                  "type": "blink",
+                  "parts": [
+                    "eye-l",
+                    "eye-r"
+                  ]
+                },
+                {
+                  "type": "pulse",
+                  "at": "grande",
+                  "amp": 0.06
+                }
+              ]
+            }
+          },
+          "ganador": "derecha",
+          "en": [
+            "manzana",
+            "ellas",
+            "grande"
+          ]
+        },
+        "fx": [
+          {
+            "type": "confetti",
+            "at": "grande",
+            "intensity": 0.6
+          },
+          {
+            "type": "shake",
+            "at": "pequeña",
+            "size": 0.6
+          }
+        ]
+      }
+    },
+    {
+      "id": "cultivos",
+      "narration": "*Tres de cada cuatro* cultivos dependen de los polinizadores.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "stats",
+          "filas": [
+            {
+              "valor": 75,
+              "sufijo": " %",
+              "etiqueta": "de cultivos",
+              "detalle": "dependen de polinizadores",
+              "destacar": true
+            }
+          ],
+          "en": [
+            "cuatro"
+          ]
+        },
+        "fx": [
+          {
+            "type": "scribbles",
+            "at": "dependen",
+            "count": 5
+          },
+          {
+            "type": "stars",
+            "depth": "back",
+            "intensity": 0.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "miel",
+      "narration": "En toda su vida, Abi fabrica solo *un doceavo* de cucharadita de miel.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "dibujo",
+          "dibujo": {
+            "id": "tarro",
+            "viewBox": "40 10 320 380",
+            "parts": [
+              {
+                "id": "glass",
+                "shape": "rect",
+                "x": 96,
+                "y": 152,
+                "w": 208,
+                "h": 214,
+                "r": 42,
+                "fill": {
+                  "gradient": [
+                    "#FFC93C",
+                    "#F29E1F"
+                  ],
+                  "angle": 90
+                },
+                "stroke": "ink",
+                "width": 8
+              },
+              {
+                "id": "shine",
+                "shape": "rect",
+                "x": 116,
+                "y": 176,
+                "w": 18,
+                "h": 140,
+                "r": 9,
+                "fill": "#FFFFFF",
+                "opacity": 0.45
+              },
+              {
+                "id": "label",
+                "shape": "rect",
+                "x": 128,
+                "y": 226,
+                "w": 144,
+                "h": 74,
+                "r": 14,
+                "fill": "paper",
+                "stroke": "ink",
+                "width": 5
+              },
+              {
+                "id": "word",
+                "shape": "text",
+                "text": "MIEL",
+                "x": 200,
+                "y": 278,
+                "size": 40,
+                "font": "display",
+                "fill": "ink"
+              },
+              {
+                "id": "lid",
+                "shape": "rect",
+                "x": 84,
+                "y": 112,
+                "w": 232,
+                "h": 52,
+                "r": 16,
+                "fill": "#B86B2B",
+                "stroke": "ink",
+                "width": 7
+              },
+              {
+                "id": "drip",
+                "shape": "path",
+                "d": "M118 160 Q120 196 132 202 Q146 198 148 160 Z",
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 5
+              },
+              {
+                "id": "drop",
+                "shape": "path",
+                "d": "M200 22 Q178 58 182 70 Q190 86 200 86 Q212 86 218 70 Q222 58 200 22 Z",
+                "fill": "#FFC93C",
+                "stroke": "ink",
+                "width": 5,
+                "keys": [
+                  {
+                    "at": "vida",
+                    "y": -30,
+                    "opacity": 0
+                  },
+                  {
+                    "at": "vida+6",
+                    "y": 0,
+                    "opacity": 1,
+                    "ease": "out"
+                  },
+                  {
+                    "at": "doceavo",
+                    "y": 0
+                  },
+                  {
+                    "at": "doceavo+10",
+                    "y": 90,
+                    "opacity": 0,
+                    "ease": "in"
+                  }
+                ]
+              }
+            ],
+            "motion": [
+              {
+                "type": "draw-on",
+                "parts": [
+                  "glass",
+                  "lid",
+                  "label"
+                ]
+              },
+              {
+                "type": "shake",
+                "at": "miel",
+                "amp": 5
+              }
+            ]
+          },
+          "marco": "no",
+          "texto": "Toda una vida: / *una pizca*",
+          "en": [
+            "vida",
+            "doceavo"
+          ]
+        },
+        "fx": [
+          {
+            "type": "ink-splash",
+            "target": "tarro",
+            "at": "doceavo",
+            "color": "#FFC93C",
+            "size": 0.9
+          },
+          {
+            "type": "bubbles",
+            "target": "tarro",
+            "at": "miel",
+            "count": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "ayuda",
+      "narration": "Para ayudarlas: planta flores, evita pesticidas y deja agua.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "list",
+          "titulo": "Como ayudar",
+          "items": [
+            {
+              "texto": "Planta flores",
+              "icono": {
+                "viewBox": "0 40 400 360",
+                "parts": [
+                  {
+                    "id": "stem",
+                    "shape": "path",
+                    "d": "M200 392 Q186 300 200 214",
+                    "fill": "none",
+                    "stroke": "good",
+                    "width": 14
+                  },
+                  {
+                    "id": "leaf",
+                    "shape": "path",
+                    "d": "M196 318 Q140 296 128 262 Q176 262 196 300 Z",
+                    "fill": "good",
+                    "stroke": "ink",
+                    "width": 6,
+                    "origin": [
+                      196,
+                      316
+                    ],
+                    "motion": [
+                      {
+                        "type": "sway",
+                        "amp": 8
+                      }
+                    ]
+                  },
+                  {
+                    "id": "petals",
+                    "shape": "group",
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "motion": [
+                      {
+                        "type": "spin",
+                        "amp": 14
+                      }
+                    ]
+                  },
+                  {
+                    "id": "petal-0",
+                    "shape": "ellipse",
+                    "cx": 200,
+                    "cy": 104,
+                    "rx": 40,
+                    "ry": 56,
+                    "rot": 0,
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "fill": "accent2",
+                    "stroke": "ink",
+                    "width": 6,
+                    "parent": "petals"
+                  },
+                  {
+                    "id": "petal-1",
+                    "shape": "ellipse",
+                    "cx": 200,
+                    "cy": 104,
+                    "rx": 40,
+                    "ry": 56,
+                    "rot": 60,
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "fill": "accent2",
+                    "stroke": "ink",
+                    "width": 6,
+                    "parent": "petals"
+                  },
+                  {
+                    "id": "petal-2",
+                    "shape": "ellipse",
+                    "cx": 200,
+                    "cy": 104,
+                    "rx": 40,
+                    "ry": 56,
+                    "rot": 120,
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "fill": "accent2",
+                    "stroke": "ink",
+                    "width": 6,
+                    "parent": "petals"
+                  },
+                  {
+                    "id": "petal-3",
+                    "shape": "ellipse",
+                    "cx": 200,
+                    "cy": 104,
+                    "rx": 40,
+                    "ry": 56,
+                    "rot": 180,
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "fill": "accent2",
+                    "stroke": "ink",
+                    "width": 6,
+                    "parent": "petals"
+                  },
+                  {
+                    "id": "petal-4",
+                    "shape": "ellipse",
+                    "cx": 200,
+                    "cy": 104,
+                    "rx": 40,
+                    "ry": 56,
+                    "rot": 240,
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "fill": "accent2",
+                    "stroke": "ink",
+                    "width": 6,
+                    "parent": "petals"
+                  },
+                  {
+                    "id": "petal-5",
+                    "shape": "ellipse",
+                    "cx": 200,
+                    "cy": 104,
+                    "rx": 40,
+                    "ry": 56,
+                    "rot": 300,
+                    "origin": [
+                      200,
+                      170
+                    ],
+                    "fill": "accent2",
+                    "stroke": "ink",
+                    "width": 6,
+                    "parent": "petals"
+                  },
+                  {
+                    "id": "center",
+                    "shape": "circle",
+                    "cx": 200,
+                    "cy": 170,
+                    "r": 46,
+                    "fill": "#FFC93C",
+                    "stroke": "ink",
+                    "width": 7
+                  }
+                ],
+                "motion": [
+                  {
+                    "type": "sway",
+                    "amp": 3
+                  }
+                ]
+              }
+            },
+            {
+              "texto": "Evita pesticidas",
+              "icono": "x-circle"
+            },
+            {
+              "texto": "Deja agua",
+              "icono": {
+                "viewBox": "0 0 200 200",
+                "parts": [
+                  {
+                    "id": "d",
+                    "shape": "path",
+                    "d": "M100 18 Q50 92 52 122 Q56 172 100 174 Q144 172 148 122 Q150 92 100 18 Z",
+                    "fill": "accent3",
+                    "stroke": "ink",
+                    "width": 8
+                  },
+                  {
+                    "id": "s",
+                    "shape": "ellipse",
+                    "cx": 80,
+                    "cy": 122,
+                    "rx": 9,
+                    "ry": 20,
+                    "rot": 20,
+                    "fill": "#FFFFFF",
+                    "opacity": 0.6
+                  }
+                ],
+                "motion": [
+                  {
+                    "type": "bob",
+                    "amp": 6
+                  }
+                ]
+              }
+            }
+          ],
+          "en": [
+            "planta",
+            "pesticidas",
+            "agua"
+          ],
+          "entrada": "semitono"
+        },
+        "fx": [
+          {
+            "type": "burst",
+            "at": "agua",
+            "x": 0.5,
+            "y": 0.62,
+            "count": 14
+          },
+          {
+            "type": "light-leak",
+            "intensity": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "cta",
+      "narration": "Comenta *ABEJA* y te mando las flores que más les gustan.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "cta",
+          "palabra": "ABEJA",
+          "verbo": "Comenta",
+          "texto": "y te mando / sus flores",
+          "iconos": [
+            {
+              "viewBox": "20 40 360 320",
+              "parts": [
+                {
+                  "id": "wing-b",
+                  "shape": "ellipse",
+                  "cx": 250,
+                  "cy": 112,
+                  "rx": 38,
+                  "ry": 60,
+                  "rot": 22,
+                  "fill": "#FFFFFF",
+                  "opacity": 0.85,
+                  "stroke": "ink",
+                  "width": 6,
+                  "origin": [
+                    232,
+                    160
+                  ],
+                  "motion": [
+                    {
+                      "type": "wiggle",
+                      "amp": 16,
+                      "speed": 4
+                    }
+                  ]
+                },
+                {
+                  "id": "wing-f",
+                  "shape": "ellipse",
+                  "cx": 205,
+                  "cy": 104,
+                  "rx": 42,
+                  "ry": 64,
+                  "rot": -24,
+                  "fill": "#FFFFFF",
+                  "opacity": 0.9,
+                  "stroke": "ink",
+                  "width": 6,
+                  "origin": [
+                    214,
+                    160
+                  ],
+                  "motion": [
+                    {
+                      "type": "wiggle",
+                      "amp": 18,
+                      "speed": 4.4
+                    }
+                  ]
+                },
+                {
+                  "id": "sting",
+                  "shape": "polygon",
+                  "points": [
+                    [
+                      300,
+                      218
+                    ],
+                    [
+                      344,
+                      232
+                    ],
+                    [
+                      300,
+                      248
+                    ]
+                  ],
+                  "fill": "ink"
+                },
+                {
+                  "id": "body",
+                  "shape": "ellipse",
+                  "cx": 205,
+                  "cy": 232,
+                  "rx": 108,
+                  "ry": 88,
+                  "fill": "#FFC93C",
+                  "stroke": "ink",
+                  "width": 8
+                },
+                {
+                  "id": "stripe-1",
+                  "shape": "path",
+                  "d": "M182 148 Q197 142 212 146 L212 318 Q197 322 182 316 Z",
+                  "fill": "#2A2340",
+                  "parent": "body"
+                },
+                {
+                  "id": "stripe-2",
+                  "shape": "path",
+                  "d": "M244 152 Q258 158 270 166 L270 298 Q258 306 244 312 Z",
+                  "fill": "#2A2340",
+                  "parent": "body"
+                },
+                {
+                  "id": "head",
+                  "shape": "circle",
+                  "cx": 112,
+                  "cy": 214,
+                  "r": 66,
+                  "fill": "#FFC93C",
+                  "stroke": "ink",
+                  "width": 8
+                },
+                {
+                  "id": "ant-l",
+                  "shape": "path",
+                  "d": "M92 156 Q78 116 58 104",
+                  "fill": "none",
+                  "stroke": "ink",
+                  "width": 7,
+                  "origin": [
+                    92,
+                    156
+                  ],
+                  "parent": "head",
+                  "motion": [
+                    {
+                      "type": "sway",
+                      "amp": 10,
+                      "speed": 1.4
+                    }
+                  ]
+                },
+                {
+                  "id": "ant-l-tip",
+                  "shape": "circle",
+                  "cx": 56,
+                  "cy": 102,
+                  "r": 10,
+                  "fill": "ink",
+                  "parent": "ant-l"
+                },
+                {
+                  "id": "ant-r",
+                  "shape": "path",
+                  "d": "M128 152 Q136 110 154 94",
+                  "fill": "none",
+                  "stroke": "ink",
+                  "width": 7,
+                  "origin": [
+                    128,
+                    152
+                  ],
+                  "parent": "head",
+                  "motion": [
+                    {
+                      "type": "sway",
+                      "amp": 10,
+                      "speed": 1.1
+                    }
+                  ]
+                },
+                {
+                  "id": "ant-r-tip",
+                  "shape": "circle",
+                  "cx": 156,
+                  "cy": 92,
+                  "r": 10,
+                  "fill": "ink",
+                  "parent": "ant-r"
+                },
+                {
+                  "id": "eye-l",
+                  "shape": "ellipse",
+                  "cx": 92,
+                  "cy": 206,
+                  "rx": 11,
+                  "ry": 15,
+                  "fill": "ink",
+                  "parent": "head"
+                },
+                {
+                  "id": "eye-r",
+                  "shape": "ellipse",
+                  "cx": 132,
+                  "cy": 204,
+                  "rx": 11,
+                  "ry": 15,
+                  "fill": "ink",
+                  "parent": "head"
+                },
+                {
+                  "id": "glint-l",
+                  "shape": "circle",
+                  "cx": 96,
+                  "cy": 200,
+                  "r": 4,
+                  "fill": "#FFFFFF",
+                  "parent": "eye-l"
+                },
+                {
+                  "id": "glint-r",
+                  "shape": "circle",
+                  "cx": 136,
+                  "cy": 198,
+                  "r": 4,
+                  "fill": "#FFFFFF",
+                  "parent": "eye-r"
+                },
+                {
+                  "id": "smile",
+                  "shape": "path",
+                  "d": "M94 236 Q112 254 132 236",
+                  "fill": "none",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "head"
+                },
+                {
+                  "id": "cheek",
+                  "shape": "ellipse",
+                  "cx": 150,
+                  "cy": 232,
+                  "rx": 12,
+                  "ry": 7,
+                  "fill": "bad",
+                  "opacity": 0.45,
+                  "parent": "head"
+                }
+              ],
+              "motion": [
+                {
+                  "type": "blink",
+                  "parts": [
+                    "eye-l",
+                    "eye-r"
+                  ]
+                },
+                {
+                  "type": "float",
+                  "amp": 10
+                }
+              ]
+            },
+            {
+              "viewBox": "0 40 400 360",
+              "parts": [
+                {
+                  "id": "stem",
+                  "shape": "path",
+                  "d": "M200 392 Q186 300 200 214",
+                  "fill": "none",
+                  "stroke": "good",
+                  "width": 14
+                },
+                {
+                  "id": "leaf",
+                  "shape": "path",
+                  "d": "M196 318 Q140 296 128 262 Q176 262 196 300 Z",
+                  "fill": "good",
+                  "stroke": "ink",
+                  "width": 6,
+                  "origin": [
+                    196,
+                    316
+                  ],
+                  "motion": [
+                    {
+                      "type": "sway",
+                      "amp": 8
+                    }
+                  ]
+                },
+                {
+                  "id": "petals",
+                  "shape": "group",
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "motion": [
+                    {
+                      "type": "spin",
+                      "amp": 14
+                    }
+                  ]
+                },
+                {
+                  "id": "petal-0",
+                  "shape": "ellipse",
+                  "cx": 200,
+                  "cy": 104,
+                  "rx": 40,
+                  "ry": 56,
+                  "rot": 0,
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "fill": "accent2",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "petals"
+                },
+                {
+                  "id": "petal-1",
+                  "shape": "ellipse",
+                  "cx": 200,
+                  "cy": 104,
+                  "rx": 40,
+                  "ry": 56,
+                  "rot": 60,
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "fill": "accent2",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "petals"
+                },
+                {
+                  "id": "petal-2",
+                  "shape": "ellipse",
+                  "cx": 200,
+                  "cy": 104,
+                  "rx": 40,
+                  "ry": 56,
+                  "rot": 120,
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "fill": "accent2",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "petals"
+                },
+                {
+                  "id": "petal-3",
+                  "shape": "ellipse",
+                  "cx": 200,
+                  "cy": 104,
+                  "rx": 40,
+                  "ry": 56,
+                  "rot": 180,
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "fill": "accent2",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "petals"
+                },
+                {
+                  "id": "petal-4",
+                  "shape": "ellipse",
+                  "cx": 200,
+                  "cy": 104,
+                  "rx": 40,
+                  "ry": 56,
+                  "rot": 240,
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "fill": "accent2",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "petals"
+                },
+                {
+                  "id": "petal-5",
+                  "shape": "ellipse",
+                  "cx": 200,
+                  "cy": 104,
+                  "rx": 40,
+                  "ry": 56,
+                  "rot": 300,
+                  "origin": [
+                    200,
+                    170
+                  ],
+                  "fill": "accent2",
+                  "stroke": "ink",
+                  "width": 6,
+                  "parent": "petals"
+                },
+                {
+                  "id": "center",
+                  "shape": "circle",
+                  "cx": 200,
+                  "cy": 170,
+                  "r": 46,
+                  "fill": "#FFC93C",
+                  "stroke": "ink",
+                  "width": 7
+                },
+                {
+                  "id": "f-eye-l",
+                  "shape": "ellipse",
+                  "cx": 184,
+                  "cy": 164,
+                  "rx": 7,
+                  "ry": 10,
+                  "fill": "ink",
+                  "parent": "center"
+                },
+                {
+                  "id": "f-eye-r",
+                  "shape": "ellipse",
+                  "cx": 216,
+                  "cy": 164,
+                  "rx": 7,
+                  "ry": 10,
+                  "fill": "ink",
+                  "parent": "center"
+                },
+                {
+                  "id": "f-smile",
+                  "shape": "path",
+                  "d": "M184 184 Q200 198 216 184",
+                  "fill": "none",
+                  "stroke": "ink",
+                  "width": 5,
+                  "parent": "center"
+                }
+              ],
+              "motion": [
+                {
+                  "type": "sway",
+                  "amp": 3
+                },
+                {
+                  "type": "blink",
+                  "parts": [
+                    "f-eye-l",
+                    "f-eye-r"
+                  ]
+                }
+              ]
+            },
+            "gift"
+          ],
+          "en": [
+            "comenta",
+            "mando",
+            "flores"
+          ],
+          "sinSubtitulos": true
+        },
+        "fx": [
+          {
+            "type": "sparkles",
+            "depth": "back",
+            "intensity": 0.5
+          }
+        ]
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "Sin abejas perderías un tercio de lo que comes. #abejas #naturaleza #ciencia",
+    "instagram": "Abi visita 5000 flores al día. Comenta ABEJA y te mando las flores que más les gustan.\n\n#abejas #polinizadores #naturaleza",
+    "youtube": {
+      "title": "Sin abejas no hay comida #shorts",
+      "description": "Por qué las abejas son clave para tu comida: polinización, cultivos y miel."
+    },
+    "hashtags": [
+      "abejas",
+      "polinizadores",
+      "naturaleza",
+      "ciencia"
+    ]
+  }
+}

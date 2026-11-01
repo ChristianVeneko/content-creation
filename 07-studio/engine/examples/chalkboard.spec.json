@@ -1,0 +1,296 @@
+{
+  "version": 1,
+  "title": "El interés compuesto en 9 pizarras",
+  "template": "chalkboard",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "paso",
+        "type": "chip",
+        "value": "Lección"
+      },
+      {
+        "id": "progreso",
+        "type": "bar",
+        "label": "Lección",
+        "value": 0
+      }
+    ]
+  },
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Hoy vamos a ver por qué el dinero que ahorras pronto puede crecer solo.",
+      "title": {
+        "kicker": "la pregunta",
+        "main": "¿El dinero crece solo?"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "piggy-bank",
+            "size": "l",
+            "label": "tu hucha"
+          }
+        ]
+      }
+    },
+    {
+      "id": "simple",
+      "narration": "Empecemos por el interés simple: cada año ganas lo mismo.",
+      "title": {
+        "kicker": "primero",
+        "main": "Interés simple",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "100 al 10%",
+            "body": [
+              "ganas 10 cada año",
+              "siempre sobre los 100"
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Simple"
+        },
+        "progreso": {
+          "value": 0.2
+        }
+      }
+    },
+    {
+      "id": "compuesto",
+      "narration": "En el interés compuesto, los intereses también ganan intereses.",
+      "title": {
+        "kicker": "después",
+        "main": "Interés compuesto",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              "100",
+              "110",
+              "121",
+              "133"
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "k",
+            "shape": "circle"
+          },
+          {
+            "type": "badge",
+            "id": "k",
+            "text": "intereses sobre intereses"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Compuesto"
+        },
+        "progreso": {
+          "value": 0.4
+        }
+      }
+    },
+    {
+      "id": "formula",
+      "narration": "La fórmula es sencilla: capital por uno más la tasa, elevado a los años.",
+      "title": {
+        "kicker": "la fórmula",
+        "main": "C por (1 + r) a la n",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "code",
+            "lines": [
+              "final = capital * (1 + r) ** n",
+              "final = 100 * 1.1 ** 10",
+              "final = 259"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "comparar",
+      "narration": "Tras treinta años, la diferencia es enorme.",
+      "title": {
+        "kicker": "a 30 años",
+        "main": "Simple contra compuesto",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "unit": "",
+            "items": [
+              {
+                "label": "simple",
+                "value": 400
+              },
+              {
+                "label": "compuesto",
+                "value": 1745
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Comparar"
+        },
+        "progreso": {
+          "value": 0.6
+        }
+      }
+    },
+    {
+      "id": "tiempo",
+      "narration": "El ingrediente secreto no es la tasa, es el tiempo.",
+      "title": {
+        "kicker": "el secreto",
+        "main": "Lo que manda es el tiempo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "steps": [
+              {
+                "label": "año 1",
+                "sub": "110"
+              },
+              {
+                "label": "año 10",
+                "sub": "259"
+              },
+              {
+                "label": "año 20",
+                "sub": "673"
+              },
+              {
+                "label": "año 30",
+                "sub": "1745"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "regla",
+      "narration": "Un truco: divide 72 entre la tasa y sabrás en cuántos años se duplica.",
+      "title": {
+        "kicker": "regla del 72",
+        "main": "72 entre la tasa",
+        "number": 5
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 7.2,
+            "decimals": 1,
+            "suffix": " años",
+            "label": "para duplicar al 10%"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Regla 72"
+        },
+        "progreso": {
+          "value": 0.8
+        }
+      }
+    },
+    {
+      "id": "error",
+      "narration": "El error típico es esperar a tener mucho para empezar.",
+      "title": {
+        "kicker": "error común",
+        "main": "Empezar tarde"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Mito",
+              "items": [
+                "necesito mucho dinero"
+              ]
+            },
+            "right": {
+              "title": "Verdad",
+              "items": [
+                "necesito tiempo"
+              ]
+            },
+            "winner": "right"
+          }
+        ]
+      }
+    },
+    {
+      "id": "repaso",
+      "narration": "Repasemos la lección.",
+      "title": {
+        "kicker": "repaso",
+        "main": "Lo que aprendimos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "intereses sobre intereses",
+              "el tiempo manda",
+              "regla del 72"
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Repaso"
+        },
+        "progreso": {
+          "value": 1
+        }
+      }
+    }
+  ]
+}

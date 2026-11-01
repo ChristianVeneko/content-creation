@@ -1,0 +1,59 @@
+{
+  "id": "moody-night",
+  "name": "Moody Night 3D",
+  "category": "3d",
+  "description": "Low-poly 3D on a highway at blue dusk: lane lines, guard rails, warm street lamps with light pools, cars with headlight glow and traffic driving into the fog, one warm key light with a single soft shadow. A low chase camera rises and glides over the road. Tense what-if stories. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with 1-2 objects: car (model car-sedan, car-sedan-sports, car-suv, car-taxi, car-truck), character, stat. set \"city\" for a street. No emoji.",
+  "best_for": [
+    "what-if stories",
+    "cars and driving",
+    "night-time hooks",
+    "safety explainers",
+    "cinematic stories"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#070B1E",
+      "#16204A",
+      "#FFB547"
+    ],
+    "accent": "#FFB547",
+    "sample_text": "NOCHE"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#060A1C",
+          "#2A3A72"
+        ],
+        "text": "#FFFFFF",
+        "accent": "#FFB547",
+        "accent2": "#5C8BFF",
+        "accent3": "#FF4D5E"
+      },
+      "font": "Montserrat",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.04
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

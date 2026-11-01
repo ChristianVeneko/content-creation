@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "title": "Cómo piensa una IA",
+  "template": "holo-studio",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Le escribes una pregunta a una IA y responde en segundos. ¿Qué pasa dentro?",
+      "title": {
+        "kicker": "análisis",
+        "main": "Dentro de una IA"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "chip",
+            "label": "modelo"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tokens",
+      "narration": "Primero, tu texto se corta en piezas llamadas tokens.",
+      "title": {
+        "kicker": "fase uno",
+        "main": "Texto en tokens"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "document",
+            "label": "tu pregunta"
+          },
+          {
+            "kind": "cube",
+            "icon": "squares-four",
+            "label": "tokens"
+          }
+        ]
+      }
+    },
+    {
+      "id": "red",
+      "narration": "Esos tokens atraviesan una red con miles de millones de parámetros.",
+      "title": {
+        "kicker": "fase dos",
+        "main": "La red neuronal"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "camera": "orbit",
+        "objects": [
+          {
+            "kind": "globe",
+            "label": "parámetros"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cifra",
+      "narration": "Un modelo grande puede tener cientos de miles de millones de parámetros.",
+      "title": {
+        "kicker": "escala",
+        "main": "Parámetros"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "100B+",
+            "label": "parámetros"
+          }
+        ]
+      }
+    },
+    {
+      "id": "prediccion",
+      "narration": "Al final, la IA predice la palabra más probable, una tras otra.",
+      "title": {
+        "kicker": "fase tres",
+        "main": "Predice palabras"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "flow",
+        "objects": [
+          {
+            "kind": "chip",
+            "label": "modelo"
+          },
+          {
+            "kind": "chart",
+            "values": [
+              2,
+              7,
+              3,
+              1
+            ],
+            "items": [
+              "el",
+              "la",
+              "un",
+              "mi"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "seguridad",
+      "narration": "Por eso conviene verificar: predecir no es lo mismo que saber.",
+      "title": {
+        "kicker": "advertencia",
+        "main": "Verifica siempre"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "lock",
+            "label": "verifica"
+          },
+          {
+            "kind": "check",
+            "label": "fuente"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Ahora ya sabes lo que pasa dentro de la caja.",
+      "title": {
+        "kicker": "fin del escaneo",
+        "main": "Caja abierta"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "camera": "turntable",
+        "objects": [
+          {
+            "kind": "chip",
+            "label": "modelo",
+            "highlight": true
+          }
+        ]
+      }
+    }
+  ]
+}

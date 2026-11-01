@@ -1,0 +1,16 @@
+{
+  "id": "letterbox",
+  "name": "Letterbox",
+  "category": "kinetic",
+  "description": "Cinematic letterbox: bars top and bottom, slow push-ins, film grain feel and typewriter lines.",
+  "prompt_hint": "Open with the climax as a cold open (scene 1). Rewind, build tension with open loops, deliver the twist, then the lesson. onScreenText is a short quote or chapter line. Calm, intimate narration. One soft CTA at the end.",
+  "best_for": ["storytime", "quotes", "lessons", "history", "reflections"],
+  "preview": { "emoji": "🎬", "gradient": ["#0B0B0F", "#3A1C71", "#D76D77"], "accent": "#F5C26B", "sample_text": "“IT ALL STARTED HERE”" },
+  "defaults": {
+    "theme": { "palette": { "bg": ["#07070B", "#2B1B4A", "#6B2F4F"], "text": "#F7F3EA", "accent": "#F5C26B" }, "font": "Bebas Neue", "captionStyle": "clean" },
+    "voice": { "provider": "kokoro", "voiceId": "em_alex", "speed": 0.95 },
+    "music": { "volume": 0.14 },
+    "captions": { "enabled": true, "wordsPerPage": 4 },
+    "animation": "typewriter"
+  }
+}

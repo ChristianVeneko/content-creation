@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "title": "Catálogo de escenas de reels",
+  "template": "reels-nube",
+  "language": "es",
+  "voice": { "provider": "none" },
+  "reels": { "cover": { "etiqueta": "GUIA", "lineas": ["17", "*ESCENAS*"], "icono": "film", "pegatina": "gratis" } },
+  "scenes": [
+    {
+      "id": "headline-images",
+      "narration": "Cada frase tiene *su escena* y cada cosa entra con su palabra.",
+      "visual": { "type": "reel", "reel": { "type": "headline", "texto": "Una frase, / *una escena*", "imagenes": ["07-studio/engine/public/reels/samples/sample-1.jpg", "07-studio/engine/public/reels/samples/sample-2.jpg", "07-studio/engine/public/reels/samples/sample-3.jpg"], "en": ["escena"] } }
+    },
+    {
+      "id": "stats",
+      "narration": "Diecisiete escenas, cinco estilos y *tres* transiciones.",
+      "visual": { "type": "reel", "reel": { "type": "stats", "filas": [{ "valor": 17, "etiqueta": "escenas" }, { "valor": 5, "etiqueta": "estilos" }, { "valor": 3, "etiqueta": "transiciones", "destacar": true }], "en": ["Diecisiete", "cinco", "tres"] } }
+    },
+    {
+      "id": "card",
+      "narration": "El formato es vertical, a treinta fotogramas y sin coste.",
+      "visual": { "type": "reel", "reel": { "type": "card", "titulo": "Reel", "icono": "film", "etiqueta": "local", "filas": [["formato", "1080x1920"], ["fps", 30], ["coste", 0, true]], "en": ["vertical", "treinta", "coste"] } }
+    },
+    {
+      "id": "steps",
+      "narration": "Escribes el guion, lo validas y *renderizas*.",
+      "visual": { "type": "reel", "reel": { "type": "steps", "pasos": [{ "texto": "Escribe el guion", "icono": "pencil" }, { "texto": "Valida el spec", "icono": "check-circle" }, { "texto": "Renderiza", "icono": "rocket" }], "en": ["guion", "validas", "renderizas"] } }
+    },
+    {
+      "id": "bars",
+      "narration": "Los reels con ritmo retienen *más* que los estáticos.",
+      "visual": { "type": "reel", "reel": { "type": "bars", "titulo": "Retención (ejemplo)", "unidad": "%", "barras": [{ "etiqueta": "estático", "valor": 35 }, { "etiqueta": "con ritmo", "valor": 70 }], "destacar": 1, "en": ["reels", "estáticos"] } }
+    },
+    {
+      "id": "objection",
+      "narration": "¿Pensarás que hace falta saber diseño? *Para nada*.",
+      "visual": { "type": "reel", "reel": { "type": "objection", "numero": "Mito 1", "texto": "hace falta saber diseño", "respuesta": "Para nada", "en": ["Pensarás", "nada"] } }
+    },
+    {
+      "id": "phone",
+      "narration": "Lo publicas y miras cómo suben *las visitas*.",
+      "visual": { "type": "reel", "reel": { "type": "phone", "titulo": "Mi reel", "subtitulo": "publicado", "icono": "play", "pegatina": "NUEVO", "contador": { "desde": 0, "hasta": 12500, "etiqueta": "visitas" }, "en": ["publicas", "suben", "visitas"] } }
+    },
+    {
+      "id": "editor",
+      "narration": "Todo está hecho con *código*, sin editor de vídeo.",
+      "visual": { "type": "reel", "reel": { "type": "editor", "hecho": "hecho con código", "palabras": ["ritmo", "gancho", "cta"], "sonidos": ["pop", "ding"], "en": ["Todo", "código", "editor", "vídeo"] } }
+    },
+    {
+      "id": "image",
+      "narration": "Tus imágenes cobran vida con *efectos* de código.",
+      "visual": { "type": "reel", "reel": { "type": "image", "imagen": "07-studio/engine/public/reels/samples/sample-2.jpg", "efectos": ["estrellas", "flotar"], "texto": "efectos con código", "en": ["imágenes", "efectos"] } }
+    },
+    {
+      "id": "gallery",
+      "narration": "Y varias imágenes se abren *en abanico*.",
+      "visual": { "type": "reel", "reel": { "type": "gallery", "modo": "abanico", "imagenes": ["07-studio/engine/public/reels/samples/sample-1.jpg", "07-studio/engine/public/reels/samples/sample-3.jpg", "07-studio/engine/public/reels/samples/sample-4.jpg"], "etiqueta": "abanico", "en": ["imágenes", "abanico"] } }
+    },
+    {
+      "id": "cta",
+      "narration": "Guarda este reel y pruébalo esta *noche*.",
+      "visual": { "type": "reel", "reel": { "type": "cta", "verbo": "Guarda", "palabra": "ESTE REEL", "texto": "y pruébalo / esta noche", "iconos": ["bookmark", "moon", "bed", "star", "check"], "en": ["Guarda", "pruébalo", "noche"], "sinSubtitulos": true } }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "illustrated",
+  "name": "Illustrated Explainer",
+  "category": "illustrated-2d",
+  "description": "Every scene is drawn in code: diagrams, flows, comparisons, code windows, checklists and icons that draw on, pop and tick in, over a dark blueprint grid. Two-tone headlines, word-pill captions, a live top HUD, sound effects on every beat and a ducked music bed. No emoji, no stock footage.",
+  "prompt_hint": "Write 8-14 short scenes (one idea each, 3-6 s). Every scene has title.kicker + title.main and visual.type \"illustration\" with 2-5 elements that literally depict the idea: compare/split for comparisons, flow/timeline for processes, doc/checklist for specs, code/terminal for code, bars/counter for numbers, icon/svg for objects, callout/stamp for emphasis. Use the HUD to track the story state. Never use emoji.",
+  "best_for": ["tech explainers", "comparisons", "processes and workflows", "data stories", "tutorials"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#0B1020", "#111A33", "#1B2547"],
+    "accent": "#FF7A59",
+    "sample_text": "DRAWN IN CODE"
+  },
+  "defaults": {
+    "theme": {
+      "palette": { "bg": ["#0B1020", "#111A33"], "text": "#FFFFFF", "accent": "#FF7A59", "accent2": "#FFC145", "accent3": "#38D6F5" },
+      "font": "Montserrat",
+      "captionStyle": "pills"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.05 },
+    "music": { "track": "auto", "volume": 0.12, "duck": true },
+    "sfx": { "enabled": true, "volume": 1 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "pop"
+  }
+}

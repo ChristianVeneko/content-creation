@@ -1,0 +1,61 @@
+{
+  "id": "ukiyo-e",
+  "name": "Ukiyo-e Ink Print",
+  "category": "illustrated-2d",
+  "description": "A woodblock print brought to life: washi paper with long fibres, a Prussian-blue bokashi sky, a seigaiha wave band, a double key-block border and a vermilion seal. Titles are printed serif type beside a vertical red cartouche and underlined by a tapered sumi brush stroke; elements spread in like ink on wet paper, red hanko seals stamp verdicts, the camera pans like an unrolling handscroll and scenes are flooded by a sumi ink blot that thins into the next print. Calm, poetic and precise. No emoji.",
+  "prompt_hint": "Write 8-12 contemplative scenes (4-6 s each). title.kicker is a short label shown in a vertical red cartouche (1-3 words); title.main a calm printed headline. visual.type \"illustration\" with 1-3 elements: icon (size l, shown inside a brush enso), timeline for sequences, card, compare, counter, stamp for a key verdict (a red seal). Leave space. Never use emoji.",
+  "best_for": [
+    "history and culture",
+    "philosophy and habits",
+    "nature and geography",
+    "calm storytelling",
+    "craft and process"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#EFE4CC",
+      "#1F4E79",
+      "#C8372D"
+    ],
+    "accent": "#C8372D",
+    "sample_text": "One stroke at a time"
+  },
+  "defaults": {
+    "theme": {
+      "look": "ukiyo-e",
+      "palette": {
+        "bg": [
+          "#F1E6CE",
+          "#E5D4B0"
+        ],
+        "text": "#1A1A1A",
+        "accent": "#C8372D",
+        "accent2": "#C9A04A",
+        "accent3": "#1F4E79"
+      },
+      "font": "Gloock",
+      "captionStyle": "boxed"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_santa",
+      "speed": 0.97
+    },
+    "music": {
+      "track": "auto",
+      "mood": "cinematic-epic",
+      "volume": 0.11,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "zoom"
+  }
+}

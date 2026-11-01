@@ -1,0 +1,27 @@
+{
+  "id": "editorial-chart",
+  "name": "Editorial Chart",
+  "category": "illustrated-2d",
+  "description": "Editorial charts as protagonists: big bar charts with animated axes and gridlines, numbers that count up, timelines and annotations drawn as callouts, on a warm newspaper-salmon page with serif headlines. Calm, precise motion: smooth zoom-through transitions and slow camera drift. No emoji.",
+  "prompt_hint": "Write 8-14 scenes (4-6 s each) that tell one story with numbers. Almost every scene has one big chart element: bars (2-5 items, real values, unit), counter (the key figure, with label), timeline (dates), compare (before/after); add a callout (underline/circle/arrow, with a short label) on the most important bar or number. title.kicker = what is measured (e.g. ADOPCION 2024), title.main = the takeaway in plain words. Cite sources in the narration. Never use emoji.",
+  "best_for": ["statistics and research", "market data", "benchmarks", "trends over time", "surveys"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#FFF1E5", "#F6E3D3", "#0F5499"],
+    "accent": "#0F5499",
+    "sample_text": "THE NUMBERS"
+  },
+  "defaults": {
+    "theme": {
+      "look": "editorial-chart",
+      "palette": { "bg": ["#FFF1E5", "#F6E3D3"], "text": "#262A33", "accent": "#0F5499", "accent2": "#E3632D", "accent3": "#0D7680" },
+      "font": "DM Serif Display",
+      "captionStyle": "boxed"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.0 },
+    "music": { "track": "auto", "volume": 0.1, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.75 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "zoom"
+  }
+}

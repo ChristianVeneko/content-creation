@@ -1,0 +1,61 @@
+{
+  "id": "risograph",
+  "name": "Risograph Zine",
+  "category": "illustrated-2d",
+  "description": "Animation printed on a stencil duplicator: two or three translucent spot inks (fluoro pink, medium blue, yellow) overprinting on warm off-white stock, halftone dots, ink grain, pinholes and plates that never quite line up (an SVG misregistration filter on every scene). Elements land off register and snap together, the sheet creeps through the press, and scenes arrive as swelling halftone dots. Indie, graphic and zine-like. No emoji.",
+  "prompt_hint": "Write 8-12 scenes (3-5 s each) like pages of an indie zine. title.main short and bold (it is set in a wide mono display face, so 2-5 words); title.kicker is a small label. visual.type \"illustration\" with 1-3 flat, graphic elements: counter and bars for numbers, icon (size l), badge, checklist, compare. Keep text short. Never use emoji.",
+  "best_for": [
+    "indie and design topics",
+    "music and culture",
+    "data in a playful tone",
+    "product launches for creatives",
+    "guides and how-tos"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#F3EEE3",
+      "#FF48B0",
+      "#0078BF"
+    ],
+    "accent": "#FF48B0",
+    "sample_text": "PRINTED BY HAND"
+  },
+  "defaults": {
+    "theme": {
+      "look": "risograph",
+      "palette": {
+        "bg": [
+          "#F4EFE3",
+          "#EDE6D6"
+        ],
+        "text": "#1D235C",
+        "accent": "#FF48B0",
+        "accent2": "#FFE800",
+        "accent3": "#0078BF"
+      },
+      "font": "Space Mono",
+      "captionStyle": "boxed"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.05
+    },
+    "music": {
+      "track": "auto",
+      "mood": "tech-lofi",
+      "volume": 0.11,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

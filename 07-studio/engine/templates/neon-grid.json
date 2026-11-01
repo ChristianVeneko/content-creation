@@ -1,0 +1,59 @@
+{
+  "id": "neon-grid",
+  "name": "Neon Grid 3D",
+  "category": "3d",
+  "description": "Low-poly 3D in a dark-navy grid world: a glowing grid floor that fades into fog, dark pillars and a glowing-brick wall, blocky characters and objects lit by one cool key light with a single soft shadow. The camera glides slowly through the set. Gaming, tech and internet-culture explainers. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with 1-3 objects: character (anim idle/walk/yes/no), monitor, phone, server, chip, lock, gear, cube. Short labels. No emoji.",
+  "best_for": [
+    "gaming explainers",
+    "internet culture",
+    "how online things work",
+    "tech myths",
+    "cybersecurity basics"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#050A1F",
+      "#0B1638",
+      "#3FA9FF"
+    ],
+    "accent": "#3FA9FF",
+    "sample_text": "NEON GRID"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#050A1F",
+          "#0E1B45"
+        ],
+        "text": "#FFFFFF",
+        "accent": "#3FA9FF",
+        "accent2": "#FF3D6E",
+        "accent3": "#7CF7FF"
+      },
+      "font": "Montserrat",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.08
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

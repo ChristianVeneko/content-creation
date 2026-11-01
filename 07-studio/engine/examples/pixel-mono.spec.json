@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "title": "Tres lecciones de los videojuegos viejos",
+  "template": "pixel-mono",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Los videojuegos viejos te enseñan tres lecciones.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "forest",
+          "banner": {
+            "text": "Tres lecciones",
+            "accent": "Tres",
+            "big": true
+          },
+          "props": [
+            {
+              "kind": "scroll",
+              "x": 0.5,
+              "big": true
+            }
+          ],
+          "speaker": "SABIO",
+          "camera": "rise"
+        }
+      }
+    },
+    {
+      "id": "uno",
+      "narration": "Primero: guarda tu progreso seguido.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "room",
+          "banner": {
+            "text": "Guarda seguido",
+            "accent": "Guarda"
+          },
+          "props": [
+            {
+              "kind": "monitor",
+              "x": 0.7
+            },
+            {
+              "kind": "lamp",
+              "x": 0.9
+            }
+          ],
+          "speaker": "SABIO"
+        }
+      }
+    },
+    {
+      "id": "dos",
+      "narration": "Segundo: cada error te enseña el mapa.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "temple",
+          "banner": {
+            "text": "Errar es mapear",
+            "accent": "mapear"
+          },
+          "props": [
+            {
+              "kind": "key",
+              "x": 0.5
+            }
+          ],
+          "speaker": "SABIO",
+          "transition": "dissolve"
+        }
+      }
+    },
+    {
+      "id": "tres",
+      "narration": "Tercero: la llave siempre está cerca de la puerta.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "gallery",
+          "props": [
+            {
+              "kind": "door",
+              "x": 0.7
+            },
+            {
+              "kind": "key",
+              "x": 0.35
+            }
+          ],
+          "popup": {
+            "title": "PISTA",
+            "text": "La llave está cerca de la puerta.",
+            "accent": "llave"
+          },
+          "speaker": "SABIO"
+        }
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Sígueme para más lecciones retro.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "desert",
+          "banner": {
+            "text": "Más lecciones retro",
+            "accent": "retro"
+          },
+          "props": [
+            {
+              "kind": "chest",
+              "x": 0.5,
+              "open": true
+            }
+          ],
+          "speaker": "SABIO"
+        }
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "Tres lecciones de los videojuegos viejos",
+    "instagram": "Tres lecciones de los videojuegos viejos",
+    "youtube": {
+      "title": "Tres lecciones de los videojuegos viejos",
+      "description": "Tres lecciones de los videojuegos viejos"
+    },
+    "hashtags": [
+      "retro",
+      "videojuegos",
+      "pixelart"
+    ]
+  }
+}

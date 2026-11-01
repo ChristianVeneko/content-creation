@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "title": "Qué pasa cuando pagas con el celular",
+  "template": "clay-diorama",
+  "language": "es",
+  "hud": { "items": [{ "id": "paso", "type": "chip", "value": "PASO 1" }, { "id": "progreso", "type": "bar", "label": "Pago", "value": 0.1 }] },
+  "brand": { "handle": "@tucanal" },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Pagas un café con el celular y en dos segundos el dinero ya viajó por medio mundo.",
+      "title": { "kicker": "Pagas un café y", "main": "tu dinero viaja" },
+      "visual": { "type": "scene3d", "layout": "hero", "camera": "orbit", "objects": [{ "kind": "phone", "icon": "contactless-payment", "label": "Tu celular" }, { "kind": "coin", "label": "2 dólares" }] }
+    },
+    {
+      "id": "token",
+      "narration": "Primero, tu tarjeta no sale del celular. Se envía un token, un código de un solo uso.",
+      "title": { "kicker": "Paso uno", "main": "un token" },
+      "hud": { "paso": { "value": "PASO 1" }, "progreso": { "value": 0.25 } },
+      "visual": { "type": "scene3d", "layout": "row", "objects": [{ "kind": "card", "id": "card", "label": "Tarjeta" }, { "kind": "lock", "id": "token", "label": "Token", "highlight": true }], "connect": [{ "from": "card", "to": "token" }] }
+    },
+    {
+      "id": "red",
+      "narration": "El token viaja por la red del comercio hasta el banco que emitió tu tarjeta.",
+      "title": { "kicker": "Paso dos", "main": "viaja al banco" },
+      "hud": { "paso": { "value": "PASO 2" }, "progreso": { "value": 0.45 } },
+      "visual": { "type": "scene3d", "layout": "flow", "objects": [{ "kind": "phone", "label": "Celular" }, { "kind": "cloud", "label": "Red de pagos" }, { "kind": "building", "label": "Tu banco" }] }
+    },
+    {
+      "id": "check",
+      "narration": "El banco revisa saldo, ubicación y patrones raros. Si todo cuadra, aprueba.",
+      "title": { "kicker": "Paso tres", "main": "revisa y aprueba" },
+      "hud": { "paso": { "value": "PASO 3" }, "progreso": { "value": 0.7 } },
+      "visual": { "type": "scene3d", "layout": "grid", "camera": "crane", "objects": [{ "kind": "chart", "values": [3, 5, 2], "items": ["Lun", "Mar", "Mie"] }, { "kind": "pin", "label": "Ubicación" }, { "kind": "check", "label": "Aprobado", "highlight": true }] }
+    },
+    {
+      "id": "tiempo",
+      "narration": "Todo eso ocurre en menos de dos segundos.",
+      "title": { "kicker": "Todo en", "main": "2 segundos" },
+      "hud": { "progreso": { "value": 0.85 } },
+      "visual": { "type": "scene3d", "objects": [{ "kind": "stat", "value": "1.8s", "label": "Tiempo total" }] }
+    },
+    {
+      "id": "cierre",
+      "narration": "La próxima vez que pagues, piensa en el viaje. Sígueme para más.",
+      "title": { "kicker": "Sígueme para", "main": "entender más" },
+      "hud": { "paso": { "value": "LISTO" }, "progreso": { "value": 1 } },
+      "visual": { "type": "scene3d", "layout": "circle", "camera": "dolly", "objects": [{ "kind": "lightbulb", "label": "Ahora sabes" }, { "kind": "phone" }, { "kind": "coin" }, { "kind": "building" }, { "kind": "lock" }] }
+    }
+  ],
+  "post": {
+    "tiktok": "Así viaja tu dinero cuando pagas con el celular #pagos #fintech",
+    "instagram": "En 2 segundos tu pago recorre medio mundo. Guárdalo.",
+    "youtube": { "title": "Qué pasa cuando pagas con el celular", "description": "Token, red de pagos y banco: el viaje de tu dinero en 2 segundos." },
+    "hashtags": ["pagos", "fintech", "tecnologia", "explicado"]
+  }
+}

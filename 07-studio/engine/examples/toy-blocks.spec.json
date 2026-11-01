@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "title": "Cómo se arma una startup",
+  "template": "toy-blocks",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Una empresa se construye como un juguete: pieza a pieza.",
+      "title": {
+        "kicker": "bloque a bloque",
+        "main": "Arma tu startup"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "rocket",
+            "label": "tu idea"
+          }
+        ]
+      }
+    },
+    {
+      "id": "idea",
+      "narration": "La primera pieza es un problema real que alguien quiera resolver.",
+      "title": {
+        "kicker": "pieza uno",
+        "main": "Un problema real"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "person",
+            "label": "cliente"
+          },
+          {
+            "kind": "lightbulb",
+            "label": "idea",
+            "highlight": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "producto",
+      "narration": "Luego construyes la versión más pequeña que funcione.",
+      "title": {
+        "kicker": "pieza dos",
+        "main": "Un producto mínimo"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "cube",
+            "icon": "wrench",
+            "label": "prototipo"
+          },
+          {
+            "kind": "laptop",
+            "icon": "code",
+            "label": "web"
+          }
+        ]
+      }
+    },
+    {
+      "id": "usuarios",
+      "narration": "Después buscas los primeros usuarios y escuchas lo que dicen.",
+      "title": {
+        "kicker": "pieza tres",
+        "main": "Primeros usuarios"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "grid",
+        "objects": [
+          {
+            "kind": "person"
+          },
+          {
+            "kind": "person"
+          },
+          {
+            "kind": "person"
+          },
+          {
+            "kind": "person"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dinero",
+      "narration": "Cuando funciona, el dinero empieza a entrar.",
+      "title": {
+        "kicker": "pieza cuatro",
+        "main": "Entran ingresos"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "coin",
+            "value": 4,
+            "label": "ventas"
+          },
+          {
+            "kind": "chart",
+            "values": [
+              1,
+              2,
+              4,
+              7
+            ],
+            "label": "crecimiento"
+          }
+        ]
+      }
+    },
+    {
+      "id": "equipo",
+      "narration": "Y para crecer necesitas un equipo y sistemas que aguanten.",
+      "title": {
+        "kicker": "pieza cinco",
+        "main": "Equipo y sistemas"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "flow",
+        "objects": [
+          {
+            "kind": "person",
+            "label": "equipo"
+          },
+          {
+            "kind": "server",
+            "label": "sistemas"
+          },
+          {
+            "kind": "building",
+            "label": "empresa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Ninguna empresa nace hecha. Se arma bloque a bloque.",
+      "title": {
+        "kicker": "resumen",
+        "main": "Bloque a bloque"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "camera": "topdown",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "5",
+            "label": "piezas clave"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "version": 1,
+  "title": "La letra pequeña del plan Pro de NubeX",
+  "template": "ui-cards",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "plan",
+        "type": "chip",
+        "value": "PRO",
+        "color": "accent"
+      },
+      {
+        "id": "tanda",
+        "type": "bar",
+        "label": "Tanda 5 h",
+        "value": 0.2,
+        "color": "accent3"
+      },
+      {
+        "id": "semana",
+        "type": "bar",
+        "label": "Semana",
+        "value": 0.6,
+        "color": "accent2"
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "NubeX, el servicio ficticio de este ejemplo, quita el famoso vuelve en cinco horas.",
+      "title": {
+        "kicker": "NubeX quita el",
+        "main": "«vuelve en 5 h»"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timer",
+            "text": "4:59:59",
+            "label": "vuelve en",
+            "countdown": true,
+            "id": "t"
+          },
+          {
+            "type": "stamp",
+            "text": "adiós",
+            "target": "t"
+          }
+        ]
+      }
+    },
+    {
+      "id": "anuncio",
+      "narration": "Este es su anuncio real: renombran los planes.",
+      "title": {
+        "kicker": "Este es su",
+        "main": "anuncio real"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "post",
+            "name": "NubeX",
+            "handle": "@nubex",
+            "verified": true,
+            "lines": [
+              "Renombramos nuestros planes:",
+              "Pro 5x pasa a Pro",
+              "Pro 20x pasa a Ultra",
+              "El precio no cambia"
+            ],
+            "highlight": [
+              1,
+              2
+            ],
+            "magnify": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "precio",
+      "narration": "El precio no se mueve: cien al mes el Pro y doscientos el Ultra.",
+      "title": {
+        "kicker": "El precio",
+        "main": "no se mueve"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "tags",
+            "items": [
+              {
+                "label": "Pro",
+                "price": "100 $",
+                "sub": "al mes",
+                "color": "accent"
+              },
+              {
+                "label": "Ultra",
+                "price": "200 $",
+                "sub": "al mes",
+                "color": "accent2"
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "plan": {
+          "value": "PRO"
+        }
+      }
+    },
+    {
+      "id": "hasta-hoy",
+      "narration": "Hasta hoy trabajabas en tandas de cinco horas y luego esperabas.",
+      "title": {
+        "kicker": "Hasta hoy:",
+        "main": "tandas de 5 h"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "meter",
+                "shape": "battery",
+                "value": 65,
+                "label": "Tanda"
+              }
+            ],
+            "right": [
+              {
+                "type": "hourglass",
+                "label": "Espera"
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "tanda": {
+          "value": 0.65
+        }
+      }
+    },
+    {
+      "id": "ojo",
+      "narration": "Ojo a la letra pequeña: las cuentas nuevas mantienen un tiempo de espera.",
+      "title": {
+        "kicker": "Ojo a la",
+        "main": "letra pequeña"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "post",
+            "name": "NubeX",
+            "handle": "@nubex",
+            "verified": true,
+            "lines": [
+              "Quitamos el límite de 5 horas",
+              "en cuentas verificadas.",
+              "Las cuentas nuevas mantienen",
+              "una espera temporal."
+            ],
+            "highlight": [
+              2,
+              3
+            ],
+            "magnify": true
+          }
+        ]
+      },
+      "hud": {
+        "plan": {
+          "value": "ULTRA",
+          "color": "accent2"
+        },
+        "tanda": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "semanal",
+      "narration": "El límite semanal no cambia: el frasco se llena igual que antes.",
+      "title": {
+        "kicker": "El límite semanal",
+        "main": "no cambia"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "meter",
+            "shape": "jar",
+            "value": 72,
+            "label": "Semana",
+            "caption": "«Los límites semanales no cambian»",
+            "stamp": "igual"
+          }
+        ]
+      },
+      "hud": {
+        "semana": {
+          "value": 0.72
+        }
+      }
+    },
+    {
+      "id": "trampa",
+      "narration": "La trampa del nombre veinte equis: en la semana no tienes veinte veces más.",
+      "title": {
+        "kicker": "La trampa del",
+        "main": "nombre «20x»"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "chart",
+            "title": "En la semana",
+            "unit": "h",
+            "items": [
+              {
+                "label": "Pro",
+                "value": 5
+              },
+              {
+                "label": "Ultra",
+                "value": 7,
+                "expected": 20
+              }
+            ],
+            "id": "c"
+          },
+          {
+            "type": "stamp",
+            "text": "ni de lejos",
+            "target": "c"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cifra",
+      "narration": "No promete una cifra. Te quita la espera, y eso es todo.",
+      "title": {
+        "kicker": "No promete una cifra:",
+        "main": "te quita la espera"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stat",
+            "value": "0 min",
+            "label": "de espera entre tandas"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cual",
+      "narration": "¿Cuál te toca? Si te corta a media tarde, Ultra. Si nunca gastas la tanda, Pro.",
+      "title": {
+        "kicker": "¿Cuál",
+        "main": "te toca?"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "panels",
+            "items": [
+              {
+                "title": "¿Te corta a media tarde?",
+                "icon": "clock",
+                "tag": "Ultra",
+                "color": "accent2"
+              },
+              {
+                "title": "¿Nunca gastas la tanda?",
+                "icon": "hourglass",
+                "tag": "Pro",
+                "color": "accent"
+              }
+            ],
+            "winner": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Guarda este video para cuando elijas plan.",
+      "title": {
+        "kicker": "Guárdalo",
+        "main": "antes de pagar"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "badge",
+            "text": "guárdalo",
+            "icon": "bookmark-simple"
+          }
+        ]
+      },
+      "hud": {
+        "semana": {
+          "value": 1
+        }
+      }
+    }
+  ],
+  "brand": {
+    "handle": "@estudio"
+  }
+}

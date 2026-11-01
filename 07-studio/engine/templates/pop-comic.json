@@ -1,0 +1,61 @@
+{
+  "id": "pop-comic",
+  "name": "Pop Art Comic",
+  "category": "illustrated-2d",
+  "description": "A retro pop-art comic page: yellow stock with Ben-Day dots and speed rays, heavy black panel borders with hard offset shadows, outlined comic titles that slam in on a dutch angle, caption boxes, speech-bubble chats, starburst halos, action-burst stamps and a printed dot screen. Every element slams in with an overshoot and every scene is a new panel slammed in on a diagonal with speed lines and an impact burst. Loud, fun and fast. No emoji.",
+  "prompt_hint": "Write 8-12 fast scenes (3-5 s each) like comic panels. title.main punchy (2-5 words, set in caps); title.kicker reads like a caption box; use title.number for countdowns. visual.type \"illustration\" with 1-3 bold elements: chat (rendered as speech bubbles), icon (size l, on a burst), badge, compare, counter, stamp (an action burst with one word such as BOOM or NOPE). Never use emoji.",
+  "best_for": [
+    "myth busting",
+    "security and scam warnings",
+    "hot takes",
+    "reviews and versus",
+    "fun facts"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#FFE14D",
+      "#FFC93C",
+      "#E8262B"
+    ],
+    "accent": "#E8262B",
+    "sample_text": "KAPOW FACTS"
+  },
+  "defaults": {
+    "theme": {
+      "look": "pop-comic",
+      "palette": {
+        "bg": [
+          "#FFE14D",
+          "#FFC93C"
+        ],
+        "text": "#111111",
+        "accent": "#E8262B",
+        "accent2": "#FFD400",
+        "accent3": "#1FA8E0"
+      },
+      "font": "Bangers",
+      "captionStyle": "boxed"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.08
+    },
+    "music": {
+      "track": "auto",
+      "mood": "upbeat-fun",
+      "volume": 0.11,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

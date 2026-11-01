@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "title": "Cómo detectar un bulo",
+  "template": "paper-collage",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Ese mensaje que te llegó por el grupo familiar. ¿Y si es falso?",
+      "title": {
+        "kicker": "reenviado muchas veces",
+        "main": "Ojo con esto"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "chat",
+            "messages": [
+              {
+                "role": "user",
+                "text": "Urgente: comparte antes de que lo borren"
+              }
+            ]
+          },
+          {
+            "type": "stamp",
+            "text": "Sospechoso"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fuente",
+      "narration": "Primero, busca la fuente. Si nadie firma, mala señal.",
+      "title": {
+        "kicker": "pista uno",
+        "main": "Quién lo dice",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "magnifying-glass",
+            "size": "l",
+            "label": "busca la firma"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fecha",
+      "narration": "Segundo, mira la fecha. Muchos bulos son noticias viejas recicladas.",
+      "title": {
+        "kicker": "pista dos",
+        "main": "Mira la fecha",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "Noticia de 2019",
+            "body": [
+              "compartida hoy como nueva",
+              "el contexto ya cambió"
+            ],
+            "icon": "calendar"
+          }
+        ]
+      }
+    },
+    {
+      "id": "titular",
+      "narration": "Tercero, desconfía de los titulares que gritan.",
+      "title": {
+        "kicker": "pista tres",
+        "main": "Titulares que gritan",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Bulo",
+              "items": [
+                "MAYÚSCULAS",
+                "urgencia",
+                "sin datos"
+              ]
+            },
+            "right": {
+              "title": "Noticia",
+              "items": [
+                "tono calmado",
+                "fuentes",
+                "fechas"
+              ]
+            },
+            "winner": "right"
+          }
+        ]
+      }
+    },
+    {
+      "id": "foto",
+      "narration": "Cuarto, la foto puede ser de otro lugar. Una búsqueda inversa te lo dice.",
+      "title": {
+        "kicker": "pista cuatro",
+        "main": "La foto miente",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              {
+                "label": "foto",
+                "icon": "image"
+              },
+              {
+                "label": "búsqueda",
+                "icon": "magnifying-glass"
+              },
+              {
+                "label": "origen",
+                "icon": "globe-hemisphere-west"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "emocion",
+      "narration": "Quinto, si te enfada mucho, para. Los bulos viven de la emoción.",
+      "title": {
+        "kicker": "pista cinco",
+        "main": "Si te enfada, para",
+        "number": 5
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "fire",
+            "size": "l"
+          },
+          {
+            "type": "badge",
+            "text": "respira antes de compartir"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dato",
+      "narration": "Las noticias falsas se difunden mucho más rápido que las verdaderas.",
+      "title": {
+        "kicker": "un estudio lo midió",
+        "main": "Corren más rápido"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 6,
+            "suffix": "x",
+            "label": "más rápido que lo verdadero"
+          }
+        ]
+      }
+    },
+    {
+      "id": "resumen",
+      "narration": "Repasa la lista antes de reenviar nada.",
+      "title": {
+        "kicker": "antes de reenviar",
+        "main": "La lista"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "fuente",
+              "fecha",
+              "titular",
+              "foto",
+              "emoción"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Si dudas, no lo compartas. Así cortas la cadena.",
+      "title": {
+        "kicker": "tu turno",
+        "main": "Corta la cadena"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stamp",
+            "text": "No reenviar"
+          }
+        ]
+      }
+    }
+  ]
+}

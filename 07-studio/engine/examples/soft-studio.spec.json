@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "title": "Ahorra el 20% sin sufrir",
+  "template": "soft-studio",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Ahorrar no es cuestión de ganar más, es cuestión de orden.",
+      "title": {
+        "kicker": "El secreto",
+        "main": "es el orden"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "laptop",
+            "icon": "wallet",
+            "label": "Tu sueldo",
+            "highlight": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "regla",
+      "narration": "Separa tu sueldo en tres partes apenas lo cobras.",
+      "title": {
+        "kicker": "La regla",
+        "main": "50 30 20"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "coin",
+            "value": 5,
+            "label": "50%"
+          },
+          {
+            "kind": "coin",
+            "value": 3,
+            "label": "30%"
+          },
+          {
+            "kind": "coin",
+            "value": 2,
+            "label": "20%"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dato",
+      "narration": "Con solo el veinte por ciento, en un año juntas más de dos sueldos.",
+      "title": {
+        "kicker": "En un año",
+        "main": "dos sueldos"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "2.4x",
+            "label": "tu sueldo"
+          },
+          {
+            "kind": "chart",
+            "values": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "size": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto",
+      "narration": "Automatiza la transferencia el mismo día de cobro.",
+      "title": {
+        "kicker": "Hazlo",
+        "main": "automático"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "camera": "glide",
+        "objects": [
+          {
+            "kind": "phone",
+            "icon": "arrows-clockwise",
+            "label": "Transferencia"
+          },
+          {
+            "kind": "card",
+            "label": "Ahorro"
+          }
+        ]
+      }
+    },
+    {
+      "id": "idea",
+      "narration": "Lo que no ves, no lo gastas.",
+      "title": {
+        "kicker": "La idea",
+        "main": "fuera de vista"
+      },
+      "visual": {
+        "type": "scene3d",
+        "objects": [
+          {
+            "kind": "lightbulb",
+            "label": "Fuera de vista",
+            "highlight": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Empieza este mes y guarda este video para no olvidarlo.",
+      "title": {
+        "kicker": "Empieza",
+        "main": "este mes"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "camera": "orbit",
+        "objects": [
+          {
+            "kind": "check",
+            "label": "Listo"
+          },
+          {
+            "kind": "document",
+            "icon": "calendar-check",
+            "label": "Plan"
+          }
+        ]
+      }
+    }
+  ]
+}

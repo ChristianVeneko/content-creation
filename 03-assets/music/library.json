@@ -1,0 +1,607 @@
+[
+  {
+    "id": "happy-beats-business-moves-vol-1-by-ende-dot-app",
+    "mood": "corporate-happy",
+    "title": "Happy Beats: Business Moves Vol. 1",
+    "artist": "ende.app",
+    "file": "ende-happy-beats/happy-beats-business-moves-vol-1-by-ende-dot-app.mp3",
+    "durationSec": 163.96,
+    "bpm": 120.2,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://ende.app",
+    "credit": "Music: ende.app (CC BY 4.0)"
+  },
+  {
+    "id": "happy-beats-business-moves-vol-10-by-ende-dot-app",
+    "mood": "corporate-happy",
+    "title": "Happy Beats: Business Moves Vol. 10",
+    "artist": "ende.app",
+    "file": "ende-happy-beats/happy-beats-business-moves-vol-10-by-ende-dot-app.mp3",
+    "durationSec": 60.0,
+    "bpm": 110.0,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://ende.app",
+    "credit": "Music: ende.app (CC BY 4.0)"
+  },
+  {
+    "id": "happy-beats-business-moves-vol-11-by-ende-dot-app",
+    "mood": "corporate-happy",
+    "title": "Happy Beats: Business Moves Vol. 11",
+    "artist": "ende.app",
+    "file": "ende-happy-beats/happy-beats-business-moves-vol-11-by-ende-dot-app.mp3",
+    "durationSec": 87.6,
+    "bpm": 114.8,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://ende.app",
+    "credit": "Music: ende.app (CC BY 4.0)"
+  },
+  {
+    "id": "happy-beats-business-moves-vol-12-by-ende-dot-app",
+    "mood": "corporate-happy",
+    "title": "Happy Beats: Business Moves Vol. 12",
+    "artist": "ende.app",
+    "file": "ende-happy-beats/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3",
+    "durationSec": 117.36,
+    "bpm": 110.0,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://ende.app",
+    "credit": "Music: ende.app (CC BY 4.0)"
+  },
+  {
+    "id": "happy-beats-business-moves-vol-9-by-ende-dot-app",
+    "mood": "corporate-happy",
+    "title": "Happy Beats: Business Moves Vol. 9",
+    "artist": "ende.app",
+    "file": "ende-happy-beats/happy-beats-business-moves-vol-9-by-ende-dot-app.mp3",
+    "durationSec": 113.64,
+    "bpm": 114.8,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://ende.app",
+    "credit": "Music: ende.app (CC BY 4.0)"
+  },
+  {
+    "id": "incompetech-chill-wave",
+    "mood": "tech-lofi",
+    "title": "Chill Wave",
+    "artist": "Kevin MacLeod",
+    "file": "tech-lofi/incompetech-chill-wave.mp3",
+    "durationSec": 240.07,
+    "bpm": 99.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600048",
+    "credit": "Chill Wave Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -68.7
+    }
+  },
+  {
+    "id": "incompetech-late-night-radio",
+    "mood": "tech-lofi",
+    "title": "Late Night Radio",
+    "artist": "Kevin MacLeod",
+    "file": "tech-lofi/incompetech-late-night-radio.mp3",
+    "durationSec": 263.6,
+    "bpm": 143.6,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2100003",
+    "credit": "Late Night Radio Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -72.7
+    }
+  },
+  {
+    "id": "incompetech-study-and-relax",
+    "mood": "tech-lofi",
+    "title": "Study And Relax",
+    "artist": "Kevin MacLeod",
+    "file": "tech-lofi/incompetech-study-and-relax.mp3",
+    "durationSec": 223.4,
+    "bpm": 143.6,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1900030",
+    "credit": "Study And Relax Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -23.4
+    }
+  },
+  {
+    "id": "incompetech-zigzag",
+    "mood": "tech-lofi",
+    "title": "ZigZag",
+    "artist": "Kevin MacLeod",
+    "file": "tech-lofi/incompetech-zigzag.mp3",
+    "durationSec": 225.07,
+    "bpm": 161.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600049",
+    "credit": "ZigZag Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.12,
+      "vocalRatioDb": -64.2
+    }
+  },
+  {
+    "id": "incompetech-pleasant-porridge",
+    "mood": "tech-lofi",
+    "title": "Pleasant Porridge",
+    "artist": "Kevin MacLeod",
+    "file": "tech-lofi/incompetech-pleasant-porridge.mp3",
+    "durationSec": 171.49,
+    "bpm": 117.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2100004",
+    "credit": "Pleasant Porridge Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -63.8
+    }
+  },
+  {
+    "id": "incompetech-undaunted",
+    "mood": "cinematic-epic",
+    "title": "Undaunted",
+    "artist": "Kevin MacLeod",
+    "file": "cinematic-epic/incompetech-undaunted.mp3",
+    "durationSec": 212.53,
+    "bpm": 95.7,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400025",
+    "credit": "Undaunted Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.02,
+      "vocalRatioDb": -52.5
+    }
+  },
+  {
+    "id": "incompetech-hiding-your-reality",
+    "mood": "cinematic-epic",
+    "title": "Hiding Your Reality",
+    "artist": "Kevin MacLeod",
+    "file": "cinematic-epic/incompetech-hiding-your-reality.mp3",
+    "durationSec": 192.97,
+    "bpm": 107.7,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700081",
+    "credit": "Hiding Your Reality Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -61.1
+    }
+  },
+  {
+    "id": "incompetech-rynos-theme",
+    "mood": "cinematic-epic",
+    "title": "Rynos Theme",
+    "artist": "Kevin MacLeod",
+    "file": "cinematic-epic/incompetech-rynos-theme.mp3",
+    "durationSec": 185.68,
+    "bpm": 129.2,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600016",
+    "credit": "Rynos Theme Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -63.4
+    }
+  },
+  {
+    "id": "incompetech-urban-gauntlet",
+    "mood": "cinematic-epic",
+    "title": "Urban Gauntlet",
+    "artist": "Kevin MacLeod",
+    "file": "cinematic-epic/incompetech-urban-gauntlet.mp3",
+    "durationSec": 209.03,
+    "bpm": 117.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1500009",
+    "credit": "Urban Gauntlet Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -64.9
+    }
+  },
+  {
+    "id": "incompetech-the-descent",
+    "mood": "cinematic-epic",
+    "title": "The Descent",
+    "artist": "Kevin MacLeod",
+    "file": "cinematic-epic/incompetech-the-descent.mp3",
+    "durationSec": 191.76,
+    "bpm": 103.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200094",
+    "credit": "The Descent Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -63.0
+    }
+  },
+  {
+    "id": "incompetech-i-can-feel-it-coming",
+    "mood": "tense-mystery",
+    "title": "I Can Feel it Coming",
+    "artist": "Kevin MacLeod",
+    "file": "tense-mystery/incompetech-i-can-feel-it-coming.mp3",
+    "durationSec": 215.17,
+    "bpm": 95.7,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700085",
+    "credit": "I Can Feel it Coming Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -23.1
+    }
+  },
+  {
+    "id": "incompetech-constance",
+    "mood": "tense-mystery",
+    "title": "Constance",
+    "artist": "Kevin MacLeod",
+    "file": "tense-mystery/incompetech-constance.mp3",
+    "durationSec": 140.3,
+    "bpm": 83.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100850",
+    "credit": "Constance Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -30.0
+    }
+  },
+  {
+    "id": "incompetech-invariance",
+    "mood": "tense-mystery",
+    "title": "Invariance",
+    "artist": "Kevin MacLeod",
+    "file": "tense-mystery/incompetech-invariance.mp3",
+    "durationSec": 216.84,
+    "bpm": 107.7,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100847",
+    "credit": "Invariance Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -65.3
+    }
+  },
+  {
+    "id": "incompetech-scissors",
+    "mood": "tense-mystery",
+    "title": "Scissors",
+    "artist": "Kevin MacLeod",
+    "file": "tense-mystery/incompetech-scissors.mp3",
+    "durationSec": 207.75,
+    "bpm": 103.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100781",
+    "credit": "Scissors Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.09,
+      "vocalRatioDb": -60.2
+    }
+  },
+  {
+    "id": "incompetech-enter-the-maze",
+    "mood": "tense-mystery",
+    "title": "Enter the Maze",
+    "artist": "Kevin MacLeod",
+    "file": "tense-mystery/incompetech-enter-the-maze.mp3",
+    "durationSec": 178.13,
+    "bpm": 92.3,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100782",
+    "credit": "Enter the Maze Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -41.2
+    }
+  },
+  {
+    "id": "incompetech-inspired",
+    "mood": "inspiring-uplifting",
+    "title": "Inspired",
+    "artist": "Kevin MacLeod",
+    "file": "inspiring-uplifting/incompetech-inspired.mp3",
+    "durationSec": 286.07,
+    "bpm": 117.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600022",
+    "credit": "Inspired Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -65.2
+    }
+  },
+  {
+    "id": "incompetech-newer-wave",
+    "mood": "inspiring-uplifting",
+    "title": "Newer Wave",
+    "artist": "Kevin MacLeod",
+    "file": "inspiring-uplifting/incompetech-newer-wave.mp3",
+    "durationSec": 174.6,
+    "bpm": 112.3,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2000024",
+    "credit": "Newer Wave Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.09,
+      "vocalRatioDb": -45.0
+    }
+  },
+  {
+    "id": "incompetech-life-of-riley",
+    "mood": "inspiring-uplifting",
+    "title": "Life of Riley",
+    "artist": "Kevin MacLeod",
+    "file": "inspiring-uplifting/incompetech-life-of-riley.mp3",
+    "durationSec": 235.36,
+    "bpm": 103.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400054",
+    "credit": "Life of Riley Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -65.3
+    }
+  },
+  {
+    "id": "incompetech-carefree",
+    "mood": "inspiring-uplifting",
+    "title": "Carefree",
+    "artist": "Kevin MacLeod",
+    "file": "inspiring-uplifting/incompetech-carefree.mp3",
+    "durationSec": 205.14,
+    "bpm": 95.7,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400037",
+    "credit": "Carefree Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -44.7
+    }
+  },
+  {
+    "id": "incompetech-montauk-point",
+    "mood": "inspiring-uplifting",
+    "title": "Montauk Point",
+    "artist": "Kevin MacLeod",
+    "file": "inspiring-uplifting/incompetech-montauk-point.mp3",
+    "durationSec": 219.72,
+    "bpm": 117.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400013",
+    "credit": "Montauk Point Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -66.0
+    }
+  },
+  {
+    "id": "incompetech-mana-two-part-1",
+    "mood": "minimal-ambient",
+    "title": "Mana Two - Part 1",
+    "artist": "Kevin MacLeod",
+    "file": "minimal-ambient/incompetech-mana-two-part-1.mp3",
+    "durationSec": 234.01,
+    "bpm": 117.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1900036",
+    "credit": "Mana Two - Part 1 Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 2.32,
+      "vocalRatioDb": -52.8
+    }
+  },
+  {
+    "id": "incompetech-mana-two-part-3",
+    "mood": "minimal-ambient",
+    "title": "Mana Two - Part 3",
+    "artist": "Kevin MacLeod",
+    "file": "minimal-ambient/incompetech-mana-two-part-3.mp3",
+    "durationSec": 192.0,
+    "bpm": 99.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1900038",
+    "credit": "Mana Two - Part 3 Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -50.9
+    }
+  },
+  {
+    "id": "incompetech-mirage",
+    "mood": "minimal-ambient",
+    "title": "Mirage",
+    "artist": "Kevin MacLeod",
+    "file": "minimal-ambient/incompetech-mirage.mp3",
+    "durationSec": 240.07,
+    "bpm": 161.5,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100877",
+    "credit": "Mirage Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -60.5
+    }
+  },
+  {
+    "id": "incompetech-airship-serenity",
+    "mood": "minimal-ambient",
+    "title": "Airship Serenity",
+    "artist": "Kevin MacLeod",
+    "file": "minimal-ambient/incompetech-airship-serenity.mp3",
+    "durationSec": 240.07,
+    "bpm": 99.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600046",
+    "credit": "Airship Serenity Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -24.9
+    }
+  },
+  {
+    "id": "incompetech-energizing",
+    "mood": "minimal-ambient",
+    "title": "Energizing",
+    "artist": "Kevin MacLeod",
+    "file": "minimal-ambient/incompetech-energizing.mp3",
+    "durationSec": 133.36,
+    "bpm": 89.1,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1900040",
+    "credit": "Energizing Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -53.1
+    }
+  },
+  {
+    "id": "incompetech-cloud-dancer",
+    "mood": "upbeat-fun",
+    "title": "Cloud Dancer",
+    "artist": "Kevin MacLeod",
+    "file": "upbeat-fun/incompetech-cloud-dancer.mp3",
+    "durationSec": 219.87,
+    "bpm": 107.7,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300007",
+    "credit": "Cloud Dancer Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.19,
+      "vocalRatioDb": -20.2
+    }
+  },
+  {
+    "id": "incompetech-paradise-found",
+    "mood": "upbeat-fun",
+    "title": "Paradise Found",
+    "artist": "Kevin MacLeod",
+    "file": "upbeat-fun/incompetech-paradise-found.mp3",
+    "durationSec": 187.48,
+    "bpm": 143.6,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300000",
+    "credit": "Paradise Found Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -31.5
+    }
+  },
+  {
+    "id": "incompetech-voxel-revolution",
+    "mood": "upbeat-fun",
+    "title": "Voxel Revolution",
+    "artist": "Kevin MacLeod",
+    "file": "upbeat-fun/incompetech-voxel-revolution.mp3",
+    "durationSec": 129.91,
+    "bpm": 123.0,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2000025",
+    "credit": "Voxel Revolution Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -39.8
+    }
+  },
+  {
+    "id": "incompetech-island-meet-and-greet",
+    "mood": "upbeat-fun",
+    "title": "Island Meet and Greet",
+    "artist": "Kevin MacLeod",
+    "file": "upbeat-fun/incompetech-island-meet-and-greet.mp3",
+    "durationSec": 216.97,
+    "bpm": 99.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2000004",
+    "credit": "Island Meet and Greet Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -40.7
+    }
+  },
+  {
+    "id": "incompetech-blippy-trance",
+    "mood": "upbeat-fun",
+    "title": "Blippy Trance",
+    "artist": "Kevin MacLeod",
+    "file": "upbeat-fun/incompetech-blippy-trance.mp3",
+    "durationSec": 120.01,
+    "bpm": 99.4,
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1900055",
+    "credit": "Blippy Trance Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/",
+    "check": {
+      "clipRatio": 0.0,
+      "longestSilenceSec": 0.0,
+      "vocalRatioDb": -56.5
+    }
+  }
+]

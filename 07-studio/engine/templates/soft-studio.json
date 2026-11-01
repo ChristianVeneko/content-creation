@@ -1,0 +1,59 @@
+{
+  "id": "soft-studio",
+  "name": "Soft Studio 3D",
+  "category": "3d",
+  "description": "Low-poly 3D on a warm wooden desk: pastel objects against a soft wall with a window patch of sunlight, a desk lamp, books and a plant, one warm key light with a single soft shadow and a slow dolly. Calm, tidy, stylized product-photo feel. No emoji.",
+  "prompt_hint": "6-10 scenes (3-6 s). Each: title.kicker + title.main, visual.type \"scene3d\" with 1-3 desk objects: laptop, phone, monitor, coin (value = stack), chart, document, card, lightbulb. row compares, hero for one product. No emoji.",
+  "best_for": [
+    "product explainers",
+    "personal finance",
+    "productivity",
+    "work and career",
+    "consumer tech"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#F4E9DC",
+      "#E3CDB4",
+      "#FF8A5B"
+    ],
+    "accent": "#FF8A5B",
+    "sample_text": "ESTUDIO"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#F3E6D8",
+          "#E2CDB6"
+        ],
+        "text": "#2B2433",
+        "accent": "#FF8A5B",
+        "accent2": "#5B8DEF",
+        "accent3": "#46A882"
+      },
+      "font": "Poppins",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.05
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

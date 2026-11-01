@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "title": "De dónde vienen las olas",
+  "template": "ukiyo-e",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Una ola puede viajar miles de kilómetros antes de llegar a tu playa.",
+      "title": {
+        "kicker": "océano",
+        "main": "El viaje de una ola"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "waves",
+            "size": "l"
+          }
+        ]
+      }
+    },
+    {
+      "id": "viento",
+      "narration": "Casi todas nacen del viento, que empuja la superficie del mar.",
+      "title": {
+        "kicker": "origen",
+        "main": "Nacen del viento"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              {
+                "label": "viento",
+                "icon": "wind"
+              },
+              {
+                "label": "rizos",
+                "icon": "waves"
+              },
+              {
+                "label": "ola",
+                "icon": "waves"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "energia",
+      "narration": "Lo que viaja no es el agua, es la energía. El agua sube y baja en su sitio.",
+      "title": {
+        "kicker": "el secreto",
+        "main": "Viaja la energía"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "El agua se queda",
+            "body": [
+              "sube y baja en círculos",
+              "la energía avanza"
+            ],
+            "icon": "lightning"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tres",
+      "narration": "Su tamaño depende de tres cosas.",
+      "title": {
+        "kicker": "tamaño",
+        "main": "Tres factores"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "steps": [
+              {
+                "label": "fuerza"
+              },
+              {
+                "label": "duración"
+              },
+              {
+                "label": "distancia"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mar",
+      "narration": "Cuanto más mar abierto recorre el viento, más grande la ola.",
+      "title": {
+        "kicker": "distancia",
+        "main": "El mar abierto"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 1000,
+            "suffix": " km",
+            "label": "de viento sin obstáculos"
+          }
+        ]
+      }
+    },
+    {
+      "id": "orilla",
+      "narration": "Al llegar a la orilla, el fondo la frena por abajo y la ola rompe.",
+      "title": {
+        "kicker": "la orilla",
+        "main": "Por qué rompe"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Mar abierto",
+              "items": [
+                "ola suave",
+                "larga"
+              ]
+            },
+            "right": {
+              "title": "Orilla",
+              "items": [
+                "fondo cerca",
+                "rompe"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "record",
+      "narration": "La ola más alta medida por un instrumento superó los diecinueve metros.",
+      "title": {
+        "kicker": "récord",
+        "main": "Diecinueve metros"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 19,
+            "suffix": " m",
+            "label": "ola más alta medida"
+          },
+          {
+            "type": "stamp",
+            "text": "Récord"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "La próxima vez que veas una ola, piensa en el viento que la empujó lejos de aquí.",
+      "title": {
+        "kicker": "para recordar",
+        "main": "Un viento lejano"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "wind",
+            "size": "l",
+            "label": "viene de lejos"
+          }
+        ]
+      }
+    }
+  ]
+}

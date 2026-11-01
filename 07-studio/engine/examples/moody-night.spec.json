@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "title": "Qué pasa si frenas de golpe a 120",
+  "template": "moody-night",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Vas a ciento veinte por la autopista y frenas de golpe.",
+      "title": {
+        "kicker": "Qué pasa si",
+        "main": "frenas a 120"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "rise",
+        "objects": [
+          {
+            "kind": "car",
+            "model": "car-sedan-sports",
+            "label": "Tú",
+            "highlight": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "velocidad",
+      "narration": "A esa velocidad recorres treinta y tres metros cada segundo.",
+      "title": {
+        "kicker": "Cada segundo",
+        "main": "33 metros"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "33 m",
+            "label": "por segundo"
+          },
+          {
+            "kind": "car",
+            "model": "car-sedan",
+            "size": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "reaccion",
+      "narration": "Tu cerebro tarda casi un segundo en reaccionar antes de pisar el freno.",
+      "title": {
+        "kicker": "Reaccionar",
+        "main": "toma 1 segundo"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "character",
+            "anim": "no",
+            "label": "Reacción"
+          },
+          {
+            "kind": "stat",
+            "value": "1 s",
+            "label": "perdido"
+          }
+        ]
+      }
+    },
+    {
+      "id": "detras",
+      "narration": "El auto de atrás también necesita espacio para frenar.",
+      "title": {
+        "kicker": "El de atrás",
+        "main": "no te ve venir"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "flow",
+        "camera": "glide",
+        "objects": [
+          {
+            "kind": "car",
+            "model": "car-suv",
+            "id": "a",
+            "label": "Atrás"
+          },
+          {
+            "kind": "car",
+            "model": "car-sedan-sports",
+            "id": "b",
+            "label": "Tú"
+          }
+        ]
+      }
+    },
+    {
+      "id": "distancia",
+      "narration": "Por eso la regla es dejar tres segundos de distancia.",
+      "title": {
+        "kicker": "La regla",
+        "main": "3 segundos"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "check",
+            "label": "3 segundos"
+          },
+          {
+            "kind": "cross",
+            "label": "Pegado"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Distancia y calma: así llegas a casa. Comparte esto con quien maneja.",
+      "title": {
+        "kicker": "Llega",
+        "main": "a casa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "set": "city",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "car",
+            "model": "car-taxi",
+            "label": "En casa",
+            "highlight": true
+          }
+        ]
+      }
+    }
+  ]
+}

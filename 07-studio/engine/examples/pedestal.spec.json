@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "title": "Por dentro de tu celular",
+  "template": "pedestal",
+  "language": "es",
+  "brand": { "handle": "@tucanal" },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Lo usas cuatro horas al día, pero ¿sabes qué hay dentro de tu celular?",
+      "title": { "kicker": "Lo usas a diario", "main": "pero por dentro" },
+      "visual": { "type": "scene3d", "camera": "turntable", "objects": [{ "kind": "phone", "icon": "aperture" }] }
+    },
+    {
+      "id": "abrir",
+      "narration": "Si lo abrimos, aparecen tres piezas que hacen casi todo el trabajo.",
+      "title": { "kicker": "Vista explotada", "main": "tres piezas" },
+      "visual": { "type": "scene3d", "layout": "hero", "explode": true, "camera": "orbit", "objects": [{ "kind": "phone", "label": "Pantalla" }, { "kind": "chip", "label": "Procesador" }, { "kind": "battery", "value": 0.8, "label": "Batería" }] }
+    },
+    {
+      "id": "chip",
+      "narration": "El procesador hace billones de cálculos por segundo en un chip más pequeño que una uña.",
+      "title": { "kicker": "El cerebro", "main": "el procesador" },
+      "visual": { "type": "scene3d", "camera": "push", "objects": [{ "kind": "chip", "icon": "cpu", "label": "Procesador" }] }
+    },
+    {
+      "id": "bateria",
+      "narration": "La batería de litio guarda la energía para todo un día de uso.",
+      "title": { "kicker": "La energía", "main": "toda la jornada" },
+      "visual": { "type": "scene3d", "camera": "turntable", "objects": [{ "kind": "battery", "value": 0.92, "label": "Litio" }] }
+    },
+    {
+      "id": "dato",
+      "narration": "Y la cámara junta más de cuarenta y ocho millones de puntos de luz en cada foto.",
+      "title": { "kicker": "La cámara", "main": "48 megapíxeles" },
+      "visual": { "type": "scene3d", "layout": "row", "objects": [{ "kind": "stat", "value": "48MP", "label": "por foto" }, { "kind": "icon", "icon": "camera", "label": "Cámara" }] }
+    },
+    {
+      "id": "cierre",
+      "narration": "Todo eso en tu bolsillo. Sígueme para ver qué hay dentro de otras cosas.",
+      "title": { "kicker": "Todo en", "main": "tu bolsillo" },
+      "visual": { "type": "scene3d", "camera": "dolly", "objects": [{ "kind": "phone", "icon": "sparkle", "highlight": true }] }
+    }
+  ],
+  "post": {
+    "tiktok": "Qué hay dentro de tu celular #tecnologia #celular",
+    "instagram": "Pantalla, procesador y batería: lo que hace funcionar tu celular.",
+    "youtube": { "title": "Por dentro de tu celular", "description": "Vista explotada en 3D de las piezas clave de un smartphone." },
+    "hashtags": ["tecnologia", "celular", "smartphone", "explicado"]
+  }
+}

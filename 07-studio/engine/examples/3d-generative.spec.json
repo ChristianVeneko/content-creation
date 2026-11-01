@@ -1,0 +1,2431 @@
+{
+ "version": 1,
+ "title": "Tu celular piensa con arena",
+ "template": "clay-diorama",
+ "language": "es",
+ "voice": {
+  "provider": "none"
+ },
+ "hud": {
+  "items": [
+   {
+    "id": "paso",
+    "type": "chip",
+    "value": "ARENA A CHIP"
+   }
+  ]
+ },
+ "brand": {
+  "handle": "@tucanal"
+ },
+ "post": {
+  "tiktok": "De la arena al chip en 15 segundos #tecnologia #chips",
+  "instagram": "Tu celular piensa con arena. Guárdalo.",
+  "youtube": {
+   "title": "Tu celular piensa con arena",
+   "description": "Arena, silicio, obleas y chips: cómo nace el cerebro de tu celular."
+  },
+  "hashtags": [
+   "tecnologia",
+   "chips",
+   "silicio",
+   "explicado"
+  ]
+ },
+ "scenes": [
+  {
+   "id": "hook",
+   "narration": "Tu celular piensa con arena. Y no, no es broma.",
+   "title": {
+    "kicker": "Tu celular",
+    "main": "piensa con arena"
+   },
+   "visual": {
+    "type": "scene3d",
+    "layout": "hero",
+    "camera": "static",
+    "objects": [
+     {
+      "kind": "custom",
+      "id": "chispa",
+      "color": "accent",
+      "parts": [
+       {
+        "id": "leg-l",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         -0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "leg-r",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "foot-l",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-l",
+        "role": "accent"
+       },
+       {
+        "id": "foot-r",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-r",
+        "role": "accent"
+       },
+       {
+        "id": "body",
+        "shape": "capsule",
+        "size": [
+         0.34,
+         0.3
+        ],
+        "pos": [
+         0,
+         0.8,
+         0
+        ]
+       },
+       {
+        "id": "belly",
+        "shape": "box",
+        "size": [
+         0.3,
+         0.2,
+         0.05
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         -0.02,
+         0.32
+        ],
+        "parent": "body",
+        "role": "accent"
+       },
+       {
+        "id": "head",
+        "shape": "box",
+        "size": [
+         0.76,
+         0.58,
+         0.6
+        ],
+        "radius": 0.2,
+        "pos": [
+         0,
+         0.74,
+         0
+        ],
+        "parent": "body",
+        "role": "light"
+       },
+       {
+        "id": "visor",
+        "shape": "box",
+        "size": [
+         0.6,
+         0.34,
+         0.06
+        ],
+        "radius": 0.12,
+        "pos": [
+         0,
+         0,
+         0.29
+        ],
+        "parent": "head",
+        "role": "dark"
+       },
+       {
+        "id": "eye-l",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         -0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "eye-r",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "mouth",
+        "shape": "torus",
+        "size": [
+         0.07,
+         0.016,
+         180
+        ],
+        "pos": [
+         0,
+         -0.07,
+         0.04
+        ],
+        "rot": [
+         0,
+         0,
+         180
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "antenna",
+        "shape": "cylinder",
+        "size": [
+         0.022,
+         0.24
+        ],
+        "pos": [
+         0,
+         0.4,
+         0
+        ],
+        "parent": "head",
+        "role": "metal"
+       },
+       {
+        "id": "tip",
+        "shape": "sphere",
+        "size": [
+         0.07
+        ],
+        "pos": [
+         0,
+         0.15,
+         0
+        ],
+        "parent": "antenna",
+        "material": "emissive",
+        "color": "accent3",
+        "motion": [
+         {
+          "type": "breathe",
+          "amp": 0.25,
+          "speed": 3
+         }
+        ]
+       },
+       {
+        "id": "arm-l",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         -0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         -12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body"
+       },
+       {
+        "id": "arm-r",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body",
+        "motion": [
+         {
+          "type": "wave",
+          "at": "celular",
+          "until": "broma"
+         }
+        ]
+       },
+       {
+        "id": "hand-l",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-l",
+        "role": "light"
+       },
+       {
+        "id": "hand-r",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-r",
+        "role": "light"
+       }
+      ],
+      "motion": [
+       {
+        "type": "blink",
+        "parts": [
+         "eye-l",
+         "eye-r"
+        ]
+       },
+       {
+        "type": "pop-in",
+        "at": 0.15
+       },
+       {
+        "type": "breathe"
+       }
+      ]
+     }
+    ],
+    "cameraKeys": [
+     {
+      "at": 0,
+      "yaw": -22,
+      "zoom": 1.3,
+      "pitch": -6
+     },
+     {
+      "at": "arena",
+      "yaw": 10,
+      "zoom": 0.92,
+      "ease": "out"
+     },
+     {
+      "at": "fin",
+      "yaw": 16,
+      "zoom": 0.85
+     }
+    ],
+    "fx": [
+     {
+      "type": "glow",
+      "target": "chispa",
+      "color": "accent"
+     },
+     {
+      "type": "particles",
+      "kind": "sparks",
+      "target": "chispa",
+      "burst": true,
+      "at": "arena"
+     },
+     {
+      "type": "particles",
+      "kind": "dust"
+     }
+    ]
+   }
+  },
+  {
+   "id": "lingote",
+   "narration": "La arena se funde y se convierte en un lingote de silicio casi puro.",
+   "title": {
+    "kicker": "Paso 1",
+    "main": "arena a silicio"
+   },
+   "visual": {
+    "type": "scene3d",
+    "layout": "row",
+    "camera": "orbit",
+    "objects": [
+     {
+      "kind": "custom",
+      "id": "chispa",
+      "color": "accent",
+      "parts": [
+       {
+        "id": "leg-l",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         -0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "leg-r",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "foot-l",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-l",
+        "role": "accent"
+       },
+       {
+        "id": "foot-r",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-r",
+        "role": "accent"
+       },
+       {
+        "id": "body",
+        "shape": "capsule",
+        "size": [
+         0.34,
+         0.3
+        ],
+        "pos": [
+         0,
+         0.8,
+         0
+        ]
+       },
+       {
+        "id": "belly",
+        "shape": "box",
+        "size": [
+         0.3,
+         0.2,
+         0.05
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         -0.02,
+         0.32
+        ],
+        "parent": "body",
+        "role": "accent"
+       },
+       {
+        "id": "head",
+        "shape": "box",
+        "size": [
+         0.76,
+         0.58,
+         0.6
+        ],
+        "radius": 0.2,
+        "pos": [
+         0,
+         0.74,
+         0
+        ],
+        "parent": "body",
+        "role": "light"
+       },
+       {
+        "id": "visor",
+        "shape": "box",
+        "size": [
+         0.6,
+         0.34,
+         0.06
+        ],
+        "radius": 0.12,
+        "pos": [
+         0,
+         0,
+         0.29
+        ],
+        "parent": "head",
+        "role": "dark"
+       },
+       {
+        "id": "eye-l",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         -0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "eye-r",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "mouth",
+        "shape": "torus",
+        "size": [
+         0.07,
+         0.016,
+         180
+        ],
+        "pos": [
+         0,
+         -0.07,
+         0.04
+        ],
+        "rot": [
+         0,
+         0,
+         180
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "antenna",
+        "shape": "cylinder",
+        "size": [
+         0.022,
+         0.24
+        ],
+        "pos": [
+         0,
+         0.4,
+         0
+        ],
+        "parent": "head",
+        "role": "metal"
+       },
+       {
+        "id": "tip",
+        "shape": "sphere",
+        "size": [
+         0.07
+        ],
+        "pos": [
+         0,
+         0.15,
+         0
+        ],
+        "parent": "antenna",
+        "material": "emissive",
+        "color": "accent3",
+        "motion": [
+         {
+          "type": "breathe",
+          "amp": 0.25,
+          "speed": 3
+         }
+        ]
+       },
+       {
+        "id": "arm-l",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         -0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         -12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body"
+       },
+       {
+        "id": "arm-r",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body"
+       },
+       {
+        "id": "hand-l",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-l",
+        "role": "light"
+       },
+       {
+        "id": "hand-r",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-r",
+        "role": "light"
+       }
+      ],
+      "motion": [
+       {
+        "type": "blink",
+        "parts": [
+         "eye-l",
+         "eye-r"
+        ]
+       },
+       {
+        "type": "float"
+       }
+      ],
+      "keys": [
+       {
+        "at": 0,
+        "rot": [
+         0,
+         -35,
+         0
+        ]
+       },
+       {
+        "at": "lingote",
+        "rot": [
+         0,
+         -20,
+         0
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "custom",
+      "id": "lingote",
+      "label": "Silicio",
+      "parts": [
+       {
+        "id": "ingot",
+        "shape": "lathe",
+        "points": [
+         [
+          0,
+          0
+         ],
+         [
+          0.34,
+          0.02
+         ],
+         [
+          0.42,
+          0.12
+         ],
+         [
+          0.42,
+          1.15
+         ],
+         [
+          0.36,
+          1.26
+         ],
+         [
+          0.2,
+          1.31
+         ],
+         [
+          0,
+          1.32
+         ]
+        ],
+        "material": "plastic",
+        "color": "#B8C7D9"
+       },
+       {
+        "id": "band",
+        "shape": "torus",
+        "size": [
+         0.43,
+         0.025
+        ],
+        "pos": [
+         0,
+         0.66,
+         0
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "material": "emissive",
+        "color": "accent2"
+       },
+       {
+        "id": "cap",
+        "shape": "cylinder",
+        "size": [
+         0.2,
+         0.2,
+         0.04
+        ],
+        "pos": [
+         0,
+         1.33,
+         0
+        ],
+        "material": "emissive",
+        "color": "accent3"
+       }
+      ],
+      "motion": [
+       {
+        "type": "pop-in",
+        "at": "funde"
+       },
+       {
+        "type": "spin",
+        "speed": 0.6
+       }
+      ]
+     }
+    ],
+    "fx": [
+     {
+      "type": "particles",
+      "kind": "embers",
+      "target": "lingote",
+      "at": "funde"
+     },
+     {
+      "type": "hologram",
+      "target": "lingote",
+      "at": "lingote"
+     },
+     {
+      "type": "shockwave",
+      "target": "lingote",
+      "at": "funde"
+     }
+    ]
+   }
+  },
+  {
+   "id": "chip",
+   "narration": "Ese silicio se corta en obleas finísimas y de ahí nace un chip.",
+   "title": {
+    "kicker": "Paso 2",
+    "main": "nace el chip"
+   },
+   "visual": {
+    "type": "scene3d",
+    "layout": "hero",
+    "camera": "static",
+    "objects": [
+     {
+      "kind": "custom",
+      "id": "chip",
+      "parts": [
+       {
+        "id": "frame",
+        "shape": "group",
+        "pos": [
+         0,
+         0.95,
+         0
+        ],
+        "rot": [
+         58,
+         0,
+         0
+        ]
+       },
+       {
+        "id": "base",
+        "shape": "box",
+        "size": [
+         1.5,
+         0.2,
+         1.5
+        ],
+        "radius": 0.07,
+        "parent": "frame",
+        "role": "dark"
+       },
+       {
+        "id": "die",
+        "shape": "box",
+        "size": [
+         0.92,
+         0.08,
+         0.92
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         0.13,
+         0
+        ],
+        "parent": "base",
+        "role": "metal"
+       },
+       {
+        "id": "core",
+        "shape": "box",
+        "size": [
+         0.5,
+         0.05,
+         0.5
+        ],
+        "radius": 0.02,
+        "pos": [
+         0,
+         0.06,
+         0
+        ],
+        "parent": "die",
+        "material": "emissive",
+        "color": "accent"
+       },
+       {
+        "id": "ring",
+        "shape": "torus",
+        "size": [
+         0.42,
+         0.02
+        ],
+        "pos": [
+         0,
+         0.07,
+         0
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "parent": "die",
+        "material": "emissive",
+        "color": "accent2"
+       },
+       {
+        "id": "pin1",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         -0.42,
+         0,
+         0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin2",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0,
+         0,
+         0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin3",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0.42,
+         0,
+         0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin4",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         -0.42,
+         0,
+         -0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin5",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0,
+         0,
+         -0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin6",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0.42,
+         0,
+         -0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin7",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         0.84,
+         0,
+         -0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin8",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         0.84,
+         0,
+         0
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin9",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         0.84,
+         0,
+         0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin10",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         -0.84,
+         0,
+         -0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin11",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         -0.84,
+         0,
+         0
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin12",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         -0.84,
+         0,
+         0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       }
+      ],
+      "motion": [
+       {
+        "type": "assemble",
+        "at": 0.3
+       },
+       {
+        "type": "float",
+        "at": "chip"
+       }
+      ],
+      "at": 0.3,
+      "label": "Chip"
+     }
+    ],
+    "cameraKeys": [
+     {
+      "at": 0,
+      "yaw": -30,
+      "zoom": 1.2
+     },
+     {
+      "at": "chip",
+      "yaw": 12,
+      "zoom": 0.88,
+      "ease": "back"
+     },
+     {
+      "at": "fin",
+      "yaw": 20,
+      "zoom": 0.84
+     }
+    ],
+    "fx": [
+     {
+      "type": "shockwave",
+      "target": "chip",
+      "at": "chip"
+     },
+     {
+      "type": "particles",
+      "kind": "sparks",
+      "target": "chip",
+      "burst": true,
+      "at": "chip"
+     },
+     {
+      "type": "pulse",
+      "target": "chip/core",
+      "at": "chip"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bits",
+   "narration": "Adentro hay miles de millones de interruptores que solo dicen uno o cero.",
+   "title": {
+    "kicker": "Por dentro",
+    "main": "solo unos y ceros"
+   },
+   "visual": {
+    "type": "scene3d",
+    "layout": "hero",
+    "camera": "rise",
+    "objects": [
+     {
+      "kind": "custom",
+      "id": "chispa",
+      "color": "accent",
+      "parts": [
+       {
+        "id": "leg-l",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         -0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "leg-r",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "foot-l",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-l",
+        "role": "accent"
+       },
+       {
+        "id": "foot-r",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-r",
+        "role": "accent"
+       },
+       {
+        "id": "body",
+        "shape": "capsule",
+        "size": [
+         0.34,
+         0.3
+        ],
+        "pos": [
+         0,
+         0.8,
+         0
+        ]
+       },
+       {
+        "id": "belly",
+        "shape": "box",
+        "size": [
+         0.3,
+         0.2,
+         0.05
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         -0.02,
+         0.32
+        ],
+        "parent": "body",
+        "role": "accent"
+       },
+       {
+        "id": "head",
+        "shape": "box",
+        "size": [
+         0.76,
+         0.58,
+         0.6
+        ],
+        "radius": 0.2,
+        "pos": [
+         0,
+         0.74,
+         0
+        ],
+        "parent": "body",
+        "role": "light"
+       },
+       {
+        "id": "visor",
+        "shape": "box",
+        "size": [
+         0.6,
+         0.34,
+         0.06
+        ],
+        "radius": 0.12,
+        "pos": [
+         0,
+         0,
+         0.29
+        ],
+        "parent": "head",
+        "role": "dark"
+       },
+       {
+        "id": "eye-l",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         -0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "eye-r",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "mouth",
+        "shape": "torus",
+        "size": [
+         0.07,
+         0.016,
+         180
+        ],
+        "pos": [
+         0,
+         -0.07,
+         0.04
+        ],
+        "rot": [
+         0,
+         0,
+         180
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "antenna",
+        "shape": "cylinder",
+        "size": [
+         0.022,
+         0.24
+        ],
+        "pos": [
+         0,
+         0.4,
+         0
+        ],
+        "parent": "head",
+        "role": "metal"
+       },
+       {
+        "id": "tip",
+        "shape": "sphere",
+        "size": [
+         0.07
+        ],
+        "pos": [
+         0,
+         0.15,
+         0
+        ],
+        "parent": "antenna",
+        "material": "emissive",
+        "color": "accent3",
+        "motion": [
+         {
+          "type": "breathe",
+          "amp": 0.25,
+          "speed": 3
+         }
+        ]
+       },
+       {
+        "id": "arm-l",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         -0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         -12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body"
+       },
+       {
+        "id": "arm-r",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body"
+       },
+       {
+        "id": "hand-l",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-l",
+        "role": "light"
+       },
+       {
+        "id": "hand-r",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-r",
+        "role": "light"
+       }
+      ],
+      "motion": [
+       {
+        "type": "blink",
+        "parts": [
+         "eye-l",
+         "eye-r"
+        ]
+       },
+       {
+        "type": "walk",
+        "parts": [
+         "leg-l",
+         "leg-r",
+         "arm-l",
+         "arm-r"
+        ],
+        "until": 2.2
+       }
+      ],
+      "keys": [
+       {
+        "at": 0,
+        "pos": [
+         -1.6,
+         0,
+         -0.4
+        ],
+        "rot": [
+         0,
+         70,
+         0
+        ]
+       },
+       {
+        "at": 2.2,
+        "pos": [
+         0,
+         0,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         0
+        ],
+        "ease": "out"
+       }
+      ]
+     },
+     {
+      "kind": "custom",
+      "id": "uno",
+      "parts": [
+       {
+        "id": "glyph",
+        "shape": "extrude",
+        "size": [
+         0.2
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         0.55,
+         0
+        ],
+        "color": "accent2",
+        "points": [
+         [
+          -0.07,
+          -0.42
+         ],
+         [
+          0.09,
+          -0.42
+         ],
+         [
+          0.09,
+          0.42
+         ],
+         [
+          -0.03,
+          0.42
+         ],
+         [
+          -0.22,
+          0.24
+         ],
+         [
+          -0.14,
+          0.15
+         ],
+         [
+          -0.07,
+          0.23
+         ]
+        ]
+       }
+      ],
+      "size": 1.5,
+      "at": "interruptores",
+      "motion": [
+       {
+        "type": "pop-in",
+        "at": "interruptores"
+       },
+       {
+        "type": "hop",
+        "at": "uno",
+        "amp": 0.4
+       }
+      ]
+     },
+     {
+      "kind": "custom",
+      "id": "cero",
+      "parts": [
+       {
+        "id": "glyph",
+        "shape": "torus",
+        "size": [
+         0.3,
+         0.09
+        ],
+        "pos": [
+         0,
+         0.55,
+         0
+        ],
+        "scale": [
+         0.8,
+         1.15,
+         1
+        ],
+        "color": "accent3"
+       }
+      ],
+      "size": 1.5,
+      "at": "dicen",
+      "motion": [
+       {
+        "type": "pop-in",
+        "at": "dicen"
+       },
+       {
+        "type": "orbit",
+        "amp": 0.55,
+        "speed": 1.8,
+        "at": "dicen"
+       },
+       {
+        "type": "spin",
+        "axis": "y",
+        "speed": 1.5
+       }
+      ]
+     }
+    ],
+    "fx": [
+     {
+      "type": "trail",
+      "target": "cero",
+      "color": "accent3",
+      "size": 1.4
+     },
+     {
+      "type": "pulse",
+      "target": "chispa/tip"
+     },
+     {
+      "type": "shockwave",
+      "target": "uno",
+      "at": "uno"
+     },
+     {
+      "type": "particles",
+      "kind": "stars",
+      "at": "millones"
+     }
+    ]
+   }
+  },
+  {
+   "id": "cta",
+   "narration": "Así, con arena, ves cada foto y cada video. Sígueme para más.",
+   "title": {
+    "kicker": "Arena que piensa",
+    "main": "sígueme para más"
+   },
+   "visual": {
+    "type": "scene3d",
+    "layout": "hero",
+    "camera": "static",
+    "objects": [
+     {
+      "kind": "custom",
+      "id": "chispa",
+      "color": "accent",
+      "parts": [
+       {
+        "id": "leg-l",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         -0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "leg-r",
+        "shape": "cylinder",
+        "size": [
+         0.11,
+         0.42
+        ],
+        "pos": [
+         0.17,
+         0.21,
+         0
+        ],
+        "pivot": [
+         0,
+         0.21,
+         0
+        ],
+        "role": "dark"
+       },
+       {
+        "id": "foot-l",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-l",
+        "role": "accent"
+       },
+       {
+        "id": "foot-r",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.1,
+         0.3
+        ],
+        "radius": 0.04,
+        "pos": [
+         0,
+         -0.22,
+         0.05
+        ],
+        "parent": "leg-r",
+        "role": "accent"
+       },
+       {
+        "id": "body",
+        "shape": "capsule",
+        "size": [
+         0.34,
+         0.3
+        ],
+        "pos": [
+         0,
+         0.8,
+         0
+        ]
+       },
+       {
+        "id": "belly",
+        "shape": "box",
+        "size": [
+         0.3,
+         0.2,
+         0.05
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         -0.02,
+         0.32
+        ],
+        "parent": "body",
+        "role": "accent"
+       },
+       {
+        "id": "head",
+        "shape": "box",
+        "size": [
+         0.76,
+         0.58,
+         0.6
+        ],
+        "radius": 0.2,
+        "pos": [
+         0,
+         0.74,
+         0
+        ],
+        "parent": "body",
+        "role": "light"
+       },
+       {
+        "id": "visor",
+        "shape": "box",
+        "size": [
+         0.6,
+         0.34,
+         0.06
+        ],
+        "radius": 0.12,
+        "pos": [
+         0,
+         0,
+         0.29
+        ],
+        "parent": "head",
+        "role": "dark"
+       },
+       {
+        "id": "eye-l",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         -0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "eye-r",
+        "shape": "sphere",
+        "size": [
+         0.075,
+         0.095,
+         0.04
+        ],
+        "pos": [
+         0.13,
+         0.03,
+         0.04
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "mouth",
+        "shape": "torus",
+        "size": [
+         0.07,
+         0.016,
+         180
+        ],
+        "pos": [
+         0,
+         -0.07,
+         0.04
+        ],
+        "rot": [
+         0,
+         0,
+         180
+        ],
+        "parent": "visor",
+        "material": "emissive",
+        "color": "#7CF7FF"
+       },
+       {
+        "id": "antenna",
+        "shape": "cylinder",
+        "size": [
+         0.022,
+         0.24
+        ],
+        "pos": [
+         0,
+         0.4,
+         0
+        ],
+        "parent": "head",
+        "role": "metal"
+       },
+       {
+        "id": "tip",
+        "shape": "sphere",
+        "size": [
+         0.07
+        ],
+        "pos": [
+         0,
+         0.15,
+         0
+        ],
+        "parent": "antenna",
+        "material": "emissive",
+        "color": "accent3",
+        "motion": [
+         {
+          "type": "breathe",
+          "amp": 0.25,
+          "speed": 3
+         }
+        ]
+       },
+       {
+        "id": "arm-l",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         -0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         -12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body"
+       },
+       {
+        "id": "arm-r",
+        "shape": "capsule",
+        "size": [
+         0.075,
+         0.3
+        ],
+        "pos": [
+         0.44,
+         0.04,
+         0
+        ],
+        "rot": [
+         0,
+         0,
+         12
+        ],
+        "pivot": [
+         0,
+         0.2,
+         0
+        ],
+        "parent": "body",
+        "motion": [
+         {
+          "type": "wave",
+          "at": "foto",
+          "until": "Sígueme"
+         }
+        ]
+       },
+       {
+        "id": "hand-l",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-l",
+        "role": "light"
+       },
+       {
+        "id": "hand-r",
+        "shape": "sphere",
+        "size": [
+         0.1
+        ],
+        "pos": [
+         0,
+         -0.26,
+         0
+        ],
+        "parent": "arm-r",
+        "role": "light"
+       }
+      ],
+      "motion": [
+       {
+        "type": "blink",
+        "parts": [
+         "eye-l",
+         "eye-r"
+        ]
+       },
+       {
+        "type": "hop",
+        "at": "Sígueme",
+        "amp": 0.3
+       }
+      ]
+     },
+     {
+      "kind": "custom",
+      "id": "chip2",
+      "parts": [
+       {
+        "id": "frame",
+        "shape": "group",
+        "pos": [
+         0,
+         0.95,
+         0
+        ],
+        "rot": [
+         58,
+         0,
+         0
+        ]
+       },
+       {
+        "id": "base",
+        "shape": "box",
+        "size": [
+         1.5,
+         0.2,
+         1.5
+        ],
+        "radius": 0.07,
+        "parent": "frame",
+        "role": "dark"
+       },
+       {
+        "id": "die",
+        "shape": "box",
+        "size": [
+         0.92,
+         0.08,
+         0.92
+        ],
+        "radius": 0.03,
+        "pos": [
+         0,
+         0.13,
+         0
+        ],
+        "parent": "base",
+        "role": "metal"
+       },
+       {
+        "id": "core",
+        "shape": "box",
+        "size": [
+         0.5,
+         0.05,
+         0.5
+        ],
+        "radius": 0.02,
+        "pos": [
+         0,
+         0.06,
+         0
+        ],
+        "parent": "die",
+        "material": "emissive",
+        "color": "accent"
+       },
+       {
+        "id": "ring",
+        "shape": "torus",
+        "size": [
+         0.42,
+         0.02
+        ],
+        "pos": [
+         0,
+         0.07,
+         0
+        ],
+        "rot": [
+         90,
+         0,
+         0
+        ],
+        "parent": "die",
+        "material": "emissive",
+        "color": "accent2"
+       },
+       {
+        "id": "pin1",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         -0.42,
+         0,
+         0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin2",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0,
+         0,
+         0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin3",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0.42,
+         0,
+         0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin4",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         -0.42,
+         0,
+         -0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin5",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0,
+         0,
+         -0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin6",
+        "shape": "box",
+        "size": [
+         0.12,
+         0.06,
+         0.22
+        ],
+        "pos": [
+         0.42,
+         0,
+         -0.84
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin7",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         0.84,
+         0,
+         -0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin8",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         0.84,
+         0,
+         0
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin9",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         0.84,
+         0,
+         0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin10",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         -0.84,
+         0,
+         -0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin11",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         -0.84,
+         0,
+         0
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       },
+       {
+        "id": "pin12",
+        "shape": "box",
+        "size": [
+         0.22,
+         0.06,
+         0.12
+        ],
+        "pos": [
+         -0.84,
+         0,
+         0.42
+        ],
+        "parent": "base",
+        "material": "metal",
+        "color": "#E8C76A"
+       }
+      ],
+      "motion": [
+       {
+        "type": "explode",
+        "at": "video",
+        "amp": 0.35
+       },
+       {
+        "type": "float"
+       }
+      ],
+      "size": 1.3
+     }
+    ],
+    "cameraKeys": [
+     {
+      "at": 0,
+      "yaw": -12,
+      "zoom": 1.05
+     },
+     {
+      "at": "Sígueme",
+      "yaw": 14,
+      "zoom": 0.9,
+      "pitch": 4
+     }
+    ],
+    "fx": [
+     {
+      "type": "particles",
+      "kind": "confetti",
+      "burst": true,
+      "target": "chispa",
+      "at": "Sígueme"
+     },
+     {
+      "type": "sweep",
+      "at": "foto",
+      "color": "accent2"
+     },
+     {
+      "type": "glow",
+      "target": "chip2",
+      "color": "accent2"
+     }
+    ]
+   }
+  }
+ ]
+}

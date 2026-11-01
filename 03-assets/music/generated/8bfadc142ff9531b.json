@@ -1,0 +1,16 @@
+{
+  "id": "elevenlabs-8bfadc142ff9531b",
+  "mood": null,
+  "title": "Custom track",
+  "artist": "ElevenLabs Music",
+  "file": "generated/8bfadc142ff9531b.mp3",
+  "durationSec": 15,
+  "license": "ElevenLabs Music (generated)",
+  "credit": "Music: generated with ElevenLabs Music",
+  "prompt": "chill lo-fi hip hop beat, mellow electric piano, soft vinyl texture, steady relaxed drums, modern tech vibe, educativo tone. Instrumental background music for a short vertical video voiceover, no vocals, consistent energy, loopable ending.",
+  "model": "music_v1",
+  "createdAt": "2026-11-01T00:23:48.210Z",
+  "response": {
+    "song-id": "ns8R4fXqdLbpPVYP6jVx"
+  }
+}

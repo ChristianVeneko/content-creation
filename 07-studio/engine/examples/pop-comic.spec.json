@@ -1,0 +1,210 @@
+{
+  "version": 1,
+  "title": "El phishing contra ti",
+  "template": "pop-comic",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Te llega un correo de tu banco. Todo parece normal. Pero es una trampa.",
+      "title": {
+        "kicker": "mientras tanto, en tu bandeja",
+        "main": "Una trampa perfecta"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "chat",
+            "messages": [
+              {
+                "role": "assistant",
+                "text": "Tu cuenta será bloqueada hoy"
+              },
+              {
+                "role": "user",
+                "text": "¿Qué? ¿Por qué?"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "remitente",
+      "narration": "Pista uno: el remitente. Una letra cambiada y ya no es tu banco.",
+      "title": {
+        "kicker": "pista 1",
+        "main": "Mira el remitente",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "banco-seguro.co",
+            "body": [
+              "no es tu banco",
+              "una letra cambiada"
+            ],
+            "icon": "envelope"
+          }
+        ]
+      }
+    },
+    {
+      "id": "urgencia",
+      "narration": "Pista dos: la prisa. Quieren que actúes sin pensar.",
+      "title": {
+        "kicker": "pista 2",
+        "main": "Prisa falsa",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "clock-countdown",
+            "size": "l",
+            "label": "solo 24 horas"
+          }
+        ]
+      }
+    },
+    {
+      "id": "enlace",
+      "narration": "Pista tres: el enlace. Pasa el ratón por encima antes de pulsar.",
+      "title": {
+        "kicker": "pista 3",
+        "main": "Enlace raro",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "badge",
+            "text": "pasa el ratón primero",
+            "icon": "link"
+          }
+        ]
+      }
+    },
+    {
+      "id": "datos",
+      "narration": "Pista cuatro: un banco nunca te pide la contraseña por correo.",
+      "title": {
+        "kicker": "pista 4",
+        "main": "Nunca tu clave",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stamp",
+            "text": "Nope"
+          },
+          {
+            "type": "icon",
+            "name": "password",
+            "size": "l"
+          }
+        ]
+      }
+    },
+    {
+      "id": "versus",
+      "narration": "Compara un correo real con uno falso.",
+      "title": {
+        "kicker": "duelo",
+        "main": "Real contra falso"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Falso",
+              "items": [
+                "prisa",
+                "enlace raro",
+                "pide clave"
+              ]
+            },
+            "right": {
+              "title": "Real",
+              "items": [
+                "calma",
+                "web oficial",
+                "nunca pide clave"
+              ]
+            },
+            "winner": "right"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dato",
+      "narration": "Casi todos los ciberataques empiezan con un correo así.",
+      "title": {
+        "kicker": "dato",
+        "main": "Así empiezan"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 90,
+            "suffix": "%",
+            "label": "de los ataques empiezan por correo"
+          }
+        ]
+      }
+    },
+    {
+      "id": "defensa",
+      "narration": "Tu escudo: activa la verificación en dos pasos.",
+      "title": {
+        "kicker": "tu escudo",
+        "main": "Doble verificación"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "shield-check",
+            "size": "l",
+            "label": "activa 2FA"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Si dudas, no pulses. Entra tú mismo a la web oficial.",
+      "title": {
+        "kicker": "fin",
+        "main": "Tú ganas"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stamp",
+            "text": "Boom"
+          }
+        ]
+      }
+    }
+  ]
+}

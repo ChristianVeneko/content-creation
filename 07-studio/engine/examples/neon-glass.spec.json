@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "title": "La IA ya escribe código",
+  "template": "neon-glass",
+  "language": "es",
+  "hud": { "items": [{ "id": "nivel", "type": "chip", "value": "2026" }, { "id": "ia", "type": "bar", "label": "Código con IA", "value": 0.2 }] },
+  "brand": { "handle": "@tucanal" },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "La mitad del código nuevo ya lo escribe una inteligencia artificial.",
+      "title": { "kicker": "Esto ya pasó", "main": "la IA programa" },
+      "visual": { "type": "scene3d", "camera": "push", "objects": [{ "kind": "chip", "icon": "brain", "label": "Modelo IA", "highlight": true }] }
+    },
+    {
+      "id": "dato",
+      "narration": "En muchos equipos, más del cincuenta por ciento de las líneas nuevas vienen de un modelo.",
+      "title": { "kicker": "Código nuevo", "main": "hecho con IA" },
+      "hud": { "ia": { "value": 0.55 } },
+      "visual": { "type": "scene3d", "layout": "row", "objects": [{ "kind": "stat", "value": "55%", "label": "de las líneas" }, { "kind": "monitor", "icon": "code", "label": "Editor" }] }
+    },
+    {
+      "id": "flujo",
+      "narration": "Tú describes la idea, el agente escribe, prueba y te entrega cambios listos para revisar.",
+      "title": { "kicker": "El nuevo flujo", "main": "describe y revisa" },
+      "hud": { "ia": { "value": 0.7 } },
+      "visual": { "type": "scene3d", "layout": "flow", "camera": "orbit", "objects": [{ "kind": "person", "label": "Tú" }, { "kind": "chip", "label": "Agente" }, { "kind": "document", "icon": "git-pull-request", "label": "Cambios" }] }
+    },
+    {
+      "id": "riesgo",
+      "narration": "Pero el riesgo también crece: código que nadie revisó puede abrir agujeros de seguridad.",
+      "title": { "kicker": "Ojo con", "main": "la seguridad" },
+      "hud": { "nivel": { "value": "RIESGO", "color": "accent2" } },
+      "visual": { "type": "scene3d", "layout": "row", "objects": [{ "kind": "lock", "label": "Revisado", "color": "accent" }, { "kind": "cross", "label": "Sin revisar" }] }
+    },
+    {
+      "id": "habilidad",
+      "narration": "La habilidad que más vale ahora es saber pedir, revisar y decidir.",
+      "title": { "kicker": "Lo que vale", "main": "criterio" },
+      "hud": { "ia": { "value": 0.9 } },
+      "visual": { "type": "scene3d", "layout": "hero", "camera": "dolly", "objects": [{ "kind": "lightbulb", "label": "Criterio", "highlight": true }, { "kind": "check", "size": 0.9 }, { "kind": "key", "size": 0.9 }] }
+    },
+    {
+      "id": "cierre",
+      "narration": "Sígueme si quieres programar con IA sin perder el control.",
+      "title": { "kicker": "Sígueme para", "main": "no quedarte atrás" },
+      "hud": { "nivel": { "value": "TÚ" }, "ia": { "value": 1 } },
+      "visual": { "type": "scene3d", "camera": "crane", "objects": [{ "kind": "rocket", "label": "Siguiente nivel", "highlight": true }] }
+    }
+  ],
+  "post": {
+    "tiktok": "La IA ya escribe la mitad del código. Esto es lo que cambia #ia #programacion",
+    "instagram": "Describe, revisa, decide: la nueva forma de programar.",
+    "youtube": { "title": "La IA ya escribe código", "description": "Qué cambia cuando la mitad del código lo escribe un modelo." },
+    "hashtags": ["ia", "programacion", "tecnologia", "futuro"]
+  }
+}

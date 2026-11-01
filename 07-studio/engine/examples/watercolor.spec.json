@@ -1,0 +1,237 @@
+{
+  "version": 1,
+  "title": "Cómo come una planta",
+  "template": "watercolor",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Una planta no va al supermercado, y aun así fabrica toda su comida. ¿Cómo lo hace?",
+      "title": {
+        "kicker": "cuaderno de campo",
+        "main": "¿De qué come una planta?"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "plant",
+            "size": "l",
+            "label": "una hoja cualquiera"
+          }
+        ]
+      }
+    },
+    {
+      "id": "luz",
+      "narration": "Todo empieza con la luz del sol, que la hoja atrapa como un panel solar.",
+      "title": {
+        "kicker": "ingrediente uno",
+        "main": "La luz del sol"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "sun",
+            "size": "l"
+          },
+          {
+            "type": "badge",
+            "text": "energía gratis",
+            "icon": "lightning"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agua",
+      "narration": "Las raíces suben agua desde el suelo, gota a gota, hasta las hojas.",
+      "title": {
+        "kicker": "ingrediente dos",
+        "main": "Agua desde la raíz"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "vertical",
+            "nodes": [
+              {
+                "label": "suelo",
+                "icon": "mountains"
+              },
+              {
+                "label": "raíz",
+                "icon": "tree"
+              },
+              {
+                "label": "hoja",
+                "icon": "leaf"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "aire",
+      "narration": "Por unos poros diminutos entra el dióxido de carbono del aire.",
+      "title": {
+        "kicker": "ingrediente tres",
+        "main": "Aire que respiramos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "Estomas",
+            "body": [
+              "poros diminutos en la hoja",
+              "dejan entrar el CO2"
+            ],
+            "icon": "wind"
+          }
+        ]
+      }
+    },
+    {
+      "id": "receta",
+      "narration": "Con luz, agua y aire, la hoja fabrica azúcar: su alimento.",
+      "title": {
+        "kicker": "la receta",
+        "main": "Luz + agua + aire"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              {
+                "label": "luz",
+                "icon": "sun"
+              },
+              {
+                "label": "agua",
+                "icon": "drop"
+              },
+              {
+                "label": "azúcar",
+                "icon": "cube"
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "r",
+            "shape": "underline"
+          },
+          {
+            "type": "badge",
+            "id": "r",
+            "text": "comida hecha en casa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "regalo",
+      "narration": "Y de regalo, la planta suelta oxígeno, el mismo que respiras ahora.",
+      "title": {
+        "kicker": "el regalo",
+        "main": "Sale oxígeno"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "wind",
+            "size": "l",
+            "label": "oxígeno para todos"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cifra",
+      "narration": "Un árbol grande puede producir oxígeno para dos personas durante un año.",
+      "title": {
+        "kicker": "un dato",
+        "main": "Un árbol, dos personas"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 2,
+            "suffix": "",
+            "label": "personas con oxígeno de un árbol"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ciclo",
+      "narration": "Así funciona el ciclo: el sol alimenta a la planta y la planta nos alimenta a nosotros.",
+      "title": {
+        "kicker": "el ciclo",
+        "main": "Todo está conectado"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "steps": [
+              {
+                "label": "sol"
+              },
+              {
+                "label": "hoja"
+              },
+              {
+                "label": "azúcar"
+              },
+              {
+                "label": "nosotros"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "La próxima vez que veas una hoja, piensa que es una pequeña cocina solar.",
+      "title": {
+        "kicker": "para recordar",
+        "main": "Una cocina solar"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "luz",
+              "agua",
+              "aire",
+              "paciencia"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

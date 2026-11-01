@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "slug": "mi-canal",
+  "name": "Mi canal",
+  "handle": "@micanal",
+  "platforms": ["youtube", "tiktok", "instagram"],
+  "language": "es",
+  "niche": "De qué trata el canal, en una frase.",
+  "audience": "A quién le hablas: una persona concreta, no 'creadores'.",
+  "pillars": ["Tema recurrente 1", "Tema recurrente 2", "Tema recurrente 3"],
+  "createdAt": "2026-01-01T00:00:00Z",
+  "defaults": {
+    "template": "reels-noche",
+    "palette": null,
+    "voiceProvider": "elevenlabs",
+    "voiceId": null,
+    "captionStyle": null,
+    "musicMood": "auto",
+    "durationSec": 30,
+    "tone": "Directo y educativo"
+  },
+  "brand": {
+    "avatar": "03-assets/brand/mi-canal/avatar.png",
+    "colors": ["#0C0F14", "#C6F432"]
+  }
+}

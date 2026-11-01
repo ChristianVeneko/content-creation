@@ -1,0 +1,3776 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "filename": "incompetech-scissors.mp3",
+    "trackStem": "incompetech-scissors"
+  },
+  "duration": 207.752,
+  "tempo": 103.36,
+  "analysis": {
+    "sampleRate": 44100,
+    "hopLength": 512,
+    "windowStart": 0.0,
+    "windowDuration": 25.0,
+    "windowEnd": 25.0
+  },
+  "scoring": {
+    "intensityFormula": "0.45*onset_strength + 0.25*local_onset_contrast + 0.20*rms + 0.10*bass_energy",
+    "features": [
+      "onset_strength",
+      "local_onset_contrast",
+      "rms",
+      "bass_energy"
+    ],
+    "normalization": "Per-track robust normalization to 0-1 using the 98th percentile, then clamped.",
+    "strongCueMinimumIntensity": 0.45,
+    "strongCueMaxCount": 64
+  },
+  "beats": [
+    {
+      "time": 0.0464,
+      "intensity": 0.7259,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1279,
+        "bassEnergy": 0.0036
+      }
+    },
+    {
+      "time": 0.6037,
+      "intensity": 0.747,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2332,
+        "bassEnergy": 0.0039
+      }
+    },
+    {
+      "time": 1.1842,
+      "intensity": 0.6859,
+      "features": {
+        "onsetStrength": 0.947,
+        "localOnsetContrast": 0.9856,
+        "rms": 0.0648,
+        "bassEnergy": 0.0042
+      }
+    },
+    {
+      "time": 1.7647,
+      "intensity": 0.4577,
+      "features": {
+        "onsetStrength": 0.6461,
+        "localOnsetContrast": 0.6328,
+        "rms": 0.038,
+        "bassEnergy": 0.0118
+      }
+    },
+    {
+      "time": 2.3452,
+      "intensity": 0.5385,
+      "features": {
+        "onsetStrength": 0.7431,
+        "localOnsetContrast": 0.719,
+        "rms": 0.1064,
+        "bassEnergy": 0.0304
+      }
+    },
+    {
+      "time": 2.9141,
+      "intensity": 0.7405,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1769,
+        "bassEnergy": 0.051
+      }
+    },
+    {
+      "time": 3.4946,
+      "intensity": 0.3927,
+      "features": {
+        "onsetStrength": 0.5343,
+        "localOnsetContrast": 0.4697,
+        "rms": 0.1363,
+        "bassEnergy": 0.0763
+      }
+    },
+    {
+      "time": 4.0751,
+      "intensity": 0.2894,
+      "features": {
+        "onsetStrength": 0.3849,
+        "localOnsetContrast": 0.3045,
+        "rms": 0.155,
+        "bassEnergy": 0.0901
+      }
+    },
+    {
+      "time": 4.6556,
+      "intensity": 0.5833,
+      "features": {
+        "onsetStrength": 0.7694,
+        "localOnsetContrast": 0.7518,
+        "rms": 0.1922,
+        "bassEnergy": 0.1065
+      }
+    },
+    {
+      "time": 5.2245,
+      "intensity": 0.6611,
+      "features": {
+        "onsetStrength": 0.8713,
+        "localOnsetContrast": 0.8628,
+        "rms": 0.2406,
+        "bassEnergy": 0.0521
+      }
+    },
+    {
+      "time": 5.805,
+      "intensity": 0.4235,
+      "features": {
+        "onsetStrength": 0.5734,
+        "localOnsetContrast": 0.5189,
+        "rms": 0.144,
+        "bassEnergy": 0.0696
+      }
+    },
+    {
+      "time": 6.3855,
+      "intensity": 0.2863,
+      "features": {
+        "onsetStrength": 0.383,
+        "localOnsetContrast": 0.302,
+        "rms": 0.1497,
+        "bassEnergy": 0.0845
+      }
+    },
+    {
+      "time": 6.966,
+      "intensity": 0.6165,
+      "features": {
+        "onsetStrength": 0.8399,
+        "localOnsetContrast": 0.8243,
+        "rms": 0.1389,
+        "bassEnergy": 0.0469
+      }
+    },
+    {
+      "time": 7.5233,
+      "intensity": 0.6046,
+      "features": {
+        "onsetStrength": 0.8046,
+        "localOnsetContrast": 0.7758,
+        "rms": 0.212,
+        "bassEnergy": 0.0621
+      }
+    },
+    {
+      "time": 8.1038,
+      "intensity": 0.352,
+      "features": {
+        "onsetStrength": 0.482,
+        "localOnsetContrast": 0.4115,
+        "rms": 0.1284,
+        "bassEnergy": 0.0658
+      }
+    },
+    {
+      "time": 8.6959,
+      "intensity": 0.2946,
+      "features": {
+        "onsetStrength": 0.4185,
+        "localOnsetContrast": 0.3412,
+        "rms": 0.0873,
+        "bassEnergy": 0.0355
+      }
+    },
+    {
+      "time": 9.2764,
+      "intensity": 0.6061,
+      "features": {
+        "onsetStrength": 0.8199,
+        "localOnsetContrast": 0.8012,
+        "rms": 0.1612,
+        "bassEnergy": 0.0463
+      }
+    },
+    {
+      "time": 9.8337,
+      "intensity": 0.7546,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2583,
+        "bassEnergy": 0.0291
+      }
+    },
+    {
+      "time": 10.4141,
+      "intensity": 0.4762,
+      "features": {
+        "onsetStrength": 0.6519,
+        "localOnsetContrast": 0.6191,
+        "rms": 0.1252,
+        "bassEnergy": 0.0303
+      }
+    },
+    {
+      "time": 10.9946,
+      "intensity": 0.306,
+      "features": {
+        "onsetStrength": 0.431,
+        "localOnsetContrast": 0.3556,
+        "rms": 0.1023,
+        "bassEnergy": 0.0273
+      }
+    },
+    {
+      "time": 11.5868,
+      "intensity": 0.5113,
+      "features": {
+        "onsetStrength": 0.7037,
+        "localOnsetContrast": 0.6667,
+        "rms": 0.1294,
+        "bassEnergy": 0.0204
+      }
+    },
+    {
+      "time": 12.144,
+      "intensity": 0.7387,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1785,
+        "bassEnergy": 0.0304
+      }
+    },
+    {
+      "time": 12.7245,
+      "intensity": 0.4007,
+      "features": {
+        "onsetStrength": 0.5639,
+        "localOnsetContrast": 0.5057,
+        "rms": 0.0906,
+        "bassEnergy": 0.0238
+      }
+    },
+    {
+      "time": 13.305,
+      "intensity": 0.3336,
+      "features": {
+        "onsetStrength": 0.4841,
+        "localOnsetContrast": 0.4117,
+        "rms": 0.0582,
+        "bassEnergy": 0.0117
+      }
+    },
+    {
+      "time": 13.8855,
+      "intensity": 0.606,
+      "features": {
+        "onsetStrength": 0.8317,
+        "localOnsetContrast": 0.8215,
+        "rms": 0.1179,
+        "bassEnergy": 0.0279
+      }
+    },
+    {
+      "time": 14.4544,
+      "intensity": 0.7455,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2202,
+        "bassEnergy": 0.0151
+      }
+    },
+    {
+      "time": 15.0349,
+      "intensity": 0.4638,
+      "features": {
+        "onsetStrength": 0.6493,
+        "localOnsetContrast": 0.6178,
+        "rms": 0.0773,
+        "bassEnergy": 0.0169
+      }
+    },
+    {
+      "time": 15.6154,
+      "intensity": 0.4209,
+      "features": {
+        "onsetStrength": 0.5996,
+        "localOnsetContrast": 0.5547,
+        "rms": 0.0519,
+        "bassEnergy": 0.02
+      }
+    },
+    {
+      "time": 16.1959,
+      "intensity": 0.6402,
+      "features": {
+        "onsetStrength": 0.8816,
+        "localOnsetContrast": 0.8618,
+        "rms": 0.1154,
+        "bassEnergy": 0.0494
+      }
+    },
+    {
+      "time": 16.7532,
+      "intensity": 0.7225,
+      "features": {
+        "onsetStrength": 0.9421,
+        "localOnsetContrast": 0.9421,
+        "rms": 0.25,
+        "bassEnergy": 0.1301
+      }
+    },
+    {
+      "time": 17.3337,
+      "intensity": 0.4363,
+      "features": {
+        "onsetStrength": 0.5274,
+        "localOnsetContrast": 0.4653,
+        "rms": 0.2811,
+        "bassEnergy": 0.2644
+      }
+    },
+    {
+      "time": 17.9258,
+      "intensity": 0.3775,
+      "features": {
+        "onsetStrength": 0.3991,
+        "localOnsetContrast": 0.3175,
+        "rms": 0.4112,
+        "bassEnergy": 0.3625
+      }
+    },
+    {
+      "time": 18.5063,
+      "intensity": 0.9601,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.8981,
+        "bassEnergy": 0.8046
+      }
+    },
+    {
+      "time": 19.0752,
+      "intensity": 0.6288,
+      "features": {
+        "onsetStrength": 0.638,
+        "localOnsetContrast": 0.6104,
+        "rms": 0.6861,
+        "bassEnergy": 0.5192
+      }
+    },
+    {
+      "time": 19.6557,
+      "intensity": 0.5149,
+      "features": {
+        "onsetStrength": 0.5385,
+        "localOnsetContrast": 0.498,
+        "rms": 0.5171,
+        "bassEnergy": 0.4468
+      }
+    },
+    {
+      "time": 20.2362,
+      "intensity": 0.8145,
+      "features": {
+        "onsetStrength": 0.9313,
+        "localOnsetContrast": 0.9356,
+        "rms": 0.576,
+        "bassEnergy": 0.4634
+      }
+    },
+    {
+      "time": 20.8167,
+      "intensity": 0.9525,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7799,
+        "bassEnergy": 0.9654
+      }
+    },
+    {
+      "time": 21.374,
+      "intensity": 0.8171,
+      "features": {
+        "onsetStrength": 0.8563,
+        "localOnsetContrast": 0.8448,
+        "rms": 0.7393,
+        "bassEnergy": 0.7271
+      }
+    },
+    {
+      "time": 21.9545,
+      "intensity": 0.3996,
+      "features": {
+        "onsetStrength": 0.5002,
+        "localOnsetContrast": 0.4369,
+        "rms": 0.2001,
+        "bassEnergy": 0.252
+      }
+    },
+    {
+      "time": 22.535,
+      "intensity": 0.6318,
+      "features": {
+        "onsetStrength": 0.7946,
+        "localOnsetContrast": 0.7775,
+        "rms": 0.2566,
+        "bassEnergy": 0.2852
+      }
+    },
+    {
+      "time": 23.1155,
+      "intensity": 0.8823,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.589,
+        "bassEnergy": 0.645
+      }
+    },
+    {
+      "time": 23.696,
+      "intensity": 0.7196,
+      "features": {
+        "onsetStrength": 0.8569,
+        "localOnsetContrast": 0.8615,
+        "rms": 0.4742,
+        "bassEnergy": 0.2378
+      }
+    },
+    {
+      "time": 24.2765,
+      "intensity": 0.7712,
+      "features": {
+        "onsetStrength": 0.8128,
+        "localOnsetContrast": 0.812,
+        "rms": 0.7207,
+        "bassEnergy": 0.5832
+      }
+    },
+    {
+      "time": 24.857,
+      "intensity": 0.6551,
+      "features": {
+        "onsetStrength": 0.8344,
+        "localOnsetContrast": 0.8334,
+        "rms": 0.2498,
+        "bassEnergy": 0.2128
+      }
+    },
+    {
+      "time": 25.4259,
+      "intensity": 0.7645,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2396,
+        "bassEnergy": 0.1653
+      }
+    },
+    {
+      "time": 25.9947,
+      "intensity": 0.505,
+      "features": {
+        "onsetStrength": 0.6473,
+        "localOnsetContrast": 0.6079,
+        "rms": 0.2302,
+        "bassEnergy": 0.1567
+      }
+    },
+    {
+      "time": 26.5752,
+      "intensity": 0.34,
+      "features": {
+        "onsetStrength": 0.4292,
+        "localOnsetContrast": 0.3687,
+        "rms": 0.1864,
+        "bassEnergy": 0.174
+      }
+    },
+    {
+      "time": 27.1557,
+      "intensity": 0.4608,
+      "features": {
+        "onsetStrength": 0.597,
+        "localOnsetContrast": 0.5554,
+        "rms": 0.1852,
+        "bassEnergy": 0.1622
+      }
+    },
+    {
+      "time": 27.7362,
+      "intensity": 0.8708,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.567,
+        "bassEnergy": 0.5737
+      }
+    },
+    {
+      "time": 28.3051,
+      "intensity": 0.5112,
+      "features": {
+        "onsetStrength": 0.5919,
+        "localOnsetContrast": 0.5527,
+        "rms": 0.4589,
+        "bassEnergy": 0.1489
+      }
+    },
+    {
+      "time": 28.8856,
+      "intensity": 0.5415,
+      "features": {
+        "onsetStrength": 0.608,
+        "localOnsetContrast": 0.5791,
+        "rms": 0.4411,
+        "bassEnergy": 0.3491
+      }
+    },
+    {
+      "time": 29.4661,
+      "intensity": 0.7462,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1875,
+        "bassEnergy": 0.0873
+      }
+    },
+    {
+      "time": 30.0466,
+      "intensity": 0.9346,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.768,
+        "bassEnergy": 0.8097
+      }
+    },
+    {
+      "time": 30.6039,
+      "intensity": 0.8507,
+      "features": {
+        "onsetStrength": 0.9752,
+        "localOnsetContrast": 0.9855,
+        "rms": 0.5657,
+        "bassEnergy": 0.5236
+      }
+    },
+    {
+      "time": 31.1844,
+      "intensity": 0.4777,
+      "features": {
+        "onsetStrength": 0.5747,
+        "localOnsetContrast": 0.5222,
+        "rms": 0.3033,
+        "bassEnergy": 0.2793
+      }
+    },
+    {
+      "time": 31.7649,
+      "intensity": 0.7299,
+      "features": {
+        "onsetStrength": 0.9433,
+        "localOnsetContrast": 0.9426,
+        "rms": 0.2411,
+        "bassEnergy": 0.2157
+      }
+    },
+    {
+      "time": 32.3454,
+      "intensity": 0.8445,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4873,
+        "bassEnergy": 0.4706
+      }
+    },
+    {
+      "time": 32.9259,
+      "intensity": 0.7288,
+      "features": {
+        "onsetStrength": 0.8999,
+        "localOnsetContrast": 0.9198,
+        "rms": 0.427,
+        "bassEnergy": 0.0844
+      }
+    },
+    {
+      "time": 33.5064,
+      "intensity": 0.7312,
+      "features": {
+        "onsetStrength": 0.8538,
+        "localOnsetContrast": 0.8696,
+        "rms": 0.4813,
+        "bassEnergy": 0.3331
+      }
+    },
+    {
+      "time": 34.0753,
+      "intensity": 0.6537,
+      "features": {
+        "onsetStrength": 0.8623,
+        "localOnsetContrast": 0.8778,
+        "rms": 0.1785,
+        "bassEnergy": 0.1054
+      }
+    },
+    {
+      "time": 34.6558,
+      "intensity": 0.7483,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1973,
+        "bassEnergy": 0.0883
+      }
+    },
+    {
+      "time": 35.2247,
+      "intensity": 0.5605,
+      "features": {
+        "onsetStrength": 0.7469,
+        "localOnsetContrast": 0.7304,
+        "rms": 0.1717,
+        "bassEnergy": 0.0744
+      }
+    },
+    {
+      "time": 35.8052,
+      "intensity": 0.3835,
+      "features": {
+        "onsetStrength": 0.526,
+        "localOnsetContrast": 0.4842,
+        "rms": 0.0934,
+        "bassEnergy": 0.0711
+      }
+    },
+    {
+      "time": 36.3857,
+      "intensity": 0.4589,
+      "features": {
+        "onsetStrength": 0.6057,
+        "localOnsetContrast": 0.5341,
+        "rms": 0.1768,
+        "bassEnergy": 0.174
+      }
+    },
+    {
+      "time": 36.9313,
+      "intensity": 0.349,
+      "features": {
+        "onsetStrength": 0.3077,
+        "localOnsetContrast": 0.1745,
+        "rms": 0.644,
+        "bassEnergy": 0.3806
+      }
+    },
+    {
+      "time": 37.5351,
+      "intensity": 0.6825,
+      "features": {
+        "onsetStrength": 0.5699,
+        "localOnsetContrast": 0.5041,
+        "rms": 1.0,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 38.1156,
+      "intensity": 0.4997,
+      "features": {
+        "onsetStrength": 0.5326,
+        "localOnsetContrast": 0.4701,
+        "rms": 0.5274,
+        "bassEnergy": 0.3699
+      }
+    },
+    {
+      "time": 38.6961,
+      "intensity": 0.6468,
+      "features": {
+        "onsetStrength": 0.8144,
+        "localOnsetContrast": 0.7898,
+        "rms": 0.2932,
+        "bassEnergy": 0.2423
+      }
+    },
+    {
+      "time": 39.2766,
+      "intensity": 0.7933,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9999,
+        "rms": 0.3902,
+        "bassEnergy": 0.1526
+      }
+    },
+    {
+      "time": 39.8571,
+      "intensity": 0.7342,
+      "features": {
+        "onsetStrength": 0.9999,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1403,
+        "bassEnergy": 0.0619
+      }
+    },
+    {
+      "time": 40.4259,
+      "intensity": 0.7293,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1141,
+        "bassEnergy": 0.0647
+      }
+    },
+    {
+      "time": 41.0064,
+      "intensity": 0.7328,
+      "features": {
+        "onsetStrength": 0.9342,
+        "localOnsetContrast": 0.9357,
+        "rms": 0.3758,
+        "bassEnergy": 0.0327
+      }
+    },
+    {
+      "time": 41.5869,
+      "intensity": 0.7628,
+      "features": {
+        "onsetStrength": 0.8042,
+        "localOnsetContrast": 0.771,
+        "rms": 0.6712,
+        "bassEnergy": 0.7396
+      }
+    },
+    {
+      "time": 42.1558,
+      "intensity": 0.7891,
+      "features": {
+        "onsetStrength": 0.8538,
+        "localOnsetContrast": 0.8372,
+        "rms": 0.6597,
+        "bassEnergy": 0.6369
+      }
+    },
+    {
+      "time": 42.7363,
+      "intensity": 0.8237,
+      "features": {
+        "onsetStrength": 0.8575,
+        "localOnsetContrast": 0.8543,
+        "rms": 0.8023,
+        "bassEnergy": 0.638
+      }
+    },
+    {
+      "time": 43.3052,
+      "intensity": 0.8849,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6857,
+        "bassEnergy": 0.4776
+      }
+    },
+    {
+      "time": 43.8857,
+      "intensity": 0.7818,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3571,
+        "bassEnergy": 0.1035
+      }
+    },
+    {
+      "time": 44.4662,
+      "intensity": 0.7279,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1238,
+        "bassEnergy": 0.0316
+      }
+    },
+    {
+      "time": 45.0351,
+      "intensity": 0.7241,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1004,
+        "bassEnergy": 0.0398
+      }
+    },
+    {
+      "time": 45.6156,
+      "intensity": 0.7768,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3732,
+        "bassEnergy": 0.0217
+      }
+    },
+    {
+      "time": 46.1961,
+      "intensity": 0.843,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4646,
+        "bassEnergy": 0.501
+      }
+    },
+    {
+      "time": 46.7766,
+      "intensity": 0.7032,
+      "features": {
+        "onsetStrength": 0.8636,
+        "localOnsetContrast": 0.8738,
+        "rms": 0.3395,
+        "bassEnergy": 0.282
+      }
+    },
+    {
+      "time": 47.3455,
+      "intensity": 0.8779,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6588,
+        "bassEnergy": 0.4619
+      }
+    },
+    {
+      "time": 47.926,
+      "intensity": 0.8617,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.611,
+        "bassEnergy": 0.3953
+      }
+    },
+    {
+      "time": 48.5065,
+      "intensity": 0.7698,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3437,
+        "bassEnergy": 0.0101
+      }
+    },
+    {
+      "time": 49.087,
+      "intensity": 0.7246,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.112,
+        "bassEnergy": 0.0225
+      }
+    },
+    {
+      "time": 49.6559,
+      "intensity": 0.7199,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.0928,
+        "bassEnergy": 0.0139
+      }
+    },
+    {
+      "time": 50.2364,
+      "intensity": 0.7771,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3749,
+        "bassEnergy": 0.0208
+      }
+    },
+    {
+      "time": 50.8169,
+      "intensity": 0.869,
+      "features": {
+        "onsetStrength": 0.8818,
+        "localOnsetContrast": 0.8715,
+        "rms": 0.7897,
+        "bassEnergy": 0.9636
+      }
+    },
+    {
+      "time": 51.3858,
+      "intensity": 0.6878,
+      "features": {
+        "onsetStrength": 0.8459,
+        "localOnsetContrast": 0.8275,
+        "rms": 0.3419,
+        "bassEnergy": 0.319
+      }
+    },
+    {
+      "time": 51.9663,
+      "intensity": 0.8193,
+      "features": {
+        "onsetStrength": 0.8788,
+        "localOnsetContrast": 0.8772,
+        "rms": 0.7298,
+        "bassEnergy": 0.586
+      }
+    },
+    {
+      "time": 52.5351,
+      "intensity": 0.8581,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5831,
+        "bassEnergy": 0.4147
+      }
+    },
+    {
+      "time": 53.1156,
+      "intensity": 0.772,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3418,
+        "bassEnergy": 0.0369
+      }
+    },
+    {
+      "time": 53.6961,
+      "intensity": 0.7276,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1233,
+        "bassEnergy": 0.0294
+      }
+    },
+    {
+      "time": 54.265,
+      "intensity": 0.7206,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.0921,
+        "bassEnergy": 0.0217
+      }
+    },
+    {
+      "time": 54.8455,
+      "intensity": 0.7772,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3739,
+        "bassEnergy": 0.0246
+      }
+    },
+    {
+      "time": 55.426,
+      "intensity": 0.9053,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7715,
+        "bassEnergy": 0.5102
+      }
+    },
+    {
+      "time": 55.9949,
+      "intensity": 0.7655,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.265,
+        "bassEnergy": 0.1251
+      }
+    },
+    {
+      "time": 56.4361,
+      "intensity": 0.8485,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5243,
+        "bassEnergy": 0.4363
+      }
+    },
+    {
+      "time": 56.8773,
+      "intensity": 0.7403,
+      "features": {
+        "onsetStrength": 0.9861,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2214,
+        "bassEnergy": 0.0233
+      }
+    },
+    {
+      "time": 57.4462,
+      "intensity": 0.7461,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2203,
+        "bassEnergy": 0.0203
+      }
+    },
+    {
+      "time": 58.0151,
+      "intensity": 0.7325,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.156,
+        "bassEnergy": 0.0126
+      }
+    },
+    {
+      "time": 58.5956,
+      "intensity": 0.7357,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1753,
+        "bassEnergy": 0.006
+      }
+    },
+    {
+      "time": 59.1761,
+      "intensity": 0.7336,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1629,
+        "bassEnergy": 0.0106
+      }
+    },
+    {
+      "time": 59.7566,
+      "intensity": 0.7415,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2019,
+        "bassEnergy": 0.0111
+      }
+    },
+    {
+      "time": 60.3254,
+      "intensity": 0.7964,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3278,
+        "bassEnergy": 0.3087
+      }
+    },
+    {
+      "time": 60.9059,
+      "intensity": 0.8318,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4367,
+        "bassEnergy": 0.4443
+      }
+    },
+    {
+      "time": 61.4864,
+      "intensity": 0.7302,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1359,
+        "bassEnergy": 0.0303
+      }
+    },
+    {
+      "time": 62.0553,
+      "intensity": 0.7456,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2142,
+        "bassEnergy": 0.0281
+      }
+    },
+    {
+      "time": 62.6358,
+      "intensity": 0.733,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1495,
+        "bassEnergy": 0.0307
+      }
+    },
+    {
+      "time": 63.2163,
+      "intensity": 0.7364,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1708,
+        "bassEnergy": 0.0227
+      }
+    },
+    {
+      "time": 63.7968,
+      "intensity": 0.5871,
+      "features": {
+        "onsetStrength": 0.785,
+        "localOnsetContrast": 0.8006,
+        "rms": 0.1554,
+        "bassEnergy": 0.0266
+      }
+    },
+    {
+      "time": 64.3657,
+      "intensity": 0.7486,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2293,
+        "bassEnergy": 0.027
+      }
+    },
+    {
+      "time": 64.9462,
+      "intensity": 0.8487,
+      "features": {
+        "onsetStrength": 0.9451,
+        "localOnsetContrast": 0.9629,
+        "rms": 0.6075,
+        "bassEnergy": 0.6118
+      }
+    },
+    {
+      "time": 65.5151,
+      "intensity": 0.8522,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4796,
+        "bassEnergy": 0.5628
+      }
+    },
+    {
+      "time": 66.0956,
+      "intensity": 0.9082,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7381,
+        "bassEnergy": 0.6061
+      }
+    },
+    {
+      "time": 66.6761,
+      "intensity": 0.7899,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3311,
+        "bassEnergy": 0.2363
+      }
+    },
+    {
+      "time": 67.2566,
+      "intensity": 0.7578,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2195,
+        "bassEnergy": 0.1392
+      }
+    },
+    {
+      "time": 67.8255,
+      "intensity": 0.7436,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1872,
+        "bassEnergy": 0.0611
+      }
+    },
+    {
+      "time": 68.406,
+      "intensity": 0.7413,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1797,
+        "bassEnergy": 0.0532
+      }
+    },
+    {
+      "time": 68.9865,
+      "intensity": 0.7454,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2073,
+        "bassEnergy": 0.0398
+      }
+    },
+    {
+      "time": 69.5554,
+      "intensity": 0.9532,
+      "features": {
+        "onsetStrength": 0.9763,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9012,
+        "bassEnergy": 0.8364
+      }
+    },
+    {
+      "time": 70.1359,
+      "intensity": 0.8865,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.622,
+        "bassEnergy": 0.6209
+      }
+    },
+    {
+      "time": 70.7164,
+      "intensity": 0.789,
+      "features": {
+        "onsetStrength": 0.9719,
+        "localOnsetContrast": 0.9807,
+        "rms": 0.3754,
+        "bassEnergy": 0.3134
+      }
+    },
+    {
+      "time": 71.2853,
+      "intensity": 0.8081,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9977,
+        "rms": 0.4084,
+        "bassEnergy": 0.2703
+      }
+    },
+    {
+      "time": 71.8658,
+      "intensity": 0.6756,
+      "features": {
+        "onsetStrength": 0.8156,
+        "localOnsetContrast": 0.7871,
+        "rms": 0.447,
+        "bassEnergy": 0.2243
+      }
+    },
+    {
+      "time": 72.4463,
+      "intensity": 0.6649,
+      "features": {
+        "onsetStrength": 0.8318,
+        "localOnsetContrast": 0.8142,
+        "rms": 0.3456,
+        "bassEnergy": 0.1791
+      }
+    },
+    {
+      "time": 73.0151,
+      "intensity": 0.3679,
+      "features": {
+        "onsetStrength": 0.4457,
+        "localOnsetContrast": 0.375,
+        "rms": 0.3189,
+        "bassEnergy": 0.0983
+      }
+    },
+    {
+      "time": 73.5956,
+      "intensity": 0.7689,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2932,
+        "bassEnergy": 0.1032
+      }
+    },
+    {
+      "time": 74.1761,
+      "intensity": 0.7407,
+      "features": {
+        "onsetStrength": 0.7353,
+        "localOnsetContrast": 0.6981,
+        "rms": 0.819,
+        "bassEnergy": 0.7156
+      }
+    },
+    {
+      "time": 74.7566,
+      "intensity": 0.5682,
+      "features": {
+        "onsetStrength": 0.6483,
+        "localOnsetContrast": 0.597,
+        "rms": 0.4605,
+        "bassEnergy": 0.351
+      }
+    },
+    {
+      "time": 75.3255,
+      "intensity": 0.1857,
+      "features": {
+        "onsetStrength": 0.1058,
+        "localOnsetContrast": 0.0,
+        "rms": 0.4723,
+        "bassEnergy": 0.4359
+      }
+    },
+    {
+      "time": 75.8828,
+      "intensity": 0.153,
+      "features": {
+        "onsetStrength": 0.199,
+        "localOnsetContrast": 0.0847,
+        "rms": 0.1686,
+        "bassEnergy": 0.0851
+      }
+    },
+    {
+      "time": 76.4401,
+      "intensity": 0.1402,
+      "features": {
+        "onsetStrength": 0.1806,
+        "localOnsetContrast": 0.0671,
+        "rms": 0.1546,
+        "bassEnergy": 0.1127
+      }
+    },
+    {
+      "time": 76.9858,
+      "intensity": 0.0715,
+      "features": {
+        "onsetStrength": 0.1038,
+        "localOnsetContrast": 0.0,
+        "rms": 0.0963,
+        "bassEnergy": 0.0555
+      }
+    },
+    {
+      "time": 77.543,
+      "intensity": 0.2,
+      "features": {
+        "onsetStrength": 0.1481,
+        "localOnsetContrast": 0.0398,
+        "rms": 0.4104,
+        "bassEnergy": 0.4134
+      }
+    },
+    {
+      "time": 78.1003,
+      "intensity": 0.1207,
+      "features": {
+        "onsetStrength": 0.1301,
+        "localOnsetContrast": 0.0235,
+        "rms": 0.2019,
+        "bassEnergy": 0.1588
+      }
+    },
+    {
+      "time": 78.6576,
+      "intensity": 0.1936,
+      "features": {
+        "onsetStrength": 0.1102,
+        "localOnsetContrast": 0.0019,
+        "rms": 0.5038,
+        "bassEnergy": 0.4279
+      }
+    },
+    {
+      "time": 79.2149,
+      "intensity": 0.0782,
+      "features": {
+        "onsetStrength": 0.1267,
+        "localOnsetContrast": 0.0159,
+        "rms": 0.0649,
+        "bassEnergy": 0.043
+      }
+    },
+    {
+      "time": 79.7722,
+      "intensity": 0.1351,
+      "features": {
+        "onsetStrength": 0.2033,
+        "localOnsetContrast": 0.1068,
+        "rms": 0.0618,
+        "bassEnergy": 0.0455
+      }
+    },
+    {
+      "time": 80.341,
+      "intensity": 0.0984,
+      "features": {
+        "onsetStrength": 0.1461,
+        "localOnsetContrast": 0.0407,
+        "rms": 0.0765,
+        "bassEnergy": 0.0712
+      }
+    },
+    {
+      "time": 80.8867,
+      "intensity": 0.0802,
+      "features": {
+        "onsetStrength": 0.0999,
+        "localOnsetContrast": 0.0,
+        "rms": 0.1249,
+        "bassEnergy": 0.1028
+      }
+    },
+    {
+      "time": 81.444,
+      "intensity": 0.0731,
+      "features": {
+        "onsetStrength": 0.0956,
+        "localOnsetContrast": 0.0,
+        "rms": 0.0991,
+        "bassEnergy": 0.1026
+      }
+    },
+    {
+      "time": 82.0013,
+      "intensity": 0.1258,
+      "features": {
+        "onsetStrength": 0.1495,
+        "localOnsetContrast": 0.0454,
+        "rms": 0.1514,
+        "bassEnergy": 0.1688
+      }
+    },
+    {
+      "time": 82.5585,
+      "intensity": 0.0904,
+      "features": {
+        "onsetStrength": 0.1108,
+        "localOnsetContrast": 0.0071,
+        "rms": 0.1317,
+        "bassEnergy": 0.1244
+      }
+    },
+    {
+      "time": 83.1158,
+      "intensity": 0.831,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4311,
+        "bassEnergy": 0.4474
+      }
+    },
+    {
+      "time": 83.6847,
+      "intensity": 0.7497,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1975,
+        "bassEnergy": 0.1017
+      }
+    },
+    {
+      "time": 84.2652,
+      "intensity": 0.4394,
+      "features": {
+        "onsetStrength": 0.601,
+        "localOnsetContrast": 0.5526,
+        "rms": 0.108,
+        "bassEnergy": 0.0919
+      }
+    },
+    {
+      "time": 84.8457,
+      "intensity": 0.4506,
+      "features": {
+        "onsetStrength": 0.4583,
+        "localOnsetContrast": 0.387,
+        "rms": 0.5201,
+        "bassEnergy": 0.4357
+      }
+    },
+    {
+      "time": 85.4378,
+      "intensity": 0.5563,
+      "features": {
+        "onsetStrength": 0.5395,
+        "localOnsetContrast": 0.4705,
+        "rms": 0.5995,
+        "bassEnergy": 0.7599
+      }
+    },
+    {
+      "time": 85.9951,
+      "intensity": 0.7396,
+      "features": {
+        "onsetStrength": 0.7492,
+        "localOnsetContrast": 0.7114,
+        "rms": 0.8038,
+        "bassEnergy": 0.6385
+      }
+    },
+    {
+      "time": 86.564,
+      "intensity": 0.4923,
+      "features": {
+        "onsetStrength": 0.4915,
+        "localOnsetContrast": 0.4155,
+        "rms": 0.5739,
+        "bassEnergy": 0.5248
+      }
+    },
+    {
+      "time": 87.1561,
+      "intensity": 0.3999,
+      "features": {
+        "onsetStrength": 0.4793,
+        "localOnsetContrast": 0.3988,
+        "rms": 0.2781,
+        "bassEnergy": 0.2889
+      }
+    },
+    {
+      "time": 87.7366,
+      "intensity": 0.7716,
+      "features": {
+        "onsetStrength": 0.908,
+        "localOnsetContrast": 0.893,
+        "rms": 0.4357,
+        "bassEnergy": 0.5261
+      }
+    },
+    {
+      "time": 88.2939,
+      "intensity": 0.7509,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1893,
+        "bassEnergy": 0.1302
+      }
+    },
+    {
+      "time": 88.8744,
+      "intensity": 0.4901,
+      "features": {
+        "onsetStrength": 0.6666,
+        "localOnsetContrast": 0.6288,
+        "rms": 0.1111,
+        "bassEnergy": 0.1072
+      }
+    },
+    {
+      "time": 89.4665,
+      "intensity": 0.456,
+      "features": {
+        "onsetStrength": 0.4537,
+        "localOnsetContrast": 0.3811,
+        "rms": 0.5519,
+        "bassEnergy": 0.4615
+      }
+    },
+    {
+      "time": 90.047,
+      "intensity": 0.6271,
+      "features": {
+        "onsetStrength": 0.8024,
+        "localOnsetContrast": 0.7692,
+        "rms": 0.2348,
+        "bassEnergy": 0.2677
+      }
+    },
+    {
+      "time": 90.6043,
+      "intensity": 0.8907,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9886,
+        "rms": 0.6941,
+        "bassEnergy": 0.5474
+      }
+    },
+    {
+      "time": 91.1848,
+      "intensity": 0.5463,
+      "features": {
+        "onsetStrength": 0.6047,
+        "localOnsetContrast": 0.5385,
+        "rms": 0.4729,
+        "bassEnergy": 0.4499
+      }
+    },
+    {
+      "time": 91.7653,
+      "intensity": 0.325,
+      "features": {
+        "onsetStrength": 0.4254,
+        "localOnsetContrast": 0.3458,
+        "rms": 0.1594,
+        "bassEnergy": 0.1522
+      }
+    },
+    {
+      "time": 92.3458,
+      "intensity": 0.7323,
+      "features": {
+        "onsetStrength": 0.8549,
+        "localOnsetContrast": 0.8422,
+        "rms": 0.4554,
+        "bassEnergy": 0.4599
+      }
+    },
+    {
+      "time": 92.9146,
+      "intensity": 0.7471,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1915,
+        "bassEnergy": 0.0879
+      }
+    },
+    {
+      "time": 93.4951,
+      "intensity": 0.4939,
+      "features": {
+        "onsetStrength": 0.6827,
+        "localOnsetContrast": 0.6541,
+        "rms": 0.0831,
+        "bassEnergy": 0.0653
+      }
+    },
+    {
+      "time": 94.0756,
+      "intensity": 0.4798,
+      "features": {
+        "onsetStrength": 0.4979,
+        "localOnsetContrast": 0.4347,
+        "rms": 0.5202,
+        "bassEnergy": 0.4302
+      }
+    },
+    {
+      "time": 94.6561,
+      "intensity": 0.5453,
+      "features": {
+        "onsetStrength": 0.7572,
+        "localOnsetContrast": 0.7199,
+        "rms": 0.0936,
+        "bassEnergy": 0.0589
+      }
+    },
+    {
+      "time": 95.225,
+      "intensity": 0.6028,
+      "features": {
+        "onsetStrength": 0.8237,
+        "localOnsetContrast": 0.7984,
+        "rms": 0.1317,
+        "bassEnergy": 0.062
+      }
+    },
+    {
+      "time": 95.7939,
+      "intensity": 0.4507,
+      "features": {
+        "onsetStrength": 0.4504,
+        "localOnsetContrast": 0.3747,
+        "rms": 0.5526,
+        "bassEnergy": 0.438
+      }
+    },
+    {
+      "time": 96.386,
+      "intensity": 0.347,
+      "features": {
+        "onsetStrength": 0.4968,
+        "localOnsetContrast": 0.4285,
+        "rms": 0.0596,
+        "bassEnergy": 0.0436
+      }
+    },
+    {
+      "time": 96.9665,
+      "intensity": 0.7575,
+      "features": {
+        "onsetStrength": 0.8828,
+        "localOnsetContrast": 0.8733,
+        "rms": 0.4647,
+        "bassEnergy": 0.4897
+      }
+    },
+    {
+      "time": 97.5238,
+      "intensity": 0.7313,
+      "features": {
+        "onsetStrength": 0.9864,
+        "localOnsetContrast": 0.9974,
+        "rms": 0.1628,
+        "bassEnergy": 0.0547
+      }
+    },
+    {
+      "time": 98.1043,
+      "intensity": 0.4956,
+      "features": {
+        "onsetStrength": 0.6933,
+        "localOnsetContrast": 0.661,
+        "rms": 0.0662,
+        "bassEnergy": 0.0517
+      }
+    },
+    {
+      "time": 98.6964,
+      "intensity": 0.5051,
+      "features": {
+        "onsetStrength": 0.5273,
+        "localOnsetContrast": 0.4628,
+        "rms": 0.5421,
+        "bassEnergy": 0.4373
+      }
+    },
+    {
+      "time": 99.2885,
+      "intensity": 0.4231,
+      "features": {
+        "onsetStrength": 0.2834,
+        "localOnsetContrast": 0.1765,
+        "rms": 0.7588,
+        "bassEnergy": 0.997
+      }
+    },
+    {
+      "time": 99.8342,
+      "intensity": 0.8955,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9993,
+        "rms": 0.6913,
+        "bassEnergy": 0.5742
+      }
+    },
+    {
+      "time": 100.4147,
+      "intensity": 0.6353,
+      "features": {
+        "onsetStrength": 0.6853,
+        "localOnsetContrast": 0.6363,
+        "rms": 0.5884,
+        "bassEnergy": 0.5018
+      }
+    },
+    {
+      "time": 100.9952,
+      "intensity": 0.352,
+      "features": {
+        "onsetStrength": 0.4587,
+        "localOnsetContrast": 0.378,
+        "rms": 0.1713,
+        "bassEnergy": 0.1678
+      }
+    },
+    {
+      "time": 101.5757,
+      "intensity": 0.8029,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.344,
+        "bassEnergy": 0.341
+      }
+    },
+    {
+      "time": 102.1446,
+      "intensity": 0.8292,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4651,
+        "bassEnergy": 0.3615
+      }
+    },
+    {
+      "time": 102.7251,
+      "intensity": 0.7472,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1754,
+        "bassEnergy": 0.1208
+      }
+    },
+    {
+      "time": 103.3056,
+      "intensity": 0.8296,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4614,
+        "bassEnergy": 0.3734
+      }
+    },
+    {
+      "time": 103.8861,
+      "intensity": 0.8283,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4122,
+        "bassEnergy": 0.4584
+      }
+    },
+    {
+      "time": 104.455,
+      "intensity": 0.8738,
+      "features": {
+        "onsetStrength": 0.9638,
+        "localOnsetContrast": 0.9724,
+        "rms": 0.7191,
+        "bassEnergy": 0.5323
+      }
+    },
+    {
+      "time": 105.0355,
+      "intensity": 0.6061,
+      "features": {
+        "onsetStrength": 0.7253,
+        "localOnsetContrast": 0.709,
+        "rms": 0.3518,
+        "bassEnergy": 0.321
+      }
+    },
+    {
+      "time": 105.616,
+      "intensity": 0.8173,
+      "features": {
+        "onsetStrength": 0.9622,
+        "localOnsetContrast": 0.9875,
+        "rms": 0.4479,
+        "bassEnergy": 0.4791
+      }
+    },
+    {
+      "time": 106.1965,
+      "intensity": 0.8391,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.466,
+        "bassEnergy": 0.4595
+      }
+    },
+    {
+      "time": 106.7654,
+      "intensity": 0.7624,
+      "features": {
+        "onsetStrength": 0.9149,
+        "localOnsetContrast": 0.9495,
+        "rms": 0.4064,
+        "bassEnergy": 0.3201
+      }
+    },
+    {
+      "time": 107.3459,
+      "intensity": 0.7242,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1116,
+        "bassEnergy": 0.0186
+      }
+    },
+    {
+      "time": 107.9263,
+      "intensity": 0.8323,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4711,
+        "bassEnergy": 0.3804
+      }
+    },
+    {
+      "time": 108.5068,
+      "intensity": 0.8805,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5951,
+        "bassEnergy": 0.6147
+      }
+    },
+    {
+      "time": 109.0757,
+      "intensity": 0.703,
+      "features": {
+        "onsetStrength": 0.7271,
+        "localOnsetContrast": 0.7083,
+        "rms": 0.7222,
+        "bassEnergy": 0.5428
+      }
+    },
+    {
+      "time": 109.6562,
+      "intensity": 0.7741,
+      "features": {
+        "onsetStrength": 0.8955,
+        "localOnsetContrast": 0.9019,
+        "rms": 0.4974,
+        "bassEnergy": 0.4616
+      }
+    },
+    {
+      "time": 110.2367,
+      "intensity": 0.8534,
+      "features": {
+        "onsetStrength": 0.9947,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5027,
+        "bassEnergy": 0.5527
+      }
+    },
+    {
+      "time": 110.8172,
+      "intensity": 0.8795,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5877,
+        "bassEnergy": 0.6197
+      }
+    },
+    {
+      "time": 111.3861,
+      "intensity": 0.7053,
+      "features": {
+        "onsetStrength": 0.7843,
+        "localOnsetContrast": 0.808,
+        "rms": 0.5074,
+        "bassEnergy": 0.4891
+      }
+    },
+    {
+      "time": 111.955,
+      "intensity": 0.7253,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1185,
+        "bassEnergy": 0.0158
+      }
+    },
+    {
+      "time": 112.5355,
+      "intensity": 0.8112,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3872,
+        "bassEnergy": 0.3378
+      }
+    },
+    {
+      "time": 113.116,
+      "intensity": 0.9187,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7029,
+        "bassEnergy": 0.7811
+      }
+    },
+    {
+      "time": 113.6849,
+      "intensity": 0.8967,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7111,
+        "bassEnergy": 0.5447
+      }
+    },
+    {
+      "time": 114.2654,
+      "intensity": 0.7084,
+      "features": {
+        "onsetStrength": 0.7387,
+        "localOnsetContrast": 0.7252,
+        "rms": 0.6763,
+        "bassEnergy": 0.5937
+      }
+    },
+    {
+      "time": 114.8459,
+      "intensity": 0.8198,
+      "features": {
+        "onsetStrength": 0.934,
+        "localOnsetContrast": 0.9474,
+        "rms": 0.5436,
+        "bassEnergy": 0.5396
+      }
+    },
+    {
+      "time": 115.4264,
+      "intensity": 0.8287,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4166,
+        "bassEnergy": 0.4541
+      }
+    },
+    {
+      "time": 115.9953,
+      "intensity": 0.7963,
+      "features": {
+        "onsetStrength": 0.9717,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3858,
+        "bassEnergy": 0.3187
+      }
+    },
+    {
+      "time": 116.5758,
+      "intensity": 0.742,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1535,
+        "bassEnergy": 0.113
+      }
+    },
+    {
+      "time": 117.1563,
+      "intensity": 0.8524,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5414,
+        "bassEnergy": 0.4408
+      }
+    },
+    {
+      "time": 117.7368,
+      "intensity": 0.9858,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9289,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 118.3057,
+      "intensity": 0.5938,
+      "features": {
+        "onsetStrength": 0.7347,
+        "localOnsetContrast": 0.7072,
+        "rms": 0.3119,
+        "bassEnergy": 0.2404
+      }
+    },
+    {
+      "time": 118.8862,
+      "intensity": 0.6963,
+      "features": {
+        "onsetStrength": 0.917,
+        "localOnsetContrast": 0.9145,
+        "rms": 0.185,
+        "bassEnergy": 0.1798
+      }
+    },
+    {
+      "time": 119.4318,
+      "intensity": 0.2718,
+      "features": {
+        "onsetStrength": 0.2892,
+        "localOnsetContrast": 0.1588,
+        "rms": 0.3267,
+        "bassEnergy": 0.3659
+      }
+    },
+    {
+      "time": 119.9427,
+      "intensity": 0.472,
+      "features": {
+        "onsetStrength": 0.4031,
+        "localOnsetContrast": 0.2813,
+        "rms": 0.8623,
+        "bassEnergy": 0.4777
+      }
+    },
+    {
+      "time": 120.4883,
+      "intensity": 0.3472,
+      "features": {
+        "onsetStrength": 0.1048,
+        "localOnsetContrast": 0.0,
+        "rms": 1.0,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 121.0572,
+      "intensity": 0.4742,
+      "features": {
+        "onsetStrength": 0.45,
+        "localOnsetContrast": 0.3596,
+        "rms": 0.5959,
+        "bassEnergy": 0.6263
+      }
+    },
+    {
+      "time": 121.6261,
+      "intensity": 0.3423,
+      "features": {
+        "onsetStrength": 0.4009,
+        "localOnsetContrast": 0.3069,
+        "rms": 0.2811,
+        "bassEnergy": 0.289
+      }
+    },
+    {
+      "time": 122.2066,
+      "intensity": 0.3746,
+      "features": {
+        "onsetStrength": 0.4562,
+        "localOnsetContrast": 0.3679,
+        "rms": 0.2792,
+        "bassEnergy": 0.2156
+      }
+    },
+    {
+      "time": 122.7755,
+      "intensity": 0.1772,
+      "features": {
+        "onsetStrength": 0.2428,
+        "localOnsetContrast": 0.1265,
+        "rms": 0.1222,
+        "bassEnergy": 0.1189
+      }
+    },
+    {
+      "time": 123.3444,
+      "intensity": 0.1543,
+      "features": {
+        "onsetStrength": 0.2091,
+        "localOnsetContrast": 0.0986,
+        "rms": 0.1315,
+        "bassEnergy": 0.0923
+      }
+    },
+    {
+      "time": 123.8552,
+      "intensity": 0.0887,
+      "features": {
+        "onsetStrength": 0.1393,
+        "localOnsetContrast": 0.0189,
+        "rms": 0.0778,
+        "bassEnergy": 0.0571
+      }
+    },
+    {
+      "time": 124.3777,
+      "intensity": 0.3913,
+      "features": {
+        "onsetStrength": 0.5323,
+        "localOnsetContrast": 0.4725,
+        "rms": 0.1442,
+        "bassEnergy": 0.0478
+      }
+    },
+    {
+      "time": 124.9466,
+      "intensity": 0.3824,
+      "features": {
+        "onsetStrength": 0.5375,
+        "localOnsetContrast": 0.4769,
+        "rms": 0.085,
+        "bassEnergy": 0.0427
+      }
+    },
+    {
+      "time": 125.5271,
+      "intensity": 0.3244,
+      "features": {
+        "onsetStrength": 0.4474,
+        "localOnsetContrast": 0.3728,
+        "rms": 0.1273,
+        "bassEnergy": 0.0439
+      }
+    },
+    {
+      "time": 126.096,
+      "intensity": 0.4867,
+      "features": {
+        "onsetStrength": 0.6771,
+        "localOnsetContrast": 0.6405,
+        "rms": 0.0882,
+        "bassEnergy": 0.0423
+      }
+    },
+    {
+      "time": 126.6765,
+      "intensity": 0.4926,
+      "features": {
+        "onsetStrength": 0.689,
+        "localOnsetContrast": 0.6566,
+        "rms": 0.0711,
+        "bassEnergy": 0.0418
+      }
+    },
+    {
+      "time": 127.257,
+      "intensity": 0.2772,
+      "features": {
+        "onsetStrength": 0.4108,
+        "localOnsetContrast": 0.3417,
+        "rms": 0.0312,
+        "bassEnergy": 0.0063
+      }
+    },
+    {
+      "time": 127.8259,
+      "intensity": 0.4727,
+      "features": {
+        "onsetStrength": 0.6456,
+        "localOnsetContrast": 0.6123,
+        "rms": 0.1357,
+        "bassEnergy": 0.0195
+      }
+    },
+    {
+      "time": 128.4063,
+      "intensity": 0.4274,
+      "features": {
+        "onsetStrength": 0.592,
+        "localOnsetContrast": 0.5476,
+        "rms": 0.1048,
+        "bassEnergy": 0.0316
+      }
+    },
+    {
+      "time": 128.9868,
+      "intensity": 0.3699,
+      "features": {
+        "onsetStrength": 0.5194,
+        "localOnsetContrast": 0.468,
+        "rms": 0.084,
+        "bassEnergy": 0.0234
+      }
+    },
+    {
+      "time": 129.5673,
+      "intensity": 0.8372,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.4884,
+        "bassEnergy": 0.3947
+      }
+    },
+    {
+      "time": 130.1478,
+      "intensity": 0.6539,
+      "features": {
+        "onsetStrength": 0.8139,
+        "localOnsetContrast": 0.8181,
+        "rms": 0.3076,
+        "bassEnergy": 0.2156
+      }
+    },
+    {
+      "time": 130.7167,
+      "intensity": 0.5464,
+      "features": {
+        "onsetStrength": 0.7177,
+        "localOnsetContrast": 0.7077,
+        "rms": 0.1722,
+        "bassEnergy": 0.1211
+      }
+    },
+    {
+      "time": 131.2972,
+      "intensity": 0.651,
+      "features": {
+        "onsetStrength": 0.8732,
+        "localOnsetContrast": 0.8745,
+        "rms": 0.1483,
+        "bassEnergy": 0.0979
+      }
+    },
+    {
+      "time": 131.8661,
+      "intensity": 0.7362,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1442,
+        "bassEnergy": 0.0731
+      }
+    },
+    {
+      "time": 132.4466,
+      "intensity": 0.7358,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1412,
+        "bassEnergy": 0.0755
+      }
+    },
+    {
+      "time": 133.0271,
+      "intensity": 0.4674,
+      "features": {
+        "onsetStrength": 0.6308,
+        "localOnsetContrast": 0.6049,
+        "rms": 0.1177,
+        "bassEnergy": 0.0874
+      }
+    },
+    {
+      "time": 133.596,
+      "intensity": 0.7393,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1632,
+        "bassEnergy": 0.0671
+      }
+    },
+    {
+      "time": 134.1765,
+      "intensity": 0.7367,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1479,
+        "bassEnergy": 0.0714
+      }
+    },
+    {
+      "time": 134.757,
+      "intensity": 0.7576,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2494,
+        "bassEnergy": 0.0772
+      }
+    },
+    {
+      "time": 135.3259,
+      "intensity": 0.631,
+      "features": {
+        "onsetStrength": 0.8434,
+        "localOnsetContrast": 0.8586,
+        "rms": 0.151,
+        "bassEnergy": 0.0666
+      }
+    },
+    {
+      "time": 135.9064,
+      "intensity": 0.7318,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1256,
+        "bassEnergy": 0.067
+      }
+    },
+    {
+      "time": 136.4869,
+      "intensity": 0.737,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1525,
+        "bassEnergy": 0.0648
+      }
+    },
+    {
+      "time": 137.0558,
+      "intensity": 0.7329,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1543,
+        "bassEnergy": 0.0201
+      }
+    },
+    {
+      "time": 137.497,
+      "intensity": 0.7173,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.0811,
+        "bassEnergy": 0.0108
+      }
+    },
+    {
+      "time": 137.9381,
+      "intensity": 0.5643,
+      "features": {
+        "onsetStrength": 0.7831,
+        "localOnsetContrast": 0.7858,
+        "rms": 0.0679,
+        "bassEnergy": 0.0188
+      }
+    },
+    {
+      "time": 138.507,
+      "intensity": 0.8688,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5694,
+        "bassEnergy": 0.5494
+      }
+    },
+    {
+      "time": 139.0759,
+      "intensity": 0.517,
+      "features": {
+        "onsetStrength": 0.6345,
+        "localOnsetContrast": 0.5984,
+        "rms": 0.4046,
+        "bassEnergy": 0.0095
+      }
+    },
+    {
+      "time": 139.6564,
+      "intensity": 0.5515,
+      "features": {
+        "onsetStrength": 0.6008,
+        "localOnsetContrast": 0.5649,
+        "rms": 0.5098,
+        "bassEnergy": 0.3789
+      }
+    },
+    {
+      "time": 140.2369,
+      "intensity": 0.7629,
+      "features": {
+        "onsetStrength": 0.9723,
+        "localOnsetContrast": 0.9903,
+        "rms": 0.2856,
+        "bassEnergy": 0.2068
+      }
+    },
+    {
+      "time": 140.8058,
+      "intensity": 0.7708,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3016,
+        "bassEnergy": 0.1053
+      }
+    },
+    {
+      "time": 141.3747,
+      "intensity": 0.7611,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2619,
+        "bassEnergy": 0.0873
+      }
+    },
+    {
+      "time": 141.9552,
+      "intensity": 0.424,
+      "features": {
+        "onsetStrength": 0.5855,
+        "localOnsetContrast": 0.5284,
+        "rms": 0.11,
+        "bassEnergy": 0.064
+      }
+    },
+    {
+      "time": 142.5357,
+      "intensity": 0.6136,
+      "features": {
+        "onsetStrength": 0.837,
+        "localOnsetContrast": 0.8266,
+        "rms": 0.123,
+        "bassEnergy": 0.0571
+      }
+    },
+    {
+      "time": 143.1162,
+      "intensity": 0.7536,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2374,
+        "bassEnergy": 0.0611
+      }
+    },
+    {
+      "time": 143.6851,
+      "intensity": 0.7447,
+      "features": {
+        "onsetStrength": 0.9395,
+        "localOnsetContrast": 0.9628,
+        "rms": 0.376,
+        "bassEnergy": 0.0607
+      }
+    },
+    {
+      "time": 144.2656,
+      "intensity": 0.5131,
+      "features": {
+        "onsetStrength": 0.6704,
+        "localOnsetContrast": 0.6574,
+        "rms": 0.2074,
+        "bassEnergy": 0.0555
+      }
+    },
+    {
+      "time": 144.8461,
+      "intensity": 0.6721,
+      "features": {
+        "onsetStrength": 0.9066,
+        "localOnsetContrast": 0.9181,
+        "rms": 0.1438,
+        "bassEnergy": 0.0583
+      }
+    },
+    {
+      "time": 145.4266,
+      "intensity": 0.7577,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2599,
+        "bassEnergy": 0.0568
+      }
+    },
+    {
+      "time": 145.9955,
+      "intensity": 0.578,
+      "features": {
+        "onsetStrength": 0.7548,
+        "localOnsetContrast": 0.7246,
+        "rms": 0.2599,
+        "bassEnergy": 0.0525
+      }
+    },
+    {
+      "time": 146.576,
+      "intensity": 0.3382,
+      "features": {
+        "onsetStrength": 0.4724,
+        "localOnsetContrast": 0.397,
+        "rms": 0.1049,
+        "bassEnergy": 0.0542
+      }
+    },
+    {
+      "time": 147.1565,
+      "intensity": 0.5914,
+      "features": {
+        "onsetStrength": 0.8159,
+        "localOnsetContrast": 0.8029,
+        "rms": 0.1138,
+        "bassEnergy": 0.0068
+      }
+    },
+    {
+      "time": 147.737,
+      "intensity": 0.9858,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.929,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 148.2942,
+      "intensity": 0.916,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7408,
+        "bassEnergy": 0.6779
+      }
+    },
+    {
+      "time": 148.8747,
+      "intensity": 0.674,
+      "features": {
+        "onsetStrength": 0.8205,
+        "localOnsetContrast": 0.7989,
+        "rms": 0.3414,
+        "bassEnergy": 0.3675
+      }
+    },
+    {
+      "time": 149.4552,
+      "intensity": 0.4645,
+      "features": {
+        "onsetStrength": 0.5859,
+        "localOnsetContrast": 0.5322,
+        "rms": 0.2353,
+        "bassEnergy": 0.2078
+      }
+    },
+    {
+      "time": 150.0357,
+      "intensity": 0.6802,
+      "features": {
+        "onsetStrength": 0.8534,
+        "localOnsetContrast": 0.8289,
+        "rms": 0.3461,
+        "bassEnergy": 0.1974
+      }
+    },
+    {
+      "time": 150.6046,
+      "intensity": 0.7578,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9984,
+        "rms": 0.2531,
+        "bassEnergy": 0.076
+      }
+    },
+    {
+      "time": 151.1851,
+      "intensity": 0.5187,
+      "features": {
+        "onsetStrength": 0.7209,
+        "localOnsetContrast": 0.6763,
+        "rms": 0.1005,
+        "bassEnergy": 0.0514
+      }
+    },
+    {
+      "time": 151.7656,
+      "intensity": 0.5907,
+      "features": {
+        "onsetStrength": 0.7865,
+        "localOnsetContrast": 0.7486,
+        "rms": 0.1658,
+        "bassEnergy": 0.1648
+      }
+    },
+    {
+      "time": 152.3461,
+      "intensity": 0.8735,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6404,
+        "bassEnergy": 0.4543
+      }
+    },
+    {
+      "time": 152.915,
+      "intensity": 0.7931,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3676,
+        "bassEnergy": 0.1961
+      }
+    },
+    {
+      "time": 153.4955,
+      "intensity": 0.6759,
+      "features": {
+        "onsetStrength": 0.7705,
+        "localOnsetContrast": 0.7405,
+        "rms": 0.5124,
+        "bassEnergy": 0.4158
+      }
+    },
+    {
+      "time": 154.076,
+      "intensity": 0.7663,
+      "features": {
+        "onsetStrength": 0.9499,
+        "localOnsetContrast": 0.9542,
+        "rms": 0.3565,
+        "bassEnergy": 0.2901
+      }
+    },
+    {
+      "time": 154.6565,
+      "intensity": 0.7748,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9935,
+        "rms": 0.2981,
+        "bassEnergy": 0.1685
+      }
+    },
+    {
+      "time": 155.2254,
+      "intensity": 0.7558,
+      "features": {
+        "onsetStrength": 0.9805,
+        "localOnsetContrast": 0.9703,
+        "rms": 0.2982,
+        "bassEnergy": 0.1235
+      }
+    },
+    {
+      "time": 155.8059,
+      "intensity": 0.3735,
+      "features": {
+        "onsetStrength": 0.5129,
+        "localOnsetContrast": 0.4339,
+        "rms": 0.1275,
+        "bassEnergy": 0.0874
+      }
+    },
+    {
+      "time": 156.3864,
+      "intensity": 0.6148,
+      "features": {
+        "onsetStrength": 0.8227,
+        "localOnsetContrast": 0.7902,
+        "rms": 0.1422,
+        "bassEnergy": 0.186
+      }
+    },
+    {
+      "time": 156.9669,
+      "intensity": 0.8841,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.666,
+        "bassEnergy": 0.5086
+      }
+    },
+    {
+      "time": 157.5358,
+      "intensity": 0.7545,
+      "features": {
+        "onsetStrength": 0.908,
+        "localOnsetContrast": 0.9128,
+        "rms": 0.4372,
+        "bassEnergy": 0.3023
+      }
+    },
+    {
+      "time": 158.1163,
+      "intensity": 0.7579,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.2107,
+        "bassEnergy": 0.1578
+      }
+    },
+    {
+      "time": 158.6968,
+      "intensity": 0.7449,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.1682,
+        "bassEnergy": 0.113
+      }
+    },
+    {
+      "time": 159.2773,
+      "intensity": 0.7452,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9956,
+        "rms": 0.1863,
+        "bassEnergy": 0.0908
+      }
+    },
+    {
+      "time": 159.8346,
+      "intensity": 0.7534,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9962,
+        "rms": 0.2271,
+        "bassEnergy": 0.089
+      }
+    },
+    {
+      "time": 160.4267,
+      "intensity": 0.4687,
+      "features": {
+        "onsetStrength": 0.6369,
+        "localOnsetContrast": 0.5788,
+        "rms": 0.1425,
+        "bassEnergy": 0.0889
+      }
+    },
+    {
+      "time": 161.0072,
+      "intensity": 0.6759,
+      "features": {
+        "onsetStrength": 0.8395,
+        "localOnsetContrast": 0.8119,
+        "rms": 0.297,
+        "bassEnergy": 0.3578
+      }
+    },
+    {
+      "time": 161.5877,
+      "intensity": 0.8378,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9997,
+        "rms": 0.5041,
+        "bassEnergy": 0.3709
+      }
+    },
+    {
+      "time": 162.1449,
+      "intensity": 0.8035,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.3939,
+        "bassEnergy": 0.2471
+      }
+    },
+    {
+      "time": 162.7254,
+      "intensity": 0.5994,
+      "features": {
+        "onsetStrength": 0.7716,
+        "localOnsetContrast": 0.7569,
+        "rms": 0.2287,
+        "bassEnergy": 0.1727
+      }
+    },
+    {
+      "time": 163.3059,
+      "intensity": 0.6264,
+      "features": {
+        "onsetStrength": 0.8438,
+        "localOnsetContrast": 0.8226,
+        "rms": 0.1475,
+        "bassEnergy": 0.1151
+      }
+    },
+    {
+      "time": 163.8864,
+      "intensity": 0.6641,
+      "features": {
+        "onsetStrength": 0.8952,
+        "localOnsetContrast": 0.8757,
+        "rms": 0.1643,
+        "bassEnergy": 0.0947
+      }
+    },
+    {
+      "time": 164.4553,
+      "intensity": 0.7084,
+      "features": {
+        "onsetStrength": 0.9263,
+        "localOnsetContrast": 0.9034,
+        "rms": 0.2637,
+        "bassEnergy": 0.1296
+      }
+    },
+    {
+      "time": 165.0358,
+      "intensity": 0.4943,
+      "features": {
+        "onsetStrength": 0.6459,
+        "localOnsetContrast": 0.589,
+        "rms": 0.1971,
+        "bassEnergy": 0.1697
+      }
+    },
+    {
+      "time": 165.6163,
+      "intensity": 0.4927,
+      "features": {
+        "onsetStrength": 0.6726,
+        "localOnsetContrast": 0.6269,
+        "rms": 0.1235,
+        "bassEnergy": 0.086
+      }
+    },
+    {
+      "time": 166.1968,
+      "intensity": 0.9212,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.737,
+        "bassEnergy": 0.738
+      }
+    },
+    {
+      "time": 166.7657,
+      "intensity": 0.7987,
+      "features": {
+        "onsetStrength": 0.791,
+        "localOnsetContrast": 0.768,
+        "rms": 0.8982,
+        "bassEnergy": 0.7114
+      }
+    },
+    {
+      "time": 167.3462,
+      "intensity": 0.893,
+      "features": {
+        "onsetStrength": 0.8563,
+        "localOnsetContrast": 0.845,
+        "rms": 1.0,
+        "bassEnergy": 0.9638
+      }
+    },
+    {
+      "time": 167.9267,
+      "intensity": 0.7454,
+      "features": {
+        "onsetStrength": 0.8839,
+        "localOnsetContrast": 0.8695,
+        "rms": 0.453,
+        "bassEnergy": 0.3964
+      }
+    },
+    {
+      "time": 168.5072,
+      "intensity": 0.8111,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9957,
+        "rms": 0.4049,
+        "bassEnergy": 0.3115
+      }
+    },
+    {
+      "time": 169.0645,
+      "intensity": 0.7623,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9927,
+        "rms": 0.2503,
+        "bassEnergy": 0.1403
+      }
+    },
+    {
+      "time": 169.6566,
+      "intensity": 0.4447,
+      "features": {
+        "onsetStrength": 0.6052,
+        "localOnsetContrast": 0.5449,
+        "rms": 0.1362,
+        "bassEnergy": 0.0894
+      }
+    },
+    {
+      "time": 170.2371,
+      "intensity": 0.6649,
+      "features": {
+        "onsetStrength": 0.9059,
+        "localOnsetContrast": 0.8872,
+        "rms": 0.1311,
+        "bassEnergy": 0.0918
+      }
+    },
+    {
+      "time": 170.8176,
+      "intensity": 0.8841,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9945,
+        "rms": 0.5923,
+        "bassEnergy": 0.6699
+      }
+    },
+    {
+      "time": 171.3749,
+      "intensity": 0.9671,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9059,
+        "bassEnergy": 0.8589
+      }
+    },
+    {
+      "time": 171.9554,
+      "intensity": 0.949,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.998,
+        "rms": 0.8174,
+        "bassEnergy": 0.8599
+      }
+    },
+    {
+      "time": 172.5359,
+      "intensity": 0.8635,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9904,
+        "rms": 0.5806,
+        "bassEnergy": 0.498
+      }
+    },
+    {
+      "time": 173.1164,
+      "intensity": 0.9321,
+      "features": {
+        "onsetStrength": 0.9957,
+        "localOnsetContrast": 0.9679,
+        "rms": 0.768,
+        "bassEnergy": 0.885
+      }
+    },
+    {
+      "time": 173.6853,
+      "intensity": 0.9115,
+      "features": {
+        "onsetStrength": 0.8886,
+        "localOnsetContrast": 0.8466,
+        "rms": 1.0,
+        "bassEnergy": 1.0
+      }
+    }
+  ],
+  "strongCues": [
+    {
+      "time": 18.5063,
+      "intensity": 0.9601,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.8981,
+        "bassEnergy": 0.8046
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 19.5164,
+      "intensity": 0.8575,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 0.8274,
+        "localOnsetContrast": 0.8335,
+        "rms": 0.9775,
+        "bassEnergy": 0.8135
+      }
+    },
+    {
+      "time": 20.5264,
+      "intensity": 0.8601,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5496,
+        "bassEnergy": 0.5019
+      }
+    },
+    {
+      "time": 20.8167,
+      "intensity": 0.9525,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7799,
+        "bassEnergy": 0.9654
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 21.0953,
+      "intensity": 0.9885,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9424,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 23.1155,
+      "intensity": 0.8823,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.589,
+        "bassEnergy": 0.645
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 27.7362,
+      "intensity": 0.8708,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.567,
+        "bassEnergy": 0.5737
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 30.0466,
+      "intensity": 0.9346,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.768,
+        "bassEnergy": 0.8097
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 30.3253,
+      "intensity": 0.9346,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7986,
+        "bassEnergy": 0.7487
+      }
+    },
+    {
+      "time": 30.6039,
+      "intensity": 0.8507,
+      "features": {
+        "onsetStrength": 0.9752,
+        "localOnsetContrast": 0.9855,
+        "rms": 0.5657,
+        "bassEnergy": 0.5236
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 41.7263,
+      "intensity": 0.9851,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 0.9815,
+        "localOnsetContrast": 0.9738,
+        "rms": 1.0,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 42.0165,
+      "intensity": 0.9315,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9995,
+        "rms": 0.7944,
+        "bassEnergy": 0.7276
+      }
+    },
+    {
+      "time": 42.5854,
+      "intensity": 0.95,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.8572,
+        "bassEnergy": 0.7854
+      }
+    },
+    {
+      "time": 42.8756,
+      "intensity": 0.9099,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7848,
+        "bassEnergy": 0.5293
+      }
+    },
+    {
+      "time": 43.3052,
+      "intensity": 0.8849,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6857,
+        "bassEnergy": 0.4776
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 46.3354,
+      "intensity": 0.8474,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 0.972,
+        "localOnsetContrast": 0.9975,
+        "rms": 0.5708,
+        "bassEnergy": 0.4644
+      }
+    },
+    {
+      "time": 47.3455,
+      "intensity": 0.8779,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6588,
+        "bassEnergy": 0.4619
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 47.6357,
+      "intensity": 0.8745,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6541,
+        "bassEnergy": 0.4369
+      }
+    },
+    {
+      "time": 47.926,
+      "intensity": 0.8617,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.611,
+        "bassEnergy": 0.3953
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 50.8169,
+      "intensity": 0.869,
+      "features": {
+        "onsetStrength": 0.8818,
+        "localOnsetContrast": 0.8715,
+        "rms": 0.7897,
+        "bassEnergy": 0.9636
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 51.8153,
+      "intensity": 0.9249,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 0.9896,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7967,
+        "bassEnergy": 0.7025
+      }
+    },
+    {
+      "time": 52.1056,
+      "intensity": 0.9211,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.8102,
+        "bassEnergy": 0.5905
+      }
+    },
+    {
+      "time": 52.5351,
+      "intensity": 0.8581,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5831,
+        "bassEnergy": 0.4147
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 55.5654,
+      "intensity": 0.9408,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 0.9923,
+        "localOnsetContrast": 1.0,
+        "rms": 0.8735,
+        "bassEnergy": 0.6957
+      }
+    },
+    {
+      "time": 56.4361,
+      "intensity": 0.8485,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5243,
+        "bassEnergy": 0.4363
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 60.1861,
+      "intensity": 0.9562,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9159,
+        "bassEnergy": 0.73
+      }
+    },
+    {
+      "time": 61.0453,
+      "intensity": 0.8648,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5806,
+        "bassEnergy": 0.4866
+      }
+    },
+    {
+      "time": 64.656,
+      "intensity": 0.9457,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7868,
+        "bassEnergy": 0.8836
+      }
+    },
+    {
+      "time": 64.9462,
+      "intensity": 0.8487,
+      "features": {
+        "onsetStrength": 0.9451,
+        "localOnsetContrast": 0.9629,
+        "rms": 0.6075,
+        "bassEnergy": 0.6118
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 65.666,
+      "intensity": 0.9595,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9159,
+        "bassEnergy": 0.7634
+      }
+    },
+    {
+      "time": 66.0956,
+      "intensity": 0.9082,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7381,
+        "bassEnergy": 0.6061
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 69.4161,
+      "intensity": 1.0,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 1.0,
+        "bassEnergy": 1.0
+      }
+    },
+    {
+      "time": 69.8456,
+      "intensity": 0.8761,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6239,
+        "bassEnergy": 0.513
+      }
+    },
+    {
+      "time": 70.2752,
+      "intensity": 0.9066,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7199,
+        "bassEnergy": 0.6264
+      }
+    },
+    {
+      "time": 73.8859,
+      "intensity": 0.8672,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5559,
+        "bassEnergy": 0.5606
+      }
+    },
+    {
+      "time": 90.6043,
+      "intensity": 0.8907,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9886,
+        "rms": 0.6941,
+        "bassEnergy": 0.5474
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 99.8342,
+      "intensity": 0.8955,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9993,
+        "rms": 0.6913,
+        "bassEnergy": 0.5742
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 104.455,
+      "intensity": 0.8738,
+      "features": {
+        "onsetStrength": 0.9638,
+        "localOnsetContrast": 0.9724,
+        "rms": 0.7191,
+        "bassEnergy": 0.5323
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 107.7754,
+      "intensity": 0.8577,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5597,
+        "bassEnergy": 0.4578
+      }
+    },
+    {
+      "time": 108.5068,
+      "intensity": 0.8805,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5951,
+        "bassEnergy": 0.6147
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 109.0641,
+      "intensity": 0.9078,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7573,
+        "bassEnergy": 0.563
+      }
+    },
+    {
+      "time": 109.366,
+      "intensity": 0.9032,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6711,
+        "bassEnergy": 0.6896
+      }
+    },
+    {
+      "time": 110.2367,
+      "intensity": 0.8534,
+      "features": {
+        "onsetStrength": 0.9947,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5027,
+        "bassEnergy": 0.5527
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 110.8172,
+      "intensity": 0.8795,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5877,
+        "bassEnergy": 0.6197
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 113.116,
+      "intensity": 0.9187,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7029,
+        "bassEnergy": 0.7811
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 113.6849,
+      "intensity": 0.8967,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7111,
+        "bassEnergy": 0.5447
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 117.0054,
+      "intensity": 0.8742,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.606,
+        "bassEnergy": 0.5297
+      }
+    },
+    {
+      "time": 117.7368,
+      "intensity": 0.9858,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9289,
+        "bassEnergy": 1.0
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 138.507,
+      "intensity": 0.8688,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.5694,
+        "bassEnergy": 0.5494
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 147.737,
+      "intensity": 0.9858,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.929,
+        "bassEnergy": 1.0
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 148.0156,
+      "intensity": 0.9091,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 0.9437,
+        "localOnsetContrast": 0.9365,
+        "rms": 0.8257,
+        "bassEnergy": 0.8514
+      }
+    },
+    {
+      "time": 148.2942,
+      "intensity": 0.916,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.7408,
+        "bassEnergy": 0.6779
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 152.3461,
+      "intensity": 0.8735,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6404,
+        "bassEnergy": 0.4543
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 156.9669,
+      "intensity": 0.8841,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.666,
+        "bassEnergy": 0.5086
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 166.1968,
+      "intensity": 0.9212,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.737,
+        "bassEnergy": 0.738
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 166.4755,
+      "intensity": 0.8786,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.6402,
+        "bassEnergy": 0.5061
+      }
+    },
+    {
+      "time": 166.7541,
+      "intensity": 0.953,
+      "kind": "onset_peak",
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.901,
+        "bassEnergy": 0.7284
+      }
+    },
+    {
+      "time": 167.3462,
+      "intensity": 0.893,
+      "features": {
+        "onsetStrength": 0.8563,
+        "localOnsetContrast": 0.845,
+        "rms": 1.0,
+        "bassEnergy": 0.9638
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 170.8176,
+      "intensity": 0.8841,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9945,
+        "rms": 0.5923,
+        "bassEnergy": 0.6699
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 171.3749,
+      "intensity": 0.9671,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 1.0,
+        "rms": 0.9059,
+        "bassEnergy": 0.8589
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 171.9554,
+      "intensity": 0.949,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.998,
+        "rms": 0.8174,
+        "bassEnergy": 0.8599
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 172.5359,
+      "intensity": 0.8635,
+      "features": {
+        "onsetStrength": 1.0,
+        "localOnsetContrast": 0.9904,
+        "rms": 0.5806,
+        "bassEnergy": 0.498
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 173.1164,
+      "intensity": 0.9321,
+      "features": {
+        "onsetStrength": 0.9957,
+        "localOnsetContrast": 0.9679,
+        "rms": 0.768,
+        "bassEnergy": 0.885
+      },
+      "kind": "strong_beat"
+    },
+    {
+      "time": 173.6853,
+      "intensity": 0.9115,
+      "features": {
+        "onsetStrength": 0.8886,
+        "localOnsetContrast": 0.8466,
+        "rms": 1.0,
+        "bassEnergy": 1.0
+      },
+      "kind": "strong_beat"
+    }
+  ]
+}

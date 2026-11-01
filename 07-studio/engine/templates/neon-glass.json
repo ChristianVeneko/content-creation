@@ -1,0 +1,26 @@
+{
+  "id": "neon-glass",
+  "name": "Neon Glass 3D",
+  "category": "3d",
+  "description": "Dark futuristic 3D: frosted glass objects with glowing neon edges over a reflective black floor, bloom and light sparks, a camera that punches in on every cut and sweeps around the subject. High-energy AI / crypto / cyber aesthetic. Karaoke captions. No emoji.",
+  "prompt_hint": "Write 6-10 punchy scenes (3-5 s each). Every scene has title.kicker + title.main and visual.type \"scene3d\" with 1-4 objects: one glowing hero (chip, lock, server, globe, phone, coin, rocket, lightbulb, icon) or a small system with connect arrows. Mark the key object with highlight: true. Short labels. Strong numbers go in a stat object. Never use emoji.",
+  "best_for": ["AI and tech news", "cybersecurity", "crypto and fintech", "futuristic hooks", "product launches"],
+  "preview": {
+    "style": "three",
+    "gradient": ["#05060D", "#0B0F24", "#FF2E88"],
+    "accent": "#00E5FF",
+    "sample_text": "NEON 3D"
+  },
+  "defaults": {
+    "theme": {
+      "palette": { "bg": ["#04050B", "#0B0F24"], "text": "#FFFFFF", "accent": "#00E5FF", "accent2": "#FF2E88", "accent3": "#A78BFA" },
+      "font": "Montserrat",
+      "captionStyle": "clean"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "em_alex", "speed": 1.08 },
+    "music": { "track": "auto", "volume": 0.13, "duck": true },
+    "sfx": { "enabled": true, "volume": 1 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "pop"
+  }
+}

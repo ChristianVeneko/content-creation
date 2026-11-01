@@ -1,0 +1,26 @@
+{
+  "id": "pedestal",
+  "name": "Pedestal 3D",
+  "category": "3d",
+  "description": "Pedestal 3D: one hero object on a glossy reflective floor under studio HDRI light, slow turntable and punch-in camera moves, exploded views where parts fly apart with thin callout lines, cinematic dip transitions. Apple-keynote calm with gold accents. No emoji.",
+  "prompt_hint": "Write 5-9 scenes (4-6 s each) about ONE product or object. Every scene has title.kicker + title.main and visual.type \"scene3d\": a single hero object (phone, laptop, card, coin, battery, chip, rocket, lightbulb, model, icon) or a hero + 2-4 parts with explode: true and short labels as callouts. Use stat for the key spec number. Never use emoji.",
+  "best_for": ["product reviews", "gadget launches", "app features", "brand stories", "before/after upgrades"],
+  "preview": {
+    "style": "three",
+    "gradient": ["#0B0B0E", "#1A1A20", "#FF9F0A"],
+    "accent": "#FF9F0A",
+    "sample_text": "PRODUCTO"
+  },
+  "defaults": {
+    "theme": {
+      "palette": { "bg": ["#08080B", "#1B1B22"], "text": "#F5F5F7", "accent": "#FF9F0A", "accent2": "#D9D9E0", "accent3": "#64D2FF" },
+      "font": "Inter",
+      "captionStyle": "clean"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.0 },
+    "music": { "track": "auto", "volume": 0.12, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.8 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "zoom"
+  }
+}

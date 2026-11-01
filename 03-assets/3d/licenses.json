@@ -1,0 +1,259 @@
+{
+  "note": "Curated CC0 3D assets for the 3D templates (07-studio/engine, lib/scene3d.mjs MODEL_IDS and RENDER3D). Poly Haven assets downloaded 2026-10-31 (1k); glTF packed to GLB. Kenney kits downloaded 2026-11-01 from kenney.nl; their GLBs reference an external colormap PNG, which was embedded into each GLB (self-contained, otherwise unchanged).",
+  "models": [
+    {
+      "id": "potted-plant-04",
+      "file": "models/potted-plant-04.glb",
+      "title": "Potted Plant 04",
+      "source": "https://polyhaven.com/a/potted_plant_04",
+      "license": "CC0-1.0",
+      "author": "Poly Haven",
+      "credit": "Poly Haven (CC0)"
+    },
+    {
+      "id": "alarm-clock-01",
+      "file": "models/alarm-clock-01.glb",
+      "title": "Alarm Clock 01",
+      "source": "https://polyhaven.com/a/alarm_clock_01",
+      "license": "CC0-1.0",
+      "author": "Poly Haven",
+      "credit": "Poly Haven (CC0)"
+    },
+    {
+      "id": "food-apple-01",
+      "file": "models/food-apple-01.glb",
+      "title": "Apple",
+      "source": "https://polyhaven.com/a/food_apple_01",
+      "license": "CC0-1.0",
+      "author": "Poly Haven",
+      "credit": "Poly Haven (CC0)"
+    },
+    {
+      "id": "megaphone-01",
+      "file": "models/megaphone-01.glb",
+      "title": "Megaphone 01",
+      "source": "https://polyhaven.com/a/Megaphone_01",
+      "license": "CC0-1.0",
+      "author": "Poly Haven",
+      "credit": "Poly Haven (CC0)"
+    },
+    {
+      "id": "car-sedan",
+      "file": "models/car-sedan.glb",
+      "title": "Sedan (Car Kit 3.1)",
+      "source": "https://kenney.nl/assets/car-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "car-sedan-sports",
+      "file": "models/car-sedan-sports.glb",
+      "title": "Sports sedan (Car Kit 3.1)",
+      "source": "https://kenney.nl/assets/car-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "car-suv",
+      "file": "models/car-suv.glb",
+      "title": "SUV (Car Kit 3.1)",
+      "source": "https://kenney.nl/assets/car-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "car-taxi",
+      "file": "models/car-taxi.glb",
+      "title": "Taxi (Car Kit 3.1)",
+      "source": "https://kenney.nl/assets/car-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "car-truck",
+      "file": "models/car-truck.glb",
+      "title": "Truck (Car Kit 3.1)",
+      "source": "https://kenney.nl/assets/car-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "character-a",
+      "file": "models/character-a.glb",
+      "title": "Blocky character A (animated)",
+      "source": "https://kenney.nl/assets/blocky-characters",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "character-d",
+      "file": "models/character-d.glb",
+      "title": "Blocky character D (animated)",
+      "source": "https://kenney.nl/assets/blocky-characters",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "character-k",
+      "file": "models/character-k.glb",
+      "title": "Blocky character K (animated)",
+      "source": "https://kenney.nl/assets/blocky-characters",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "computer-mouse",
+      "file": "models/computer-mouse.glb",
+      "title": "Mouse (Furniture Kit)",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "lamp-table",
+      "file": "models/lamp-table.glb",
+      "title": "Round table lamp (Furniture Kit)",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "books",
+      "file": "models/books.glb",
+      "title": "Books (Furniture Kit)",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "plant-small",
+      "file": "models/plant-small.glb",
+      "title": "Small plant (Furniture Kit)",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "chair-desk",
+      "file": "models/chair-desk.glb",
+      "title": "Desk chair (Furniture Kit)",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "bookcase",
+      "file": "models/bookcase.glb",
+      "title": "Open bookcase (Furniture Kit)",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "city-building-a",
+      "file": "models/city-building-a.glb",
+      "title": "Building A (City Kit Commercial)",
+      "source": "https://kenney.nl/assets/city-kit-commercial",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "city-building-c",
+      "file": "models/city-building-c.glb",
+      "title": "Building C (City Kit Commercial)",
+      "source": "https://kenney.nl/assets/city-kit-commercial",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "city-building-skyscraper-a",
+      "file": "models/city-building-skyscraper-a.glb",
+      "title": "Skyscraper A (City Kit Commercial)",
+      "source": "https://kenney.nl/assets/city-kit-commercial",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "city-building-skyscraper-c",
+      "file": "models/city-building-skyscraper-c.glb",
+      "title": "Skyscraper C (City Kit Commercial)",
+      "source": "https://kenney.nl/assets/city-kit-commercial",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "city-low-detail-building-a",
+      "file": "models/city-low-detail-building-a.glb",
+      "title": "Low-detail building A (City Kit Commercial)",
+      "source": "https://kenney.nl/assets/city-kit-commercial",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "street-light",
+      "file": "models/street-light.glb",
+      "title": "Curved street light (City Kit Roads)",
+      "source": "https://kenney.nl/assets/city-kit-roads",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "sign-highway",
+      "file": "models/sign-highway.glb",
+      "title": "Highway sign (City Kit Roads)",
+      "source": "https://kenney.nl/assets/city-kit-roads",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    },
+    {
+      "id": "construction-barrier",
+      "file": "models/construction-barrier.glb",
+      "title": "Construction barrier (City Kit Roads)",
+      "source": "https://kenney.nl/assets/city-kit-roads",
+      "license": "CC0-1.0",
+      "author": "Kenney",
+      "credit": "Kenney, kenney.nl (CC0)"
+    }
+  ],
+  "hdri": [
+    {
+      "id": "studio-small-09",
+      "file": "hdri/studio_small_09_1k.hdr",
+      "title": "Studio Small 09 (1k)",
+      "source": "https://polyhaven.com/a/studio_small_09",
+      "license": "CC0-1.0",
+      "author": "Poly Haven",
+      "credit": "Poly Haven (CC0)"
+    },
+    {
+      "id": "brown-photostudio-02",
+      "file": "hdri/brown_photostudio_02_1k.hdr",
+      "title": "Brown Photostudio 02 (1k)",
+      "source": "https://polyhaven.com/a/brown_photostudio_02",
+      "license": "CC0-1.0",
+      "author": "Poly Haven",
+      "credit": "Poly Haven (CC0)"
+    }
+  ]
+}

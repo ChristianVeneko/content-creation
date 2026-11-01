@@ -1,0 +1,415 @@
+{
+  "version": 1,
+  "title": "Cómo llega una web a tu pantalla",
+  "template": "whiteboard",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "paso",
+        "type": "chip",
+        "value": "Inicio"
+      },
+      {
+        "id": "viaje",
+        "type": "bar",
+        "label": "Viaje",
+        "value": 0
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Escribes una dirección, pulsas enter y en menos de un segundo aparece la web. ¿Qué pasó en medio?",
+      "title": {
+        "kicker": "Menos de un segundo",
+        "main": "¿Qué pasa al pulsar enter?"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "browser",
+            "size": "l",
+            "label": "tu navegador"
+          },
+          {
+            "type": "callout",
+            "target": "q",
+            "shape": "underline"
+          },
+          {
+            "type": "badge",
+            "id": "q",
+            "text": "un viaje de ida y vuelta"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dns",
+      "narration": "Primero, tu ordenador pregunta al DNS, la agenda de internet, qué número corresponde a ese nombre.",
+      "title": {
+        "kicker": "Paso uno",
+        "main": "La agenda de internet",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              {
+                "label": "nombre",
+                "icon": "text-aa"
+              },
+              {
+                "label": "DNS",
+                "icon": "address-book"
+              },
+              {
+                "label": "IP",
+                "icon": "hash"
+              }
+            ]
+          },
+          {
+            "type": "card",
+            "title": "ejemplo.com = 93.184.216.34",
+            "body": [
+              "los nombres son para humanos",
+              "los números para máquinas"
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "DNS"
+        },
+        "viaje": {
+          "value": 0.2
+        }
+      }
+    },
+    {
+      "id": "paquetes",
+      "narration": "Luego tu petición se corta en paquetes pequeños, como cartas numeradas.",
+      "title": {
+        "kicker": "Paso dos",
+        "main": "Todo viaja en paquetes",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "svg",
+            "viewBox": "0 0 400 220",
+            "height": 300,
+            "paths": [
+              {
+                "d": "M20 60 h90 v60 h-90 z",
+                "stroke": "text",
+                "width": 5
+              },
+              {
+                "d": "M20 60 l45 35 l45 -35",
+                "stroke": "text",
+                "width": 5
+              },
+              {
+                "d": "M150 60 h90 v60 h-90 z",
+                "stroke": "accent2",
+                "width": 5
+              },
+              {
+                "d": "M150 60 l45 35 l45 -35",
+                "stroke": "accent2",
+                "width": 5
+              },
+              {
+                "d": "M280 60 h90 v60 h-90 z",
+                "stroke": "accent",
+                "width": 5
+              },
+              {
+                "d": "M280 60 l45 35 l45 -35",
+                "stroke": "accent",
+                "width": 5
+              },
+              {
+                "d": "M60 170 q140 50 280 0",
+                "stroke": "text",
+                "width": 4
+              }
+            ],
+            "label": "1, 2, 3... numerados"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Paquetes"
+        },
+        "viaje": {
+          "value": 0.35
+        }
+      }
+    },
+    {
+      "id": "router",
+      "narration": "Cada paquete salta de router en router, eligiendo el camino libre, como coches en una ciudad.",
+      "title": {
+        "kicker": "Paso tres",
+        "main": "Saltos entre routers",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "flow",
+            "direction": "horizontal",
+            "nodes": [
+              {
+                "label": "casa",
+                "icon": "house"
+              },
+              {
+                "label": "router",
+                "icon": "wifi-high"
+              },
+              {
+                "label": "proveedor",
+                "icon": "cell-signal-full"
+              },
+              {
+                "label": "servidor",
+                "icon": "hard-drives"
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "ruta",
+            "shape": "box",
+            "label": "camino más libre"
+          },
+          {
+            "type": "badge",
+            "id": "ruta",
+            "text": "hasta 15 saltos",
+            "icon": "path"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Routers"
+        },
+        "viaje": {
+          "value": 0.5
+        }
+      }
+    },
+    {
+      "id": "servidor",
+      "narration": "El servidor recibe tu petición y prepara la respuesta: el HTML, las imágenes y los estilos.",
+      "title": {
+        "kicker": "Paso cuatro",
+        "main": "El servidor responde",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "divider": "line",
+            "left": [
+              {
+                "type": "icon",
+                "name": "hard-drives",
+                "label": "servidor",
+                "size": "m"
+              }
+            ],
+            "right": [
+              {
+                "type": "checklist",
+                "items": [
+                  "HTML",
+                  "CSS",
+                  "imágenes",
+                  "JavaScript"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Servidor"
+        },
+        "viaje": {
+          "value": 0.65
+        }
+      }
+    },
+    {
+      "id": "https",
+      "narration": "Todo eso va cifrado con HTTPS, así nadie en el camino puede leerlo.",
+      "title": {
+        "kicker": "Ojo con esto",
+        "main": "El candado importa"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "HTTP",
+              "items": [
+                "texto plano",
+                "cualquiera lo lee"
+              ],
+              "icon": "lock-open"
+            },
+            "right": {
+              "title": "HTTPS",
+              "items": [
+                "cifrado",
+                "solo tú lo lees"
+              ],
+              "icon": "lock"
+            },
+            "winner": "right"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Cifrado"
+        },
+        "viaje": {
+          "value": 0.75
+        }
+      }
+    },
+    {
+      "id": "navegador",
+      "narration": "Tu navegador junta los paquetes, lee el HTML y pinta la página pieza por pieza.",
+      "title": {
+        "kicker": "Paso cinco",
+        "main": "El navegador pinta",
+        "number": 5
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "steps": [
+              {
+                "label": "HTML",
+                "sub": "estructura"
+              },
+              {
+                "label": "CSS",
+                "sub": "estilo"
+              },
+              {
+                "label": "JS",
+                "sub": "interacción"
+              },
+              {
+                "label": "Listo",
+                "sub": "en pantalla"
+              }
+            ]
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Pintado"
+        },
+        "viaje": {
+          "value": 0.9
+        }
+      }
+    },
+    {
+      "id": "cache",
+      "narration": "Y la próxima vez va más rápido, porque parte de la web queda guardada en caché.",
+      "title": {
+        "kicker": "El truco final",
+        "main": "La caché ahorra viajes"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 80,
+            "suffix": "%",
+            "label": "menos datos",
+            "id": "c"
+          },
+          {
+            "type": "callout",
+            "target": "c",
+            "shape": "circle"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Caché"
+        },
+        "viaje": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Nombre, paquetes, routers, servidor y navegador. Cinco pasos en menos de un segundo. Guarda este video para repasarlo.",
+      "title": {
+        "kicker": "Resumen",
+        "main": "Cinco pasos, un segundo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "DNS traduce el nombre",
+              "paquetes numerados",
+              "routers eligen camino",
+              "servidor responde",
+              "navegador pinta"
+            ]
+          },
+          {
+            "type": "stamp",
+            "text": "entendido"
+          }
+        ]
+      },
+      "hud": {
+        "paso": {
+          "value": "Fin"
+        }
+      }
+    }
+  ]
+}

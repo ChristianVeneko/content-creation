@@ -1,0 +1,27 @@
+{
+  "id": "whiteboard",
+  "name": "Whiteboard Marker",
+  "category": "illustrated-2d",
+  "description": "A hand-drawn explainer on a clean whiteboard: dark marker ink plus red and blue accent markers, wobbly rough.js strokes that boil like real marker lines, handwritten headlines that write themselves on, and scenes that are wiped away by an eraser. Warm, human and teacher-like. No emoji.",
+  "prompt_hint": "Write 8-14 short scenes (3-6 s each) like a teacher sketching on a whiteboard. Every scene: title.kicker + title.main (short, handwritten feel), optional title.number for numbered steps, and visual.type \"illustration\" with 1-4 simple elements: icon/svg sketches, flow and timeline for processes, compare or split for before/after, checklist for steps, callout (circle, underline, arrow) to point at the key idea. Prefer few big drawings over dense panels. Never use emoji.",
+  "best_for": ["concept explainers", "how it works", "teaching and onboarding", "mental models", "storytelling"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#F7F5EF", "#ECE8DD", "#DCD6C8"],
+    "accent": "#E8452C",
+    "sample_text": "SKETCH IT OUT"
+  },
+  "defaults": {
+    "theme": {
+      "look": "whiteboard",
+      "palette": { "bg": ["#F7F5EF", "#ECE8DD"], "text": "#1F2430", "accent": "#E8452C", "accent2": "#1F6FEB", "accent3": "#1E9E5A" },
+      "font": "Permanent Marker",
+      "captionStyle": "boxed"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.0 },
+    "music": { "track": "auto", "volume": 0.11, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.9 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "pop"
+  }
+}

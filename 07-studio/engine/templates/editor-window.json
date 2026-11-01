@@ -1,0 +1,27 @@
+{
+  "id": "editor-window",
+  "name": "Editor Window",
+  "category": "illustrated-2d",
+  "description": "An editor-window format: a big code window with file tabs, line numbers, syntax colors, typed lines and a blinking cursor, terminals that print output, diff lines in green and red, and STEP badges. Monospace everywhere, a dark Dracula-like palette, CRT-style scanlines and terminal-clear transitions. No emoji.",
+  "prompt_hint": "Write 8-14 scenes (4-6 s each), one step per scene. Set title.number to the step number and title.kicker to the file or command (e.g. src/app.ts, npm run dev); title.main is what the step does. Most scenes have one code (max 8 lines of 48 chars; start lines with '+ ' or '- ' to show a diff) or terminal element (lines starting with '$' are typed commands, the rest is output), optionally plus a callout or badge. Use checklist for recaps and compare for wrong vs right. Never use emoji.",
+  "best_for": ["coding tutorials", "CLI tips", "framework how-tos", "refactors and diffs", "dev tooling"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#191A21", "#282A36", "#44475A"],
+    "accent": "#50FA7B",
+    "sample_text": "$ npm run dev"
+  },
+  "defaults": {
+    "theme": {
+      "look": "editor-window",
+      "palette": { "bg": ["#15161C", "#22232D"], "text": "#F8F8F2", "accent": "#50FA7B", "accent2": "#FF79C6", "accent3": "#8BE9FD" },
+      "font": "JetBrains Mono",
+      "captionStyle": "clean"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "em_alex", "speed": 1.05 },
+    "music": { "track": "auto", "volume": 0.1, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.9 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "typewriter"
+  }
+}

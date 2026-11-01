@@ -1,0 +1,60 @@
+{
+  "id": "toy-blocks",
+  "name": "Toy Blocks 3D",
+  "category": "3d",
+  "description": "Real 3D (three.js) toy photography: glossy plastic objects on a studded baseplate sitting on a wooden desk, two softbox highlights, a long macro lens with a tilt-shift blur band that makes everything a miniature, pieces that drop in stop-motion steps on twos and click into place, and scenes built tile by tile like bricks pressed onto a plate. Headlines sit on a toy brick with studs. Playful and tactile. Generic bricks only: no brand names. No emoji.",
+  "prompt_hint": "Write 6-10 scenes (3-5 s each). Every scene has title.kicker + title.main and visual.type \"scene3d\" with 1-5 objects (cube, house, building, rocket, server, database, coin, chart, gear, person, tree...). Grids and rows of objects read like a toy set; use connect for flows. Short labels (1-3 words). Never use emoji or toy brand names.",
+  "best_for": [
+    "playful tech explainers",
+    "building a business step by step",
+    "architecture and systems",
+    "games and hobbies",
+    "kids education"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#FFF3D6",
+      "#F5DDAA",
+      "#E3262E"
+    ],
+    "accent": "#E3262E",
+    "sample_text": "BUILD IT"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#FFF4DA",
+          "#EBD3A6"
+        ],
+        "text": "#1A1A1A",
+        "accent": "#E3262E",
+        "accent2": "#FFD500",
+        "accent3": "#2BB24C"
+      },
+      "font": "Rubik",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.06
+    },
+    "music": {
+      "track": "auto",
+      "mood": "upbeat-fun",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

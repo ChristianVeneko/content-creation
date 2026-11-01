@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "title": "¿Cuánto dormimos de verdad?",
+  "template": "editorial-chart",
+  "language": "es",
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Dormimos menos de lo que creemos. Veamos los números.",
+      "title": {
+        "kicker": "Sueño adulto",
+        "main": "Dormimos menos de lo que creemos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 7,
+            "suffix": " h",
+            "label": "lo mínimo recomendado",
+            "id": "m"
+          },
+          {
+            "type": "callout",
+            "target": "m",
+            "shape": "underline",
+            "label": "para adultos"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rango",
+      "narration": "Las guías de salud recomiendan entre siete y nueve horas para adultos.",
+      "title": {
+        "kicker": "La recomendación",
+        "main": "Entre siete y nueve horas"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "title": "horas recomendadas",
+            "unit": "h",
+            "items": [
+              {
+                "label": "niños",
+                "value": 10
+              },
+              {
+                "label": "adolescentes",
+                "value": 9
+              },
+              {
+                "label": "adultos",
+                "value": 8
+              },
+              {
+                "label": "mayores",
+                "value": 7.5
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "tercio",
+      "narration": "Pero en muchos países, alrededor de un tercio de los adultos duerme menos de siete horas.",
+      "title": {
+        "kicker": "La realidad",
+        "main": "Uno de cada tres no llega"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 33,
+            "suffix": "%",
+            "label": "duerme menos de 7 h",
+            "id": "p"
+          },
+          {
+            "type": "callout",
+            "target": "p",
+            "shape": "circle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pantallas",
+      "narration": "Una causa frecuente: las pantallas antes de dormir retrasan el sueño.",
+      "title": {
+        "kicker": "Una causa",
+        "main": "La pantalla antes de dormir"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Con pantalla",
+              "items": [
+                "tarda más en dormir",
+                "sueño más ligero"
+              ],
+              "icon": "device-mobile"
+            },
+            "right": {
+              "title": "Sin pantalla",
+              "items": [
+                "se duerme antes",
+                "sueño más profundo"
+              ],
+              "icon": "book-open"
+            },
+            "winner": "right"
+          }
+        ]
+      }
+    },
+    {
+      "id": "deuda",
+      "narration": "Dormir seis horas durante dos semanas rinde como no dormir una noche entera, según estudios de laboratorio.",
+      "title": {
+        "kicker": "Deuda de sueño",
+        "main": "Seis horas no bastan"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "unit": "%",
+            "title": "rendimiento en pruebas",
+            "items": [
+              {
+                "label": "8 h",
+                "value": 100
+              },
+              {
+                "label": "6 h",
+                "value": 72,
+                "color": "accent2"
+              },
+              {
+                "label": "4 h",
+                "value": 51,
+                "color": "bad"
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "target": "b",
+            "shape": "arrow",
+            "label": "baja sin notarlo"
+          },
+          {
+            "type": "badge",
+            "id": "b",
+            "text": "no te das cuenta"
+          }
+        ]
+      }
+    },
+    {
+      "id": "finde",
+      "narration": "Recuperar el fin de semana ayuda poco: el reloj interno se desajusta.",
+      "title": {
+        "kicker": "Mito",
+        "main": "El finde no lo arregla"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "timeline",
+            "steps": [
+              {
+                "label": "lunes",
+                "sub": "6 h"
+              },
+              {
+                "label": "viernes",
+                "sub": "deuda alta"
+              },
+              {
+                "label": "sábado",
+                "sub": "10 h"
+              },
+              {
+                "label": "lunes",
+                "sub": "jet lag social"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "habitos",
+      "narration": "Lo que más ayuda: horario fijo, luz de día y cuarto oscuro.",
+      "title": {
+        "kicker": "Qué funciona",
+        "main": "Tres hábitos con evidencia"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "misma hora todos los días",
+              "luz natural por la mañana",
+              "cuarto oscuro y fresco"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ganancia",
+      "narration": "Con esos hábitos, la mayoría gana entre treinta y cuarenta minutos de sueño por noche.",
+      "title": {
+        "kicker": "El resultado",
+        "main": "Media hora más cada noche"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "from": 0,
+            "value": 35,
+            "suffix": " min",
+            "label": "de sueño extra"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Siete horas no es un lujo, es mantenimiento. Guarda este video y mira tu propio dato esta semana.",
+      "title": {
+        "kicker": "Conclusión",
+        "main": "Dormir es mantenimiento"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "badge",
+            "text": "mide tu semana",
+            "icon": "chart-line-up"
+          }
+        ]
+      }
+    }
+  ]
+}

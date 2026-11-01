@@ -1,0 +1,27 @@
+{
+  "id": "broadcast",
+  "name": "Broadcast",
+  "category": "illustrated-2d",
+  "description": "Broadcast TV graphics: red tab, white lower-third headline bars, a live clock and LIVE dot in the top bar, and a scrolling ticker with every headline. Hard cuts with an RGB glitch and a white flash, stamps that slam with a camera shake, red/white/black only. Urgent and punchy. No emoji.",
+  "prompt_hint": "Write 8-12 short scenes (3-5 s each) like a news anchor: scene 1 is the breaking headline, then facts, reactions, numbers and what happens next. title.kicker is the section label (e.g. ULTIMA HORA, EN VIVO, DATOS, REACCIONES) and title.main is the headline (max ~32 chars). Use stamp (CONFIRMADO, OFICIAL), counter for figures, timeline for what happened, compare for before/after, doc for statements, chat for quotes. Keep 1-3 elements per scene. Never use emoji.",
+  "best_for": ["tech news", "launches and announcements", "incidents and outages", "industry updates", "hot takes"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#0A0A0C", "#1A0A0D", "#E10600"],
+    "accent": "#E10600",
+    "sample_text": "ULTIMA HORA"
+  },
+  "defaults": {
+    "theme": {
+      "look": "broadcast",
+      "palette": { "bg": ["#0A0A0C", "#1C0B0E"], "text": "#FFFFFF", "accent": "#E10600", "accent2": "#FFD400", "accent3": "#FFFFFF" },
+      "font": "Oswald",
+      "captionStyle": "boxed"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "em_alex", "speed": 1.1 },
+    "music": { "track": "auto", "volume": 0.1, "duck": true },
+    "sfx": { "enabled": true, "volume": 1 },
+    "captions": { "enabled": true, "wordsPerPage": 2 },
+    "animation": "slide"
+  }
+}

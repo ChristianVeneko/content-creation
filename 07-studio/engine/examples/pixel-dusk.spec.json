@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "title": "Cinco herramientas que te ahorran horas",
+  "template": "pixel-dusk",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Nunca trabajes sin estas cinco herramientas.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "room",
+          "banner": {
+            "text": "Nunca sin estas 5 herramientas",
+            "accent": "5",
+            "big": true
+          },
+          "props": [
+            {
+              "kind": "block",
+              "x": 0.18,
+              "color": "#55CC77"
+            },
+            {
+              "kind": "block",
+              "x": 0.39,
+              "color": "#FFB347"
+            },
+            {
+              "kind": "block",
+              "x": 0.61,
+              "color": "#5DA9FF"
+            },
+            {
+              "kind": "block",
+              "x": 0.82,
+              "color": "#C77DFF"
+            }
+          ],
+          "character": {
+            "pose": "idle",
+            "x": 0.3
+          },
+          "speaker": "BYTE",
+          "camera": "rise"
+        }
+      }
+    },
+    {
+      "id": "uno",
+      "narration": "La primera te deja ver la pantalla completa sin capturas.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "desert",
+          "banner": {
+            "text": "Le da ojos",
+            "accent": "ojos"
+          },
+          "props": [
+            {
+              "kind": "robot",
+              "x": 0.62,
+              "label": "AGENTE"
+            },
+            {
+              "kind": "sign",
+              "x": 0.85,
+              "label": "CAPTURA"
+            }
+          ],
+          "character": {
+            "pose": "point",
+            "x": 0.25
+          },
+          "speaker": "BYTE",
+          "camera": "pan-right"
+        }
+      }
+    },
+    {
+      "id": "dos",
+      "narration": "La segunda filtra la información de relleno y gasta menos tokens.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "factory",
+          "banner": {
+            "text": "Solo lo que importa",
+            "accent": "importa"
+          },
+          "counter": {
+            "value": 3120,
+            "from": 12480,
+            "label": "tokens que gasta"
+          },
+          "props": [
+            {
+              "kind": "crate",
+              "x": 0.2
+            },
+            {
+              "kind": "coin",
+              "x": 0.45
+            },
+            {
+              "kind": "coin",
+              "x": 0.6
+            },
+            {
+              "kind": "robot",
+              "x": 0.82
+            }
+          ],
+          "speaker": "BYTE"
+        }
+      }
+    },
+    {
+      "id": "tres",
+      "narration": "La tercera abre una ventana nueva con todo tu proyecto.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "gallery",
+          "popup": {
+            "title": "CHAT NUEVO",
+            "text": "¿De qué proyecto me hablás?",
+            "accent": "proyecto",
+            "at": 0.5
+          },
+          "props": [
+            {
+              "kind": "door",
+              "x": 0.78
+            },
+            {
+              "kind": "robot",
+              "x": 0.35
+            }
+          ],
+          "speaker": "BYTE",
+          "transition": "dissolve"
+        }
+      }
+    },
+    {
+      "id": "cuatro",
+      "narration": "Y la quinta diseña interfaces que no parecen genéricas.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "gallery",
+          "banner": {
+            "text": "Diseño de verdad",
+            "accent": "verdad"
+          },
+          "props": [
+            {
+              "kind": "item",
+              "big": true,
+              "x": 0.62,
+              "color": "#FF7AB6"
+            }
+          ],
+          "character": {
+            "pose": "hold",
+            "item": "item",
+            "x": 0.3
+          },
+          "speaker": "BYTE",
+          "camera": "pan-left"
+        }
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Guárdalo y sígueme para la parte dos.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "street",
+          "banner": {
+            "text": "Sígueme para más",
+            "accent": "más"
+          },
+          "props": [
+            {
+              "kind": "chest",
+              "x": 0.68,
+              "open": true
+            },
+            {
+              "kind": "lamp",
+              "x": 0.9
+            }
+          ],
+          "character": {
+            "pose": "walk",
+            "x": 0.3
+          },
+          "speaker": "BYTE"
+        }
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "Cinco herramientas que te ahorran horas",
+    "instagram": "Cinco herramientas que te ahorran horas",
+    "youtube": {
+      "title": "Cinco herramientas que te ahorran horas",
+      "description": "Cinco herramientas que te ahorran horas"
+    },
+    "hashtags": [
+      "herramientas",
+      "productividad",
+      "pixelart"
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "id": "paper-collage",
+  "name": "Paper Cut Collage",
+  "category": "illustrated-2d",
+  "description": "A stop-motion paper collage on kraft cardboard: torn paper scraps with soft layered shadows, masking tape, ransom-note headlines cut from different papers and faces, everything animated in held 12 fps poses with a hand-placed camera jitter. Scenes change when a new torn sheet is slid over the old one. Crafty, punchy and handmade. No emoji.",
+  "prompt_hint": "Write 8-12 punchy scenes (3-5 s each). title.main short (2-5 words: each word becomes its own paper scrap); title.kicker reads like a label on masking tape. visual.type \"illustration\" with 1-3 chunky elements: card, icon, badge, compare or split for before/after, checklist, stamp for a verdict. Few words per element. Never use emoji.",
+  "best_for": [
+    "culture and history explainers",
+    "myths vs facts",
+    "media literacy",
+    "creative tips",
+    "zine-style storytelling"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#C9A27A",
+      "#B98D63",
+      "#E84A2F"
+    ],
+    "accent": "#E84A2F",
+    "sample_text": "CUT AND PASTE"
+  },
+  "defaults": {
+    "theme": {
+      "look": "paper-collage",
+      "palette": {
+        "bg": [
+          "#CDA77E",
+          "#B88C62"
+        ],
+        "text": "#1E1A17",
+        "accent": "#E84A2F",
+        "accent2": "#F2B632",
+        "accent3": "#2F5DD9"
+      },
+      "font": "Archivo Black",
+      "captionStyle": "boxed"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.05
+    },
+    "music": {
+      "track": "auto",
+      "mood": "upbeat-fun",
+      "volume": 0.11,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "slide"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "elevenlabs": {
+      "command": "./05-tools/bin/elevenlabs-mcp",
+      "args": []
+    }
+  }
+}

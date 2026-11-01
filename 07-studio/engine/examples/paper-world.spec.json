@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "title": "Cómo llega la luz a tu casa",
+  "template": "paper-world",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Enciendes la luz y llega al instante. Pero viene de muy lejos.",
+      "title": {
+        "kicker": "pulsas el interruptor",
+        "main": "¿De dónde viene?"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "lightbulb",
+            "label": "tu bombilla"
+          },
+          {
+            "kind": "house",
+            "label": "tu casa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "planta",
+      "narration": "Todo empieza en una central, que convierte el sol, el viento o el agua en electricidad.",
+      "title": {
+        "kicker": "paso uno",
+        "main": "La central"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "building",
+            "label": "central"
+          },
+          {
+            "kind": "gear",
+            "label": "turbina"
+          }
+        ]
+      }
+    },
+    {
+      "id": "red",
+      "narration": "La electricidad viaja por la red a muy alto voltaje para perder poca energía.",
+      "title": {
+        "kicker": "paso dos",
+        "main": "Viaja por la red"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "flow",
+        "objects": [
+          {
+            "kind": "building",
+            "label": "central"
+          },
+          {
+            "kind": "pin",
+            "label": "torres"
+          },
+          {
+            "kind": "house",
+            "label": "barrio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "barrio",
+      "narration": "Cerca de tu barrio, un transformador baja el voltaje para que sea seguro.",
+      "title": {
+        "kicker": "paso tres",
+        "main": "Baja el voltaje"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "battery",
+            "value": 0.4,
+            "label": "transformador"
+          },
+          {
+            "kind": "house",
+            "label": "casas"
+          },
+          {
+            "kind": "tree",
+            "label": "parque"
+          }
+        ]
+      }
+    },
+    {
+      "id": "casa",
+      "narration": "Y por fin entra en tu casa, en tu enchufe y en tu bombilla.",
+      "title": {
+        "kicker": "paso cuatro",
+        "main": "Llega a tu casa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "camera": "crane",
+        "objects": [
+          {
+            "kind": "house",
+            "label": "tu casa",
+            "highlight": true
+          },
+          {
+            "kind": "lightbulb",
+            "label": "luz"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cifra",
+      "narration": "Todo ese viaje ocurre casi a la velocidad de la luz.",
+      "title": {
+        "kicker": "un dato",
+        "main": "Casi instantáneo"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "0,01 s",
+            "label": "en cruzar el país"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "La próxima vez que enciendas la luz, piensa en el viaje que hizo.",
+      "title": {
+        "kicker": "para recordar",
+        "main": "Un largo viaje"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "circle",
+        "objects": [
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "tree"
+          },
+          {
+            "kind": "house"
+          },
+          {
+            "kind": "lightbulb"
+          }
+        ]
+      }
+    }
+  ]
+}

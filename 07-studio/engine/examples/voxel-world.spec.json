@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "title": "Cómo funciona la economía de un juego",
+  "template": "voxel-world",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Todo juego con monedas tiene una economía escondida.",
+      "title": {
+        "kicker": "Todo juego",
+        "main": "tiene economía"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "orbit",
+        "objects": [
+          {
+            "kind": "character",
+            "anim": "walk",
+            "label": "Jugador",
+            "highlight": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "fuentes",
+      "narration": "Las monedas entran al mundo por misiones y cofres.",
+      "title": {
+        "kicker": "Entran por",
+        "main": "misiones"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "objects": [
+          {
+            "kind": "folder",
+            "label": "Cofre"
+          },
+          {
+            "kind": "coin",
+            "value": 4,
+            "label": "Monedas"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sumideros",
+      "narration": "Y salen por tiendas, reparaciones e impuestos.",
+      "title": {
+        "kicker": "Y salen por",
+        "main": "tiendas"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "row",
+        "camera": "rise",
+        "objects": [
+          {
+            "kind": "house",
+            "label": "Tienda"
+          },
+          {
+            "kind": "coin",
+            "value": 2,
+            "label": "Gasto"
+          }
+        ]
+      }
+    },
+    {
+      "id": "inflacion",
+      "narration": "Si entran más de las que salen, todo sube de precio.",
+      "title": {
+        "kicker": "Si sobran",
+        "main": "hay inflación"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "chart",
+            "values": [
+              1,
+              2,
+              4,
+              7
+            ],
+            "items": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ],
+            "label": "Precios"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ciclo",
+      "narration": "El diseñador equilibra el ciclo para que ganar siempre valga la pena.",
+      "title": {
+        "kicker": "El ciclo",
+        "main": "equilibrado"
+      },
+      "visual": {
+        "type": "scene3d",
+        "layout": "flow",
+        "objects": [
+          {
+            "kind": "character",
+            "model": "character-d",
+            "anim": "pick-up",
+            "id": "j",
+            "label": "Ganas"
+          },
+          {
+            "kind": "coin",
+            "id": "m",
+            "label": "Monedas"
+          },
+          {
+            "kind": "house",
+            "id": "t",
+            "label": "Gastas"
+          }
+        ],
+        "connect": [
+          {
+            "from": "j",
+            "to": "m"
+          },
+          {
+            "from": "m",
+            "to": "t"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Ahora ya sabes por qué tu espada cuesta lo que cuesta.",
+      "title": {
+        "kicker": "Ahora ya",
+        "main": "lo sabes"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "glide",
+        "objects": [
+          {
+            "kind": "character",
+            "model": "character-k",
+            "anim": "yes",
+            "label": "Pro",
+            "highlight": true
+          },
+          {
+            "kind": "tree",
+            "size": 0.8
+          }
+        ]
+      }
+    }
+  ]
+}

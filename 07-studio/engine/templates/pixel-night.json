@@ -1,0 +1,59 @@
+{
+  "id": "pixel-night",
+  "name": "Pixel Night",
+  "category": "pixel",
+  "description": "Pixel-art format at night: navy and violet sets lit by moonlight, neon signs and lit windows, blurred parallax layers, glow on every light source and drifting dust. Pixel banner with an accent word, RPG dialog box with the narration, popup chat windows and HUD counters.",
+  "prompt_hint": "Write 5-9 scenes (3-5 s each). Every scene has visual.type \"pixel\" with visual.pixel: {set, props?, character?, banner?, one of popup|counter|checklist?, speaker?}. Sets: room, street, desert, factory, gallery, temple, forest, lab, space. Props: monitor, laptop, phone, door, window, lamp, lantern, crate, plant, coin, block, trophy, hourglass, sign, chest, item, heart, key, scroll, robot (max 6, one may be big). The hook scene uses banner.big; other scenes use a short boxed banner (2-4 words) with one accent word. The narration is typed into the RPG dialog box at the bottom, so keep sentences short. Add character only when the user asks for one. Never use emoji.",
+  "best_for": [
+    "mysterious or dramatic hooks",
+    "tech and internet stories",
+    "late-night storytelling",
+    "lists of tools or secrets",
+    "before / after reveals"
+  ],
+  "preview": {
+    "style": "pixel",
+    "gradient": [
+      "#0A0D24",
+      "#232B5E",
+      "#FF4FA3"
+    ],
+    "accent": "#FF4FA3",
+    "sample_text": "PIXEL NIGHT"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#06061A",
+          "#141A3E"
+        ],
+        "text": "#EAE6FF",
+        "accent": "#FF4FA3",
+        "accent2": "#8CF0FF",
+        "accent3": "#FFD98A"
+      },
+      "font": "Pixelify Sans",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.05
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": false,
+      "wordsPerPage": 7
+    },
+    "animation": "pop"
+  }
+}

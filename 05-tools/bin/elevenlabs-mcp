@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Launches the official ElevenLabs MCP with every cache inside the repo.
+# Reads ELEVENLABS_API_KEY from <repo>/.env (via env.sh).
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+source "$ROOT/env.sh"
+: "${ELEVENLABS_API_KEY:?Add ELEVENLABS_API_KEY to $ROOT/.env}"
+export ELEVENLABS_MCP_BASE_PATH="$CC_ROOT/04-projects/_elevenlabs"
+mkdir -p "$ELEVENLABS_MCP_BASE_PATH"
+exec uvx elevenlabs-mcp

@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "title": "Tres récords que parecen imposibles",
+  "template": "pixel-arcade",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tres récords que parecen imposibles.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "space",
+          "banner": {
+            "text": "Récords imposibles",
+            "accent": "imposibles",
+            "big": true
+          },
+          "props": [
+            {
+              "kind": "block",
+              "x": 0.3
+            },
+            {
+              "kind": "trophy",
+              "x": 0.5,
+              "big": true
+            },
+            {
+              "kind": "block",
+              "x": 0.7
+            }
+          ],
+          "speaker": "PLAYER 1",
+          "camera": "rise"
+        }
+      }
+    },
+    {
+      "id": "uno",
+      "narration": "El primero junta más de un millón de monedas en una partida.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "desert",
+          "counter": {
+            "value": 1000000,
+            "from": 0,
+            "label": "monedas"
+          },
+          "props": [
+            {
+              "kind": "coin",
+              "x": 0.3
+            },
+            {
+              "kind": "coin",
+              "x": 0.45
+            },
+            {
+              "kind": "coin",
+              "x": 0.6
+            },
+            {
+              "kind": "chest",
+              "x": 0.8,
+              "open": true
+            }
+          ],
+          "speaker": "PLAYER 1"
+        }
+      }
+    },
+    {
+      "id": "dos",
+      "narration": "El segundo termina el juego entero en cuatro minutos.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "factory",
+          "banner": {
+            "text": "En 4 minutos",
+            "accent": "4"
+          },
+          "props": [
+            {
+              "kind": "hourglass",
+              "x": 0.5,
+              "big": true
+            },
+            {
+              "kind": "crate",
+              "x": 0.2
+            },
+            {
+              "kind": "crate",
+              "x": 0.82
+            }
+          ],
+          "speaker": "PLAYER 1",
+          "transition": "dissolve"
+        }
+      }
+    },
+    {
+      "id": "tres",
+      "narration": "El tercero nunca perdió una sola vida.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "forest",
+          "banner": {
+            "text": "Cero vidas perdidas",
+            "accent": "Cero"
+          },
+          "props": [
+            {
+              "kind": "heart",
+              "x": 0.35
+            },
+            {
+              "kind": "heart",
+              "x": 0.5
+            },
+            {
+              "kind": "heart",
+              "x": 0.65
+            }
+          ],
+          "speaker": "PLAYER 1"
+        }
+      }
+    },
+    {
+      "id": "lista",
+      "narration": "Para intentarlo necesitas tres cosas.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "lab",
+          "checklist": {
+            "title": "NECESITAS",
+            "items": [
+              "Paciencia",
+              "Práctica diaria",
+              "Buena memoria"
+            ]
+          },
+          "props": [
+            {
+              "kind": "phone",
+              "x": 0.8
+            }
+          ],
+          "speaker": "PLAYER 1"
+        }
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Comenta cuál es tu récord.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "street",
+          "banner": {
+            "text": "Tu récord",
+            "accent": "récord"
+          },
+          "props": [
+            {
+              "kind": "item",
+              "x": 0.5,
+              "big": true
+            }
+          ],
+          "speaker": "PLAYER 1"
+        }
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "Tres récords que parecen imposibles",
+    "instagram": "Tres récords que parecen imposibles",
+    "youtube": {
+      "title": "Tres récords que parecen imposibles",
+      "description": "Tres récords que parecen imposibles"
+    },
+    "hashtags": [
+      "videojuegos",
+      "records",
+      "pixelart"
+    ]
+  }
+}

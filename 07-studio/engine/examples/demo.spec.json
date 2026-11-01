@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "title": "3 hábitos que te hacen más productivo",
+  "template": "captions-voice",
+  "language": "es",
+  "format": { "width": 1080, "height": 1920, "fps": 30 },
+  "theme": {
+    "palette": { "bg": ["#1A0B3B", "#5B1AA8", "#E1306C"], "text": "#FFFFFF", "accent": "#FFE600" },
+    "font": "Montserrat",
+    "captionStyle": "hormozi"
+  },
+  "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.05 },
+  "music": { "volume": 0.12 },
+  "captions": { "enabled": true, "wordsPerPage": 3 },
+  "scenes": [
+    { "id": "hook", "narration": "Tres hábitos que duplican tu productividad. El tercero casi nadie lo hace.", "onScreenText": "x2 productividad", "visual": { "type": "emoji", "emoji": "⚡" }, "animation": "pop" },
+    { "id": "habit-1", "narration": "Uno: decide tu tarea más importante la noche anterior.", "onScreenText": "Planea de noche", "visual": { "type": "emoji", "emoji": "🌙" }, "animation": "slide" },
+    { "id": "habit-2", "narration": "Dos: trabaja en bloques de noventa minutos sin el móvil.", "onScreenText": "Bloques de 90 min", "visual": { "type": "gradient" }, "animation": "zoom" },
+    { "id": "habit-3", "narration": "Tres: termina el día escribiendo qué salió bien. Tu cerebro empieza mañana con ventaja.", "onScreenText": "Cierra con victorias", "visual": { "type": "emoji", "emoji": "✍️" }, "animation": "typewriter" },
+    { "id": "cta", "narration": "Guárdalo y mándaselo a quien siempre dice que no le da el tiempo.", "onScreenText": "Guárdalo 📌", "visual": { "type": "emoji", "emoji": "📌" }, "animation": "pop" }
+  ],
+  "post": {
+    "tiktok": "3 hábitos que duplican tu productividad (el 3 casi nadie lo hace) #productividad #habitos #tips",
+    "instagram": "El tercero cambió mis mañanas. Guárdalo para mañana y mándaselo a quien lo necesita.\n\n#productividad #habitos #motivacion #organizacion #tips",
+    "youtube": { "title": "3 hábitos que duplican tu productividad #shorts", "description": "Tres hábitos simples para rendir el doble: planear de noche, bloques de 90 minutos y cerrar el día con victorias." },
+    "hashtags": ["productividad", "habitos", "motivacion", "organizacion", "tips"]
+  }
+}

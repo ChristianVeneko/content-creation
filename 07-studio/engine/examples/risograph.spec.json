@@ -1,0 +1,214 @@
+{
+  "version": 1,
+  "title": "Guía de café de especialidad",
+  "template": "risograph",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tu café sabe amargo y no es culpa tuya. Tiene arreglo.",
+      "title": {
+        "kicker": "zine número 1",
+        "main": "Café sin amargor"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "coffee",
+            "size": "l"
+          },
+          {
+            "type": "badge",
+            "text": "cuatro ajustes"
+          }
+        ]
+      }
+    },
+    {
+      "id": "molienda",
+      "narration": "Primero, muele justo antes. El café molido pierde aroma en minutos.",
+      "title": {
+        "kicker": "ajuste 01",
+        "main": "Muele al momento",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "counter",
+            "value": 15,
+            "suffix": " min",
+            "label": "y se va el aroma"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agua",
+      "narration": "Segundo, el agua no debe hervir. Mejor entre noventa y noventa y seis grados.",
+      "title": {
+        "kicker": "ajuste 02",
+        "main": "Agua sin hervir",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "unit": "C",
+            "items": [
+              {
+                "label": "ideal",
+                "value": 93
+              },
+              {
+                "label": "hervida",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "proporcion",
+      "narration": "Tercero, pesa. Una buena proporción es un gramo de café por cada dieciséis de agua.",
+      "title": {
+        "kicker": "ajuste 03",
+        "main": "Uno a dieciséis",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "Proporción 1:16",
+            "body": [
+              "15 g de café",
+              "240 g de agua"
+            ],
+            "icon": "scales"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tiempo",
+      "narration": "Cuarto, controla el tiempo. Unos tres minutos en filtro.",
+      "title": {
+        "kicker": "ajuste 04",
+        "main": "Tres minutos",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "timer",
+            "size": "l",
+            "label": "3:00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "antes",
+      "narration": "Mira la diferencia entre la rutina de siempre y la nueva.",
+      "title": {
+        "kicker": "antes y después",
+        "main": "Mismo café"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "compare",
+            "left": {
+              "title": "Antes",
+              "items": [
+                "molido viejo",
+                "agua hirviendo",
+                "a ojo"
+              ]
+            },
+            "right": {
+              "title": "Después",
+              "items": [
+                "molido fresco",
+                "93 grados",
+                "pesado"
+              ]
+            },
+            "winner": "right"
+          }
+        ]
+      }
+    },
+    {
+      "id": "origen",
+      "narration": "Y si puedes, compra café con fecha de tueste.",
+      "title": {
+        "kicker": "extra",
+        "main": "Fecha de tueste"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "badge",
+            "text": "menos de 30 días",
+            "icon": "calendar"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lista",
+      "narration": "Pega esta lista en tu cocina.",
+      "title": {
+        "kicker": "para la nevera",
+        "main": "La lista"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "moler al momento",
+              "93 grados",
+              "1:16",
+              "3 minutos"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Prueba mañana y cuéntame qué cambió.",
+      "title": {
+        "kicker": "fin del zine",
+        "main": "Ahora te toca"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stamp",
+            "text": "Probado"
+          }
+        ]
+      }
+    }
+  ]
+}

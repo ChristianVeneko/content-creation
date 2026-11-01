@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "title": "5 atajos de teclado que te ahorran horas",
+  "template": "rank-numbers",
+  "language": "es",
+  "hud": {
+    "items": [
+      {
+        "id": "pos",
+        "type": "chip",
+        "value": "TOP 5"
+      },
+      {
+        "id": "prog",
+        "type": "bar",
+        "label": "Ranking",
+        "value": 0
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Cinco atajos de teclado que te ahorran horas cada semana. El número uno casi nadie lo usa.",
+      "title": {
+        "kicker": "Productividad",
+        "main": "5 atajos que ahorran horas"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "keyboard",
+            "size": "l"
+          },
+          {
+            "type": "badge",
+            "text": "el #1 te sorprende",
+            "icon": "star"
+          }
+        ]
+      }
+    },
+    {
+      "id": "n5",
+      "narration": "Número cinco: control más zeta deshace lo último. Tu red de seguridad.",
+      "title": {
+        "kicker": "Básico",
+        "main": "Deshacer",
+        "number": 5
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "arrow-counter-clockwise",
+            "size": "l",
+            "color": "accent3"
+          },
+          {
+            "type": "badge",
+            "text": "Ctrl + Z",
+            "icon": "keyboard"
+          }
+        ]
+      },
+      "hud": {
+        "pos": {
+          "value": "5/5"
+        },
+        "prog": {
+          "value": 0.2
+        }
+      }
+    },
+    {
+      "id": "n4",
+      "narration": "Número cuatro: control más efe busca cualquier palabra en la página.",
+      "title": {
+        "kicker": "Navegar",
+        "main": "Buscar en la página",
+        "number": 4
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "magnifying-glass",
+            "size": "l",
+            "color": "accent2"
+          },
+          {
+            "type": "badge",
+            "text": "Ctrl + F",
+            "icon": "keyboard"
+          }
+        ]
+      },
+      "hud": {
+        "pos": {
+          "value": "4/5"
+        },
+        "prog": {
+          "value": 0.4
+        }
+      }
+    },
+    {
+      "id": "n3",
+      "narration": "Número tres: alt más tab salta entre ventanas sin tocar el ratón.",
+      "title": {
+        "kicker": "Ventanas",
+        "main": "Cambiar de ventana",
+        "number": 3
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "browsers",
+            "size": "l",
+            "color": "accent"
+          },
+          {
+            "type": "badge",
+            "text": "Alt + Tab",
+            "icon": "keyboard"
+          }
+        ]
+      },
+      "hud": {
+        "pos": {
+          "value": "3/5"
+        },
+        "prog": {
+          "value": 0.6
+        }
+      }
+    },
+    {
+      "id": "n2",
+      "narration": "Número dos: control más shift más te reabre la pestaña que cerraste sin querer.",
+      "title": {
+        "kicker": "Navegador",
+        "main": "Reabrir la pestaña",
+        "number": 2
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "arrow-square-out",
+            "size": "l",
+            "color": "accent3"
+          },
+          {
+            "type": "badge",
+            "text": "Ctrl + Shift + T",
+            "icon": "keyboard"
+          }
+        ]
+      },
+      "hud": {
+        "pos": {
+          "value": "2/5"
+        },
+        "prog": {
+          "value": 0.8
+        }
+      }
+    },
+    {
+      "id": "n1",
+      "narration": "Número uno: windows más uve abre el historial del portapapeles con todo lo que copiaste.",
+      "title": {
+        "kicker": "El mejor",
+        "main": "Historial del portapapeles",
+        "number": 1
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "icon",
+            "name": "clipboard-text",
+            "size": "l",
+            "color": "accent"
+          },
+          {
+            "type": "badge",
+            "text": "Win + V",
+            "icon": "keyboard"
+          },
+          {
+            "type": "stamp",
+            "text": "top 1"
+          }
+        ]
+      },
+      "hud": {
+        "pos": {
+          "value": "1/5"
+        },
+        "prog": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "ahorro",
+      "narration": "Usándolos a diario ahorras fácilmente dos horas a la semana.",
+      "title": {
+        "kicker": "El ahorro",
+        "main": "Horas que recuperas"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "bars",
+            "unit": " h",
+            "items": [
+              {
+                "label": "semana",
+                "value": 2
+              },
+              {
+                "label": "mes",
+                "value": 8
+              },
+              {
+                "label": "año",
+                "value": 96
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Guarda este video y practica uno cada día. ¿Cuál no conocías?",
+      "title": {
+        "kicker": "Tu turno",
+        "main": "Practica uno al día"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "items": [
+              "Ctrl + Z",
+              "Ctrl + F",
+              "Alt + Tab",
+              "Ctrl + Shift + T",
+              "Win + V"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

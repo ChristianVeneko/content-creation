@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "title": "La IA escribe código: revisalo",
+  "template": "reels-nube",
+  "language": "es",
+  "reels": {
+    "subtitles": "linea",
+    "cover": {
+      "etiqueta": "IA",
+      "lineas": [
+        "REVISA",
+        "*SU CODIGO*"
+      ],
+      "icono": "code",
+      "pegatina": "3 claves"
+    }
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "La IA ya escribe *la mitad* de tu código.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "headline",
+          "etiqueta": "SABIAS QUE",
+          "texto": "La IA escribe / *la mitad*",
+          "icono": "code",
+          "en": [
+            "código"
+          ],
+          "sinSubtitulos": true
+        }
+      }
+    },
+    {
+      "id": "counter",
+      "narration": "Con Copilot, GitHub midió que el *46 por ciento* del código lo escribe el asistente.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "counter",
+          "valor": 46,
+          "desde": 0,
+          "sufijo": " %",
+          "etiqueta": "del código lo escribe la IA",
+          "icono": "bot",
+          "en": [
+            "GitHub",
+            "asistente-6"
+          ]
+        }
+      }
+    },
+    {
+      "id": "chat",
+      "narration": "Le pides *una función* y te la escribe en segundos.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "chat",
+          "mensaje": "valida un email en JS",
+          "respuesta": "Escribiendo",
+          "archivo": "email.js",
+          "pildora": "lista en 4 segundos",
+          "en": [
+            "pides",
+            "función",
+            "escribe",
+            "segundos",
+            "segundos+10"
+          ]
+        }
+      }
+    },
+    {
+      "id": "strike",
+      "narration": "Pero no es *magia*: es *estadística*.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "strike",
+          "antes": "Magia",
+          "despues": "Estadística",
+          "icono": "sparkles",
+          "en": [
+            "magia",
+            "estadística"
+          ]
+        }
+      }
+    },
+    {
+      "id": "list",
+      "narration": "Revisa siempre tres cosas: *errores*, *seguridad* y *estilo*.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "list",
+          "titulo": "Revisa siempre",
+          "items": [
+            {
+              "texto": "Errores",
+              "icono": "bug"
+            },
+            {
+              "texto": "Seguridad",
+              "icono": "shield-check"
+            },
+            {
+              "texto": "Estilo",
+              "icono": "palette"
+            }
+          ],
+          "en": [
+            "errores",
+            "seguridad",
+            "estilo"
+          ],
+          "entrada": "semitono"
+        }
+      }
+    },
+    {
+      "id": "compare",
+      "narration": "La IA *propone*, pero *tú decides* qué entra.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "compare",
+          "izquierda": {
+            "titulo": "La IA",
+            "texto": "propone código",
+            "icono": "bot"
+          },
+          "derecha": {
+            "titulo": "Tú",
+            "texto": "decides qué entra",
+            "icono": "user"
+          },
+          "ganador": "derecha",
+          "en": [
+            "IA",
+            "tú",
+            "entra"
+          ]
+        }
+      }
+    },
+    {
+      "id": "quiz",
+      "narration": "¿Quién responde si el código falla? *Tú*, siempre.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "quiz",
+          "pregunta": "¿Quién responde si falla?",
+          "opciones": [
+            "La IA",
+            "Tú",
+            "Nadie"
+          ],
+          "correcta": 1,
+          "en": [
+            "Quién",
+            "falla",
+            "Tú"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cta",
+      "narration": "Comenta *CODIGO* y te mando mi lista de revisión.",
+      "visual": {
+        "type": "reel",
+        "reel": {
+          "type": "cta",
+          "palabra": "CODIGO",
+          "texto": "y te mando / mi lista",
+          "en": [
+            "Comenta",
+            "mando",
+            "revisión"
+          ],
+          "sinSubtitulos": true
+        }
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "La IA escribe la mitad de tu código. Revisa estas 3 cosas siempre. #ia #programacion #copilot",
+    "instagram": "La IA propone, tú decides. Comenta CODIGO y te mando mi lista de revisión.\n\n#ia #programacion #desarrollo #copilot",
+    "youtube": {
+      "title": "La IA escribe la mitad de tu código #shorts",
+      "description": "Por qué revisar siempre el código que escribe la IA: errores, seguridad y estilo."
+    },
+    "hashtags": [
+      "ia",
+      "programacion",
+      "copilot",
+      "desarrollo"
+    ]
+  }
+}

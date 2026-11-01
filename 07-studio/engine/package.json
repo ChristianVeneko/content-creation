@@ -1,0 +1,47 @@
+{
+  "name": "video-studio-engine",
+  "version": "1.0.0",
+  "description": "Spec-driven vertical short-video engine (Remotion) for the Video Studio",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "bin": {
+    "video-engine": "./cli.mjs"
+  },
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "test": "node --test",
+    "typecheck": "tsc",
+    "schema": "node scripts/gen-schema.mjs",
+    "thumbs": "../../02-scripts/keepawake.sh node scripts/make-thumbs.mjs"
+  },
+  "dependencies": {
+    "@phosphor-icons/core": "2.1.1",
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.2",
+    "@remotion/bundler": "4.0.539",
+    "@remotion/captions": "4.0.539",
+    "@remotion/cli": "4.0.539",
+    "@remotion/layout-utils": "4.0.539",
+    "@remotion/noise": "4.0.539",
+    "@remotion/paths": "4.0.539",
+    "@remotion/renderer": "4.0.539",
+    "@remotion/three": "4.0.539",
+    "@remotion/transitions": "4.0.539",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.539",
+    "roughjs": "4.6.6",
+    "three": "0.186.1",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "@types/three": "0.186.0",
+    "@types/web": "0.0.166",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

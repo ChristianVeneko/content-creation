@@ -1,0 +1,60 @@
+{
+  "id": "holo-studio",
+  "name": "Hologram Studio 3D",
+  "category": "3d",
+  "description": "Real 3D (three.js) holograms in a dark studio: translucent iridescent objects with glowing cyan rims hover over a round projector pad with concentric light rings and a faint light cone, drawn upward by a scan plane, with rising data motes, bloom, depth fog, scanlines, HUD rulers and a dot grid. Titles are thin glowing caps in corner brackets whose kicker rolls from garbage glyphs into text; scenes swap through thinning scanlines. Futuristic and precise. No emoji.",
+  "prompt_hint": "Write 6-10 scenes (3-5 s each). Every scene has title.kicker + title.main and visual.type \"scene3d\" with 1-4 objects (chip, server, database, lock, key, globe, phone, monitor, gear, stat, chart...). One object = a hero scan; use focus to push in on a part and stat for big numbers. Short labels (1-3 words). Never use emoji.",
+  "best_for": [
+    "AI and future tech",
+    "cybersecurity",
+    "product specs and teardowns",
+    "data and analytics",
+    "sci-fi storytelling"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#010307",
+      "#04121A",
+      "#2DE2FF"
+    ],
+    "accent": "#2DE2FF",
+    "sample_text": "SCAN COMPLETE"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#02060B",
+          "#06161F"
+        ],
+        "text": "#E9FDFF",
+        "accent": "#2DE2FF",
+        "accent2": "#B26BFF",
+        "accent3": "#38F2A6"
+      },
+      "font": "Chakra Petch",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_santa",
+      "speed": 1.0
+    },
+    "music": {
+      "track": "auto",
+      "mood": "tense-mystery",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "typewriter"
+  }
+}

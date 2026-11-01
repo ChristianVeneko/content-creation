@@ -1,0 +1,11 @@
+* text=auto
+*.sh text eol=lf
+05-tools/bin/* text eol=lf
+env.sh text eol=lf
+*.mp3 binary
+*.wav binary
+*.png binary
+*.jpg binary
+*.glb binary
+*.hdr binary
+*.ttf binary

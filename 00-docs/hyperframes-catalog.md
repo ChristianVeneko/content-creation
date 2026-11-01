@@ -1,0 +1,506 @@
+# HyperFrames catalog (448 items, v0.8.225)
+
+Install: `npx hyperframes add <name>` inside a HyperFrames project. Docs per item: `https://hyperframes.heygen.com/catalog/{blocks|components}/<name>.md`. Full JSON: `hyperframes-catalog.json`.
+
+
+## ★ Hand-drawn, whiteboard, and line-draw (by name, 18)
+
+- `hw-arrow` (component): Wobbled draw-on arrow with straight, gentle, and swoop curve poses, a four-way stroke texture matrix (plain/soft/sharp/spray), and a travel-
+- `hw-boil` (component): Hand-drawn jitter that re-poses every N frames, as seek-safe helpers: pose derives from quantized timeline time through a seeded hash; inclu
+- `hw-box-label` (component): Wobbled rounded rectangle draws on — across the authored stroke matrix (plain/soft/sharp/spray) — or drops in and lands with a volume-true c
+- `hw-callout-circle` (component): Wobbled ellipse draws around a target with optional scribble fill and curved connector; the handwritten label pops in WITH momentum and the
+- `hw-frame` (block): Media in a hand-drawn border with corner doodles and a handwritten caption; the unit tilts slightly and boils (images inside the block; keep
+- `hw-path-text` (block): Handwriting flowing along any SVG path with a per-character reveal; the path is the only geometry input
+- `hw-pipeline` (block): Wobbled boxes with handwritten labels joined by curved connectors, drawing on in sequence from a node list
+- `hw-scribble-transition` (block): Overlay transition: scribble bands accumulate to cover the frame with a solid backstop, the host cuts beneath, and the scribble clears
+- `hw-text-cloud` (block): Hand-drawn speech bubble with a positionable tail: outline draws on, paper fill fades in, handwritten text types per character; boils
+- `hw-title` (block): Handwritten display text with a scalar-driven word-by-word highlight sweep and a seeded squiggle underline sized to the text; boils
+- `hw-underline` (component): Hand-drawn squiggle underline, double-pass strikethrough, and bracket marks that draw on
+- `hw-write-title` (block): True glyph write-on: filled Caveat letterforms revealed by baked per-glyph centerline strokes traced in real stroke order with a curvature-a
+- `marker-checklist-card` (component): A hand-lettered paper card: marker headline with an underline and a drawn ellipse around one word, then three checklist rows whose checks dr
+- `marker-highlight` (component): Display text settles in, then one hand-drawn marker stroke (highlight, circle, underline, or scribble) draws over the emphasized word on cue
+- `svg-line-draw-loader` (component): An Anime.js-style path drawing loader implemented as a seekable GSAP stroke timeline.
+- `svg-mask-reveal` (component): A soft token-colored sweep reveals media only through an editable SVG wordmark mask.
+- `svg-stroke-trace` (component): An authored SVG path draws from its measured length, holds with subtle drift, and optionally fills when the path is closed.
+- `whiteboard-ink` (component): A whiteboard sketch draws one measured stroke at a time while a pen nib follows the active tip. Preset sketches (bulb, flow, rocket) or your
+
+## Hand-drawn / illustration (6)
+
+- `cursor-annotate` (component): A marker pen glides onto the frame and hand-draws a loose loop, an underline, or an arrow around a region, the ink laid
+- `facet-morph` (component): A faceted low-poly mass of 36 triangles continuously reshapes between three authored silhouettes (blob, mark, badge) wit
+- `ink-bleed-reveal` (component): Liquid ink blooms through paper under a gooey blur-plus-threshold filter, merges, then contracts as a crisp slotted mark
+- `svg-mask-reveal` (component): A soft token-colored sweep reveals media only through an editable SVG wordmark mask.
+- `svg-stroke-trace` (component): An authored SVG path draws from its measured length, holds with subtle drift, and optionally fills when the path is clos
+- `whiteboard-ink` (component): A whiteboard sketch draws one measured stroke at a time while a pen nib follows the active tip. Preset sketches (bulb, f
+
+## Typography / kinetic text (96)
+
+- `apple-money-count` (block): Apple-style finance counter that counts from $0 to $10,000, flashes green, and bursts money icons with sound.
+- `ascii-render-pass` (component): A slotted scene renders as live ASCII: a canvas samples the source's luminance grid (rasterized once at mount) and draws
+- `blur-in` (component): An Operator Black word-level content reveal that resolves its own text from controlled blur
+- `blur-out-up` (component): Words arrive clean and depart upward with increasing blur for airy exits.
+- `bottom-up-letters` (component): Splits text into letters and reveals each glyph from below with deterministic staggered timing
+- `canopy-part-title` (block): Leaves sweep through the frame and part to reveal the headline.
+- `caption-blend-difference` (component): Auto-inverting text using mix-blend-mode: difference — flips between white and black per-pixel against the background
+- `caption-camera-follow` (component): One sentence written across a world far larger than the frame. Each word is sized against everything already written, so
+- `caption-editorial-emphasis` (component): Dual-font system with dramatic size contrast for emphasis words
+- `caption-kinetic-slam` (component): Full-screen single-word display with alternating entrance directions
+- `caption-texture` (component): Flowing texture mask over large uppercase text — ships with 6 textures (lava, marble, metal, wood, concrete, rock), conf
+- `caption-weight-shift` (component): Elegant font-weight transition between caption lines
+- `caret-swap` (component): A gradient caret expands over one phrase, collapses to the left, then types its replacement with a blinking caret.
+- `carousel-text-circle-1` (block): A headline mask-reveals word by word while a circle carousel converges from off-frame and threads the line, collapses to
+- `carousel-text-circle-2` (block): A headline mask-reveals word by word while a circle carousel converges from off-frame and threads the line, collapses to
+- `carousel-text-circle-3` (block): A headline mask-reveals word by word while a circle carousel converges from off-frame and threads the line, collapses to
+- `carousel-text-circle-4` (block): A headline mask-reveals word by word while a circle carousel converges from off-frame and threads the line, collapses to
+- `carousel-text-circle-5` (block): A headline mask-reveals word by word while a circle carousel converges from off-frame and threads the line, collapses to
+- `char-slam-explode` (component): Headline glyphs hold in a deterministic scatter, then reassemble with an overshooting slam and a three-frame landing sha
+- `code-slice-hero` (block): A tiled headline surface flips cell by cell under a sweeping depth field to reveal the rear headline.
+- `colorama-wipe` (component): Headline reveal through a feathered, leaning wipe front that is blurred and colour-mapped as it passes, then settles to
+- `cursor-text-select` (component): An arrow turns into an I-beam over a document, drags a selection across a phrase character by character, raises a format
+- `extended-keyframe` (component): The never-fully-lands arrival: an element covers most of its move in the first fifth of the duration and creeps the rest
+- `extruded-logo` (block): Beveled 3D letters flip up one by one, the word swings so light runs across the bevels, then settles for a readable hold
+- `falling-lines` (block): White lines fall down the frame at varied speeds, each fading into a trail. A WebGPU shader from the Shaders library (sh
+- `focus-blur-resolve` (component): A premium focus pull from heavy blur to crisp text, then a soft blur-out exit.
+- `fractal-noise` (block): Soft grey fractal noise drifts across the frame like slow clouds. A WebGPU shader from the Shaders library (shaders.com,
+- `gabor-noise` (block): Grey streaky noise drifts across the frame like a moving fingerprint. A WebGPU shader from the Shaders library (shaders.
+- `glass-hero` (block): A solid glass object rises in front of a giant headline and keeps turning, so the type bends and splits into colour thro
+- `glass-shard-title` (block): Glass shards fly in through fog and tile themselves into the headline.
+- `grain-field` (component): A clearly visible accent-tinted dot field drifts over a subtle luminance gradient in an exact ambient loop.
+- `grain-overlay` (component): Animated film grain texture overlay using CSS keyframes — adds warmth and analog character to any composition
+- `halftone-dissolve` (component): Scene A dissolves into scene B through a growing halftone dot field: accent ink dots pop onto a fixed grid smallest-firs
+- `halftone-field` (block): A full-bleed halftone light field: a grid of dots whose size and colour track a slow flowing simplex-noise field, so bro
+- `headline-slam` (component): A heavyweight headline scales down into frame, lands with a deterministic three-frame shake, holds with subtle drift, an
+- `hw-path-text` (block): Handwriting flowing along any SVG path with a per-character reveal; the path is the only geometry input
+- `hw-title` (block): Handwritten display text with a scalar-driven word-by-word highlight sweep and a seeded squiggle underline sized to the
+- `hw-underline` (component): Hand-drawn squiggle underline, double-pass strikethrough, and bracket marks that draw on
+- `hw-write-title` (block): True glyph write-on: filled Caveat letterforms revealed by baked per-glyph centerline strokes traced in real stroke orde
+- `inline-highlight` (component): A clean marker-style inline highlight that animates behind text using a CSS scale variable
+- `kinetic-center-build` (component): Words enter from the right and push the growing phrase left until the final line locks centered.
+- `kinetic-type-swap` (component): A held sentence keeps its fixed text in place while one widest-word masked slot rolls through alternatives and settles o
+- `line-by-line-slide` (component): Each line enters from the left with staggered slide and exits to the right.
+- `line-swap` (component): A masked full-line beat replacement: line A holds center then exits up through an overflow-hidden mask as line B enters
+- `logo-brand-close` (component): A display-scale wordmark cascades letter by letter into a centered lockup, the accent brand period lands last, an option
+- `marble` (block): Ink-dark veins wind through white in a marbled pattern that slowly shifts. A WebGPU shader from the Shaders library (sha
+- `marker-highlight` (component): Display text settles in, then one hand-drawn marker stroke (highlight, circle, underline, or scribble) draws over the em
+- `matrix-decode` (component): Random scramble resolves left-to-right into the target text.
+- `mk-callout-highlight` (block): A sentence whose word-by-word emphasis is driven by a single scalar — tween it to sync the highlight with a voiceover
+- `mk-clone-wall-transition` (block): Overlay transition: a tiled word wall covers the frame, inverts via difference blending, and clears — hard-cut the conte
+- `mk-emphasis-type` (component): Oversized low-contrast background word drifting slowly behind the subject — typography as texture
+- `morph-text` (component): Gooey text morph — cycles through an editable word list using SVG threshold + GSAP-driven blur for a fluid, satisfying t
+- `north-korea-locked-down` (block): Realistic map zoom into North Korea with a red scribble circle, locked-down pop-up label, and reddish editorial wash.
+- `ordered-dither-pass` (component): Bayer-matrix ordered dithering quantizes a slotted scene (rasterized once at mount): the image emerges from pure 2-tone
+- `particle-text-dissolve` (component): Text assembles from a seeded particle cloud (or dissolves into it): per-particle targets sampled once from the rendered
+- `per-word-crossfade` (component): Words gently fade into place with a short vertical drift for calm keynote rhythm.
+- `per-word-rise` (component): Words or characters rise into place in a controlled blur-to-sharp cascade, settle softly on landing, and hold still unti
+- `perspective-marquee` (component): A 3D tilted marquee with depth feel as items roll toward the horizon.
+- `plasma` (block): Deep violet plasma folds and churns across the whole frame. A WebGPU shader from the Shaders library (shaders.com, MIT).
+- `pull-back-reveal` (component): A tight stat detail holds, then one decelerating camera pull-back reveals the headline and supporting cards that reconte
+- `rgb-glitch-text` (component): RGB-offset text copies jitter briefly for a controlled glitch window.
+- `ripples` (block): Concentric rings ripple outward from the centre, white on black. A WebGPU shader from the Shaders library (shaders.com,
+- `scan-band` (component): A diagonal distortion band sweeps once across a clean wordmark, revealing clipped red and cyan offsets only inside the m
+- `scramble-reveal` (component): A deterministic hacker-style text reveal that cycles fixed glyph rows and locks the target string from left to right.
+- `shared-axis-y` (component): Per-word vertical shared-axis transition for sharp editorial swaps.
+- `shared-axis-z` (component): Scale-based shared-axis transition for focus shifts and context depth.
+- `shimmer-sweep` (component): Animated light sweep across text or elements using a CSS gradient mask — ideal for AI accents and premium reveals
+- `slot-machine-roll` (component): A vertical reel scrolls characters from one value to another.
+- `soft-blur-in` (component): A soft opacity, blur, and lift reveal for headlines, captions, and product UI callouts
+- `split-flap-board` (block): Solari-style departure board: every cell walks its drum forward through the intervening characters of a fixed alphabet u
+- `staggered-fade-up` (component): Words fade in and slide up one after another with configurable delay.
+- `streaming-text` (component): Words arrive the way an AI answer streams - in uneven bursts on a measured token rhythm, each word landing grey and inki
+- `strikethrough-replace` (component): Draw a strike line across old text, then reveal the replacement.
+- `text-match-cut` (component): One line of text becomes another mid-move: both ride a single 85 % easy-ease curve and hard-swap at the speed peak, as s
+- `text-shimmer` (component): A static headline receives one clean specular gradient sweep through its glyphs, then returns to its ordinary text color
+- `text-stagger` (component): A transitions.dev-inspired text stagger primitive with enter, shimmer, and exit-ready words
+- `text-state-swap` (component): A text state swap primitive with outgoing blur and incoming lift
+- `texture-mask-text` (component): CSS luminance masks that cut holes through letterforms - 66 pre-built texture masks from ambientCG PBR color maps
+- `ticker-takeover` (component): A mono ticker rolls through options, locks on a final word with an accent flash, and promotes it into a full-frame headl
+- `titlecard-calm` (component): A restrained title card where a mono kicker and generous grotesque headline fade upward, drift almost imperceptibly, and
+- `titlecard-lockup` (component): The calm breather titlecard: an optional mono kicker fades up, the wordmark settles dead-center with one restrained move
+- `top-down-letters` (component): Letters descend from above in a pronounced staircase with zero blur.
+- `torn-paper-rip` (component): A fibrous paper tear runs across the frame: the torn sheet shows its white paper core along the edge and lifts away on a
+- `tracking-in` (component): A precise letter-spacing reveal for premium headings and interface labels
+- `type-match-cut` (component): A headline splits vertically around an incoming panel, which grows from the negative space and takes the frame as the wo
+- `typewriter` (component): Character-by-character text reveal with a deterministic blinking cursor.
+- `variable-axis-type` (component): A locked one-line headline whose weight or width axis morphs into a decisive emphasis beat.
+- `vfx-text-cursor` (block): Dramatic text reveal with cursor glow, chromatic shadow rays, and directional lighting on a black stage. Canvas-based sh
+- `vox-annotate` (component): The Vox-style annotate gesture: a keyword in a held sentence gets a hand-drawn marker while a thin connector draws up to
+- `weight-wave` (block): A crest of thickness travels along a headline: each character swells from light to black and leans forward as the wave p
+- `wireframe-portal-title` (block): A wireframe portal bursts open, the title comes through, then its letters swap into a second phrase.
+- `wordmark-tiles` (component): A wordmark resolves from deterministic color noise into correctly cropped glyph tiles through a spatially modulated GSAP
+- `worley-noise` (block): A field of drifting cells, light at their centres and dark at their edges. A WebGPU shader from the Shaders library (sha
+- `yt-lcd-background` (block): Textured paper board: scanlines with slow drift, optional pixel grid, static grain, and display text with a blur-focus e
+- `yt-prism-title` (block): Display title on a transparent root: blur-focus entrance, red/blue fringe that settles then breathes, perspective bow, s
+- `yt-screen-warp` (component): Grid, scanline, vignette, and sheen overlay plus a 3D-warp wrapper class that makes footage read as if playing on a phys
+
+## Captions (11)
+
+- `caption-clip-wipe` (component): Left-to-right clip-path wipe reveal per word
+- `caption-emoji-pop` (component): Emoji integration with stroked text and horizontal squeeze entrance
+- `caption-glitch-rgb` (component): RGB chromatic aberration with CRT scanline overlay
+- `caption-gradient-fill` (component): Gradient-clipped text with elastic bounce entrance
+- `caption-highlight` (component): Red background sweep behind each active word, TikTok-style
+- `caption-matrix-decode` (component): Character scramble animation before text reveal
+- `caption-neon-accent` (component): Multi-color neon glow accents with wiggle drift animation
+- `caption-neon-glow` (component): Cyan and magenta neon glow with keyword accent colors
+- `caption-parallax-layers` (component): Behind-subject 3D text layering with vertical stretch effect
+- `caption-particle-burst` (component): Keyword words trigger colored particle explosions
+- `caption-pill-karaoke` (component): Pill-shaped container with per-word karaoke color highlight
+
+## Transitions (62)
+
+- `avatar-group-hover` (component): A distance-falloff avatar group lift with bouncy hover return
+- `badge-pop` (component): A transitions.dev-inspired notification badge pop with elastic scale and count reveal
+- `beat-freeze-cut` (block): A beat-driven speed ramp, freeze-frame hit, and hard-cut sequence for music-led promos and montages.
+- `beat-timeline` (component): A paused master-timeline orchestration spine that pins titled beat rows to evenly spaced named labels. Each row enters o
+- `card-resize` (component): A transitions.dev-inspired card resize primitive that expands a compact card into a detail panel
+- `chromatic-aberration-wipe` (component): A fast slide wipe with RGB channel split on peak frames.
+- `chromatic-radial-split` (block): Shader transition with chromatic aberration radial split
+- `cinematic-zoom` (block): Shader transition with dramatic zoom blur
+- `cross-warp-morph` (block): Shader transition with cross-warped morphing
+- `curtain-reveal` (component): Two pleated stage curtains gather outward from center, the way real velvet bunches at the tieback, revealing the stage u
+- `cut-the-curve` (component): A velocity-matched directional hard cut: the outgoing subject accelerates with power4.in, swaps at peak velocity, and th
+- `directional-wipe` (component): A directional scene push that slides one panel over another.
+- `domain-warp-dissolve` (block): Shader transition with fractal noise domain warping
+- `editorial-flash-overlay` (block): Finite neutral-warm light layers for a seek-safe camera-flash cut or social reveal
+- `fade-through` (component): A calm transition primitive that fades one layer out, passes through a wash, and reveals the next layer
+- `flash-through-white` (block): Shader transition with white flash crossfade
+- `glitch` (block): Shader transition with digital glitch artifacts
+- `gravitational-lens` (block): Shader transition with gravitational lensing distortion
+- `grid-pixelate-wipe` (component): Transition effect where the screen dissolves into a grid of squares that fade out with staggered timing — use between sc
+- `hw-scribble-transition` (block): Overlay transition: scribble bands accumulate to cover the frame with a solid backstop, the host cuts beneath, and the s
+- `icon-swap` (component): A scale-and-blur icon swap primitive for toolbar and action state changes
+- `input-feedback` (component): A transitions.dev-inspired input feedback primitive with shake, clear affordance, and success state
+- `iris-reveal` (component): A circle clip-path opens from an authored origin revealing state B over state A in one confident pass, then holds on B.
+- `light-leak` (block): Shader transition with cinematic light leak overlay
+- `match-cut` (component): A circle accelerates into a hard single-frame scene swap, matches the incoming circle exactly, and continues into a smal
+- `menu-morph` (component): A transitions.dev-inspired hamburger and plus-menu morph primitive for compact action menus
+- `micro-transitions` (component): A transitions.dev-inspired pack of badge, dropdown, modal, tabs, tooltip, and success-check micro transitions
+- `morph-swap` (component): Two slotted siblings stacked at one shared center: A holds, then condenses or reshapes into B on a shared 50% 50% transf
+- `number-pop-in` (component): A transitions.dev-inspired digit pop-in with blur, lift, and staggered value reveal
+- `organic-light-leak-overlay` (block): Finite CSS light-leak overlay for memory beats and motivated transitions
+- `page-slide` (component): A transitions.dev-inspired page slide primitive with outgoing and incoming panels
+- `panel-reveal` (component): A panel reveal primitive with height expansion and content fade
+- `paper-collage-reveal` (component): A scrapbook patchwork of torn paper scraps, each with its own texture and tilt, flutters away in a staggered scatter to
+- `parallax-device-dive` (component): A canonical phone rises into view before the camera pushes through its screen and layered app UI expands to fill the fra
+- `parallax-unzoom` (component): Reveal transition — focus card scales down from full frame as siblings parallax in to form a grid (reverse of parallax-z
+- `parallax-zoom` (component): Center card scales up to fill the frame while siblings parallax outward — inspired by the eBay Playbook hero transition
+- `ridged-burn` (block): Shader transition with ridged turbulence burn effect
+- `ripple-waves` (block): Shader transition with concentric ripple wave distortion
+- `rubber-band-bumper` (component): An outgoing panel pulls against increasing resistance, holds at tension, then snaps past an edge with overshoot as the i
+- `sdf-iris` (block): Shader transition with signed distance field iris reveal
+- `skeleton-reveal` (component): A skeleton loader transition that pulses, then cross-fades into content
+- `success-check` (component): A success check primitive with ring pop, path draw, and subtle rotate blur
+- `swirl-vortex` (block): Shader transition with swirling vortex distortion
+- `tabs-slide-indicator` (component): A pill indicator transition that slides between active tabs
+- `thermal-distortion` (block): Shader transition with heat haze thermal distortion
+- `tilt-card` (component): A transitions.dev-inspired tilt card primitive with depth layers and hover-style parallax
+- `transitions-3d` (block): Showcase of 3D perspective flip and rotate transitions
+- `transitions-blur` (block): Showcase of blur-based transitions between scenes
+- `transitions-cover` (block): Showcase of cover/uncover slide transitions
+- `transitions-destruction` (block): Showcase of destructive break-apart transitions
+- `transitions-dissolve` (block): Showcase of dissolve and fade transitions
+- `transitions-distortion` (block): Showcase of warp and distortion transitions
+- `transitions-grid` (block): Showcase of grid-based tile transitions
+- `transitions-light` (block): Showcase of light-based glow and flash transitions
+- `transitions-mechanical` (block): Showcase of mechanical shutter and iris transitions
+- `transitions-other` (block): Showcase of miscellaneous creative transitions
+- `transitions-push` (block): Showcase of push and slide transitions
+- `transitions-radial` (block): Showcase of radial wipe and reveal transitions
+- `transitions-scale` (block): Showcase of scale and zoom transitions
+- `whip-pan` (block): Shader transition simulating a fast camera whip pan
+- `whip-pan-cut` (component): A full-frame whip pan: scene A whips off laterally with capped directional motion blur while scene B enters in the same
+- `zoom-through-transition` (component): A transition that zooms through a focal card into the next scene.
+
+## Camera / motion (80)
+
+- `agent-cursor` (component): An AI agent operating a UI: a cursor with an accent name label that types out each step, clicks each target with a small
+- `ascii-trail-reveal` (component): An authored S-curve sweeps through a deterministic ASCII grid, flipping cells away to reveal a labeled panel.
+- `aurora-drift` (component): Three soft accent-derived aurora fields drift in an exact ambient loop over a deep base and faint vignette.
+- `beat-accent` (component): A single music-hit sting: impact flash, micro scale-pulse on the subject, immediate decay.
+- `beat-pulse-background` (component): An accent-derived backdrop pulses its glow intensity and saturation on a deterministic, supplied beat grid.
+- `camcorder-hud` (block): Responsive REC, battery, editable date placeholder, and timeline-driven counter overlay for creator-camera and camcorder
+- `camera-dolly-zoom` (block): Camera tracks toward or away from the subject while the field of view changes the opposite way, so the subject holds its
+- `camera-scan-gate` (component): A camera and QR recognition moment with a viewfinder sweep, bracket lock, confirmation pulse, and verified next beat.
+- `camera-shake` (component): Procedural handheld, telephoto and rig camera shake for any wrapper: nine measured profiles with per-lens projection, cl
+- `chart-story` (component): One chart builds from data in reading order and lands the exact supplied values: staggered bars, a left-to-right line wi
+- `chat-thread` (component): The measured conversation as one mountable scene at full fidelity: status bar, back badge, avatar and name pill, bubbles
+- `code-terminal-run` (component): A token-chrome terminal panel runs one command: the prompt line types deterministically behind an integer-cycle caret, e
+- `constellation-hub` (component): Feature nodes brighten in narration order as real-length SVG connectors draw outward from a fixed central hub, then sett
+- `count-up` (component): A token-native stat counter that eases between values, counting up or down, and lands with a restrained scale pulse.
+- `cta-close` (component): A display-scale action line lands per word and fills the frame with air, one generous CTA capsule pops beneath it with a
+- `cta-lockup` (component): A canonical closing lockup that reveals an action line, pops in an accent CTA capsule, settles supporting microcopy, and
+- `cursor-context-menu` (component): A cursor right-clicks a file, a context menu blooms from its tip, the hover highlight tracks the item under it, and the
+- `cursor-drag-drop` (component): A cursor grabs a task card, lifts and tilts it into its motion, carries it in lockstep to an empty column, drops it with
+- `cursor-glyph-trail` (component): A tutorial cursor path: on a settings screen the arrow clicks through three steps, leaving a dotted trail spaced evenly
+- `cursor-marquee-select` (component): A cursor drags a selection rectangle across a photo grid; each tile rings and pops a check the frame the rectangle touch
+- `cursor-zoom-follow` (component): Screen-recording auto-zoom: the camera pushes in toward each upcoming click, trails the cursor on a smooth spring, marks
+- `dart-cursor` (component): A bold outlined arrowhead that dives in from camera depth, flies nose-first with motion blur along its path, squashes on
+- `decline-chart` (component): A metric line draws downward as its value counts down and the ambient background darkens in lockstep.
+- `drift-hold` (component): A centered content card stays subtly alive through loop-exact rotation, scale breathing, and a slow light sweep.
+- `dynamic-grid` (component): A responsive animated grid background driven by CSS variables for SaaS, code, and data scenes
+- `echo-trail` (component): A moving element renders with N ghosted copies of itself at t minus i times delta, opacity stepped down per ghost; one t
+- `filmed-screen` (component): Your scene, filmed off a screen: perspective, depth of field that follows an element you name, LED sub-pixels and per-sh
+- `focus-rack` (component): Focus shifts once between two cards at different apparent depths through synchronized blur, dimming, scale, and parallax
+- `frost-sequence-camera-orbit` (block): An orbiting camera follows an ice logo as it breaks apart, reforms into two text moments, and fades.
+- `gesture-tap` (component): A contact circle taps a mobile pill button, releases it into a new labeled accent state, and lifts away.
+- `gloss-sweep` (component): A card lands with a restrained slam, catches one diagonal specular gloss, and holds perfectly still.
+- `grade-split-reveal` (component): The same picture twice, one flat and one finished, with a hard edge sweeping between them. It stops in the middle long e
+- `grid-card-assemble` (component): N capability cards (thin-line icon that draws on, mono label, optional muted body) stagger-assemble into a grid or verti
+- `icon-morph-beat` (component): An icon morphs between authored state silhouettes, shifts to an accent color, and marks completion with one restrained p
+- `light-sweep-pass` (component): A traveling key light re-shades a slotted scene: a soft diagonal gradient band crosses the frame once while every per-el
+- `locked-nucleus-orbit` (component): A fixed center nucleus anchors deterministic satellite orbits that settle into a composed lockup.
+- `logo-sting` (component): A wordmark slams into its final scale, fires one accent ring and one white impact frame, then holds completely still.
+- `magnetic-cursor` (component): A soft dot pointer glides across an editor toolbar, is pulled into each button and morphs into its rounded hover plate w
+- `marker-checklist-card` (component): A hand-lettered paper card: marker headline with an underline and a drawn ellipse around one word, then three checklist
+- `modal-morph` (component): A small card expands into a full panel, shared-element style: both layouts measured once at mount, the container morphs
+- `multi-device-splay` (component): Phone, tablet, and desktop product mockups fan from a centered stack into a proud splayed arrangement with a subtle idle
+- `native-notification-pop` (component): One system-faithful notification banner (iOS or macOS) drops in over any scene on an accurate interruptible spring: fast
+- `notes-typing` (component): The notes-app confession as a mountable scene: a bold title, then body lines typed character by character on the measure
+- `notification-stack` (component): 1 to 5 token notification cards slide-settle into a vertical stack on cues, newest on top; one card grows slightly and b
+- `number-wheel` (component): A rolling digit counter primitive for metrics, prices, counts, and scoreboards
+- `offset-path-traveler` (component): A slotted traveler follows an authored path with tangent rotation, curved entry, and curved exit.
+- `outline-draw` (component): A rounded outline that proves a callout by drawing clockwise as a hollow conic-gradient border with a clean closure.
+- `oversized-cursor` (component): The look-here pointer for a video: the macOS arrow at 3.5x its normal size lands its tip on one control, clicks it on, s
+- `pan-stations` (component): A lateral camera move across a continuous row of labeled feature stations, with a steady dwell at each stop before the n
+- `particle-image-reveal` (component): A seeded deterministic particle field converges and settles while a slotted image reveals beneath it, the trail thinning
+- `pendulum-swing` (component): Content hangs from a fixed pivot and swings into rest with gravity-damped oscillation, like a hanging sign settling on i
+- `physical-exit` (component): A card exits with physical momentum in toss, drop, or slide mode, carrying acceleration and rotation through the final o
+- `press-ripple` (component): A cursor decel-arrives from off-stage, lands slightly off-center on a caller-positioned target, compresses with it in lo
+- `push-in` (component): A centered headline gains focus through one slow, continuous camera push and a gentle fade out.
+- `rack-focus` (block): A focus pull with real aperture bokeh: the focal plane travels from a near subject to a far one, so one resolves as the
+- `radial-surround` (component): Labeled hairline chips assemble around a centered subject on an elliptical ring, then optionally converge inward with a
+- `scroll-camera-story` (component): A compressed forced-scroll cinematic pass: a tall scene of slotted sections travels past the camera top to bottom, depth
+- `scroll-feed` (component): A loop-friendly column of varied skeleton post cards scrolls upward with subtle motion trails and an agitated pace.
+- `segmentation-flood` (component): Machine-vision read of a slotted subject: translucent accent segmentation masks flood on in quantized scanline steps, ea
+- `slit-scan-reveal` (component): The frame's rows sample an authored subject at offset times: a canvas painter draws row slices of one pure position func
+- `social-proof-card` (component): The app-store close as one mountable scene: wordmark, five stars, a proof line, three feature icons and a CTA capsule bu
+- `soft-blob-touch` (component): A granular soft blob idles with slow internal drift; a scripted touch dot decel-arrives, the blob deforms toward it with
+- `split-tilt-cards` (component): Two equal-weight cards arrive from opposite wings with mirrored rotateY book-open tilts under one shared perspective, pi
+- `spring-pop` (component): A badge pops in from a visible near-rest scale, overshoots full size once, and settles cleanly.
+- `spring-stack-shuffle` (component): A stack of 3 to 5 slotted cards reshuffles on cues: the back card throws over the top and lands at the front with real m
+- `state-chip-rail` (component): A rail of mono status chips advances a seek-safe data-state snap machine on a cue schedule: active chip ink on surface,
+- `sticky-mock-swap` (component): A pinned product mock cross-fades through accent-tinted feature states while matching captions rise, hold, and exit besi
+- `stitched-text-draw` (component): Text drawn as thread stitches: a single-stroke display alphabet draws via attribute-driven dashoffset with stitch-tuned
+- `stop-motion-cadence` (component): The stepped-time law as a demo primitive: one driver quantizes timeline time to floor(t * fps) / fps and feeds ALL motio
+- `swipe-rail` (component): A contact circle leads a horizontal card rail through a fast drag, momentum carry, and settled snap to the next card.
+- `telemetry-hud` (component): Quiet mono debug-HUD readouts frame a slotted subject: corner brackets draw on, label:value lines tick their values on c
+- `testimonial-proof-card` (component): A quote card whose testimonial reveals per-line through a soft mask, with an avatar disc (initials default, image slot),
+- `touch-indicator` (component): A translucent contact-circle gesture actor for mobile UI scenes: it touches the glass on the frame the host target respo
+- `tracing-beam` (component): A glowing dash follows one SVG path through three UI elements, lifting and brightening each element in sequence.
+- `trust-strip` (component): A monochrome trust row of wide-tracked mono wordmarks that fade in with an opacity-only left-to-right stagger, then hold
+- `typed-prompt` (component): A prompt line types itself in chunked human cadence behind a deterministic blinking caret, with optional backspace-and-r
+- `ui-focus-zoom` (component): A full app surface establishes with one settle, then the camera zooms and pans to an anchored region on its cue and hold
+- `variable-font-flex` (component): A word lands while its variable-font weight and width axes flex from hairline-condensed to black-wide with per-character
+- `velocity-throw-snap` (component): A five-shot rail whips past on a fast decaying curve, then overshoots and snaps the selected hero shot exactly to center
+- `yt-camera-move` (component): Dynamic zoom, slide, and 3D tilt-pan helpers for any wrapper (video, include, card) with cubic-easing defaults and an ed
+
+## Data / charts / diagrams (22)
+
+- `animated-bar-chart` (component): A compact data card with deterministic bar growth and value callouts.
+- `bar-chart-race` (block): Ranked bars grow and overtake each other as a time series advances, with the axis rescaling as values climb and the acce
+- `conic-progress-ring` (component): A token-driven conic progress ring whose angular fill and center count settle together from one registered percentage.
+- `data-chart` (block): Animated bar + line chart with staggered reveal, NYT-style typography, and value labels
+- `exploded-stack` (block): Isometric layer plates explode apart with a label beside each layer, hold, then collapse back into one stack. Built for
+- `flowchart` (block): Animated decision tree with SVG connectors, sticky-note nodes, cursor interaction, and typing correction
+- `flowchart-vertical` (block): Portrait animated decision tree with SVG connectors, sticky-note nodes, cursor interaction, and typing correction
+- `hw-pipeline` (block): Wobbled boxes with handwritten labels joined by curved connectors, drawing on in sequence from a node list
+- `logo-wall` (component): A trusted-by wall of placeholder lettermark logos that fades and scales into place with a deterministic per-cell stagger
+- `mk-line-graph` (block): One or two SVG series draw on with dots popping and value labels riding the draw front; dim baseline axis, x-labels, col
+- `mk-progress-stat` (block): Big-numeral statistic with count-up, label, thin progress track filling to value/max, and caption; light and dark scheme
+- `mk-specs-list` (block): Left-aligned specs/traits checklist over footage or a board: rows slide in staggered with an accent underline sweep; lig
+- `mk-usage-arc` (component): Thin circular gauge that draws on while its percentage counts up; one helper call drives both
+- `oscilloscope-trace` (block): CRT oscilloscope beam sweeping a waveform across a 10x8 graticule, with closed-form phosphor persistence: the tail decay
+- `spain-map` (block): Animated Spain choropleth by autonomous community with staggered reveals and gradient legend — D3 conic conformal projec
+- `star-rating-fill` (component): A token-driven star row whose colored layer sweeps to a rating, preserves the fractional final star, and can count the v
+- `us-map` (block): Animated US choropleth map with staggered state reveals, value labels, and gradient legend — pure inline SVG with GSAP
+- `us-map-bubble` (block): Animated US bubble map with proportional city markers, value callouts, and connection lines — composable with us-map
+- `us-map-flow` (block): Animated connection arcs between US cities over a base map — composable origin-destination flow visualization
+- `us-map-hex` (block): Animated hexagonal tile grid map — each state as an equal-weight hex with data fill and abbreviation label
+- `week-in-merges` (block): Each author's avatar bounces across their row at a speed set by how many pull requests they merged
+- `world-map` (block): Animated world choropleth with country-by-country reveal, tooltip labels, and rotating globe inset — D3 Natural Earth pr
+
+## Mock UI / social / chat (26)
+
+- `ai-answer-rank` (block): Is your brand in the AI answer? A question types into a chat card, the assistant answers with a ranked list of three pic
+- `ai-chat-reveal` (block): A question is typed on a rising keyboard, sent, and answered by an AI that streams its reply word by word on a measured
+- `avatar-cloud` (component): Lettermark avatars populate a loose elliptical cloud while fine SVG links draw between the community and its central pro
+- `chat-message` (component): One message arrives on the measured entry - scale 0.75, 0.12s, growing from its sender's corner. The type is an enum swi
+- `chatgpt-exchange` (block): A portrait ChatGPT-style exchange types and sends a prompt, streams an answer, assembles a comparison table, and scrolls
+- `claude-exchange` (block): A portrait Claude-style exchange types a prompt, works through search and reasoning steps, then streams a detailed answe
+- `freeze-frame-dressing` (block): Timeline-driven paper, tape, and flash dressing for a freeze-frame or background-removed subject
+- `instagram-follow` (block): Animated Instagram follow overlay with profile card and follow button
+- `macos-notification` (block): Animated macOS-style notification banner with app icon and message
+- `message-thread-reveal` (block): A full text conversation plays out on a phone - bubbles popping in, typing indicators, a shared link card, emoji, delive
+- `multiplayer-cursors` (component): Labeled collaborator cursors with token-derived colors and soft glows drift from spread positions into a shared center z
+- `notes-reveal` (block): A personal note is typed character by character in a notes app - caret riding every letter, the page scrolling up on mea
+- `notification-cascade` (block): Phone notifications land one after another and stack up the screen, each banner pushing the pile down as it arrives, bef
+- `reddit-post` (block): Animated Reddit post card overlay with upvotes and comments
+- `share-sheet-carousel` (block): A share sheet springs up from the bottom of the phone and cycles previews inside its card on a fast cut rhythm while the
+- `sheet-spring-up` (component): A bottom sheet rushes up from below the frame on a real spring sampled frame by frame from reference footage, overshooti
+- `slack-notification-ad` (block): A portrait lock screen fills with escalating Slack video requests before HeyGen delivers the payoff
+- `spotify-card` (block): Animated Spotify now-playing card with album art and progress bar
+- `testimonial-card` (component): Reveals a customer quote at reading pace, then settles its avatar, author name, and handle beneath as a clean proof beat
+- `thread-message-stack` (block): A source-owned editable conversation stack with arbitrary incoming and outgoing messages
+- `tiktok-follow` (block): Animated TikTok follow overlay with profile card and follow button
+- `typing-indicator` (component): The three-dot chat bubble that says someone is writing: it pops in at the thread's edge exactly as messaging apps do, ho
+- `x-follow-card` (component): A social follow card with avatar, handle, and follower motion.
+- `x-post` (block): Animated X/Twitter post card overlay with engagement metrics
+- `yt-comment-card` (block): Social comments typing on over footage: avatar pop, username and time, per-character typewriter, likes row; image avatar
+- `yt-lower-third` (block): Animated YouTube subscribe lower third with avatar and channel info
+
+## Overlays / effects / particles (35)
+
+- `cinemagraph` (block): A still photograph with one living region: the frame is frozen while a single feathered window keeps moving - here, stea
+- `code-particle-assemble` (block): Thousands of GPU points scatter through space and fly to the exact glyph pixels of the code, resolving into readable syn
+- `confetti` (component): A deterministic celebration burst with seeded particles and gravity.
+- `echo-smear` (component): Distance-adaptive streak — records each element's real trajectory (position, rotation, scale, opacity), then trails time
+- `focus-swap` (component): Moves attention between two side-by-side cards as one recedes with scale, blur, and dimming while the other advances to
+- `gooey-split` (block): A dot splits into a three-dot menu with a gooey metaball neck, spins into a swirl mark under directional shutter motion
+- `hw-arrow` (component): Wobbled draw-on arrow with straight, gentle, and swoop curve poses, a four-way stroke texture matrix (plain/soft/sharp/s
+- `hw-boil` (component): Hand-drawn jitter that re-poses every N frames, as seek-safe helpers: pose derives from quantized timeline time through
+- `hw-box-label` (component): Wobbled rounded rectangle draws on — across the authored stroke matrix (plain/soft/sharp/spray) — or drops in and lands
+- `hw-callout-circle` (component): Wobbled ellipse draws around a target with optional scribble fill and curved connector; the handwritten label pops in WI
+- `hw-text-cloud` (block): Hand-drawn speech bubble with a positionable tail: outline draws on, paper fill fades in, handwritten text types per cha
+- `lower-third-bild` (block): News-style lower third with tight-fit text boxes: white headline bar with red drop-shadow, red sub-line with white drop-
+- `lt-accent-underline` (block): Cardless lower third for footage overlay: name rises, an accent rule draws left-to-right, role fades in; text-shadowed f
+- `lt-bold-block` (block): High-energy podcast lower third: solid dark block wipes in, uppercase name slams up, accent tag pops
+- `lt-clean-bar` (block): Minimal white-card lower third for podcasts/interviews: accent tab, name + role, clip-wipe entrance
+- `lt-color-block` (block): High-energy lower third: bold accent-color block slides in with overshoot, condensed name + mono role
+- `lt-dark-card` (block): Charcoal card lower third for bright footage: name, drawn accent underline, role; slide-up entrance
+- `lt-kicker-name` (block): Cardless lower third with an accent eyebrow/kicker tag, heavy name, and a drawn baseline; for footage
+- `lt-mask-reveal` (block): Cardless lower third: an accent sweep crosses and clip-path-reveals a heavy name, role fades up; for footage
+- `lt-side-rule` (block): Cardless lower third with a vertical accent bar; condensed display name + mono role, text-shadowed for footage
+- `lt-soft-pill` (block): Rounded white pill lower third for podcasts/interviews: status dot, name + role, scale-pop entrance
+- `lt-stack-bars` (block): Two stacked bars: a dark name bar wipes from the left, an accent role bar wipes from the right
+- `mesh-gradient-bg` (component): A render-safe mesh gradient using animated radial layers.
+- `motion-blur` (component): After Effects-style motion blur — integrates each element over a shutter window (shutter angle, phase, samples per frame
+- `news-ticker` (block): Premium broadcast-style lower-third ticker with live label, headline ribbon, and scrolling news crawl.
+- `overwhelm-surround` (component): Tasks, tabs, pings, and notification bubbles accelerate inward around a calm central subject, turning overload into visi
+- `shutter-slam` (component): One word thrown through six single-property beats under integrated shutter blur — two translate slams, a scale punch, th
+- `snow` (block): Seek-safe falling-snow overlay: sparse or dense flakes drift down with size, speed and opacity correlated per flake for
+- `spiral-galaxy` (block): A spiral galaxy seen from outside, turning with real differential rotation: inner stars orbit faster than outer ones, so
+- `spotlight-card` (component): A card with a scripted cursor spotlight and lit border.
+- `stagger-cascade` (component): A responsive grid of tile cards that fades and travels into place with an evenly spaced per-item GSAP stagger. The order
+- `starfield` (block): Seek-safe night-sky overlay: sparse or dense stars in three size tiers that twinkle and drift in two parallax layers, ra
+- `vignette` (component): Cinematic radial vignette overlay using a pure-CSS gradient — darkens the edges to pull focus toward the center
+- `yt-circle-pointer` (component): Draw-on annotation ellipse around a target plus a countdown chip that pulses each tick
+- `yt-feather-highlight` (component): Dims the frame except a feathered ellipse; the hole's position and size are CSS variables, so helpers glide the spotligh
+
+## Backgrounds / shaders (45)
+
+- `aurora` (block): Green and violet aurora curtains ripple across a night sky. A WebGPU shader from the Shaders library (shaders.com, MIT).
+- `blob` (block): A soft coral and pink blob with a warm highlight slowly changes shape on black. A WebGPU shader from the Shaders library
+- `chrome-orb` (block): A mirror-chrome orb reflects a bright studio light, on black. A WebGPU shader from the Shaders library (shaders.com, MIT
+- `code-3d-extrude` (block): Syntax-highlighted code on a lit, beveled 3D slab that rotates through real space and settles to a readable rest — true
+- `code-shader-dissolve` (block): The code compiles into existence: a GPU fragment shader resolves it out of seeded noise with a chromatic dissolve front
+- `color-wheel` (block): A wide gradient slides slowly through the colours of the rainbow. A WebGPU shader from the Shaders library (shaders.com,
+- `cosmic-orb` (block): An iridescent soap-bubble planet: a slowly spinning sphere of nebula bands, dust lanes and twinkling stars wrapped in a
+- `flowing-gradient` (block): Bands of orange and violet flow across the frame in a smooth gradient. A WebGPU shader from the Shaders library (shaders
+- `frost` (block): A frozen blue orb with frost creeping in from its edge, on black. A WebGPU shader from the Shaders library (shaders.com,
+- `gallery-tunnel` (block): An infinite corridor of panels: a square tunnel receding to a vanishing point, its floor, ceiling and walls tiled with s
+- `godrays` (block): Rays of light fan out from a corner and drift across a deep blue field. A WebGPU shader from the Shaders library (shader
+- `goo` (block): A glossy green liquid ball whose surface bulges and ripples like wet goo, centred on black. A WebGPU shader from the Sha
+- `heatmap` (block): Thermal colours flow through a glowing orb, on black. A WebGPU shader from the Shaders library (shaders.com, MIT).
+- `hologram` (block): A pale blue holographic orb with scan rings and flicker, on black. A WebGPU shader from the Shaders library (shaders.com
+- `holographic` (block): An iridescent foil orb with a shifting rainbow sheen, centred on black. A WebGPU shader from the Shaders library (shader
+- `ios26-liquid-glass` (block): 3D iPhone with a normal iOS 26 home screen, liquid glass app icons, shader wallpaper, dock, and fluid glass notification
+- `lens-flare` (block): A camera lens flare: a bright star burst and a faint rainbow halo that slowly shimmer on black. A WebGPU shader from the
+- `light-edge` (block): Purple and cyan light races around the edge of an orb on black. A WebGPU shader from the Shaders library (shaders.com, M
+- `liquid-glass-notification` (block): Frosted glass notification cards floating over an aurora shader background
+- `liquid-glass-widgets` (block): Frosted glass stat cards, showcase panel and pill chips over an aurora shader background
+- `liquid-metal` (block): A chrome sphere ripples and flows like molten metal on black. A WebGPU shader from the Shaders library (shaders.com, MIT
+- `mesh-gradient` (block): Soft coral, orange and violet fields blend and drift in a mesh gradient. A WebGPU shader from the Shaders library (shade
+- `mk-background` (block): Procedural soft-blob gradient backdrop in a minimalist presentation style: two radial blobs drifting over a base color,
+- `nebula` (block): A small world of pink and blue gas swirls inside a sphere on black. A WebGPU shader from the Shaders library (shaders.co
+- `obsidian` (block): A dark glass orb catches pink and cyan iridescent light on black. A WebGPU shader from the Shaders library (shaders.com,
+- `plastic` (block): A glossy white plastic orb with soft studio reflections, on black. A WebGPU shader from the Shaders library (shaders.com
+- `prism` (block): A white beam of light splits into a slowly turning rainbow. A WebGPU shader from the Shaders library (shaders.com, MIT).
+- `product-turntable` (block): A product turns a full revolution on a studio plinth in a seamless loop. Drop in a GLB or glTF model, or keep the built-
+- `sine-wave` (block): A glowing white sine wave travels across a black frame. A WebGPU shader from the Shaders library (shaders.com, MIT).
+- `spiral` (block): A bold black and white spiral turns in the frame. A WebGPU shader from the Shaders library (shaders.com, MIT).
+- `strands` (block): Thin ribbons of pink and blue light weave across a black field. A WebGPU shader from the Shaders library (shaders.com, M
+- `stripes` (block): Bold black and white diagonal stripes slide across the frame. A WebGPU shader from the Shaders library (shaders.com, MIT
+- `sun-burst` (block): Cream and black rays fan out from the centre and slowly turn. A WebGPU shader from the Shaders library (shaders.com, MIT
+- `swirl` (block): Orange and blue color fields swirl and flow into each other across the whole frame. A WebGPU shader from the Shaders lib
+- `thin-film` (block): An orb's rim shimmers with soap-bubble iridescence on black. A WebGPU shader from the Shaders library (shaders.com, MIT)
+- `three-orbiting-cards` (component): A Three.js-powered orbit scene driven by a paused GSAP timeline for deterministic renders.
+- `vfx-anamorphic-flare` (block): A drifting field of bright points, each one throwing the long horizontal blue-violet streak a real anamorphic cinema len
+- `vfx-liquid-background` (block): Organic liquid simulation with vertex displacement on a subdivided plane. HTML content floats above rippling fluid surfa
+- `vfx-liquid-glass` (block): VFX composition block
+- `vfx-magnetic` (block): VFX composition block
+- `vfx-portal` (block): VFX composition block
+- `vfx-shatter` (block): VFX composition block
+- `voronoi` (block): Magenta cells with glowing blue centres shift and reshape across the frame. A WebGPU shader from the Shaders library (sh
+- `water` (block): A sphere of wind-rippled water reflecting a blue sky, on black. A WebGPU shader from the Shaders library (shaders.com, M
+- `waveform` (block): Equalizer bars in a blue to pink gradient pulse across the middle of the frame, like an audio visualizer. A WebGPU shade
+
+## 3D (16)
+
+- `app-showcase` (block): Fitness app product showcase with three floating smartphone screens
+- `carousel-orbit-1` (block): Image cards on a spinning 3D Fibonacci sphere, billboarded to the camera, sized by camera distance (Orbit style 1); 24 i
+- `carousel-orbit-2` (block): Image cards on a spinning 3D Fibonacci sphere, billboarded to the camera, sized by camera distance (Orbit style 2); 24 i
+- `carousel-orbit-3` (block): Image cards on a spinning 3D Fibonacci sphere, billboarded to the camera, sized by camera distance (Orbit style 3); 24 i
+- `carousel-orbit-4` (block): Image cards on a spinning 3D Fibonacci sphere, billboarded to the camera, sized by camera distance (Orbit style 4); 24 i
+- `carousel-orbit-5` (block): Image cards on a spinning 3D Fibonacci sphere, billboarded to the camera, sized by camera distance (Orbit style 5); 24 i
+- `carousel-vision-1` (block): A ring of large image cards tilted into a row under a 3D camera, each card turning toward the centre (Vision style 1); 1
+- `carousel-vision-2` (block): A ring of large image cards tilted into a row under a 3D camera, each card turning toward the centre (Vision style 2); 1
+- `carousel-vision-3` (block): A ring of large image cards tilted into a row under a 3D camera, each card turning toward the centre (Vision style 3); 1
+- `carousel-vision-4` (block): A ring of large image cards tilted into a row under a 3D camera, each card turning toward the centre (Vision style 4); 1
+- `carousel-vision-5` (block): A ring of large image cards tilted into a row under a 3D camera, each card turning toward the centre (Vision style 5); 1
+- `cuboid-carousel` (block): A chain of bevelled cuboids rides a travelling wave as a content carousel.
+- `macos-tahoe-liquid-glass` (block): 3D MacBook with a macOS Tahoe-style desktop, glass menu bar, Finder window, dock, and cinematic device camera move.
+- `orbit-card` (block): A single feature card orbits a dot sphere on approved Blender camera motion.
+- `ui-3d-reveal` (block): Perspective 3D reveal animation for UI elements
+- `vfx-iphone-device` (block): Real GLTF iPhone 15 Pro Max and MacBook Pro models with live HTML-in-Canvas screen content, morphing glass lens, product
+
+## Other (49)
+
+- `arc-motion-path` (component): A GSAP MotionPath primitive that flies a callout along a curved arc with autorotation.
+- `before-after-wipe` (component): Two full-bleed content slots compare before and after states as a persistent divider wipes the after
+- `blue-sweater-intro-video` (block): Warm AI creator intro sequence that resolves into an X follow card for @_blue_sweater_.
+- `browser-device-stage` (component): A generic app surface in token-native device chrome (browser, window, or phone). The screen is a slo
+- `camera-rig-depth-stack` (component): A 3D camera-rig-style card stack with depth, parallax, and focus shift.
+- `carousel-circle-1` (block): Image cards ride a circle with a size gradient by depth angle, sweeping in fast-slow-fast swings (Ci
+- `carousel-circle-2` (block): Image cards ride a circle with a size gradient by depth angle, sweeping in fast-slow-fast swings (Ci
+- `carousel-circle-3` (block): Image cards ride a circle with a size gradient by depth angle, sweeping in fast-slow-fast swings (Ci
+- `carousel-circle-4` (block): Image cards ride a circle with a size gradient by depth angle, sweeping in fast-slow-fast swings (Ci
+- `carousel-circle-5` (block): Image cards ride a circle with a size gradient by depth angle, sweeping in fast-slow-fast swings (Ci
+- `carousel-path-1` (block): Image cards ride an open bezier path (arc, V, diagonal, wave, S-curve) with depth scaling and tangen
+- `carousel-path-2` (block): Image cards ride an open bezier path (arc, V, diagonal, wave, S-curve) with depth scaling and tangen
+- `carousel-path-3` (block): Image cards ride an open bezier path (arc, V, diagonal, wave, S-curve) with depth scaling and tangen
+- `carousel-path-4` (block): Image cards ride an open bezier path (arc, V, diagonal, wave, S-curve) with depth scaling and tangen
+- `carousel-path-5` (block): Image cards ride an open bezier path (arc, V, diagonal, wave, S-curve) with depth scaling and tangen
+- `code-diff` (block): An edit shown as a colored diff — removed lines collapse in red, added lines expand in green.
+- `code-highlight` (block): A highlight band sweeps across a target line while the surrounding context dims — draws the eye to o
+- `code-morph` (block): One snippet transforms into another — tokens glide between positions, leavers fade out, enterers fad
+- `code-scroll` (block): The camera scrolls a long file to bring a target line to center and spotlights it — for walking thro
+- `code-snippet-apple-terminal-pro` (block): Apple Terminal Pro profile: black background with grey text and lime green cursor, per-character typ
+- `code-snippet-dark-2026` (block): VS Code workbench with per-character typing animation in the Dark 2026 theme. Full editor chrome wit
+- `code-snippet-dark-modern` (block): VS Code workbench with per-character typing animation in the Dark Modern theme. Full editor chrome w
+- `code-typing` (block): Token-streamed typing reveal with a caret that tracks the frontier — deterministic, no CSS animation
+- `comparison-split` (component): Two full-bleed panels compare before and after states as a persistent divider wipes the vivid after 
+- `device-frame-stage` (component): A phone or tablet mockup staged as a physical scene prop with a screen slot for arbitrary reconstruc
+- `heygen-avatar-promo-card` (block): A portrait HeyGen offer card pairs a moving avatar mosaic with bold promotional typography and a bra
+- `hw-frame` (block): Media in a hand-drawn border with corner doodles and a handwritten caption; the unit tilts slightly 
+- `keyframe-scrub-stack` (component): A keyframe-sequenced stack of cards with offset timing and easing presets.
+- `logo-outro` (block): Cinematic logo reveal with piece-by-piece assembly, glow bloom, tagline fade-in, and URL pill
+- `lottie-character-walk` (block): A jointed flat character walks in on planted feet, stops and points at a card; the body acting is a 
+- `lt-neon-border` (block): Two arcs of light travel the edge of a rounded panel and snap corner to corner, trailing a soft thre
+- `mk-placeholder-grid` (block): N-up rounded-corner media grid (2-up, 3-up, 4-up, 3x2, hero plus two): per-cell inside-scale framing
+- `notification-pileup` (component): Mobile notification cards arrive faster and faster, each new alert pushing the existing stack downwa
+- `nyc-paris-flight` (block): Apple-style realistic map animation with a plane flying from New York to Paris, marker circle, landi
+- `onboarding-stepper-flow` (component): A composed onboarding flow with milestone rail, active step card, and next-action button
+- `pull-to-refresh` (component): A mobile list pulls through nonlinear rubber-band resistance, arms at a threshold, commits to a boun
+- `screen-flow-carousel` (component): Two to five app screens ride a horizontal rail: one primary at center, neighbors receded, advancing 
+- `separator` (component): A one-pixel structural separator with horizontal and vertical variants plus a seek-safe progress rev
+- `settings-toggle-flow` (component): A composed settings flow with preference rows, toggle switches, and active-state feedback
+- `signup-flow` (component): A composed signup flow with social action, email field, password field, and submit button
+- `stagger-lattice` (component): A staggered grid reveal inspired by Anime.js v4 stagger utilities, implemented with GSAP for HyperFr
+- `store-badge-lockup` (component): Settles a short headline above equal-size App Store and Google Play badges as a token-driven mobile 
+- `svg-line-draw-loader` (component): An Anime.js-style path drawing loader implemented as a seekable GSAP stroke timeline.
+- `terminal-simulator` (component): A terminal window types commands and streams log output.
+- `toggle-flip` (component): An oversized UI toggle switch that flips with real physicality: thumb overshoot, track color crossfa
+- `vector-editor-rig` (component): A dark design-tool app chrome with a live vector pen path, sequential anchor points, bezier handles,
+- `vpn-youtube-spot` (block): Snappy Apple-style YouTube insert showing a phone finding and installing a friendly VPN app with sou
+- `yt-logo-intro` (block): Logo stamp pops on a lined board, a kicker line gives way to the title with an accent arrow chip; se
+- `yt-vertical-fill` (block): Portrait media filling a widescreen frame via blurred-scale, mirror, or copy side fills; grid textur

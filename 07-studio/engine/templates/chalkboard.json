@@ -1,0 +1,61 @@
+{
+  "id": "chalkboard",
+  "name": "Chalkboard Lesson",
+  "category": "illustrated-2d",
+  "description": "A real classroom blackboard: deep green slate with mottled grain and faint eraser arcs, a wooden frame and chalk tray, chalk lettering and rough chalk boxes written on left to right with dusty broken strokes (an SVG chalk texture filter on every stroke). The camera pans slowly up the board and scenes are smudged away by a diagonal felt-eraser wipe with a puff of chalk dust. Patient and teacherly. No emoji.",
+  "prompt_hint": "Write 8-12 lesson steps (4-6 s each), one idea per board. title.kicker names the step or the question; title.main is the rule or answer; set title.number for numbered steps. visual.type \"illustration\" with 1-3 elements: flow and timeline for derivations, counter for a worked result, compare for wrong vs right, checklist for a recap, callout (circle or underline) to mark the key term. Never use emoji.",
+  "best_for": [
+    "math and finance lessons",
+    "study tips",
+    "worked problems",
+    "misconceptions corrected",
+    "language lessons"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#23362F",
+      "#1C2B26",
+      "#F4E285"
+    ],
+    "accent": "#F4E285",
+    "sample_text": "Today's lesson"
+  },
+  "defaults": {
+    "theme": {
+      "look": "chalkboard",
+      "palette": {
+        "bg": [
+          "#26392F",
+          "#1B2A24"
+        ],
+        "text": "#F2F1EA",
+        "accent": "#F4E285",
+        "accent2": "#F2A0B6",
+        "accent3": "#9FD3E8"
+      },
+      "font": "Patrick Hand",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.0
+    },
+    "music": {
+      "track": "auto",
+      "mood": "minimal-ambient",
+      "volume": 0.11,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "typewriter"
+  }
+}

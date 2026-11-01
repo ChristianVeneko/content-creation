@@ -1,0 +1,27 @@
+{
+  "id": "rank-numbers",
+  "name": "Rank Numbers",
+  "category": "illustrated-2d",
+  "description": "Giant rank numbers: a big number slams in for every item, one big illustrated item per scene, a segmented N/total progress HUD, and whip-pan transitions with motion blur. Saturated purple, yellow and pink, bold condensed type and springy, bouncy motion. No emoji.",
+  "prompt_hint": "Scene 1 is the hook (e.g. 5 herramientas que...), then one scene per item counting down (title.number = rank, best item last), then a payoff/CTA scene. Each item scene: title.main = the item name (2-4 words), title.kicker = a short category, and 1-3 elements that depict the item: a big icon or svg, a badge with its key benefit, a card or bars to back it up. Use a HUD chip with value like 3/5 that updates per scene. Never use emoji.",
+  "best_for": ["top N lists", "tools and apps", "tips", "mistakes to avoid", "rankings"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#2B0A3D", "#5B1A8C", "#FF3D7F"],
+    "accent": "#FFE600",
+    "sample_text": "TOP 5"
+  },
+  "defaults": {
+    "theme": {
+      "look": "rank-numbers",
+      "palette": { "bg": ["#22073A", "#4A1580"], "text": "#FFFFFF", "accent": "#FFE600", "accent2": "#FF3D7F", "accent3": "#00E5FF" },
+      "font": "Anton",
+      "captionStyle": "hormozi"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.1 },
+    "music": { "track": "auto", "volume": 0.12, "duck": true },
+    "sfx": { "enabled": true, "volume": 1 },
+    "captions": { "enabled": true, "wordsPerPage": 3 },
+    "animation": "pop"
+  }
+}

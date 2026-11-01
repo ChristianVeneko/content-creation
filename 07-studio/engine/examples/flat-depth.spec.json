@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "title": "Por qué las tiendas dejan los portátiles abiertos",
+  "template": "flat-depth",
+  "language": "es",
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "¿Por qué en las tiendas todos los portátiles están abiertos y en ángulo?",
+      "title": {
+        "main": "Todos abiertos y en ángulo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "object",
+            "kind": "laptop",
+            "count": 4,
+            "label": "la mesa de la tienda"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tocar",
+      "narration": "Porque cuando tocas un producto, empiezas a sentirlo tuyo.",
+      "title": {
+        "main": "Si lo tocas, ya es tuyo"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "character",
+                "mood": "happy",
+                "shirt": "accent3"
+              }
+            ],
+            "right": [
+              {
+                "type": "object",
+                "kind": "phone"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "angulo",
+      "narration": "El ángulo obliga a acercarte y ajustar la pantalla con la mano.",
+      "title": {
+        "main": "El ángulo te hace tocar"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "character",
+                "mood": "thinking",
+                "shirt": "accent2",
+                "label": "el cliente"
+              }
+            ],
+            "right": [
+              {
+                "type": "object",
+                "kind": "laptop"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pagaban",
+      "narration": "Un estudio con clientes ficticios: los que tocaban el producto pagaban más.",
+      "title": {
+        "main": "Pagaban un 50 % más"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "character",
+                "mood": "happy",
+                "shirt": "accent3"
+              },
+              {
+                "type": "object",
+                "kind": "coins",
+                "value": 10
+              }
+            ],
+            "right": [
+              {
+                "type": "character",
+                "mood": "neutral",
+                "shirt": "accent2"
+              },
+              {
+                "type": "object",
+                "kind": "coins",
+                "value": 6
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "stat",
+      "narration": "Cincuenta por ciento más, solo por tocar.",
+      "title": {
+        "main": "Solo por tocar"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stat",
+            "value": "+50 %",
+            "label": "dispuestos a pagar"
+          },
+          {
+            "type": "object",
+            "kind": "coins",
+            "value": 12,
+            "count": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "caja",
+      "narration": "Por eso también te dan la caja en la mano antes de pagar.",
+      "title": {
+        "main": "La caja en tu mano"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "character",
+                "mood": "surprised",
+                "shirt": "accent"
+              }
+            ],
+            "right": [
+              {
+                "type": "object",
+                "kind": "box"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cafe",
+      "narration": "Y por eso hay sillas, café y tiempo: cuanto más te quedas, más tocas.",
+      "title": {
+        "main": "Quédate, toca, compra"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "object",
+                "kind": "mug",
+                "count": 2
+              }
+            ],
+            "right": [
+              {
+                "type": "object",
+                "kind": "books"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "casa",
+      "narration": "En tu negocio puedes hacer lo mismo: deja que la gente pruebe.",
+      "title": {
+        "main": "Deja que prueben"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "split",
+            "left": [
+              {
+                "type": "object",
+                "kind": "monitor"
+              }
+            ],
+            "right": [
+              {
+                "type": "object",
+                "kind": "plant"
+              }
+            ]
+          },
+          {
+            "type": "stat",
+            "value": "gratis"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Sigue la cuenta para más trucos de venta.",
+      "title": {
+        "main": "Más trucos de venta"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "character",
+            "mood": "happy",
+            "shirt": "accent3",
+            "label": "sigue la cuenta"
+          }
+        ]
+      }
+    }
+  ],
+  "brand": {
+    "handle": "@estudio"
+  }
+}

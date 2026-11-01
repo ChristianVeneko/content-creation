@@ -1,0 +1,27 @@
+{
+  "id": "flat-depth",
+  "name": "Flat 2.5D Scene",
+  "category": "illustrated-2d",
+  "description": "Flat-shaded 2.5D scenes in perspective: a dark gradient wall, a wooden table receding to the horizon, and objects drawn with a lit face, a shade face and a soft contact shadow (laptops in a row, phones, coin stacks, boxes, books, mugs, monitors, plants). Simple round-headed characters with expressions stand behind the table, and a big yellow stat badge lands on the key number. The headline sweeps from grey to white like karaoke. Warm, friendly, story-driven. No emoji.",
+  "prompt_hint": "Write 8-12 short scenes (3-5 s each) that tell a small business or money story. title.main is one short line (max ~26 chars) whose words light up as they are read; title.kicker is optional. Build each scene as a set on the table: object (kind laptop, phone, coins with value 1-12 for the stack height, box, books, mug, monitor, plant; count 2-4 for a receding row), character (mood happy, neutral, sad, surprised, thinking, angry; shirt color), and stat for the big number (e.g. +50 %). Use split to put a character next to its coins, or two characters face to face. 1-3 elements per scene. Never use emoji.",
+  "best_for": ["business stories", "money and pricing", "retail and sales", "why it works explainers", "case studies"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#262A5C", "#14163A", "#C98F55"],
+    "accent": "#FFCF3F",
+    "sample_text": "+50 %"
+  },
+  "defaults": {
+    "theme": {
+      "look": "flat-depth",
+      "palette": { "bg": ["#2A2F68", "#121433"], "text": "#FFFFFF", "accent": "#FFCF3F", "accent2": "#FF7A6B", "accent3": "#7FA7FF" },
+      "font": "Poppins",
+      "captionStyle": "boxed"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 1.05 },
+    "music": { "track": "auto", "volume": 0.1, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.9 },
+    "captions": { "enabled": true, "wordsPerPage": 2, "size": "s" },
+    "animation": "pop"
+  }
+}

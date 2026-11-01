@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(source ./env.sh)",
+      "Bash(source env.sh)",
+      "Bash(node 07-studio/engine/cli.mjs *)",
+      "Bash(node 07-studio/engine/lib/pixel-stills.mjs *)",
+      "Bash(node 07-studio/engine/lib/illustrated-stills.mjs *)",
+      "Bash(node 07-studio/engine/lib/reels-stills.mjs *)",
+      "Bash(02-scripts/keepawake.sh node 07-studio/engine/cli.mjs build *)",
+      "Bash(02-scripts/keepawake.sh -t *)",
+      "Bash(node .claude/skills/canal/jobs.mjs *)",
+      "Bash(python3 .claude/skills/hooks/hookscore.py *)",
+      "Bash(python3 .claude/skills/hooks/title.py *)",
+      "Bash(node 02-scripts/rhythm-check.mjs *)",
+      "Bash(02-scripts/export-platforms.sh *)",
+      "Bash(ffprobe *)",
+      "Bash(ffmpeg *)",
+      "Bash(cp 04-projects/*)",
+      "Bash(mkdir -p 04-projects/*)",
+      "WebSearch",
+      "WebFetch",
+      "Edit(04-projects/**)",
+      "Edit(00-docs/content-log.csv)"
+    ]
+  },
+  "autoContinueAtUsageLimit": true
+}

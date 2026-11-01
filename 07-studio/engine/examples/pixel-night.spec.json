@@ -1,0 +1,184 @@
+{
+  "version": 1,
+  "title": "Lo que nadie te cuenta de la nube",
+  "template": "pixel-night",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Esto es lo que nadie te cuenta de la nube.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "temple",
+          "banner": {
+            "text": "Lo que nadie te cuenta",
+            "accent": "nadie",
+            "big": true
+          },
+          "props": [
+            {
+              "kind": "lantern",
+              "x": 0.22
+            },
+            {
+              "kind": "lantern",
+              "x": 0.5
+            },
+            {
+              "kind": "lantern",
+              "x": 0.78
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "rise"
+        }
+      }
+    },
+    {
+      "id": "costo",
+      "narration": "Cada servidor encendido cuesta dinero, aunque nadie lo use.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "street",
+          "banner": {
+            "text": "Cuesta de noche",
+            "accent": "noche"
+          },
+          "counter": {
+            "value": 480,
+            "from": 0,
+            "label": "dólares al mes",
+            "prefix": "$"
+          },
+          "props": [
+            {
+              "kind": "sign",
+              "x": 0.25,
+              "label": "24 HORAS"
+            },
+            {
+              "kind": "lamp",
+              "x": 0.82
+            }
+          ],
+          "speaker": "NARRADOR"
+        }
+      }
+    },
+    {
+      "id": "lista",
+      "narration": "La solución tiene tres pasos simples.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "lab",
+          "checklist": {
+            "title": "TE HACE",
+            "items": [
+              "Apagar lo que no usas",
+              "Alertas de gasto",
+              "Escalar solo de día"
+            ]
+          },
+          "props": [
+            {
+              "kind": "monitor",
+              "x": 0.8
+            }
+          ],
+          "speaker": "NARRADOR",
+          "transition": "dissolve"
+        }
+      }
+    },
+    {
+      "id": "chat",
+      "narration": "Y si preguntas al equipo, nadie sabe quién lo prendió.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "room",
+          "popup": {
+            "title": "EQUIPO",
+            "text": "¿Quién dejó el servidor encendido?",
+            "accent": "encendido"
+          },
+          "props": [
+            {
+              "kind": "laptop",
+              "x": 0.7
+            },
+            {
+              "kind": "plant",
+              "x": 0.9
+            }
+          ],
+          "speaker": "NARRADOR"
+        }
+      }
+    },
+    {
+      "id": "espacio",
+      "narration": "La nube no es infinita: es la computadora de otro.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "space",
+          "banner": {
+            "text": "La computadora de otro",
+            "accent": "otro"
+          },
+          "props": [
+            {
+              "kind": "robot",
+              "x": 0.5,
+              "big": true
+            }
+          ],
+          "speaker": "NARRADOR",
+          "camera": "pan-left"
+        }
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Sígueme para no pagar de más.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "forest",
+          "banner": {
+            "text": "No pagues de más",
+            "accent": "más"
+          },
+          "props": [
+            {
+              "kind": "chest",
+              "x": 0.5,
+              "open": true
+            }
+          ],
+          "speaker": "NARRADOR"
+        }
+      }
+    }
+  ],
+  "post": {
+    "tiktok": "Lo que nadie te cuenta de la nube",
+    "instagram": "Lo que nadie te cuenta de la nube",
+    "youtube": {
+      "title": "Lo que nadie te cuenta de la nube",
+      "description": "Lo que nadie te cuenta de la nube"
+    },
+    "hashtags": [
+      "nube",
+      "tecnologia",
+      "pixelart"
+    ]
+  }
+}

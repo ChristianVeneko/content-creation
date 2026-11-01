@@ -1,0 +1,59 @@
+{
+  "id": "voxel-world",
+  "name": "Voxel World 3D",
+  "category": "3d",
+  "description": "Low-poly voxel 3D: a blocky island of grass and dirt cubes with voxel trees and clouds over water, sharp-edged block objects, a warm low sun with a single shadow, light haze and a slow orbit. Game-like, friendly and bright. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with 1-4 objects: character (anim walk/yes/no/pick-up), house, tree, cube, coin (value = stack), folder, chart, rocket. flow + connect for a process. No emoji.",
+  "best_for": [
+    "gaming explainers",
+    "learning and kids topics",
+    "step-by-step processes",
+    "economy and money basics",
+    "fun facts"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#8FD3FF",
+      "#DDF2FF",
+      "#FF9F1C"
+    ],
+    "accent": "#FF9F1C",
+    "sample_text": "VOXEL"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#7EC8F8",
+          "#D9F0FF"
+        ],
+        "text": "#14233A",
+        "accent": "#FF9F1C",
+        "accent2": "#3D7BF0",
+        "accent3": "#4FAE3C"
+      },
+      "font": "Poppins",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.06
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}
