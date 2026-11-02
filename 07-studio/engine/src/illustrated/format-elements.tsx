@@ -7,6 +7,7 @@ import type { Box, Planned } from "../types";
 import { MONO_FONT } from "../fonts";
 import { inkOn, luminance, rgba, seeded } from "../util";
 import { PhosphorIcon, col, itemP, panelStyle, progress, useEnter, useKit, usePop, useSec } from "./kit";
+import { Ledger } from "./atlas";
 
 type EP = { p: Planned; box: Box; index: number };
 type InkT = ReturnType<typeof useKit>["ink"];
@@ -1168,8 +1169,10 @@ export const FormatElement: React.FC<EP> = (props) => {
       return <Roadmap {...props} />;
     case "beacon":
       return <Beacon {...props} />;
+    case "ledger":
+      return <Ledger {...props} />;
     default:
       return null;
   }
 };
-export const FORMAT_ELEMENT_TYPES = new Set(["post", "chart", "meter", "hourglass", "tags", "stat", "timer", "panels", "object", "character", "window", "roadmap", "beacon"]);
+export const FORMAT_ELEMENT_TYPES = new Set(["post", "chart", "meter", "hourglass", "tags", "stat", "timer", "panels", "object", "character", "window", "roadmap", "beacon", "ledger"]);

@@ -39,7 +39,8 @@ const GAP = 28;
 // Overlays take no room in the column: stamps aimed at a target and callouts without a label.
 // An untargeted stamp and a labelled callout (its tag) get their own row so they never cover content.
 // The host and the mascot are persistent character slots drawn in fixed frame positions, never in the column.
-export const SLOT_TYPES = ["host", "mascot"];
+// data-atlas adds full-frame slots: the layered backdrop, the particle map, the route and the counter pill.
+export const SLOT_TYPES = ["host", "mascot", "backdrop", "counter-pill", "particle-field", "route"];
 const isOverlay = (e) => (e.type === "stamp" && e.target) || (e.type === "callout" && !e.label) || SLOT_TYPES.includes(e.type);
 export const MAX_UPSCALE = 1;
 /**
@@ -65,6 +66,7 @@ export const LOOK_UPSCALE = {
   "host-tutorial": 1.25,
   "checklist-glass": 1.3,
   "spotlight-narrative": 1.2,
+  "data-atlas": 1,
 };
 
 /**
@@ -89,6 +91,8 @@ export const LOOK_DEPTH = {
   "host-tutorial": { shadow: "paper", fill: "flat", ground: "none", parallax: 0, vignette: 0.1 },
   "checklist-glass": { shadow: "paper", fill: "gradient", ground: "none", parallax: 2, vignette: 0.06 },
   "spotlight-narrative": { shadow: "soft", fill: "gradient", ground: "none", parallax: 2, vignette: 0.6 },
+  // the scene paints its own haze, particles and vignette over the layered backdrop (src/illustrated/atlas.tsx)
+  "data-atlas": { shadow: "soft", fill: "gradient", ground: "none", parallax: 0, vignette: 0 },
 };
 /** The depth pass of a look, or null when the look keeps its flat media. */
 export const depthOf = (look) => (Object.hasOwn(LOOK_DEPTH, look) ? LOOK_DEPTH[look] : null);
@@ -123,6 +127,97 @@ export function parseProgress(text) {
   return m ? { n: Number(m[2]), total: Number(m[3]), label: m[1].trim() } : null;
 }
 const label = (x) => (typeof x === "string" ? x : x.label ?? x.text ?? "");
+
+const round = (x) => Math.round(x * 1000) / 1000;
+
+// ---------------- data-atlas helpers ----------------
+
+/** Pixel structure of the `ledger` element (shared by measure() and the renderer in src/illustrated/atlas.tsx). */
+export const LEDGER = { pad: 30, title: 60, columns: 46, row: 56, total: 96 };
+/** Natural height (px) of a ledger: paper padding, optional title and column heads, the rows and the optional total. */
+export const ledgerHeight = (el) => LEDGER.pad * 2 + (el.title ? LEDGER.title : 0) + (el.columns ? LEDGER.columns : 0) + el.rows.length * LEDGER.row + (el.total ? LEDGER.total : 0);
+
+const DOT_GROUPING = ["es", "pt", "de", "it", "id", "tr", "nl", "da", "el", "ro", "vi", "ca", "gl"];
+const COMMA_SPANISH = ["MX", "US", "PR", "DO", "GT", "HN", "NI", "PA", "SV", "PH"];
+/**
+ * A number with thousands grouping in the style of the video language (deterministic, no ICU: Intl omits the group of a
+ * 4-digit Spanish number). Spanish, Portuguese, German... group with dots and use a decimal comma; English and Mexican
+ * Spanish group with commas.
+ */
+export function formatCount(value, decimals = 0, lang = "es") {
+  const [base, region] = String(lang).split(/[-_]/);
+  const dots = DOT_GROUPING.includes(base.toLowerCase()) && !(base.toLowerCase() === "es" && COMMA_SPANISH.includes((region ?? "").toUpperCase()));
+  const fixed = Math.abs(value).toFixed(decimals);
+  const [int, frac] = fixed.split(".");
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, dots ? "." : ",");
+  const sign = value < 0 && Number(fixed) !== 0 ? "-" : "";
+  return `${sign}${grouped}${frac ? (dots ? "," : ".") + frac : ""}`;
+}
+
+/**
+ * A smooth route through `points` (percent of the frame, [x, y]): a Catmull-Rom spline sampled into a polyline, with the
+ * cumulative length of every sample. The renderer draws the polyline and places the glowing head with routePointAt, so
+ * the line and its head always agree.
+ * @returns {{pts: [number, number][], len: number[], total: number}}
+ */
+export function routeSamples(points, perSeg = 14) {
+  const pts = [[points[0][0], points[0][1]]];
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? points[i + 1];
+    for (let k = 1; k <= perSeg; k++) {
+      if (i === points.length - 2 && k === perSeg) {
+        pts.push([p2[0], p2[1]]);
+        break;
+      }
+      const u = k / perSeg;
+      const u2 = u * u;
+      const u3 = u2 * u;
+      const c = (a, b, c2, d) => 0.5 * (2 * b + (-a + c2) * u + (2 * a - 5 * b + 4 * c2 - d) * u2 + (-a + 3 * b - 3 * c2 + d) * u3);
+      pts.push([round(c(p0[0], p1[0], p2[0], p3[0])), round(c(p0[1], p1[1], p2[1], p3[1]))]);
+    }
+  }
+  const len = [0];
+  for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return { pts, len, total: len[len.length - 1] };
+}
+
+/** The point at fraction `p` (0..1) of the route's length. */
+export function routePointAt(samples, p) {
+  const { pts, len, total } = samples;
+  const target = Math.max(0, Math.min(1, p)) * total;
+  let i = 1;
+  while (i < pts.length - 1 && len[i] < target) i++;
+  const span = len[i] - len[i - 1] || 1;
+  const u = Math.max(0, Math.min(1, (target - len[i - 1]) / span));
+  return [round(pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * u), round(pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * u)];
+}
+
+/** Depth planes of a data-atlas backdrop, far to near: how fast each drifts against the camera and how soft it is. */
+export const DEPTH_LAYERS = {
+  far: { speed: 0.25, blur: 2.5 },
+  mid: { speed: 0.55, blur: 1 },
+  subject: { speed: 1, blur: 0 },
+  near: { speed: 1.8, blur: 3.5 },
+};
+export const DEPTH_ORDER = ["far", "mid", "subject", "near"];
+const DRIFT_PX = 30; // lateral travel of the subject plane over a scene, each way
+const DOLLY = 0.05; // push-in of the subject plane over a scene
+/**
+ * Motion of one backdrop layer at scene progress `p` (0..1). "2.5d": every plane drifts sideways at its own speed
+ * (`dir` = 1 or -1 flips the direction per scene), dollies in a little faster the nearer it is, and far / near planes are
+ * softly out of focus; each plane is oversized to cover its own drift. "flat": the layers stay one picture that pushes in
+ * together, with no parallax and no blur.
+ * @returns {{dx: number, scale: number, blur: number}}
+ */
+export function layerMotion(depth, mode, p, dir = 1) {
+  const plane = DEPTH_LAYERS[depth] ?? DEPTH_LAYERS.subject;
+  if (mode === "flat") return { dx: 0, scale: round(1 + DOLLY * p), blur: 0 };
+  const pad = ((2 * DRIFT_PX * plane.speed) / 1080) * 1.1 + 0.01;
+  return { dx: round(dir * DRIFT_PX * plane.speed * (1 - 2 * p)), scale: round(1 + pad + DOLLY * plane.speed * p), blur: plane.blur };
+}
 
 /** Natural height (px) of one element rendered at width `w`. Mirrors the renderer's sizes. */
 export function measure(el, w) {
@@ -205,6 +300,9 @@ export function measure(el, w) {
       return 150 + el.items.length * 68 + 28;
     case "beacon":
       return 560;
+    // ---- data-atlas: the ledger takes column room; backdrop, counter-pill, particle-field and route are slots ----
+    case "ledger":
+      return ledgerHeight(el);
     default:
       return 0;
   }
@@ -255,6 +353,8 @@ const itemCount = (el) => {
       return el.lines.length;
     case "window":
       return el.rows.length;
+    case "ledger":
+      return el.rows.length + (el.total ? 1 : 0);
     case "roadmap":
       return el.items.length;
     case "chart":
@@ -268,16 +368,18 @@ const itemCount = (el) => {
   }
 };
 
-const round = (x) => Math.round(x * 1000) / 1000;
+/** Elements that are on from the first frame of the scene and take no part in the staggering (the layered backdrop). */
+export const ALWAYS_ON = ["backdrop"];
 
 /** Assign entrance times (seconds into the scene) to elements; explicit `at` wins, the rest are spread evenly. */
 export function staggerTimes(els, sceneSec) {
   const start = PACING.firstEnterSec;
   const end = Math.max(start + 0.2, sceneSec - PACING.holdSec - 0.6);
-  const auto = els.filter((e) => e.at === undefined).length;
+  const auto = els.filter((e) => e.at === undefined && !ALWAYS_ON.includes(e.type)).length;
   const step = auto > 1 ? (end - start) / (auto - 1) : 0;
   let k = 0;
   return els.map((e) => {
+    if (ALWAYS_ON.includes(e.type)) return 0;
     if (e.at !== undefined) return round(Math.min(Math.max(0, e.at), Math.max(0, sceneSec - 0.6)));
     const idx = k++;
     // Never wait more than 3.2 s between entrances; long scenes fill the gaps with item reveals.
@@ -396,14 +498,18 @@ export function planIllustration(spec, timeline, captions) {
   });
 }
 
+/** Elements that make no sound of their own (ambient layers). */
+const SILENT = ["backdrop", "particle-field"];
+
 /** Beats produced by one planned element, in scene-local seconds. */
 function elementBeats(p) {
   const out = [];
   const el = p.el;
   const add = (t, kind) => out.push({ t: round(t), kind });
-  const enterKind = { stamp: "stamp", doc: "page", callout: "draw", icon: "pop", svg: "draw", drawing: "draw", stat: "ding", post: "page" }[el.type] ?? "pop";
+  if (SILENT.includes(el.type)) return out;
+  const enterKind = { stamp: "stamp", doc: "page", callout: "draw", icon: "pop", svg: "draw", drawing: "draw", stat: "ding", post: "page", route: "draw", ledger: "page", "counter-pill": "ding" }[el.type] ?? "pop";
   add(el.type === "stamp" ? p.enter + 0.18 : p.enter + 0.08, enterKind);
-  const itemKind = el.type === "checklist" ? "tick" : el.type === "doc" ? "tick" : el.type === "svg" ? null : "pop";
+  const itemKind = el.type === "checklist" ? "tick" : el.type === "doc" || el.type === "ledger" ? "tick" : el.type === "svg" ? null : "pop";
   p.items.forEach((t, k) => {
     if (!itemKind) return;
     if ((el.type === "doc" || el.type === "meter") && el.stamp && k === p.items.length - 1) add(t + 0.18, "stamp");

@@ -2,7 +2,7 @@
 // Every element is drawn in code (SVG/HTML); the LLM picks elements and fills their text.
 import { z } from "zod";
 import { LOOKS } from "./illustrated-looks.mjs";
-import { COLOR_TOKENS, drawingFields } from "./drawing-schema.mjs";
+import { COLOR_TOKENS, MAX_DRAW_PARTS, drawPartSchema, drawingFields } from "./drawing-schema.mjs";
 import { drawingIssues } from "./drawing.mjs";
 
 const hex = z
@@ -295,7 +295,91 @@ const beacon = z.object({
   rings: z.number().int().min(2).max(5).default(3),
 });
 
-const LEAF = [card, flow, compare, checklist, bars, counter, code, terminal, chat, doc, timeline, icon, badge, stamp, callout, svg, drawing, post, chart, meter, hourglass, tags, stat, timer, panels, object, character, host, mascot, windowEl, roadmap, beacon];
+// ---------------- data-atlas elements ----------------
+
+export const DEPTH_PLANES = ["far", "mid", "subject", "near"];
+export const BACKDROP_MODES = ["2.5d", "flat"];
+const pct = z.number().min(0).max(100);
+const point = z.tuple([pct, pct]);
+
+/** One depth plane of the backdrop: agent-drawn parts on a full-frame canvas (default viewBox 0 0 540 480 = the 1080x960 picture window at half scale). */
+const backdropLayer = z
+  .object({
+    depth: z.enum(DEPTH_PLANES).default("subject").describe("far (sky, map, horizon), mid, subject (the hero of the scene) or near (foreground framing)"),
+    viewBox: drawingFields.viewBox.describe('Layer coordinates; default "0 0 540 480" (the 1080x960 picture window at half scale)'),
+    parts: drawingFields.parts,
+    motion: drawingFields.motion,
+    keys: drawingFields.keys,
+  })
+  .strict();
+
+/**
+ * The picture-window illustrated scene of a data-atlas scene: 1-5 agent-drawn depth planes. In the "2.5d" mode (default)
+ * each plane drifts at its own speed with a slow dolly and a soft blur on the far and near planes; "flat" renders the same
+ * planes as one picture with a single push-in. Haze, glow, drifting particles and the vignette are painted over it.
+ */
+const backdrop = z
+  .object({
+    type: z.literal("backdrop"),
+    ...base,
+    layers: z.array(backdropLayer).min(1).max(5),
+    mode: z.enum(BACKDROP_MODES).default("2.5d").describe('"2.5d": parallax layers with a dolly (default); "flat": one picture, one push-in'),
+    glow: color.optional().describe("Atmospheric glow color (default accent2)"),
+    haze: z.number().min(0).max(1).default(0.5).describe("Strength of the horizon haze, 0..1"),
+  })
+  .strict()
+  .superRefine((b, ctx) =>
+    b.layers.forEach((l, i) => drawingIssues(l).forEach((iss) => ctx.addIssue({ code: "custom", path: ["layers", i, ...iss.path], message: iss.message }))),
+  );
+
+/** A dark rounded pill with a big number that counts up (lower middle of the frame). */
+const counterPill = z.object({
+  type: z.literal("counter-pill"),
+  ...base,
+  value: z.number(),
+  from: z.number().optional(),
+  prefix: z.string().max(4).optional(),
+  suffix: z.string().max(8).optional(),
+  decimals: z.number().int().min(0).max(2).optional(),
+  label: text(24).optional().describe("Small tag above the pill (a place name, a unit)"),
+});
+
+/** Points of light spread over the frame (a populated map); the visible share grows from `from` to `to` over the scene. */
+const particleField = z.object({
+  type: z.literal("particle-field"),
+  ...base,
+  count: z.number().int().min(40).max(500).default(240),
+  from: z.number().min(0).max(1).default(0.15).describe("Share of the points lit at the start"),
+  to: z.number().min(0).max(1).default(1).describe("Share of the points lit at the end"),
+  cluster: point.optional().describe("[x, y] in percent: the points gather around this spot as the scene plays"),
+  flow: z.boolean().optional().describe("The points stream toward the cluster (or the right edge)"),
+});
+
+/** A glowing line that draws itself across the frame, with a bright head; points are [x, y] in percent of the frame. */
+const route = z.object({
+  type: z.literal("route"),
+  ...base,
+  points: z.array(point).min(2).max(8),
+  dashed: z.boolean().optional(),
+  flow: z.boolean().optional().describe("Sparks keep flowing along the line once it is drawn"),
+  endpoints: z.boolean().default(true).describe("Glowing dots at both ends"),
+  label: text(24).optional().describe("Small tag at the end of the line"),
+});
+
+/** A paper table: parchment ledger or blueprint sheet with a title, column heads, rows, a total and a red underline. */
+const ledger = z.object({
+  type: z.literal("ledger"),
+  ...base,
+  paper: z.enum(["parchment", "blueprint"]).default("parchment"),
+  title: text(28).optional(),
+  columns: z.tuple([text(14), text(14)]).optional().describe("Heads of the label and value columns"),
+  rows: z.array(z.object({ label: text(22), value: text(14) })).min(1).max(8),
+  total: z.object({ label: text(16), value: text(16) }).optional(),
+  underline: z.boolean().optional().describe("A red underline draws itself under the total"),
+  tilt: z.number().min(-6).max(6).optional().describe("Degrees the sheet is turned, like paper left on a desk"),
+});
+
+const LEAF = [card, flow, compare, checklist, bars, counter, code, terminal, chat, doc, timeline, icon, badge, stamp, callout, svg, drawing, post, chart, meter, hourglass, tags, stat, timer, panels, object, character, host, mascot, windowEl, roadmap, beacon, backdrop, counterPill, particleField, route, ledger];
 export const LEAF_TYPES = LEAF.map((s) => s.shape.type.value);
 export const ELEMENT_TYPES = [...LEAF_TYPES, "split"];
 

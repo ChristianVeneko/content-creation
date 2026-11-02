@@ -12,7 +12,7 @@ import { type Ink, progress, useKit } from "./kit";
 import type { FormatLookId, Look, LookId } from "./looks";
 import { fitText } from "./headlines";
 
-export const FORMAT_LOOK_IDS: FormatLookId[] = ["ui-cards", "flat-depth", "soft-gradient", "host-tutorial", "checklist-glass", "spotlight-narrative"];
+export const FORMAT_LOOK_IDS: FormatLookId[] = ["ui-cards", "flat-depth", "soft-gradient", "host-tutorial", "checklist-glass", "spotlight-narrative", "data-atlas"];
 
 const SERIF = "'Fraunces', 'DM Serif Display', Georgia, serif";
 
@@ -173,6 +173,21 @@ export const FormatBackground: React.FC<{ look: Look; ink: Ink }> = ({ look, ink
           </svg>
           <AbsoluteFill style={{ background: `radial-gradient(ellipse 55% 38% at ${22 + Math.sin(t * 0.18) * 10}% ${70 + Math.cos(t * 0.15) * 6}%, ${rgba(ink.accent, 0.22)}, transparent 70%)`, mixBlendMode: "screen" }} />
           <Grain opacity={0.07} />
+        </AbsoluteFill>
+      );
+    }
+    case "data-atlas": {
+      // a deep night sky: a cool glow high up, a warm one low, a field of faint stars; the scene paints its own haze
+      const stars = Array.from({ length: 70 }, (_, i) => ({ x: seeded(i * 3 + 1) * width, y: seeded(i * 7 + 4) * height * 0.75, r: 0.8 + seeded(i * 5) * 1.6, a: 0.25 + seeded(i * 11) * 0.5 }));
+      return (
+        <AbsoluteFill style={{ background: `radial-gradient(ellipse 120% 80% at 50% 38%, ${ink.bg} 0%, ${ink.bg2} 100%)` }}>
+          <AbsoluteFill style={{ background: `radial-gradient(ellipse 70% 30% at 50% 20%, ${rgba(ink.accent3, 0.16)}, transparent 70%), radial-gradient(ellipse 80% 26% at 50% 78%, ${rgba(ink.accent2, 0.1)}, transparent 70%)` }} />
+          <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
+            {stars.map((s, i) => (
+              <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#FFFFFF" opacity={s.a * (0.6 + 0.4 * Math.sin(t * 1.1 + i))} />
+            ))}
+          </svg>
+          <Grain opacity={0.05} />
         </AbsoluteFill>
       );
     }
@@ -375,6 +390,26 @@ const SpotlightHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote,
   );
 };
 
+/**
+ * data-atlas: a chapter tag at the very top (a tracked kicker over one quiet line), clear of the captions band below it.
+ * The format carries its words in the captions, so a scene normally has no title at all.
+ */
+const AtlasHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote, color, look }) => {
+  const { ink } = useKit();
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const text = quote ? `"${main}"` : main;
+  const fit = fitText(text, 880, 64, look.displayEm, 52, 1, 1.1);
+  const k = progress(t, 0.05, 0.5);
+  return (
+    <div style={{ position: "absolute", left: 90, top: 236, width: 900, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", opacity: k, transform: `translateY(${(1 - k) * -10}px)` }}>
+      {kicker ? <div style={{ fontFamily: look.mono, fontWeight: 700, fontSize: 24, letterSpacing: 6, textTransform: "uppercase", color: ink.muted, marginBottom: 8 }}>{kicker}</div> : null}
+      <div style={{ fontFamily: look.display, fontWeight: look.displayWeight, fontSize: fit.size, lineHeight: 1.1, letterSpacing: -0.5, color: ink.text, textShadow: `0 0 26px ${rgba(color, 0.5)}, 0 6px 16px rgba(0,0,0,0.6)` }}>{text}</div>
+    </div>
+  );
+};
+
 export const FormatHeadline: React.FC<HP & { look: Look }> = (props) => {
   switch (props.look.id) {
     case "ui-cards":
@@ -388,6 +423,8 @@ export const FormatHeadline: React.FC<HP & { look: Look }> = (props) => {
       return <AccentHeadline {...props} />;
     case "spotlight-narrative":
       return <SpotlightHeadline {...props} />;
+    case "data-atlas":
+      return <AtlasHeadline {...props} />;
     default:
       return null;
   }
@@ -426,6 +463,8 @@ export const formatHudSkin = (look: Look, ink: Ink): Partial<FormatSkin> | null 
       return { box: { borderRadius: 34, border: "2px solid rgba(255,255,255,0.95)", background: "rgba(255,255,255,0.6)", boxShadow: `0 18px 36px -18px ${rgba(ink.accent, 0.45)}` }, font: look.display, small: look.body, weight: 800, chipRadius: 24, barRadius: 10 };
     case "spotlight-narrative":
       return { box: { borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(20,23,34,0.72)", boxShadow: "0 16px 30px rgba(0,0,0,0.5)" }, font: look.display, small: look.mono, weight: 700, chipRadius: 10, barRadius: 4 };
+    case "data-atlas":
+      return { box: { borderRadius: 30, border: "1.5px solid rgba(255,255,255,0.14)", background: "rgba(8,11,22,0.78)", boxShadow: "0 14px 28px rgba(0,0,0,0.5)" }, font: look.display, small: look.mono, weight: 800, chipRadius: 20, barRadius: 6 };
     default:
       return null;
   }

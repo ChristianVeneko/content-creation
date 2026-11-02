@@ -409,6 +409,7 @@ export const LAYOUTS: Record<ResolvedSpec["template"], React.FC<SceneProps>> = {
   "host-tutorial": IllustratedLayout,
   "checklist-glass": IllustratedLayout,
   "spotlight-narrative": IllustratedLayout,
+  "data-atlas": IllustratedLayout,
   "clay-diorama": ThreeLayout,
   "iso-toon": ThreeLayout,
   "neon-glass": ThreeLayout,

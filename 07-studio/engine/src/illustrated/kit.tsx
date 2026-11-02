@@ -62,7 +62,7 @@ export const col = (ink: Ink, c: string | undefined, fallback: string): string =
 };
 
 /** moments: the scene's resolved word moments (drawings and 2D fx), seconds into the scene. */
-type Ctx = { ink: Ink; icons: Record<string, IconData>; seed: number; look: Look; moments?: Record<string, number> };
+type Ctx = { ink: Ink; icons: Record<string, IconData>; seed: number; look: Look; moments?: Record<string, number>; /** Spec language (number grouping of the counter pill) */ language?: string };
 export const IllustrationContext = createContext<Ctx>({ ink: makeInk({ bg: ["#0B1020"], text: "#fff", accent: "#FF7A59" }), icons: {}, seed: 1, look: LOOKS.blueprint });
 export const useKit = () => useContext(IllustrationContext);
 
@@ -326,6 +326,8 @@ const basePanelStyle = (ink: Ink, accent?: string): React.CSSProperties => {
     return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.55) : "rgba(255,255,255,0.95)"}`, backdropFilter: "blur(16px)", boxShadow: L.panel.shadow };
   if (L.id === "spotlight-narrative")
     return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: `1px solid ${accent ? rgba(accent, 0.55) : ink.line}`, boxShadow: `${L.panel.shadow}${accent ? `, 0 0 40px ${rgba(accent, 0.14)}` : ""}` };
+  if (L.id === "data-atlas")
+    return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: `1.5px solid ${accent ? rgba(accent, 0.55) : ink.line}`, boxShadow: `${L.panel.shadow}${accent ? `, 0 0 36px ${rgba(accent, 0.12)}` : ""}` };
   return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.7) : ink.line}`, boxShadow: L.panel.shadow };
 };
 

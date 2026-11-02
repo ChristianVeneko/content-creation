@@ -461,7 +461,10 @@ export function partState(node, t, ctx, vb = null, inherited = [], partId = null
 export function sceneMomentStrings2d(visual) {
   const out = new Set();
   const els = visual?.elements ?? [];
-  for (const e of [...els, ...els.flatMap((x) => (x.type === "split" ? [...x.left, ...x.right] : []))]) if (e.type === "drawing") drawingMomentStrings(e, out);
+  for (const e of [...els, ...els.flatMap((x) => (x.type === "split" ? [...x.left, ...x.right] : []))]) {
+    if (e.type === "drawing") drawingMomentStrings(e, out);
+    if (e.type === "backdrop") for (const l of e.layers ?? []) drawingMomentStrings(l, out);
+  }
   if (visual?.drawing) drawingMomentStrings(visual.drawing, out);
   for (const f of visual?.fx ?? []) {
     if (typeof f.at === "string") out.add(f.at);
@@ -472,7 +475,7 @@ export function sceneMomentStrings2d(visual) {
 
 /** Whether a scene visual has a 2D generative layer (a drawing or 2D fx). */
 export const hasDrawing2d = (visual) =>
-  Boolean(visual && visual.type !== "scene3d" && (visual.drawing || visual.fx?.length || (visual.elements ?? []).some((e) => e.type === "drawing" || (e.type === "split" && [...e.left, ...e.right].some((c) => c.type === "drawing")))));
+  Boolean(visual && visual.type !== "scene3d" && (visual.drawing || visual.fx?.length || (visual.elements ?? []).some((e) => e.type === "drawing" || e.type === "backdrop" || (e.type === "split" && [...e.left, ...e.right].some((c) => c.type === "drawing")))));
 
 /**
  * Word moments of every scene with a 2D layer: [{moments, warnings} | null] (scene-relative seconds).

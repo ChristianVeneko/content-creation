@@ -51,6 +51,9 @@ export const lookDrawingSkin = (ink: Ink): DrawingSkin => {
       return { fonts, ink: ink.paperInk, shadow: `drop-shadow(5px 6px 0 ${rgba(ink.paperInk, 0.85)})` };
     case "spotlight-narrative":
       return { fonts, ink: ink.text, shadow: `drop-shadow(0 0 22px ${rgba(ink.accent2, 0.28)}) drop-shadow(0 22px 28px rgba(0, 0, 0, 0.55))` };
+    case "data-atlas":
+      // full-frame layers: no per-drawing drop shadow (the atmosphere and the vignette light the whole scene)
+      return { fonts, ink: ink.text };
     case "editor-window":
       return { fonts, ink: ink.text, stroke: 0.9 };
     case "broadcast":

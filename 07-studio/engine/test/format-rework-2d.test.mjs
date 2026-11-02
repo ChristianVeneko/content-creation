@@ -16,7 +16,7 @@ const template = (id) => JSON.parse(read(`../templates/${id}.json`));
 const example = (id) => JSON.parse(read(`../examples/${id}.spec.json`));
 
 test("the new 2D formats are appended to the format looks and registered everywhere a look must be", () => {
-  assert.deepEqual(FORMAT_2D_LOOKS, [...OLD, ...NEW]);
+  assert.deepEqual(FORMAT_2D_LOOKS.slice(0, OLD.length + NEW.length), [...OLD, ...NEW], "later formats (data-atlas) are appended after these");
   for (const id of NEW) {
     assert.ok(LOOKS.includes(id), `look ${id}`);
     assert.ok(ILLUSTRATED_TEMPLATE_IDS.includes(id), `illustrated ${id}`);
