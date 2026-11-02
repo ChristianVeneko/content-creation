@@ -16,6 +16,9 @@ type V3 = [number, number, number];
 /** Backdrop stops for a flat `world.backdrop` color (a faint light-to-dark gradient keeps the depth fog readable). */
 export const backdropStops = (c: string): string[] => [mixHexColor(c, "#FFFFFF", 0.08), c, mixHexColor(c, "#000000", 0.28)];
 
+/** Daylight sky ramp: the palette sky on top, easing into a pale, warm-tinted haze (never darker than the sky) at the horizon. */
+export const skyStops = (sky: string, backdrop: string): string[] => [sky, mixHexColor(sky, "#FFFFFF", 0.45), mixHexColor(mixHexColor(sky, backdrop, 0.35), "#FFFFFF", 0.7)];
+
 /** The ground the world asks for (null = keep the look's own floor). */
 export const WorldGround: React.FC<{ ground: NonNullable<World3D["ground"]>; center: [number, number]; half: [number, number] }> = ({ ground, center, half }) => {
   const { look, palette } = useKit3D();

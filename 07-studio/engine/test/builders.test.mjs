@@ -33,7 +33,8 @@ test("every builder: deterministic by seed, differs across seeds, unique ids, va
     const differs = JSON.stringify(a.parts) !== JSON.stringify(other.parts);
     // builders with nothing random in their default look vary through params instead: cover that below
     if (!differs) assert.ok(JSON.stringify(runBuilder(name, maxParams(name), { seed: 1 }).parts) !== JSON.stringify(a.parts), `${name} ignores both seed and params`);
-    assert.ok(a.parts.length >= 6 && a.parts.length <= MAX_PARTS, `${name} has ${a.parts.length} parts`);
+    // scatter templates are copied hundreds of times, so grass-tufts is deliberately cheap (group + 3 blades)
+    assert.ok(a.parts.length >= (name === "grass-tufts" ? 4 : 6) && a.parts.length <= MAX_PARTS, `${name} has ${a.parts.length} parts`);
     const ids = a.parts.map((p) => p.id);
     assert.equal(new Set(ids).size, ids.length, `${name} has duplicate ids`);
     for (const p of a.parts) {

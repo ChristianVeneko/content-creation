@@ -268,18 +268,17 @@ test("camera: continuous across scenes (eased), a hard cut only with `cut: true`
   assert.ok(Math.abs(dive.yaw) > 5, "and cancels the look's yaw");
 });
 
-test("framing keeps the subject out of the title and caption bands at the start of the video", () => {
+test("framing fills the portrait frame: the subject starts below the slim title band and uses the lower area", () => {
   const { plans } = planOf(spec());
   const p = plans[0];
   const cam = cameraAt({ t: 0, sceneSec: p.stage.totalSec, look: "engineering-explainer", move: "static", frame: p.frame, keys: p.cameraKeys });
   const st = p.stage;
   const pts = [];
   for (const a of st.actors) for (const dy of [0, a.placed.h]) pts.push([a.placed.pos[0], dy, a.placed.pos[2]]);
-  const [x0, z0] = [st.terrain.pos[0] - st.terrain.size[0] / 2, st.terrain.pos[1] - st.terrain.size[1] / 2];
-  pts.push([x0, 0, z0], [x0 + st.terrain.size[0], 0, z0], [x0, -st.terrain.depth, z0 + st.terrain.size[1]], [x0 + st.terrain.size[0], -st.terrain.depth, z0 + st.terrain.size[1]]);
   const ys = pts.map((q) => projectPoint(cam, q).y);
   assert.ok(Math.min(...ys) >= st.safe.title.y + st.safe.title.h - 1, `top ${Math.min(...ys).toFixed(0)} clears the title band`);
-  assert.ok(Math.max(...ys) <= 1268, `bottom ${Math.max(...ys).toFixed(0)} clears the caption band`);
+  assert.ok(Math.max(...ys) <= st.safe.bottom, `bottom ${Math.max(...ys).toFixed(0)} stays in the frame`);
+  assert.ok(st.safe.title.h <= 160, "the title band is slim");
 });
 
 test("title backing: ink on the pill reads >= 4.5:1 on every palette", () => {

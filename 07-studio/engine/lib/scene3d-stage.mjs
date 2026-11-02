@@ -86,6 +86,7 @@ export const stageActorSchema = z
     at: n(0, 600).optional().describe("Seconds from the start of the video when it appears (default: visible from the start)"),
     buoyant: z.object({ amp: n(0, 15).optional().describe("Rock in degrees (default 3)"), speed: n(0.1, 4).optional() }).strict().optional().describe("Rocks gently, but only while a beat has lifted it off its rest position (floating)"),
     highlight: z.boolean().optional(),
+    noFrame: z.boolean().optional().describe("Leave this actor out of the camera framing (a sky body, a far prop, a world-sized veil)"),
     ...customObjectFields,
   })
   .strict();
@@ -552,5 +553,5 @@ export function titleBacking(p) {
   return { mode: "pill", fill: base, fillAlpha: 0.9, ink, rule: p.accent2 ?? p.accent, kickerInk: mixColor(ink, base, 0.25), contrast: contrastRatio(ink, base) };
 }
 
-/** Title / caption band of the 1080x1920 frame a staged subject keeps out of (pixels from the top). */
-export const STAGE_SAFE = { top: 600, bottom: 1250, title: { y: 336, h: 236 } };
+/** Bands of the 1080x1920 frame (pixels from the top): a slim title on top, small captions near the middle; the subject uses everything between top and bottom. */
+export const STAGE_SAFE = { top: 360, bottom: 1640, title: { y: 200, h: 150 }, caption: { y: 900, h: 120 } };

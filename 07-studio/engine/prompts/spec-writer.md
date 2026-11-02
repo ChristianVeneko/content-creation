@@ -728,9 +728,14 @@ call must fit within 5 units of its center (the error tells you): lower the size
 (`pos`, `rot`, `scale`, `color`, `opacity`, `visible`, `emissive`); hide something until its moment with
 `{at: 0, set: {visible: false}}` then `{at: "word", set: {visible: true}}` plus a `to` tween. Move a data packet along a
 `data-cable` by chaining `pos` tweens on `cable/dot`. Shots: `wide`, `zoom-to` (+`focus`), `dive` (a level look into a cutaway),
-`low`; set `zoom` 0.3-0.55 for a tight frame (the preset values leave the world small) and `shift: [0, 1.4, 0]` to seat the world
-lower in the frame; keep the world compact so focus shots stay readable. Overlays: `concept` pill, `flow` chips with an active
-step per hop, `limit`, `versus`. Captions are word by word in the lower center.
+`low`. Pick the portrait framing with `frame`: `wide` (the set, cropped to about 9.5 units across), `medium`, `close` (one subject),
+`cutaway` (the soil section); never write a `zoom` below 1 for a stage (the base framing already fills the 9:16 frame). The soil
+`terrain` with strata at the front of the world fills the lower half of the frame, so prefer one. Flag sky bodies, far props and a
+night veil with `"noFrame": true` so they do not pull the camera back. Labels (`label` on an actor) are laid out automatically
+(at most four, the focus actor first), so label only the actors that matter. Overlays: `concept` pill, `flow` chips (at most 5)
+with an active step per hop, `limit`, `versus`. Captions are small and word by word near the middle of the frame (white, dark outline).
+Energy and day-night: `sun` (kind sun|moon), `pv-cell` (cell cross-section), `power-pole`, and `night-veil` (`"size": 2`, hidden,
+tween its `opacity`); moving particles (photons, electrons) are `fx` of type `signal` along a `points` path.
 
 **Five recipes (pick one; each has a different subject in the template's `recipes`).**
 - `build-process`: an assembly or construction (a wind farm, a cart): empty site, prepare the ground, bring in the parts, assemble
@@ -744,7 +749,7 @@ step per hop, `limit`, `versus`. Captions are word by word in the lower center.
 - `compare`: A vs B on one stage (two energy systems): same trigger on both actors, different outcomes, `versus` overlay.
   Builders: `solar-panel`, `wind-turbine`, `battery`, `phone`, `chart-3d`, `coin-stack`.
 
-Examples: `examples/process-tech-tutorial.spec.json` (a web request: laptop, router, cables, ISP building, cloud, server rack),
+Examples: `examples/process-solar.spec.json` (a 2-minute how solar panels work), `examples/process-tech-tutorial.spec.json` (a web request: laptop, router, cables, ISP building, cloud, server rack),
 `examples/process-story.spec.json` (a voyage: castle, war table, characters, cart, ship, flag), `examples/process-pool.spec.json`
 (a build with terrain strata, carve and liquid beats; the largest example), `examples/process-explainer.spec.json` (a short how-it-works).
 

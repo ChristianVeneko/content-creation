@@ -513,34 +513,34 @@
         "shots": [
           {
             "shot": "wide",
-            "zoom": 0.42,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "wide"
           },
           {
             "shot": "zoom-to",
             "focus": "terrain:pit",
             "at": "cavas",
-            "zoom": 0.3,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "close"
           },
           {
             "shot": "dive",
             "focus": "terrain:pit",
             "at": "capas",
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           }
         ],
         "beats": [
@@ -704,23 +704,23 @@
             "shot": "dive",
             "focus": "terrain:pit",
             "at": 0,
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           },
           {
             "shot": "zoom-to",
             "focus": "bucket",
             "at": 2,
-            "zoom": 0.3,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "close"
           }
         ],
         "beats": [
@@ -757,7 +757,7 @@
     },
     {
       "id": "soak",
-      "narration": "Pero al d\u00eda siguiente el agua se evapora y se filtra en el suelo, y el hoyo vuelve a quedar vac\u00edo.",
+      "narration": "Pero al día siguiente el agua se evapora y se filtra en el suelo, y el hoyo vuelve a quedar vacío.",
       "title": {
         "kicker": "Paso 3",
         "main": "El agua desaparece"
@@ -768,23 +768,23 @@
           {
             "shot": "wide",
             "at": 0,
-            "zoom": 0.42,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "wide"
           },
           {
             "shot": "dive",
             "focus": "terrain:pit",
             "at": 2,
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           }
         ],
         "beats": [
@@ -844,23 +844,23 @@
             "shot": "dive",
             "focus": "terrain:pit",
             "at": 0,
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           },
           {
             "shot": "zoom-to",
             "focus": "terrain:pit",
             "at": 2.5,
-            "zoom": 0.3,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "close"
           }
         ],
         "beats": [
@@ -901,34 +901,34 @@
             "shot": "dive",
             "focus": "terrain:pit2",
             "at": 0,
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           },
           {
             "shot": "zoom-to",
             "focus": "rebar",
             "at": 2.4,
-            "zoom": 0.3,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "slab",
             "at": 4.6,
-            "zoom": 0.3,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "close"
           }
         ],
         "beats": [
@@ -1031,7 +1031,7 @@
     },
     {
       "id": "float",
-      "narration": "Encima instalas la alberca de azulejos y llena de agua se mantiene firme. Pero si la vac\u00edas para limpiarla, el agua del suelo la empuja desde abajo y la alberca flota como un bote.",
+      "narration": "Encima instalas la alberca de azulejos y llena de agua se mantiene firme. Pero si la vacías para limpiarla, el agua del suelo la empuja desde abajo y la alberca flota como un bote.",
       "title": {
         "kicker": "Paso 6",
         "main": "La alberca flota"
@@ -1042,33 +1042,33 @@
           {
             "shot": "wide",
             "at": 0,
-            "zoom": 0.42,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "wide"
           },
           {
             "shot": "dive",
             "focus": "pool",
             "at": 2.5,
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           },
           {
             "shot": "wide",
             "at": 7,
-            "zoom": 0.42,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "wide"
           }
         ],
         "beats": [
@@ -1141,7 +1141,7 @@
         "overlay": [
           {
             "type": "concept",
-            "text": "Presi\u00f3n del agua",
+            "text": "Presión del agua",
             "at": 5.4
           }
         ]
@@ -1149,10 +1149,10 @@
     },
     {
       "id": "valve",
-      "narration": "La soluci\u00f3n es una peque\u00f1a v\u00e1lvula: deja entrar el agua, la presi\u00f3n se iguala y la alberca vuelve a su lugar.",
+      "narration": "La solución es una pequeña válvula: deja entrar el agua, la presión se iguala y la alberca vuelve a su lugar.",
       "title": {
         "kicker": "Paso 7",
-        "main": "Instalas la v\u00e1lvula"
+        "main": "Instalas la válvula"
       },
       "visual": {
         "type": "scene3d",
@@ -1161,23 +1161,23 @@
             "shot": "zoom-to",
             "focus": "valve",
             "at": 0,
-            "zoom": 0.3,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "close"
           },
           {
             "shot": "dive",
             "focus": "pool",
             "at": 3,
-            "zoom": 0.34,
             "shift": [
               0,
               1.7,
               0
-            ]
+            ],
+            "frame": "cutaway"
           }
         ],
         "beats": [

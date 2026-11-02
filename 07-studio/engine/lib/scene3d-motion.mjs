@@ -108,6 +108,20 @@ export const SHOT_PRESETS = {
   dive: { zoom: 0.36, pitch: -8 },
 };
 export const SHOT_NAMES = Object.keys(SHOT_PRESETS);
+/**
+ * Portrait framings of a staged video (`shots[].frame`): how much of the world the shot shows, tuned so the subject is large in a
+ * 9:16 frame (the base framing already fills it; zoom < 1 moves closer). They replace the preset's zoom / pitch / shift; the shot's
+ * own yaw, pitch, zoom and shift still win. In a stage, `wide`, `medium` and `close` shots default to the frame of the same name.
+ */
+export const SHOT_FRAMES = {
+  wide: { zoom: 1.0, pitch: 2, shift: [0, 0.9, 0] },
+  medium: { zoom: 0.75, pitch: 0, shift: [0, 0.7, 0] },
+  close: { zoom: 0.5, pitch: -2, shift: [0, 0.45, 0] },
+  cutaway: { zoom: 0.65, pitch: -6, shift: [0, 0.2, 0] },
+};
+/** Stage punch-in presets are scaled by this (their zoom < 1) because the stage's base framing already fills the frame. */
+export const STAGE_ZOOM_EASE = 1.2;
+export const SHOT_FRAME_NAMES = Object.keys(SHOT_FRAMES);
 
 // ---------------- moments ----------------
 
@@ -284,6 +298,7 @@ const shotSchema = z
     at: momentSchema.optional().describe("When the shot starts (default: evenly spaced over the scene)"),
     shot: z.enum(SHOT_NAMES, { error: (iss) => `unknown shot${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SHOT_NAMES.join(", ")}` }),
     focus: z.string().min(1).max(40).optional().describe("Object id the shot aims at (with a stage: an actor id, \"actor/part\", a liquid id, \"terrain\" or \"terrain:<carve id>\")"),
+    frame: z.enum(SHOT_FRAME_NAMES, { error: (iss) => `unknown frame${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SHOT_FRAME_NAMES.join(", ")}` }).optional().describe(`portrait framing of the shot (${SHOT_FRAME_NAMES.join(", ")}): wide shows the whole set, medium the subject area, close one subject, cutaway the soil section; a stage wide / medium / close shot defaults to its own frame`),
     cut: z.boolean().optional().describe("stage: hard cut to this shot instead of an eased move"),
     yaw: n(-180, 180).optional(),
     pitch: n(-60, 60).optional(),
@@ -934,11 +949,14 @@ export const partsSignature = (parts) => JSON.stringify((parts ?? []).map((p) =>
  * Expand `shots` into camera keys (the shape of `cameraKeys`): preset offsets merged with the shot's own overrides.
  * `sec` resolves a moment; shots without `at` are spread evenly over `sceneSec`.
  */
-export function shotsToKeys(shots, sceneSec, sec) {
+export function shotsToKeys(shots, sceneSec, sec, opts = {}) {
   const n = shots?.length ?? 0;
   return (shots ?? []).map((s, i) => {
     // every channel is set on every key, so a shot never inherits the previous shot's pitch / yaw / zoom
-    const key = { yaw: 0, pitch: 0, zoom: 1, ...SHOT_PRESETS[s.shot] };
+    const frame = s.frame ?? (opts.stage && SHOT_FRAMES[s.shot] ? s.shot : null);
+    const key = { yaw: 0, pitch: 0, zoom: 1, ...SHOT_PRESETS[s.shot], ...(frame ? SHOT_FRAMES[frame] : {}) };
+    // the stage base framing is already close (STAGE_FRAME), so the preset punch-ins (zoom-to, dive, low...) ease off
+    if (opts.stage && !frame && key.zoom < 1) key.zoom = Math.round(key.zoom * STAGE_ZOOM_EASE * 1000) / 1000;
     for (const f of ["yaw", "pitch", "zoom", "shift"]) if (s[f] !== undefined) key[f] = s[f];
     const t = s.at === undefined ? (sceneSec * i) / n : sec(s.at);
     return { at: Math.round(t * 1000) / 1000, ...key, ...(s.focus ? { focus: s.focus } : {}), ...(s.ease ? { ease: s.ease } : {}) };

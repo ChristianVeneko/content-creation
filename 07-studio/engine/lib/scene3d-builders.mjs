@@ -335,6 +335,10 @@ B.tree = {
         }
       }
       k.cone("tip", [0.12 * c, 0.3], [0, H + 0.05, 0], leaf2, { facets: 5 });
+      // extra faceted layers: a wide dark skirt under the lowest tier and a light upper highlight tier
+      const r0 = 0.95 * c * (H / 2.6) * 0.8;
+      k.cone("skirt", [r0 * 1.12, 0.22], [0, trunkH * 0.7 + 0.08, 0], shade(leaf, -0.3), { facets: 8, rot: [0, 12, 0] });
+      k.cone("tier-light", [r0 * 0.5, H * 0.2], [0, H * 0.86, 0], shade(leaf, 0.2), { facets: 6, rot: [0, 30, 0] });
     } else if (p.kind === "palm") {
       let x = 0;
       let y = 0;
@@ -379,9 +383,9 @@ B.tree = {
       const cy = trunkH + (H - trunkH) * 0.5;
       const cr = (H - trunkH) * 0.5 * c * (p.kind === "oak" ? 1.25 : 1);
       if (p.kind === "lowpoly") {
-        for (let i = 0; i < 3; i++) {
-          const u = i / 2;
-          k.sph("stack", [cr * (1.15 - 0.4 * u), cr * (0.62 - 0.1 * u), cr * (1.15 - 0.4 * u)], [k.vary(-0.05, 0.05, "sx", i), trunkH + 0.2 + i * cr * 0.7, k.vary(-0.05, 0.05, "sz", i)], i === 1 ? leaf2 : shade(leaf, i * 0.1), { facets: 5, rot: [0, i * 36, 0] });
+        for (let i = 0; i < 5; i++) {
+          const u = i / 4;
+          k.sph("stack", [cr * (1.15 - 0.4 * u), cr * (0.62 - 0.1 * u), cr * (1.15 - 0.4 * u)], [k.vary(-0.05, 0.05, "sx", i), trunkH + 0.2 + i * cr * 0.42, k.vary(-0.05, 0.05, "sz", i)], i % 2 ? leaf2 : shade(leaf, i * 0.1), { facets: 5, rot: [0, i * 36, 0] });
         }
       } else {
         const blobs = (p.kind === "oak" ? 10 : 8) + p.density * 4;
@@ -394,6 +398,9 @@ B.tree = {
           if (i % 2 === 0) k.cone("leaf-tuft", [br * 0.4, br * 0.9], [Math.cos(rad(a)) * dist * 1.05, cy + e * cr * 0.8 + br * 0.7, Math.sin(rad(a)) * dist * 1.05], shade(leaf2, 0.08), { facets: 4, rot: [0, a, 0] });
           k.sph("leaf-blob", [br, br * 0.85, br], [Math.cos(rad(a)) * dist, cy + e * cr * 0.8, Math.sin(rad(a)) * dist], e > 0.3 ? leaf2 : e < -0.2 ? shade(leaf, -0.15) : leaf, { facets: 5, rot: [0, a, 0] });
         }
+        // extra faceted layers: a dark underside that shades the crown and a light cap on top
+        k.sph("crown-under", [cr * 1.02, cr * 0.5, cr * 1.02], [0, cy - cr * 0.55, 0], shade(leaf, -0.25), { facets: 7, rot: [0, 12, 0] });
+        k.sph("crown-cap", [cr * 0.62, cr * 0.42, cr * 0.62], [0, cy + cr * 0.72, 0], shade(leaf2, 0.12), { facets: 6, rot: [0, 40, 0] });
       }
     }
     return {};
@@ -455,10 +462,10 @@ B.fence = {
 
 B["grass-tufts"] = {about: "Scatter template of grass tufts (3-7 leaning blades). Use in stage.world with `params.count` and `params.area`; it becomes a `scatter` of instanced copies that follow the terrain.", scatterDefault: true,
   params: {
-    count: int(300, 1, 1000, "Number of tufts"),
+    count: int(360, 1, 1000, "Number of tufts (cheap: 3 blades + 1 group = 4 instanced parts per tuft)"),
     area: list([-8, -5, 8, 5], "Ground rectangle [x0, z0, x1, z1]"),
     avoid: list([], "Keep-out zones: [x0, z0, x1, z1] boxes or [x, z, r] discs"),
-    blades: int(5, 3, 7, "Blades per tuft"),
+    blades: int(3, 3, 7, "Blades per tuft (3 keeps a tuft cheap: more tufts fit the world budget)"),
     height: num(0.3, 0.1, 1, "Blade height"),
     color: color("Blade color"),
     color2: color("Lighter blade color"),
@@ -471,7 +478,7 @@ B["grass-tufts"] = {about: "Scatter template of grass tufts (3-7 leaning blades)
       const a = (i / p.blades) * 360 + k.vary(0, 40, "a", i);
       const h = p.height * k.vary(0.65, 1.25, "h", i);
       const tilt = k.vary(8, 24, "t", i);
-      k.cone("blade", [p.height * 0.18, h], [Math.cos(rad(a)) * 0.04, h / 2 - 0.01, Math.sin(rad(a)) * 0.04], i % 2 ? c1 : c2, { facets: 3, parent: root, rot: [Math.round(Math.sin(rad(a)) * tilt), 0, Math.round(-Math.cos(rad(a)) * tilt)] });
+      k.cone("blade", [p.height * 0.24, h], [Math.cos(rad(a)) * 0.04, h / 2 - 0.01, Math.sin(rad(a)) * 0.04], i % 2 ? c1 : c2, { facets: 3, parent: root, rot: [Math.round(Math.sin(rad(a)) * tilt), 0, Math.round(-Math.cos(rad(a)) * tilt)] });
     }
     return { scatter: { count: p.count, area: p.area, avoid: p.avoid, jitter: { scale: 0.45, rot: 180 } } };
   },
@@ -1961,6 +1968,113 @@ B.ship = {
     k.sph("anchor", [0.07], [L / 2 - 0.1, 0.4, 0.5], "#3A4150", { facets: 5 });
     k.cyl("bowsprit", [0.025, 0.035, 0.7], [L / 2 + 0.25, 0.75, 0], "#5B4636", { rot: [0, 0, -75], facets: 5 });
     k.sph("figurehead", [0.07], [L / 2 + 0.55, 0.9, 0], "#E8B84A", { facets: 5 });
+    return {};
+  },
+};
+
+// ---- solar / energy explainers (added with the solar example) ----
+
+B.sun = {
+  about: "Sun or moon: a faceted glowing disc with a halo and a group `rays` of triangular rays (spin or pulse it with a beat). kind: sun (warm) or moon (pale, with craters, no rays). Seen from the front (faces +z).",
+  params: {
+    kind: opt("sun", ["sun", "moon"], "Sun or moon"),
+    radius: num(0.9, 0.4, 2, "Disc radius"),
+    rays: int(12, 6, 16, "Ray count (sun)"),
+    color: color("Disc color"),
+  },
+  build(p, k) {
+    const moon = p.kind === "moon";
+    const c = p.color ?? (moon ? "#E8ECF4" : "#FFC83D");
+    const R = p.radius;
+    k.sph("halo", [R * 1.45], [0, 0, -0.1], shade(c, 0.4), { facets: 12, material: "emissive", emissive: 0.5, opacity: 0.35 });
+    k.sph("disc", [R, R, R * 0.5], [0, 0, 0], c, { facets: 10, material: "emissive", emissive: moon ? 0.5 : 1.4 });
+    k.sph("shine", [R * 0.55, R * 0.55, R * 0.2], [-R * 0.18, R * 0.2, R * 0.42], shade(c, 0.45), { facets: 8, material: "emissive", emissive: 1.0 });
+    if (moon) {
+      for (let i = 0; i < 4; i++) k.sph("crater", [R * k.vary(0.12, 0.2, "cr", i), R * k.vary(0.12, 0.2, "cr", i), R * 0.08], [R * k.vary(-0.5, 0.5, "cx", i), R * k.vary(-0.5, 0.5, "cy", i), R * 0.46], shade(c, -0.2), { facets: 6 });
+      return {};
+    }
+    const rays = k.grp("rays", [0, 0, 0]);
+    for (let i = 0; i < p.rays; i++) {
+      const a = (i / p.rays) * 360;
+      const long = i % 2 === 0;
+      const len = R * (long ? 0.9 : 0.55);
+      k.cone("ray", [R * 0.16, len], [Math.cos(rad(a)) * (R * 1.2 + len / 2), Math.sin(rad(a)) * (R * 1.2 + len / 2), 0], long ? "#FFB020" : "#FFD25A", { parent: rays, rot: [0, 0, a - 90], facets: 3, material: "emissive", emissive: 1.0 });
+    }
+    return {};
+  },
+};
+
+B["pv-cell"] = {
+  about: "Photovoltaic cell cross-section, a layered block seen from the front: glass, anti-reflective coating, n-silicon (blue), the p-n junction (glowing), p-silicon (orange), back contact, top metal fingers, and charge carriers `e`, `e-1`.. (electrons, cyan) and `h`, `h-1`.. (holes, pink) as small spheres that beats can move. Groups: `electrons`, `holes`, `layers`. Layer tops: glass y=1.9, n y=1.62, junction y=1.1, p y=0.95.",
+  params: {
+    width: num(3.6, 2, 4.6, "Width"),
+    carriers: int(5, 2, 8, "Electrons and holes"),
+    glass: color("Glass tint"),
+  },
+  build(p, k) {
+    const W = p.width;
+    const D = 1.2;
+    const layers = k.grp("layers", [0, 0, 0]);
+    const L = (name, y0, y1, c, o = {}) => k.box(name, [W, y1 - y0, D], [0, (y0 + y1) / 2, 0], c, { parent: layers, ...o });
+    L("contact", 0, 0.18, "#8A94A3", { material: "metal" });
+    L("p-layer", 0.18, 0.95, "#E8743B");
+    L("junction", 0.95, 1.1, "#FFE066", { material: "emissive", emissive: 0.9 });
+    L("n-layer", 1.1, 1.62, "#2F7DE1");
+    L("coating", 1.62, 1.72, "#1B2A5A");
+    L("glass", 1.72, 1.9, p.glass ?? "#BFE3F5", { material: "glass", opacity: 0.55 });
+    for (let i = 0; i < 5; i++) k.box("finger", [0.07, 0.06, D * 0.96], [-W / 2 + (W * (i + 0.5)) / 5, 1.75, 0], "#C8CDD4", { parent: layers, material: "metal" });
+    for (let i = 0; i < 6; i++) k.box("stripe", [W * 0.9, 0.025, D + 0.02], [0, 0.3 + i * 0.1, 0], shade("#E8743B", i % 2 ? 0.12 : -0.08), { parent: layers });
+    const el = k.grp("electrons", [0, 0, 0]);
+    const ho = k.grp("holes", [0, 0, 0]);
+    for (let i = 0; i < p.carriers; i++) {
+      const x = -W / 2 + (W * (i + 0.5)) / p.carriers;
+      k.sph("e", [0.1], [x, 1.0, D / 2 + 0.06], "#47D4FF", { parent: el, facets: 6, material: "emissive", emissive: 1.2 });
+      k.sph("h", [0.1], [x - W / p.carriers / 3, 0.9, D / 2 + 0.06], "#FF6FA8", { parent: ho, facets: 6, material: "emissive", emissive: 1.0 });
+    }
+    return {};
+  },
+};
+
+B["night-veil"] = {
+  about: "A dark translucent box around the whole scene (floor, four walls, ceiling, double sided) that tints the world to night. Give the actor `size: 2` (a box about 120 units wide, the camera stays inside), `visible: false`, then tween its `opacity` (0 to 1) for dusk and back for dawn. Other actors stay unveiled so lit windows and lamps glow.",
+  params: {
+    color: color("Tint (default deep blue)"),
+    strength: num(0.55, 0.2, 0.9, "Tint opacity at full night"),
+  },
+  build(p, k) {
+    const H = 5;
+    const c = p.color ?? "#0B1B4A";
+    const o = { material: "matte", opacity: p.strength, scale: [2, 2, 1] };
+    const box = k.grp("box", [0, 0, 0], { scale: 6 });
+    k.add("plane", "floor", [H, H], [0, 0.007, 0], c, { ...o, parent: box, rot: [-90, 0, 0] });
+    k.add("plane", "ceiling", [H, H], [0, H, 0], c, { ...o, parent: box, rot: [90, 0, 0] });
+    for (const [n, x, z, ry] of [["wall-n", 0, -H, 0], ["wall-s", 0, H, 180], ["wall-e", H, 0, -90], ["wall-w", -H, 0, 90]]) k.add("plane", n, [H, H], [x, H / 2, z], c, { ...o, parent: box, rot: [0, ry, 0] });
+    return {};
+  },
+};
+
+B["power-pole"] = {
+  about: "Utility pole with cross-arms, insulators, a pole transformer and wire stubs: the grid connection point. The wire stubs `wire`, `wire-1`.. can glow with an emissive beat.",
+  params: {
+    height: num(3.6, 2, 5, "Pole height"),
+    arms: int(2, 1, 3, "Cross-arms"),
+  },
+  build(p, k) {
+    const H = p.height;
+    k.cyl("pole", [0.09, 0.13, H], [0, H / 2, 0], "#7A5230", { facets: 7 });
+    k.cyl("base", [0.2, 0.24, 0.16], [0, 0.08, 0], "#9AA0A8", { facets: 7 });
+    for (let i = 0; i < p.arms; i++) {
+      const y = H - 0.2 - i * 0.55;
+      const w = 1.5 - i * 0.3;
+      k.box("arm", [w, 0.09, 0.09], [0, y, 0], "#6B4A2E");
+      for (const sx of [-1, 1]) {
+        k.cyl("insulator", [0.045, 0.06, 0.16], [sx * (w / 2 - 0.12), y + 0.12, 0], "#3FA796", { facets: 6 });
+        k.cyl("wire", [0.018, 0.018, 1.3], [sx * (w / 2 - 0.12 + 0.65), y + 0.2, 0], "#2B2F36", { rot: [0, 0, 90], facets: 5, material: "emissive", emissive: 0 });
+      }
+    }
+    k.cyl("transformer", [0.28, 0.28, 0.7], [0.32, H - 1.25, 0], "#8A9AA6", { facets: 8, material: "metal" });
+    k.cyl("transformer-cap", [0.18, 0.28, 0.12], [0.32, H - 0.84, 0], "#6B7C88", { facets: 8 });
+    k.box("brace", [0.5, 0.06, 0.06], [0.14, H - 0.9, 0], "#6B4A2E");
     return {};
   },
 };

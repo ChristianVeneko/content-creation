@@ -1154,6 +1154,10 @@
               "highlight": {
                 "type": "boolean"
               },
+              "noFrame": {
+                "description": "Leave this actor out of the camera framing (a sky body, a far prop, a world-sized veil)",
+                "type": "boolean"
+              },
               "parts": {
                 "description": "custom: the model, built from primitive parts (front faces +z, base on y = 0)",
                 "minItems": 1,
@@ -21916,6 +21920,16 @@
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 40
+                    },
+                    "frame": {
+                      "description": "portrait framing of the shot (wide, medium, close, cutaway): wide shows the whole set, medium the subject area, close one subject, cutaway the soil section; a stage wide / medium / close shot defaults to its own frame",
+                      "type": "string",
+                      "enum": [
+                        "wide",
+                        "medium",
+                        "close",
+                        "cutaway"
+                      ]
                     },
                     "cut": {
                       "description": "stage: hard cut to this shot instead of an eased move",

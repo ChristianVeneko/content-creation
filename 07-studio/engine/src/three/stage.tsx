@@ -11,16 +11,16 @@ import { EASE } from "../../lib/scene3d-motion.mjs";
 import { buoyantRock, liquidSurfaceY, levelRate, stageState, terrainHeightAt, terrainHeights, terrainStones } from "../../lib/scene3d-stage.mjs";
 import type { IconData, ResolvedSpec, Scene, ScenePlan3D, StageActor3D, StageLiquid3D, StagePlan3D, StageTerrain3D, ThreeAssets } from "../types";
 import { rgba } from "../util";
-import { REGIONS } from "../../lib/illustrated.mjs";
 import { fitText } from "../illustrated/headlines";
 import { BloomRender, CameraRig, Floor, Kit3DContext, Lights, Particles, makeToonRamp, mixHex, useKit3D } from "./kit";
-import { backdropStops, WorldGround, WorldView } from "./world";
+import { backdropStops, skyStops, WorldGround, WorldView } from "./world";
 import { color3d, look3dFor, mixHexColor } from "./looks";
 import { CutawayOverlay } from "./overlay3d";
 import { ensureLookFonts } from "../illustrated/looks";
 import { CustomModel, partWorldMatrix, useOpacity, type CustomObject, type MotionCtx, type PartState, type Pulse } from "./custom";
 import { FxLayer, pulsesFor, type Fx3D } from "./fx";
-import { Label, gradientHex, resolveTags, type Tag } from "./Scene3D";
+import { Label, gradientHex, type Tag } from "./Scene3D";
+import { layoutLabels } from "./label-layout.mjs";
 
 type V3 = [number, number, number];
 type NodeState = { pos: V3; rot: V3; scale: V3; opacity: number; visible: boolean; emissive: number; color: { c: string; w: number } | null };
@@ -101,7 +101,7 @@ const Terrain: React.FC<{ terrain: StageTerrain3D; heights: Float32Array; sig: s
   const earth = (c: string) => mixHexColor(c in EARTH ? EARTH[c] : color3d(palette, look, c, EARTH.subsoil), palette.bg[1] ?? palette.bg[0], 0.08);
   const grass = mixHexColor(terrain.top ? color3d(palette, look, terrain.top, GRASS) : GRASS, palette.accent3 ?? palette.accent, 0.06);
   const geo = useMemo(
-    () => buildTerrain(terrain, heights, terrain.strata.map((s) => ({ y: -s.to, color: earth(s.color) })), grass, mixHexColor(grass, "#000000", 0.07)),
+    () => buildTerrain(terrain, heights, terrain.strata.map((s, i, all) => ({ y: -s.to - (i === all.length - 1 ? 12 : 0), color: earth(s.color) })), grass, mixHexColor(grass, "#000000", 0.07)),
     // the heightfield only changes while a carve is in progress (sig)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [sig, terrain, palette],
@@ -222,17 +222,17 @@ const objectOf = (a: StageActor3D): CustomObject => ({ kind: "custom", id: a.id,
 const StageTitle: React.FC<{ kicker?: string; main: string; plan: StagePlan3D; font: string }> = ({ kicker, main, plan, font }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const r = REGIONS.title;
+  const r = { x: 90, w: 900, ...plan.safe.title };
   const b = plan.title;
-  const KICK = kicker ? 46 : 0;
+  const KICK = kicker ? 30 : 0;
   const text = main.toUpperCase();
-  const fit = fitText(text, r.w - 150, r.h - KICK - 90, 0.6, 76, 2, 1.06);
+  const fit = fitText(text, r.w - 120, r.h - KICK - 36, 0.6, 52, 2, 1.06);
   const p = spring({ frame: frame - 3, fps, config: { damping: 14, stiffness: 150 } });
   const out = interpolate(frame, [0, 1], [0, 1], { extrapolateRight: "clamp" });
   return (
     <div style={{ position: "absolute", left: r.x, top: r.y, width: r.w, height: r.h, display: "flex", justifyContent: "center", alignItems: "flex-start", opacity: out }}>
-      <div style={{ transform: `translateY(${(1 - Math.min(1, p)) * -40}px) scale(${0.94 + 0.06 * Math.min(1, p)})`, maxWidth: r.w - 40, padding: "16px 44px 20px", borderRadius: 30, background: rgba(b.fill, b.fillAlpha), borderBottom: `7px solid ${b.rule}`, boxShadow: "0 14px 34px rgba(0,0,0,0.35)", textAlign: "center" }}>
-        {kicker ? <div style={{ fontFamily: font, fontWeight: 800, fontSize: 34, letterSpacing: 3, textTransform: "uppercase", color: b.rule, height: KICK }}>{kicker}</div> : null}
+      <div style={{ transform: `translateY(${(1 - Math.min(1, p)) * -40}px) scale(${0.94 + 0.06 * Math.min(1, p)})`, maxWidth: r.w - 40, padding: "10px 36px 12px", borderRadius: 24, background: rgba(b.fill, b.fillAlpha), borderBottom: `5px solid ${b.rule}`, boxShadow: "0 10px 26px rgba(0,0,0,0.3)", textAlign: "center" }}>
+        {kicker ? <div style={{ fontFamily: font, fontWeight: 800, fontSize: 24, letterSpacing: 3, textTransform: "uppercase", color: b.rule, height: KICK }}>{kicker}</div> : null}
         <div style={{ fontFamily: font, fontWeight: 900, fontSize: fit.size, lineHeight: 1.06, letterSpacing: -1, color: b.ink }}>{text}</div>
       </div>
     </div>
@@ -262,7 +262,9 @@ export const StageView: React.FC<{ scene: Scene; index: number; spec: ResolvedSp
   const heightAt = terrain && heights ? (x: number, z: number) => terrainHeightAt(terrain, heights, x, z) as number : null;
   const world = st.world;
   const worldBackdrop = world?.backdrop ? mixHexColor(color3d(palette, look, world.backdrop, palette.bg[0]), palette.bg[0], 0.5) : null;
-  const bg = worldBackdrop ? { ...look.bg(palette), stops: backdropStops(worldBackdrop) } : look.bg(palette);
+  // process-explainer: a clean daylight sky (palette sky on top, a pale haze at the horizon); the shared backdrop ramp darkens
+  // toward grey, which showed as a gradient artifact behind the far ground
+  const bg = worldBackdrop ? { ...look.bg(palette), stops: lookId === "process-explainer" ? skyStops(palette.bg[0], worldBackdrop) : backdropStops(worldBackdrop) } : look.bg(palette);
   const fogColor = look.fog ?? gradientHex(bg.stops, 0.55);
   const span = Math.max(terrain ? Math.max(terrain.size[0], terrain.size[1]) / 2 : 3, ...st.actors.map((a) => a.placed.half ?? 1)) + 3;
   const hdri = three?.hdri ? staticFile(three.hdri) : null;
@@ -297,16 +299,25 @@ export const StageView: React.FC<{ scene: Scene; index: number; spec: ResolvedSp
     const v = new THREE.Vector3().setFromMatrixPosition(w);
     return { pos: [v.x, v.y, v.z], h: 0.4 * a.placed.scale };
   };
-  // actor labels
-  const tags: Tag[] = [];
+  // actor labels: projected, then laid out so none overlaps another, the title band or the caption line (the actor in focus first)
+  const focusKey = [...(plan!.cameraKeys ?? [])].reverse().find((k) => k.t <= g && (k as { focusActor?: string }).focusActor);
+  const focusId = (focusKey as { focusActor?: string } | undefined)?.focusActor;
+  const labelItems: { id: number; ax: number; ay: number; w: number; h: number; priority: number }[] = [];
   st.actors.forEach((a, k) => {
     if (!a.label) return;
     const lv = actorLive(k, g);
     if (!lv.visible) return;
     const p = projectPoint(cam, [lv.pos[0], lv.pos[1] + a.placed.h * (lv.scale[1] / Math.max(1e-6, a.placed.scale)) + 0.28, lv.pos[2]], width, height);
-    tags.push({ x: p.x, y: p.y - 30, ax: p.x, ay: p.y, w: a.label.length * look.label.size * 0.68 + 56, text: a.label, enter: Math.max(0, a.at - (plan!.t0 ?? 0)) + 0.25 });
+    labelItems.push({ id: k, ax: p.x, ay: p.y, w: a.label.length * look.label.size * 0.68 + 56, h: look.label.size * 1.2 + 26, priority: (a.id === focusId ? 100 : 0) + (a.highlight ? 10 : 0) - k * 0.01 });
   });
-  const placedTags = resolveTags(tags);
+  const caption = st.safe.caption;
+  // the diegetic overlay (flow strip, concept pill, limit / versus card) hangs under the title: labels stay clear of it
+  const ov = plan!.overlay ?? [];
+  const hudTop = st.safe.title.y + st.safe.title.h + 16;
+  const overlayBottom = ov.length ? hudTop + (ov.some((o) => o.type === "flow") ? 184 : 18) + (ov.some((o) => o.type === "concept") ? 84 : 0) + (ov.some((o) => o.type === "limit" || o.type === "versus") ? 130 : 0) : 0;
+  const placedTags: Tag[] = (layoutLabels(labelItems, { bounds: { x0: 40, y0: st.safe.top, x1: 1040, y1: st.safe.bottom }, avoid: [{ x0: 40, y0: caption.y, x1: 1040, y1: caption.y + caption.h }, ...(overlayBottom ? [{ x0: 0, y0: 0, x1: 1080, y1: overlayBottom }] : [])], lift: 70, max: 4 }) as { id: number; x: number; y: number; ax: number; ay: number; w: number; visible: boolean }[])
+    .filter((l) => l.visible)
+    .map((l) => ({ x: l.x, y: l.y, ax: l.ax, ay: l.ay, w: l.w, text: st.actors[l.id].label as string, enter: Math.max(0, st.actors[l.id].at - (plan!.t0 ?? 0)) + 0.25 }));
   const toneMapping = profile.tone === "neutral" ? THREE.NeutralToneMapping : profile.tone === "aces" ? THREE.ACESFilmicToneMapping : profile.tone === "agx" ? THREE.AgXToneMapping : THREE.NoToneMapping;
   const center: [number, number] = terrain ? [terrain.pos[0], terrain.pos[1]] : [0, 0];
   const half: [number, number] = terrain ? [terrain.size[0] / 2, terrain.size[1] / 2] : [3, 3];
@@ -335,7 +346,7 @@ export const StageView: React.FC<{ scene: Scene; index: number; spec: ResolvedSp
           {profile.bloom ? <color attach="background" args={[mixHex(bg.stops[1] ?? "#04050B", "#000000", 0.35)]} /> : null}
           {profile.fog ? <fog attach="fog" args={[fogColor, plan!.frame.dist * profile.fog.near + profile.fog.add + 8, plan!.frame.dist * profile.fog.far + profile.fog.add * 3 + 8]} /> : null}
           <Lights hdri={hdri} span={span} envIntensity={profile.envIntensity} shadowRadius={profile.shadowRadius} set={true} />
-          {world?.ground && world.ground.kind !== "look" ? <WorldGround ground={world.ground} center={center} half={half} /> : !terrain ? <Floor half={half} center={center} /> : null}
+          {world?.ground && world.ground.kind !== "look" ? <WorldGround ground={world.ground.kind === "plane" || world.ground.kind === undefined ? { ...world.ground, size: Math.max(world.ground.size ?? 60, 400) } : world.ground} center={center} half={half} /> : !terrain ? <Floor half={half} center={center} /> : null}
           {terrain && heights ? <Terrain terrain={terrain} heights={heights} sig={carveSig} g={g} /> : null}
           {world ? <WorldView world={world} t={g} sec={(m) => (typeof m === "number" ? m : 0)} seed={7} heightAt={heightAt} /> : null}
           {st.actors.map((a, k) => {
@@ -363,7 +374,7 @@ export const StageView: React.FC<{ scene: Scene; index: number; spec: ResolvedSp
       {placedTags.map((tag, k) => (
         <Label key={k} tag={tag} look={look} accent={palette.accent3 ?? palette.accent} frame={frame} fps={fps} />
       ))}
-      {plan!.overlay?.length ? <CutawayOverlay overlay={plan!.overlay} palette={palette} icons={icons} look={look} /> : null}
+      {plan!.overlay?.length ? <CutawayOverlay overlay={plan!.overlay} palette={palette} icons={icons} look={look} top={st.safe.title.y + st.safe.title.h + 16} /> : null}
       {title ? <StageTitle kicker={scene.title?.kicker} main={title} plan={st} font={look.label.font} /> : null}
     </AbsoluteFill>
   );

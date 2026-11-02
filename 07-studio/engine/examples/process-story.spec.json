@@ -378,13 +378,13 @@
               1.2,
               0
             ],
-            "zoom": 0.42
+            "frame": "wide"
           },
           {
             "shot": "zoom-to",
             "focus": "castle",
             "at": 2,
-            "zoom": 0.3
+            "frame": "close"
           }
         ],
         "beats": [
@@ -459,13 +459,13 @@
             "shot": "zoom-to",
             "focus": "table",
             "at": 0,
-            "zoom": 0.3
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "captain",
             "at": 3.2,
-            "zoom": 0.3
+            "frame": "close"
           }
         ],
         "beats": [
@@ -551,37 +551,69 @@
         "shots": [
           {
             "shot": "wide",
+            "frame": "wide",
             "shift": [
               0,
               1.2,
               0
-            ],
-            "zoom": 0.42
+            ]
           },
           {
             "shot": "zoom-to",
             "focus": "cart",
-            "at": 1.5,
-            "zoom": 0.3
+            "at": 1.2,
+            "frame": "close"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "cart",
+            "at": 2.8,
+            "frame": "close"
           },
           {
             "shot": "low",
             "focus": "cart",
-            "at": 4,
-            "zoom": 0.32
+            "at": 4.4,
+            "frame": "close"
           }
         ],
         "beats": [
           {
             "at": 0.3,
             "target": "cart",
-            "dur": 6,
+            "dur": 2.0,
+            "ease": "in",
+            "to": {
+              "pos": [
+                2.2,
+                0,
+                -0.5
+              ]
+            }
+          },
+          {
+            "at": 2.3,
+            "target": "cart",
+            "dur": 2.0,
             "ease": "linear",
+            "to": {
+              "pos": [
+                4.6,
+                0,
+                -0.9
+              ]
+            }
+          },
+          {
+            "at": 4.3,
+            "target": "cart",
+            "dur": 2.0,
+            "ease": "out",
             "to": {
               "pos": [
                 6.84,
                 0,
-                0
+                -0.4
               ]
             }
           },
@@ -654,13 +686,13 @@
             "shot": "zoom-to",
             "focus": "ship",
             "at": 0,
-            "zoom": 0.3
+            "frame": "close"
           },
           {
             "shot": "low",
             "focus": "ship",
             "at": 3.4,
-            "zoom": 0.32
+            "frame": "close"
           }
         ],
         "beats": [
@@ -731,7 +763,7 @@
             "shot": "zoom-to",
             "focus": "ship",
             "at": 0,
-            "zoom": 0.3
+            "frame": "close"
           },
           {
             "shot": "wide",
@@ -741,7 +773,7 @@
               0
             ],
             "at": 4,
-            "zoom": 0.42
+            "frame": "wide"
           }
         ],
         "beats": [
@@ -793,13 +825,13 @@
             "shot": "zoom-to",
             "focus": "land",
             "at": 0,
-            "zoom": 0.3
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "landflag",
             "at": 3,
-            "zoom": 0.3
+            "frame": "close"
           },
           {
             "shot": "wide",
@@ -809,7 +841,7 @@
               0
             ],
             "at": 6,
-            "zoom": 0.42
+            "frame": "wide"
           }
         ],
         "beats": [

@@ -18,7 +18,7 @@
       "concept": "bright tech campus with a path and trees",
       "ground": {
         "kind": "plane",
-        "color": "#E3ECF5",
+        "color": "#A9D18E",
         "size": 40
       },
       "backdrop": "#CFE3F7",
@@ -340,13 +340,13 @@
               1.2,
               0
             ],
-            "zoom": 0.55
+            "frame": "wide"
           },
           {
             "shot": "zoom-to",
             "focus": "laptop",
             "at": 2,
-            "zoom": 0.42
+            "frame": "close"
           }
         ],
         "beats": [
@@ -511,13 +511,13 @@
             "shot": "zoom-to",
             "focus": "cable1",
             "at": 0,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "router",
             "at": 3,
-            "zoom": 0.42
+            "frame": "close"
           }
         ],
         "beats": [
@@ -643,13 +643,13 @@
             "shot": "zoom-to",
             "focus": "cable2",
             "at": 0,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "isp",
             "at": 3,
-            "zoom": 0.42
+            "frame": "close"
           }
         ],
         "beats": [
@@ -732,7 +732,7 @@
             "shot": "zoom-to",
             "focus": "internet",
             "at": 0.4,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "wide",
@@ -742,7 +742,7 @@
               0
             ],
             "at": 4,
-            "zoom": 0.55
+            "frame": "wide"
           }
         ],
         "beats": [
@@ -792,13 +792,13 @@
             "shot": "zoom-to",
             "focus": "cable3",
             "at": 0,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "rack",
             "at": 3,
-            "zoom": 0.42
+            "frame": "close"
           }
         ],
         "beats": [
@@ -882,13 +882,13 @@
             "shot": "zoom-to",
             "focus": "db",
             "at": 0,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "cable3",
             "at": 2,
-            "zoom": 0.42
+            "frame": "close"
           }
         ],
         "beats": [
@@ -1010,13 +1010,13 @@
             "shot": "zoom-to",
             "focus": "cable1",
             "at": 0,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "zoom-to",
             "focus": "page",
             "at": 2,
-            "zoom": 0.42
+            "frame": "close"
           },
           {
             "shot": "wide",
@@ -1026,7 +1026,7 @@
               0
             ],
             "at": 5,
-            "zoom": 0.55
+            "frame": "wide"
           }
         ],
         "beats": [
