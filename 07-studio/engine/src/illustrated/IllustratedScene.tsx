@@ -14,6 +14,7 @@ import { ContactShadows, depthFor } from "./depth";
 import { Fx2DFilters, Fx2DLayer, fxSceneStyle, hasScreenFx, type Fx } from "../components/Fx2D";
 import { drawingBoxInPx, partBoxInPx, type DrawingSpec } from "../components/Drawing2D";
 import { inkColors, lookFxTint } from "./drawing-skin";
+import { AtlasBack, AtlasFront } from "./atlas";
 
 const DISPLAY = fontStack("Montserrat");
 const OVERLAYS = new Set(["callout", "stamp"]);
@@ -104,7 +105,7 @@ export const IllustratedScene: React.FC<{ scene: Scene; index: number; spec: Res
 
   // camera shake on stamp impacts (calm looks do not shake)
   const stamps = (plan?.elements ?? []).filter((p) => p.el.type === "stamp" || (p.el.type === "doc" && p.el.stamp)).map((p) => (p.el.type === "stamp" ? p.enter + 0.1 : (p.items[p.items.length - 1] ?? p.enter) + 0.18));
-  const shakeAmp = { blueprint: 9, whiteboard: 4, "broadcast": 16, "editorial-chart": 0, "editor-window": 0, "rank-numbers": 12, watercolor: 0, "paper-collage": 6, chalkboard: 3, risograph: 5, "ukiyo-e": 2, "pop-comic": 18 , "ui-cards": 10, "flat-depth": 6, "soft-gradient": 0, "host-tutorial": 0, "checklist-glass": 0, "spotlight-narrative": 4 }[look.id];
+  const shakeAmp = { blueprint: 9, whiteboard: 4, "broadcast": 16, "editorial-chart": 0, "editor-window": 0, "rank-numbers": 12, watercolor: 0, "paper-collage": 6, chalkboard: 3, risograph: 5, "ukiyo-e": 2, "pop-comic": 18 , "ui-cards": 10, "flat-depth": 6, "soft-gradient": 0, "host-tutorial": 0, "checklist-glass": 0, "spotlight-narrative": 4, "data-atlas": 0 }[look.id];
   let shake = 0;
   for (const s of stamps) if (t >= s && t < s + 0.3) shake += Math.sin((t - s) * 70) * shakeAmp * (1 - (t - s) / 0.3);
 
@@ -196,6 +197,8 @@ export const IllustratedScene: React.FC<{ scene: Scene; index: number; spec: Res
   const fx = ((scene.visual as { fx?: Fx[] }).fx ?? []) as Fx[];
   const sceneSec = durationInFrames / fps;
   const uid = `fx${index}`;
+  // data-atlas: every scene of the format gets the atmosphere over its (optional) backdrop, even without a plan
+  const atlas = look.id === "data-atlas" ? plan?.elements ?? [] : null;
   const s = plan?.scale ?? 1;
   const stackLeft = st.x + (lw === st.w ? 0 : (st.w - lw * s) / 2);
   const stackTop = st.y + top;
@@ -222,6 +225,7 @@ export const IllustratedScene: React.FC<{ scene: Scene; index: number; spec: Res
   const screen = fx.length && hasScreenFx(fx) ? fxSceneStyle(fx, t, sceneSec, moments, uid) : null;
   const content = (
     <AbsoluteFill style={{ ...camera, filter: artSceneFilter(look.id) }}>
+      {atlas ? <AtlasBack elements={atlas} index={index} sceneSec={sceneSec} moments={moments} /> : null}
       {fxProps ? <Fx2DLayer {...fxProps} depth="back" /> : null}
       {main ? (
         look.id === "blueprint" ? (
@@ -239,12 +243,13 @@ export const IllustratedScene: React.FC<{ scene: Scene; index: number; spec: Res
           </div>
         ) : null}
       </div>
+      {atlas ? <AtlasFront elements={atlas} language={spec.language} /> : null}
       {fxProps ? <Fx2DLayer {...fxProps} depth="front" /> : null}
       <ArtOverlay look={look} />
     </AbsoluteFill>
   );
   return (
-    <IllustrationContext.Provider value={{ ink, icons, seed: index + 1, look, moments }}>
+    <IllustrationContext.Provider value={{ ink, icons, seed: index + 1, look, moments, language: spec.language }}>
       {screen ? (
         <AbsoluteFill style={screen.style}>
           <Fx2DFilters uid={uid} glitch={screen.cam.glitch} chroma={screen.cam.chroma} seed={index * 31 + 7} />

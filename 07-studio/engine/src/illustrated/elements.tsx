@@ -945,7 +945,7 @@ export const OverlayView: React.FC<{ p: Planned; boxes: Record<string, Box>; sta
   const lp = progress(t, start + 0.45, 0.3, Easing.bezier(0.34, 1.56, 0.64, 1));
   const shape = el.shape ?? "circle";
   // Hand-drawn amount per look: marker on the whiteboard, clean vector lines for editorial and code.
-  const R = { blueprint: undefined, whiteboard: 1.9, "broadcast": 0.4, "editorial-chart": 0, "editor-window": 0, "rank-numbers": 1, watercolor: 1.2, "paper-collage": 0.8, chalkboard: 2.4, risograph: 0.3, "ukiyo-e": 1.4, "pop-comic": 0.6, "ui-cards": 0.3, "flat-depth": 0.5, "soft-gradient": 0.4, "host-tutorial": 0.7, "checklist-glass": 0.4, "spotlight-narrative": 0.5 }[ink.look.id];
+  const R = { blueprint: undefined, whiteboard: 1.9, "broadcast": 0.4, "editorial-chart": 0, "editor-window": 0, "rank-numbers": 1, watercolor: 1.2, "paper-collage": 0.8, chalkboard: 2.4, risograph: 0.3, "ukiyo-e": 1.4, "pop-comic": 0.6, "ui-cards": 0.3, "flat-depth": 0.5, "soft-gradient": 0.4, "host-tutorial": 0.7, "checklist-glass": 0.4, "spotlight-narrative": 0.5, "data-atlas": 0.5 }[ink.look.id];
   let svg: React.ReactNode = null;
   if (shape === "circle") svg = <RoughShape shape={{ kind: "ellipse", cx: target.x + target.w / 2, cy: target.y + target.h / 2, w: Math.min(target.w + pad * 3, stackBox.w + 40), h: target.h + pad * 3 }} seed={index + 3} t={t} start={start} stroke={c} width={7} roughness={R ?? 1.6} />;
   if (shape === "box") svg = <RoughShape shape={{ kind: "rect", x: Math.max(-14, target.x - pad), y: target.y - pad, w: Math.min(stackBox.w + 28, target.w + 2 * pad), h: target.h + 2 * pad }} seed={index + 5} t={t} start={start} stroke={c} width={7} roughness={R ?? 1.6} />;

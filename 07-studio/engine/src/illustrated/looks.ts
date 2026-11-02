@@ -21,7 +21,7 @@ import chakraUrl from "../../public/looks/fonts/ChakraPetch-SemiBold.ttf";
 import shareTechUrl from "../../public/looks/fonts/ShareTechMono-Regular.ttf";
 
 export type ArtLookId = "watercolor" | "paper-collage" | "chalkboard" | "risograph" | "ukiyo-e" | "pop-comic";
-export type FormatLookId = "ui-cards" | "flat-depth" | "soft-gradient" | "host-tutorial" | "checklist-glass" | "spotlight-narrative";
+export type FormatLookId = "ui-cards" | "flat-depth" | "soft-gradient" | "host-tutorial" | "checklist-glass" | "spotlight-narrative" | "data-atlas";
 export type LookId = "blueprint" | "whiteboard" | "broadcast" | "editorial-chart" | "editor-window" | "rank-numbers" | ArtLookId | FormatLookId;
 
 /**
@@ -640,6 +640,38 @@ export const LOOKS: Record<LookId, Look> = {
     panel: { radius: 20, border: 1, shadow: "0 36px 70px -24px rgba(0,0,0,0.85)", rough: false, accentBar: false },
     enter: "rise",
     camera: "push",
+    boil: false,
+    stroke: 1,
+  },
+  // data-documentary: layered illustrated scenes with haze, glow and a vignette, a dark pill counter and paper props
+  "data-atlas": {
+    id: "data-atlas",
+    display: fs("Montserrat"),
+    displayWeight: 800,
+    upper: false,
+    displayEm: 0.64,
+    body: fs("Inter"),
+    bodyWeight: 600,
+    mono: MONO_FONT,
+    light: false,
+    colors: {
+      surface: "#0F1424",
+      surface2: "#171D33",
+      line: "rgba(255, 255, 255, 0.14)",
+      muted: "#9DA8C8",
+      good: "#4FD1A0",
+      bad: "#FF5A5F",
+      paper: "#E8DCB9",
+      paperInk: "#2A1F14",
+      codeBg: "#0B0F1C",
+      codeBar: "#171D33",
+      termBg: "#080B14",
+      stampBg: "rgba(8, 11, 22, 0.7)",
+      drop: "rgba(0, 0, 0, 0.6)",
+    },
+    panel: { radius: 22, border: 1, shadow: "0 30px 60px -22px rgba(0,0,0,0.85)", rough: false, accentBar: false },
+    enter: "rise",
+    camera: "drift",
     boil: false,
     stroke: 1,
   },
