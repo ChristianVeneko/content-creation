@@ -374,7 +374,8 @@ Reference: the dark-grid UI explainers (sebastiankra.ia) and the flat 2.5D scene
 - **`host-tutorial`**: bold sans headline with a serif-italic accent word (Fraunces), mono step kicker, white hard-shadow panels.
 - **`checklist-glass`**: same headline treatment, a frosted progress pill with a fill track, glass panels.
 - **`spotlight-narrative`**: Fraunces 700 headline with a tracked kicker, glowing beacon rings, dark panels.
-- **`data-atlas`**: Montserrat 800 numbers in a dark pill, mono ledger text on paper, two-tone captions at the top; the scene is clipped to the y 302-1262 picture window, so the backdrop fades into the night at both edges.
+- **`data-atlas`**: Montserrat 800 numbers in a dark pill, mono ledger text on paper, two-tone captions at the top (y 230–480). Full-bleed backdrop (fills the entire 1080x1920 canvas) with optional 2.5D layered parallax (`mode: "parallax"` default) or flat mode (`mode: "flat"`). Parallax adds multi-plane drift, atmospheric haze, and depth-of-field blur on far/near planes at an 18% render cost.
+- **`cutaway-explainer` (3D)**: Low-poly architectural and mechanical cutaways with a recurring character. Dynamic camera moves (`reveal`, `shoulder`, `through`, `pullout`). Overlay kit of diegetic flow chips, accent-colored concept pills, limit/demand bars, not-equal cards, and pipe signal pulse effects. Supports both Three.js (Remotion real-time 33 fps) and Blender 5.2.3 Eevee (`theme.renderer = "blender"`, photorealistic contact shadows and PBR shaders).
 - **`soft-gradient`**: Rubik 800 headline with a gradient last word, a frosted pill kicker, glass panels with `backdrop-filter`.
 - **Format elements** (`src/illustrated/format-elements.tsx`): `post`, `chart`, `meter`, `hourglass`, `tags`, `stat`, `timer`, `panels`, `object`, `character`. They work in every illustrated-kit look. `character` is a generic person (round or blocky); there is no mascot.
 

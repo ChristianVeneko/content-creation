@@ -29,7 +29,8 @@ node cli.mjs prompt <template>                          # spec-writer prompt tri
 node cli.mjs music                                      # JSON: moods (id, label, count), library tracks, level references
 node cli.mjs voices [--gender male|female] [--pick <seed>] # JSON: trending Latin American Spanish ElevenLabs voices (or the auto pick)
 node cli.mjs validate <spec.json|->                     # {"ok":true|false,"errors":[{"path","message"}]}; exit 0/1
-node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work]
+node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work] [--renderer remotion|blender]
+node cli.mjs hyperframes-brief <spec.json> [--audio-secs <n>] # prints a Markdown brief for authoring in HyperFrames
 ```
 
 `build` writes into `<dir>`:
