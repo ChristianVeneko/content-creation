@@ -71,10 +71,10 @@ export function postMarkdown(spec) {
 
 /**
  * Build a video from a spec file.
- * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean, renderer?: "remotion" | "blender"}} opts
+ * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean, renderer?: "remotion" | "blender", voice?: {provider: string, voiceId?: string}}} opts
  *   renderer: overrides `theme.renderer` (the CLI's --renderer); blender is for the 3D templates
  */
-export async function build({ specPath, outDir, log, keepWork = false, renderer: rendererOverride }) {
+export async function build({ specPath, outDir, log, keepWork = false, renderer: rendererOverride, voice: voiceOverride }) {
   let step = "validate";
   const fail = (message) => {
     throw new StepError(step, message);
@@ -94,6 +94,7 @@ export async function build({ specPath, outDir, log, keepWork = false, renderer:
     const choice = chooseRenderer(spec, rendererOverride);
     if (choice.error) fail(`Invalid renderer: ${choice.error}`);
     if (rendererOverride) spec.theme = { ...spec.theme, renderer: rendererOverride };
+    if (voiceOverride) spec.voice = voiceOverride.provider === "none" ? { ...spec.voice, provider: "none" } : { ...spec.voice, ...voiceOverride };
     const specDir = dirname(resolve(specPath));
     outDir = resolve(outDir);
     const work = join(outDir, ".work");

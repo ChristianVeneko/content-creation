@@ -76,7 +76,7 @@ export function VoicePicker({ value, onChange, disabled = false }: { value: stri
   if (library && !library.available) return <p className="field-hint">{library.reason ?? "ElevenLabs no está disponible."} Se usará Kokoro local.</p>;
 
   const voices = library?.voices.slice(0, SHOWN) ?? [];
-  // A voice chosen earlier (e.g. a channel default) that is no longer trending stays selectable.
+  // A voice that is not in the trending list (a channel default or an id typed by the user) lives in the own-id field.
   const custom = value && !voices.some((v) => v.voiceId === value) ? value : "";
 
   return (
@@ -97,17 +97,6 @@ export function VoicePicker({ value, onChange, disabled = false }: { value: stri
             </span>
           </label>
         </li>
-        {custom && (
-          <li className="track">
-            <label className="track-pick">
-              <input type="radio" name={`${uid}-voice`} checked onChange={() => onChange(custom)} />
-              <span className="track-text">
-                <span className="track-title">Voz guardada</span>
-                <span className="track-meta">{custom}</span>
-              </span>
-            </label>
-          </li>
-        )}
         {voices.map((v) => {
           const [name, traits] = splitName(v.name);
           return (
@@ -135,6 +124,21 @@ export function VoicePicker({ value, onChange, disabled = false }: { value: stri
           );
         })}
       </ul>
+      <div className="field">
+        <label className="field-label" htmlFor={`${uid}-own`}>
+          O usa tu propio ID de voz
+        </label>
+        <input
+          id={`${uid}-own`}
+          className="input"
+          value={custom}
+          placeholder="ID de ElevenLabs, p. ej. 21m00Tcm4TlvDq8ikWAM"
+          autoComplete="off"
+          spellCheck={false}
+          onChange={(e) => onChange(e.target.value.trim())}
+        />
+        <p className="field-hint">Pégalo desde tu biblioteca de ElevenLabs. Si lo dejas vacío se usa la voz seleccionada arriba.</p>
+      </div>
     </fieldset>
   );
 }

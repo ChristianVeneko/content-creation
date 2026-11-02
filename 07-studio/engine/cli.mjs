@@ -7,7 +7,7 @@
 //   node cli.mjs music
 //   node cli.mjs voices [--gender male|female] [--pick <seed>]
 //   node cli.mjs validate <spec.json|->
-//   node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--json-logs] [--keep-work]
+//   node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--voice-id <id>] [--voice elevenlabs|kokoro|none] [--json-logs] [--keep-work]
 //   node cli.mjs hyperframes-brief <spec.json> [--json] [--audio-secs 4.1,3.2,...]
 //   node cli.mjs cover <spec.json> --out <dir>
 import { readFileSync } from "node:fs";
@@ -27,9 +27,10 @@ const USAGE = `Usage:
                                                            Trending Latin American Spanish ElevenLabs voices as JSON
                                                            (--pick prints only the auto-picked voice for that seed)
   node cli.mjs validate <spec.json|->                      Validate a VideoSpec (prints {ok, errors})
-  node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--json-logs] [--keep-work]
+  node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--voice-id <id>] [--voice elevenlabs|kokoro|none] [--json-logs] [--keep-work]
                                                            Render video.mp4, cover.jpg, post.md, spec.json into <dir>
                                                            (--renderer overrides theme.renderer; blender is for 3D templates)
+                                                           (--voice-id sets spec.voice.voiceId: a 20-character ElevenLabs id or a Kokoro id like em_alex; --voice forces the provider)
   node cli.mjs hyperframes-brief <spec.json> [--json] [--audio-secs s1,s2,...]
                                                            Validate a spec and print the brief for the HyperFrames skill route
                                                            (markdown by default, --json for the structured brief; --audio-secs gives
@@ -48,6 +49,10 @@ function parseArgs(argv) {
     else if (a === "--brief") flags.brief = true;
     else if (a === "--creative") flags.creative = true;
     else if (a === "--renderer") flags.renderer = argv[++i] ?? "";
+    else if (a === "--voice-id") flags.voiceId = argv[++i] ?? "";
+    else if (a.startsWith("--voice-id=")) flags.voiceId = a.slice(11);
+    else if (a === "--voice") flags.voice = argv[++i] ?? "";
+    else if (a.startsWith("--voice=")) flags.voice = a.slice(8);
     else if (a.startsWith("--renderer=")) flags.renderer = a.slice(11);
     else if (a === "--json") flags.json = true;
     else if (a === "--audio-secs") flags.audioSecs = argv[++i] ?? "";
@@ -154,6 +159,12 @@ async function main() {
         return 2;
       }
     }
+    const { resolveVoiceOverride } = await import("./lib/voice-override.mjs");
+    const voiceChoice = resolveVoiceOverride({ voiceId: flags.voiceId, provider: flags.voice });
+    if (voiceChoice.error) {
+      console.error(`${voiceChoice.error}\n${USAGE}`);
+      return 2;
+    }
     setupEnv();
     const log = flags.jsonLogs
       ? (step, status, message, progress, extra = {}) =>
@@ -161,7 +172,7 @@ async function main() {
       : (step, status, message, progress) => process.stderr.write(`[${String(Math.round(progress * 100)).padStart(3)}%] ${step.padEnd(8)} ${message}\n`);
     const { build } = await import("./lib/build.mjs");
     try {
-      await build({ specPath, outDir: flags.out, log, keepWork: flags.keepWork, renderer: flags.renderer });
+      await build({ specPath, outDir: flags.out, log, keepWork: flags.keepWork, renderer: flags.renderer, voice: voiceChoice.override ?? undefined });
       return 0;
     } catch (e) {
       const step = e.step || "build";
