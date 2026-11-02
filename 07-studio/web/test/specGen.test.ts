@@ -61,13 +61,13 @@ test("retries once with the validation error, then succeeds", async () => {
   assert.match(requests[1].user, /scenes must be a non-empty array/);
 });
 
-test("gives up after the single retry with a SpecGenerationError", async () => {
-  const { provider, requests } = scripted(["nope", "still nope", "never asked"]);
+test("gives up after two retries (three attempts) with a SpecGenerationError", async () => {
+  const { provider, requests } = scripted(["nope", "still nope", "nope again", "never asked"]);
   await assert.rejects(
     generateValidSpec({ provider, system: "S", user: "U", templateId: "t", options, validate: validateScenes }),
-    (err: Error) => err instanceof SpecGenerationError && err.attempts === 2,
+    (err: Error) => err instanceof SpecGenerationError && err.attempts === 3,
   );
-  assert.equal(requests.length, 2);
+  assert.equal(requests.length, 3);
 });
 
 test("applyOptions enforces language, voice, caption style and scene ids", () => {

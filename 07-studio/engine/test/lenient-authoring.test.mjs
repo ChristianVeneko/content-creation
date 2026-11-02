@@ -46,3 +46,29 @@ test("a stage world of 300 parts (builders expand into it) is accepted, 401 is n
   assert.deepEqual(ok.filter((p) => p.includes("world parts")), []);
   assert.ok(problems(withParts(430)).some((p) => p.includes("at most 400 world parts")));
 });
+
+test("the active chip and step references may use the label (any case, with or without accents) instead of the id", () => {
+  const spec = base();
+  const flow = spec.scenes.flatMap((s) => s.visual.overlay ?? []).find((o) => o.type === "flow");
+  flow.chips = ["Tú", "Tokens", "Internet", "Modelo"];
+  flow.active = "Tú";
+  flow.steps = [{ at: 1, active: "Tokens", values: { Tokens: "3" } }, { at: 2, active: "MODELO" }];
+  assert.deepEqual(problems(spec), []);
+  const out = validateSpec(spec).spec;
+  const f = out.scenes.flatMap((s) => s.visual.overlay ?? []).find((o) => o.type === "flow" && o.chips.length === 4);
+  assert.equal(f.active, "tu");
+  assert.equal(f.steps[0].active, "tokens");
+  assert.deepEqual(Object.keys(f.steps[0].values), ["tokens"]);
+  assert.equal(f.steps[1].active, "modelo");
+});
+
+test("labels also resolve when the chips are already objects, and a truly unknown chip is still an error", () => {
+  const spec = base();
+  const flow = spec.scenes.flatMap((s) => s.visual.overlay ?? []).find((o) => o.type === "flow");
+  flow.chips = [{ id: "a", icon: "circle", label: "Origen" }, { id: "b", icon: "circle", label: "Destino" }];
+  flow.active = "Destino";
+  flow.steps = undefined;
+  assert.deepEqual(problems(spec), []);
+  flow.active = "Nada";
+  assert.ok(problems(spec).some((p) => /no chip with id "Nada"/.test(p)));
+});

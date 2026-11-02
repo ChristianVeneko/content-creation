@@ -1,6 +1,6 @@
 // Turn a user prompt into a validated VideoSpec: build the request, call the
 // provider, parse JSON, enforce the user's explicit choices, validate via the
-// engine, and retry once with the error when the output is invalid.
+// engine, and retry up to twice with the errors when the output is invalid.
 import type { GenerateOptions, TemplateInfo, VideoSpec } from "../shared/types.ts";
 import type { SpecProvider } from "./providers/types.ts";
 import { applyMusicOptions } from "../shared/music.ts";
@@ -110,8 +110,8 @@ export class SpecGenerationError extends Error {
 }
 
 /**
- * Ask the provider for a spec; on unparseable or invalid output, retry ONCE
- * with the error appended to the request.
+ * Ask the provider for a spec; on unparseable or invalid output, retry up to TWICE
+ * with the errors appended to the request (the engine repairs the commonest slips itself).
  */
 // Sources belong in the post description, never in the spoken script or on screen (channel rule; models still do it).
 const CITE_LABEL = /(?:^|\s)(?:fuente|fuentes|source|sources)\s*:[^.!?\n]*[.!?]?/gi;
@@ -145,7 +145,7 @@ export async function generateValidSpec(args: {
   validate: Validator;
   maxAttempts?: number;
 }): Promise<GenerateResult> {
-  const maxAttempts = args.maxAttempts ?? 2;
+  const maxAttempts = args.maxAttempts ?? 3;
   let user = args.user;
   let lastError = "";
   let lastOutput = "";
@@ -156,7 +156,8 @@ export async function generateValidSpec(args: {
       const invalid = await args.validate(spec);
       const cited = invalid ? null : sourceMentions(spec);
       if (!invalid && !cited) return { spec, attempts: attempt };
-      if (!invalid && attempt === maxAttempts) return { spec: stripSourceMentions(spec), attempts: attempt };
+      // a cited source is cosmetic: one retry, then the fragments are stripped (validation errors get the full retries)
+      if (!invalid && (attempt === maxAttempts || attempt >= 2)) return { spec: stripSourceMentions(spec), attempts: attempt };
       lastError = invalid ? `The VideoSpec failed validation: ${invalid}` : `The script breaks the no-sources rule: ${cited}`;
     } catch (err) {
       lastError = `The output was not valid JSON: ${(err as Error).message}`;
