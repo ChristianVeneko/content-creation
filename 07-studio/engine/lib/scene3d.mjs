@@ -518,12 +518,11 @@ export function projectPoint(cam, p, width = 1080, height = 1920) {
 }
 
 /**
- * World placement of a corner-pinned mascot for a camera state: its base sits at a screen corner (inside the safe
- * area), `frac` of the frame tall at `size` 1, turned slightly toward the center. Pure, perspective and ortho.
+ * World placement of a corner-pinned mascot for a camera state: its base sits at a screen corner above the caption band (y < 1130), 13% of the frame tall at `size` 1, turned slightly toward the center. Pure, perspective and ortho.
  * @returns {{pos: number[], scale: number, yaw: number}}
  */
 export function cornerPlacement(cam, corner, baseHeight, size = 1, dist = null) {
-  const px = { bl: [280, 1560], br: [800, 1560], tl: [280, 700], tr: [800, 700] }[corner] ?? [200, 1470];
+  const px = { bl: [220, 1090], br: [860, 1090], tl: [220, 780], tr: [860, 780] }[corner] ?? [200, 1470];
   const fwd = norm(sub(cam.target, cam.position));
   const right = norm(cross(fwd, [0, 1, 0]));
   const up = cross(right, fwd);
@@ -533,7 +532,7 @@ export function cornerPlacement(cam, corner, baseHeight, size = 1, dist = null) 
   const ny = 1 - (px[1] / 1920) * 2;
   const halfH = cam.ortho ? cam.viewH / 2 : Math.tan((cam.fov / 2) * DEG) * d;
   const pos = [0, 1, 2].map((a) => cam.position[a] + fwd[a] * d + right[a] * nx * halfH * aspect + up[a] * ny * halfH);
-  const scale = (0.15 * size * 2 * halfH) / Math.max(0.2, baseHeight);
+  const scale = (0.13 * size * 2 * halfH) / Math.max(0.2, baseHeight);
   const yaw = Math.atan2(cam.position[0] - pos[0], cam.position[2] - pos[2]) + (corner.endsWith("l") ? 0.4 : -0.4);
   return { pos: pos.map(r3), scale: r3(scale), yaw: r3(yaw) };
 }
