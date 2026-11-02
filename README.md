@@ -92,7 +92,7 @@ source ./env.sh
 claude
 ```
 
-Y dile **"hazme un video"** (o `/video`). Te hace pocas preguntas (tema, canal, plantilla, voz), te muestra el guion y el storyboard, renderiza y te entrega el video, la portada y el texto para cada plataforma. Otros comandos: `/canal` para crear tu canal y planear la semana, `/hooks` para mejorar ganchos y títulos, `/lote` para dejar varios videos haciéndose de noche.
+Y dile **"hazme un video"** (o `/video`). Te hace pocas preguntas (tema, canal, cómo quieres que se vea y se mueva (formato), colores, voz y duración, de 15 s hasta 3 min), te muestra el guion y el storyboard, renderiza y te entrega el video, la portada y el texto para cada plataforma. Otros comandos: `/canal` para crear tu canal y planear la semana, `/hooks` para mejorar ganchos y títulos, `/lote` para dejar varios videos haciéndose de noche.
 
 ### 2. Estudio web
 
@@ -102,13 +102,13 @@ cd 07-studio/web
 npm run build && npm start
 ```
 
-Abre http://127.0.0.1:4317. Escribe la idea, elige plantilla y quién escribe el guion (Claude Code con tu suscripción, o Anthropic/OpenAI/Gemini con clave), edita las escenas y renderiza.
+Abre http://127.0.0.1:4317. Escribe la idea, elige el formato (cómo se ve y se mueve), los colores, la voz y la duración (de 15 s a 3 min), y quién escribe el guion (Claude Code con tu suscripción, o Anthropic/OpenAI/Gemini con clave), edita las escenas y renderiza.
 
 ### 3. Línea de comandos (motor)
 
 ```bash
 source ./env.sh
-node 07-studio/engine/cli.mjs templates --brief                     # lista de plantillas
+node 07-studio/engine/cli.mjs templates --brief                     # lista de formatos: id, familia, formato, nombre, ideal para
 node 07-studio/engine/cli.mjs validate mi-video/spec.json           # valida un guion (VideoSpec)
 node 07-studio/engine/cli.mjs build mi-video/spec.json --out mi-video
 ```

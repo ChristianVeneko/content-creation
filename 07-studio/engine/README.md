@@ -159,6 +159,13 @@ CC BY tracks are loaded (`lib/music.mjs` drops NC / ND / SA licenses, entries wi
 `templates/*.json` hold defaults (`theme`, `voice`, `music`, `captions`, `animation`) plus gallery metadata
 (`name`, `description`, `prompt_hint`, `best_for`, `preview.emoji` or `preview.style`, `preview.gradient`, `preview.accent`, `preview.sample_text`).
 
+`format` (optional kebab slug, `^[a-z0-9]+(-[a-z0-9]+)*$`) names the video format the template implements (how it looks and
+moves); when missing it defaults to the template id. It shows up in `templates`, `templates --brief` (third column, right
+after `category`), `template <id>` and the web gallery, which groups formats by family.
+
+Video length: 15 to 180 s in total (15, 30, 45, 60, 90, 120, 150, 180 in the UI). A scene is capped at 60 s and a spec at
+60 scenes; long videos are more 3-6 s scenes, never longer ones (`prompts/spec-writer.md` says so to the writer).
+
 | id | Look |
 |---|---|
 | `illustrated` | Default. Drawn-in-code illustrations on a navy blueprint grid, two-tone headlines, word-pill captions, live HUD, SFX + ducked music |

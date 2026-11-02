@@ -15,6 +15,8 @@
 | Caption | 2,200 chars, **max 5 hashtags** (Dec 2025) [3P] | ~4,000 chars | Title 100 (40 visible), description 5,000, >60 hashtags = all ignored [O] |
 | Cover | 1080×1920; profile grid crops to 3:4 (1080×1440) | frame or image 1080×1920 | strong first frame |
 
+The studio renders up to **3 min** (15, 30, 45 s, 1, 1.5, 2, 2.5 and 3 min), the shortest cap of the three platforms. Past 60 s keep the same rhythm: more 3-6 s scenes and a pattern interrupt every 2-4 s, never longer scenes.
+
 **Universal preset:** 1080×1920, 30fps, H.264 High, ~10 Mbps VBR, AAC 48kHz 320–384kbps, MP4 faststart, audio at -14 LUFS.
 **Universal safe zone:** keep text and faces inside a **center box of 900×1300 px, slightly high**. Captions go at ~55–70% of frame height.
 Overlay: `03-assets/overlays/safe-zone-1080x1920.png` (generate with `02-scripts/make-safe-zone.sh`).
