@@ -110,6 +110,10 @@ B.house = {
     chimney: bool(true, "Brick chimney"),
     porch: bool(true, "Porch with posts at the door"),
     cutaway: bool(false, "Remove the front wall and show a furnished interior"),
+    furnish: bool(true, "Cutaway: the built-in table, sofa, bed and shelf (false leaves the rooms empty for `appliance` actors)"),
+    stairs: bool(false, "Cutaway: a staircase `step-0`.. with a `rail` up the right side to the next storey"),
+    partition: bool(false, "Cutaway: a ground-floor wall `partition` with a doorway (`door-gap` lintel) between a left and a right room"),
+    backWindows: bool(false, "Cutaway: windows in the back wall (`bwin-<floor>-<i>`, panes `bwin-glass-<floor>-<i>` that beats can recolor from day to night)"),
     wall: color("Wall color"),
     roofColor: color("Roof color"),
     trim: color("Trim, frames and corner posts"),
@@ -136,8 +140,42 @@ B.house = {
         k.box(`wall-r-${f}`, [0.14, fh, d], [w / 2 - 0.07, yc, 0], wall);
         k.box(`floor-${f}`, [w - 0.2, 0.1, d - 0.2], [0, y0 + 0.05, 0], shade(WOOD, 0.35));
         k.box(`inner-${f}`, [w - 0.3, fh - 0.12, 0.03], [0, yc, -d / 2 + 0.16], shade(wall, -0.07));
+        k.box(`baseboard-${f}`, [w - 0.3, 0.09, 0.03], [0, y0 + 0.15, -d / 2 + 0.18], shade(trim, -0.05));
+        if (p.backWindows) {
+          for (const sx of [-1, 1]) {
+            const i = sx < 0 ? 0 : 1;
+            const wx = sx * w * 0.27;
+            k.box(`bwin-${f}-${i}`, [0.98, 0.78, 0.04], [wx, y0 + fh * 0.58, -d / 2 + 0.19], trim);
+            k.box(`bwin-glass-${f}-${i}`, [0.84, 0.64, 0.04], [wx, y0 + fh * 0.58, -d / 2 + 0.215], "#9FD3F2");
+            k.box(`bwin-bar-${f}-${i}`, [0.04, 0.66, 0.05], [wx, y0 + fh * 0.58, -d / 2 + 0.23], trim);
+            k.box(`bwin-sill-${f}-${i}`, [1.12, 0.05, 0.14], [wx, y0 + fh * 0.58 - 0.4, -d / 2 + 0.26], shade(trim, -0.1));
+          }
+        }
+        if (p.partition && f === 0) {
+          const px = -w * 0.18;
+          const zDoor = 0.35;
+          const zb0 = -d / 2 + 0.14;
+          const zb1 = zDoor - 0.4;
+          k.box("partition", [0.1, fh, zb1 - zb0], [px, yc, (zb0 + zb1) / 2], shade(wall, -0.04));
+          const zf0 = zDoor + 0.4;
+          const zf1 = d / 2 - 0.05;
+          if (zf1 - zf0 > 0.1) k.box("partition-front", [0.1, fh, zf1 - zf0], [px, yc, (zf0 + zf1) / 2], shade(wall, -0.04));
+          k.box("door-gap", [0.12, fh - 1.1, 0.84], [px, y0 + fh - (fh - 1.1) / 2, zDoor], shade(trim, -0.06));
+        }
+        if (p.stairs && f < F - 1) {
+          const n = 7;
+          const x0 = w * 0.1;
+          const x1 = w / 2 - 0.35;
+          const dx = (x1 - x0) / (n - 1);
+          for (let i = 0; i < n; i++) k.box(`step-${i}`, [dx * 0.98, ((i + 1) * (fh - 0.02)) / n, 0.6], [x0 + dx * i, y0 + 0.1 + ((i + 1) * (fh - 0.02)) / n / 2, -d / 2 + 0.5], i % 2 ? shade(WOOD, 0.4) : shade(WOOD, 0.3));
+          const ang = deg(Math.atan2(fh - 0.1, x1 - x0));
+          k.box("rail", [Math.hypot(x1 - x0, fh - 0.1) + 0.2, 0.05, 0.05], [(x0 + x1) / 2, y0 + 0.1 + (fh - 0.1) / 2 + 0.5, -d / 2 + 0.82], trim, { rot: [0, 0, ang] });
+          for (const t of [0, 0.5, 1]) k.box("rail-post", [0.05, 0.5, 0.05], [x0 + (x1 - x0) * t, y0 + 0.1 + (fh - 0.1) * t + 0.25, -d / 2 + 0.82], trim);
+        }
         // interior: a table with a lamp and a shelf, a bed upstairs
-        if (f === 0) {
+        if (!p.furnish) {
+          /* rooms left empty for appliance actors */
+        } else if (f === 0) {
           k.box("table", [0.9, 0.06, 0.5], [-w * 0.18, y0 + 0.5, 0.2], shade(WOOD, 0.1));
           for (const [ix, iz] of [[-0.38, -0.18], [0.38, -0.18], [-0.38, 0.18], [0.38, 0.18]]) k.box("table-leg", [0.06, 0.4, 0.06], [-w * 0.18 + ix, y0 + 0.25, 0.2 + iz], shade(WOOD, -0.1));
           k.box("sofa", [1.1, 0.4, 0.5], [w * 0.22, y0 + 0.25, -d * 0.2], k.pick(["#4F6D8A", "#B8453A", "#5E7A4A"], "sofa"), { radius: 0.06 });
@@ -145,7 +183,7 @@ B.house = {
           k.box("bed", [1.1, 0.3, 0.7], [-w * 0.18, y0 + 0.2, -d * 0.18], "#E9EEF5", { radius: 0.05 });
           k.box("blanket", [0.8, 0.12, 0.72], [-w * 0.1, y0 + 0.4, -d * 0.18], k.pick(["#E5484D", "#3B82F6", "#2FB98F"], "blanket"), { radius: 0.04 });
         }
-        k.box(`shelf-${f}`, [0.8, 0.05, 0.22], [w * 0.2, y0 + fh * 0.62, -d / 2 + 0.3], shade(WOOD, 0.2));
+        if (p.furnish) k.box(`shelf-${f}`, [0.8, 0.05, 0.22], [w * 0.2, y0 + fh * 0.62, -d / 2 + 0.3], shade(WOOD, 0.2));
         k.sph(`lamp-${f}`, [0.12], [0, y0 + fh - 0.2, 0], "#FFE9A8", { material: "emissive", facets: 6 });
       } else {
         k.box(`walls-${f}`, [w, fh, d], [0, yc, 0], wall);
@@ -603,9 +641,11 @@ B["pipe-run"] = {
     dots: int(5, 0, 12, "Glowing signal dots along the run"),
     clamps: bool(true, "Ground clamps under horizontal runs"),
     flanges: bool(true, "Flange rings at the couplings"),
+    style: opt("pipe", ["pipe", "cable"], "pipe: couplings, bands and clamps; cable: a thin plain conduit with small elbows (power or data lines)"),
   },
   build(p, k) {
-    const pipeC = p.pipe ?? "#8D9AAE";
+    const cable = p.style === "cable";
+    const pipeC = p.pipe ?? (cable ? "#2B2F38" : "#8D9AAE");
     const jointC = p.joint ?? "#2F7DE1";
     const R = p.radius;
     const rotOf = (ax) => (ax === 0 ? [0, 0, 90] : ax === 2 ? [90, 0, 0] : undefined);
@@ -637,6 +677,7 @@ B["pipe-run"] = {
       const mid = s.a.map((v, i) => (v + s.b[i]) / 2);
       const rot = s.ax === 0 ? [0, 0, 90] : s.ax === 2 ? [90, 0, 0] : undefined;
       k.cyl("pipe", [R, R, s.len + R * 0.2], mid, pipeC, { rot, facets: 10 });
+      if (cable) continue;
       // couplings every ~1.3 units
       const n = Math.max(1, Math.floor(s.len / 1.3));
       for (let c = 1; c <= n; c++) {
@@ -651,7 +692,7 @@ B["pipe-run"] = {
         k.box("clamp", [R * (s.ax === 0 ? 0.9 : 2.8), R * 0.5, R * (s.ax === 2 ? 0.9 : 2.8)], [at[0], mid[1] - R * 1.05, at[2]], "#5B6270");
       }
     }
-    for (const sg of segs) {
+    for (const sg of cable ? [] : segs) {
       const n = Math.max(2, Math.floor(sg.len / 0.45));
       for (let c = 0; c < Math.min(n, 6); c++) {
         const u = (c + 0.5) / Math.min(n, 6);
@@ -659,8 +700,8 @@ B["pipe-run"] = {
         k.cyl("band", [R * 1.12, R * 1.12, 0.035], at, shade(pipeC, -0.25), { rot: rotOf(sg.ax), facets: 10 });
       }
     }
-    for (let i = 1; i < route.length - 1; i++) k.sph("elbow", [R * 1.38], route[i], jointC, { facets: 8 });
-    if (segs.length) {
+    for (let i = 1; i < route.length - 1; i++) k.sph("elbow", [R * (cable ? 1.05 : 1.38)], route[i], cable ? pipeC : jointC, { facets: 8 });
+    if (segs.length && !cable) {
       k.cyl("end-cap", [R * 1.4, R * 1.4, 0.09], route[0], shade(jointC, -0.15), { rot: rotOf(segs[0].ax), facets: 10 });
       k.cyl("end-cap", [R * 1.4, R * 1.4, 0.09], route[route.length - 1], shade(jointC, -0.15), { rot: rotOf(segs[segs.length - 1].ax), facets: 10 });
     }
@@ -802,6 +843,9 @@ B.person = {
     hatColor: color("Headwear color"),
     vest: bool(false, "High-visibility vest with reflective stripes"),
     tool: opt("none", ["none", "shovel", "wrench", "clipboard"], "Held tool"),
+    expression: opt("neutral", ["neutral", "smile", "surprised", "worried"], "Face: the `mouth` and `brow` parts change shape (beats can still scale or tilt them)"),
+    glasses: bool(false, "Round glasses (`glasses`)"),
+    beard: bool(false, "A short beard (`beard`)"),
   },
   build(p, k) {
     const h = p.height / 1.7;
@@ -843,9 +887,18 @@ B.person = {
       k.sph("eye", [0.022 * h], [sx * 0.055 * h, 0.01 * h, 0.14 * h], "#1E2230", { parent: head, facets: 6 });
       k.sph("ear", [0.03 * h], [sx * 0.15 * h, 0, 0], shade(skin, -0.06), { parent: head, facets: 5 });
     }
-    for (const sx of [-1, 1]) k.box("brow", [0.05 * h, 0.01 * h, 0.01 * h], [sx * 0.055 * h, 0.05 * h, 0.145 * h], "#3A2F28", { parent: head });
+    const expr = p.expression;
+    for (const sx of [-1, 1]) k.box("brow", [0.05 * h, 0.01 * h, 0.01 * h], [sx * 0.055 * h, (expr === "surprised" ? 0.065 : 0.05) * h, 0.145 * h], "#3A2F28", { parent: head, rot: expr === "worried" ? [0, 0, -sx * 18] : undefined });
     k.sph("nose", [0.025 * h], [0, -0.02 * h, 0.155 * h], shade(skin, -0.08), { parent: head, facets: 5 });
-    k.box("mouth", [0.06 * h, 0.012 * h, 0.01 * h], [0, -0.07 * h, 0.147 * h], "#A24B4B", { parent: head });
+    if (expr === "smile") k.tor("mouth", [0.035 * h, 0.007 * h, 180], [0, -0.05 * h, 0.147 * h], "#A24B4B", { parent: head, rot: [0, 0, 180] });
+    else if (expr === "worried") k.tor("mouth", [0.03 * h, 0.007 * h, 180], [0, -0.085 * h, 0.147 * h], "#A24B4B", { parent: head });
+    else if (expr === "surprised") k.sph("mouth", [0.028 * h, 0.04 * h, 0.014 * h], [0, -0.075 * h, 0.147 * h], "#5A2A2A", { parent: head, facets: 6 });
+    else k.box("mouth", [0.06 * h, 0.012 * h, 0.01 * h], [0, -0.07 * h, 0.147 * h], "#A24B4B", { parent: head });
+    if (p.glasses) {
+      for (const sx of [-1, 1]) k.tor("glasses", [0.04 * h, 0.006 * h, 360], [sx * 0.055 * h, 0.012 * h, 0.15 * h], "#1E2230", { parent: head });
+      k.box("glasses-bridge", [0.03 * h, 0.006 * h, 0.006 * h], [0, 0.015 * h, 0.15 * h], "#1E2230", { parent: head });
+    }
+    if (p.beard) k.sph("beard", [0.12 * h, 0.07 * h, 0.1 * h], [0, -0.1 * h, 0.07 * h], k.pick(["#3A2F28", "#7A4F2C", "#C9C9C9"], "beard"), { parent: head, facets: 7 });
     if (p.hat === "hard-hat") {
       k.sph("hat", [0.17 * h, 0.12 * h, 0.17 * h], [0, 0.07 * h, 0], hatC, { parent: head, facets: 8 });
       k.box("hat-brim", [0.32 * h, 0.02 * h, 0.36 * h], [0, 0.04 * h, 0.03 * h], shade(hatC, -0.1), { parent: head });
@@ -2298,6 +2351,117 @@ B.calendar = {
     }
     k.cyl("marker-ring", [0.14, 0.14, 0.012], [-0.78 + (p.marked % 7) * 0.26, 1.22 - Math.floor(p.marked / 7) * 0.22, 0.095], "#FFFFFF", { rot: [90, 0, 0], facets: 10 });
     k.box("stand", [0.1, 0.9, 0.04], [0, 0.3, -0.22], "#3A4150", { rot: [-22, 0, 0] });
+    return {};
+  },
+};
+
+B.appliance = {
+  about: "Household appliance or furniture on the floor (y = 0 at its base, facing +z): sofa, tv (with a stand; `screen`), lamp (floor lamp; `bulb`, `shade`), kettle (`led`, `steam`), microwave (`screen`), fridge, bed, washer (`drum`), heater (`glow`), table. Beats switch it on by recoloring or lighting its lit parts (`on` sets the starting state).",
+  params: {
+    kind: opt("sofa", ["sofa", "tv", "lamp", "kettle", "microwave", "fridge", "bed", "washer", "heater", "table"], "What to build"),
+    width: num(1.6, 0.4, 3, "Width of the sofa, bed, tv and table (others keep their own size)"),
+    color: color("Main color (upholstery, body or shade)"),
+    on: bool(false, "Lit parts start lit (tv screen, lamp bulb, kettle led, heater glow)"),
+  },
+  build(p, k) {
+    const W = p.width;
+    const c = p.color;
+    const lit = (on, onC, offC) => (on ? onC : offC);
+    if (p.kind === "sofa") {
+      const up = c ?? k.pick(["#B8453A", "#4F6D8A", "#5E7A4A", "#8A5B9A"], "sofa");
+      k.box("seat", [W, 0.28, 0.72], [0, 0.3, 0], up, { radius: 0.06 });
+      k.box("back", [W, 0.55, 0.2], [0, 0.62, -0.26], shade(up, -0.1), { radius: 0.06 });
+      for (const sx of [-1, 1]) k.box("arm", [0.2, 0.42, 0.72], [sx * (W / 2 - 0.1), 0.42, 0], shade(up, -0.15), { radius: 0.06 });
+      for (const sx of [-1, 1]) k.box("cushion", [W / 2 - 0.2, 0.12, 0.6], [sx * (W / 4 - 0.02), 0.5, 0.05], shade(up, 0.12), { radius: 0.04 });
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) k.cyl("leg", [0.04, 0.05, 0.16], [sx * (W / 2 - 0.1), 0.08, sz * 0.28], WOOD, { facets: 6 });
+      k.box("pillow", [0.3, 0.3, 0.1], [W / 2 - 0.5, 0.66, -0.08], k.pick(["#F2C14E", "#F6EEDC", "#2FB98F"], "pillow"), { radius: 0.05, rot: [-12, 0, 14] });
+      k.box("throw", [0.5, 0.05, 0.62], [-W / 4, 0.57, 0.05], shade(up, 0.35), { radius: 0.02 });
+    } else if (p.kind === "tv") {
+      const tw = Math.min(W, 2.2);
+      k.box("console", [tw, 0.08, 0.5], [0, 0.4, 0], shade(WOOD, 0.1), { radius: 0.02 });
+      k.box("console-shelf", [tw - 0.1, 0.05, 0.46], [0, 0.18, 0], shade(WOOD, 0.1));
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) k.box("console-leg", [0.06, 0.4, 0.06], [sx * (tw / 2 - 0.05), 0.2, sz * 0.2], shade(WOOD, -0.1));
+      k.box("box", [0.5, 0.07, 0.3], [-tw * 0.25, 0.235, 0.02], "#E8E8E4", { radius: 0.02 });
+      k.box("neck", [0.14, 0.14, 0.1], [0, 0.5, -0.04], "#1B2230");
+      k.box("foot", [0.6, 0.03, 0.3], [0, 0.45, 0], "#1B2230");
+      k.box("bezel", [tw * 0.86, tw * 0.5, 0.08], [0, 0.57 + tw * 0.25, -0.04], "#1B2230", { radius: 0.03 });
+      k.box("screen", [tw * 0.86 - 0.1, tw * 0.5 - 0.1, 0.03], [0, 0.57 + tw * 0.25, 0.01], lit(p.on, "#6CC4FF", "#161C2B"), { material: "emissive", emissive: p.on ? 0.9 : 0 });
+      k.box("screen-bar", [tw * 0.3, 0.06, 0.02], [-tw * 0.15, 0.57 + tw * 0.25 + 0.15, 0.03], lit(p.on, "#FFD23F", "#1E2538"), { material: "emissive", emissive: p.on ? 0.8 : 0 });
+      k.sph("tv-led", [0.025], [tw * 0.36, 0.64, 0.045], lit(p.on, "#5CF2A8", "#E5484D"), { facets: 5, material: "emissive", emissive: 1 });
+      k.box("remote", [0.07, 0.02, 0.2], [tw * 0.3, 0.45, 0.14], "#2B2F38", { rot: [0, 18, 0] });
+    } else if (p.kind === "lamp") {
+      const sh = c ?? "#F6E7B8";
+      k.cyl("base", [0.2, 0.22, 0.05], [0, 0.025, 0], "#2B2F38", { facets: 8 });
+      k.cyl("pole", [0.025, 0.025, 1.3], [0, 0.7, 0], "#2B2F38", { facets: 6 });
+      k.sph("bulb", [0.12], [0, 1.4, 0], lit(p.on, "#FFE9A8", "#7C766A"), { facets: 6, material: "emissive", emissive: p.on ? 1.4 : 0, role: "glow" });
+      k.cone("shade", [0.27, 0.3], [0, 1.45, 0], sh, { facets: 8, rot: [0, 0, 180] });
+      k.cyl("shade-rim", [0.28, 0.28, 0.03], [0, 1.31, 0], shade(sh, -0.15), { facets: 8 });
+      k.cyl("switch", [0.02, 0.02, 0.06], [0.05, 0.95, 0.03], "#C8CDD4", { facets: 5 });
+    } else if (p.kind === "kettle") {
+      const body = c ?? "#C8CDD4";
+      k.cyl("plate", [0.2, 0.22, 0.04], [0, 0.02, 0], "#2B2F38", { facets: 10 });
+      k.cyl("body", [0.16, 0.2, 0.34], [0, 0.21, 0], body, { facets: 10, material: "metal" });
+      k.cyl("lid", [0.12, 0.15, 0.05], [0, 0.4, 0], shade(body, -0.15), { facets: 10 });
+      k.sph("knob", [0.035], [0, 0.45, 0], "#2B2F38", { facets: 5 });
+      k.cyl("spout", [0.035, 0.05, 0.16], [0.2, 0.34, 0], shade(body, -0.1), { rot: [0, 0, -50], facets: 6 });
+      k.tor("handle", [0.12, 0.018, 200], [-0.2, 0.22, 0], "#2B2F38", { rot: [0, 0, 100] });
+      k.box("band", [0.02, 0.05, 0.02], [0.17, 0.2, 0.0], "#5CC8F2");
+      k.sph("led", [0.025], [0, 0.07, 0.2], lit(p.on, "#FF6A3D", "#5B3A33"), { facets: 5, material: "emissive", emissive: p.on ? 1.4 : 0, role: "glow" });
+      for (let i = 0; i < 3; i++) k.sph("steam", [0.06 + i * 0.02], [0.24 + i * 0.05, 0.55 + i * 0.16, 0], "#FFFFFF", { facets: 5, opacity: 0.55 - i * 0.12 });
+    } else if (p.kind === "microwave") {
+      const body = c ?? "#2B3140";
+      k.box("body", [0.9, 0.5, 0.6], [0, 0.25, 0], body, { radius: 0.04 });
+      k.box("door", [0.58, 0.4, 0.04], [-0.1, 0.25, 0.31], "#10151F", { radius: 0.02 });
+      k.box("window", [0.46, 0.3, 0.02], [-0.1, 0.25, 0.335], lit(p.on, "#FFC857", "#1C2538"), { material: "emissive", emissive: p.on ? 0.9 : 0 });
+      k.box("panel", [0.2, 0.4, 0.03], [0.32, 0.25, 0.31], shade(body, -0.15));
+      k.box("screen", [0.14, 0.07, 0.02], [0.32, 0.38, 0.34], lit(p.on, "#5CF2A8", "#143024"), { material: "emissive", emissive: p.on ? 1 : 0 });
+      for (let i = 0; i < 3; i++) k.cyl("button", [0.03, 0.03, 0.02], [0.32, 0.27 - i * 0.07, 0.34], "#C8CDD4", { rot: [90, 0, 0], facets: 6 });
+      k.tor("handle", [0.1, 0.012, 180], [0.14, 0.25, 0.36], "#9AA3AD", { rot: [0, 0, 90] });
+      for (const sx of [-1, 1]) k.cyl("foot", [0.04, 0.04, 0.03], [sx * 0.38, 0.0, 0.22], "#1B2230", { facets: 5 });
+    } else if (p.kind === "fridge") {
+      const body = c ?? "#E8EEF2";
+      k.box("body", [0.8, 1.7, 0.7], [0, 0.88, 0], body, { radius: 0.05 });
+      k.box("split", [0.82, 0.03, 0.72], [0, 1.2, 0], shade(body, -0.35));
+      k.box("freezer", [0.76, 0.46, 0.02], [0, 1.45, 0.36], shade(body, 0.05));
+      for (const [y, h] of [[1.45, 0.3], [0.7, 0.5]]) k.box("handle", [0.04, h, 0.05], [0.32, y, 0.4], "#9AA3AD", { material: "metal" });
+      k.box("magnet", [0.1, 0.1, 0.02], [-0.15, 1.5, 0.375], "#F25C78");
+      k.box("magnet", [0.08, 0.1, 0.02], [-0.02, 0.9, 0.365], "#FFD23F");
+      k.sph("light", [0.03], [0.3, 1.66, 0.37], lit(p.on, "#5CF2A8", "#2B3E36"), { facets: 5, material: "emissive", emissive: p.on ? 1.2 : 0 });
+      for (const sx of [-1, 1]) k.cyl("foot", [0.04, 0.05, 0.05], [sx * 0.34, 0.0, 0.25], "#2B2F38", { facets: 6 });
+    } else if (p.kind === "bed") {
+      const blanket = c ?? k.pick(["#E5484D", "#3B82F6", "#2FB98F"], "blanket");
+      k.box("frame", [W, 0.22, 1.1], [0, 0.18, 0], shade(WOOD, 0.1), { radius: 0.03 });
+      k.box("headboard", [W + 0.1, 0.7, 0.08], [0, 0.55, -0.56], shade(WOOD, -0.05), { radius: 0.03 });
+      k.box("mattress", [W - 0.08, 0.2, 1.0], [0, 0.39, 0.02], "#F4F1EA", { radius: 0.06 });
+      k.box("blanket", [W - 0.1, 0.1, 0.7], [0, 0.5, 0.2], blanket, { radius: 0.05 });
+      for (const sx of [-1, 1]) k.box("pillow", [W * 0.34, 0.1, 0.3], [sx * W * 0.23, 0.53, -0.38], "#FFFFFF", { radius: 0.05 });
+      for (const sx of [-1, 1]) k.cyl("leg", [0.05, 0.05, 0.1], [sx * (W / 2 - 0.05), 0.05, 0.45], WOOD, { facets: 6 });
+    } else if (p.kind === "washer") {
+      const body = c ?? "#F1F3F5";
+      k.box("body", [0.8, 0.95, 0.75], [0, 0.5, 0], body, { radius: 0.04 });
+      k.box("panel", [0.76, 0.14, 0.02], [0, 0.89, 0.38], shade(body, -0.12));
+      k.cyl("door-ring", [0.27, 0.27, 0.06], [0, 0.45, 0.38], "#9AA3AD", { rot: [90, 0, 0], facets: 12 });
+      k.cyl("drum", [0.22, 0.22, 0.05], [0, 0.45, 0.4], "#5CB8E8", { rot: [90, 0, 0], facets: 12, material: "glass", opacity: 0.8 });
+      k.box("drum-vane", [0.34, 0.05, 0.03], [0, 0.45, 0.43], "#FFFFFF");
+      k.cyl("dial", [0.05, 0.05, 0.03], [-0.25, 0.89, 0.4], "#2B2F38", { rot: [90, 0, 0], facets: 8 });
+      k.sph("led", [0.02], [0.28, 0.89, 0.4], lit(p.on, "#5CF2A8", "#2B3E36"), { facets: 5, material: "emissive", emissive: p.on ? 1.2 : 0 });
+      for (const sx of [-1, 1]) k.cyl("foot", [0.04, 0.05, 0.04], [sx * 0.34, 0.0, 0.3], "#2B2F38", { facets: 6 });
+    } else if (p.kind === "heater") {
+      const body = c ?? "#E8E4DA";
+      k.box("body", [0.9, 0.6, 0.12], [0, 0.4, 0], body, { radius: 0.03 });
+      for (let i = 0; i < 4; i++) k.box("fin", [0.82, 0.04, 0.06], [0, 0.22 + i * 0.1, 0.09], shade(body, -0.12));
+      k.box("glow", [0.8, 0.34, 0.02], [0, 0.4, 0.075], lit(p.on, "#FF7A3D", "#6B4B42"), { material: "emissive", emissive: p.on ? 1.3 : 0, role: "glow" });
+      k.box("knob-plate", [0.16, 0.08, 0.02], [0.3, 0.64, 0.075], "#2B2F38");
+      k.cyl("knob", [0.025, 0.025, 0.03], [0.3, 0.64, 0.09], "#C8CDD4", { rot: [90, 0, 0], facets: 6 });
+      for (const sx of [-1, 1]) k.box("foot", [0.06, 0.1, 0.2], [sx * 0.36, 0.05, 0.02], "#2B2F38");
+    } else {
+      const top = c ?? shade(WOOD, 0.15);
+      k.box("top", [W, 0.07, 0.75], [0, 0.72, 0], top, { radius: 0.03 });
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) k.box("leg", [0.07, 0.68, 0.07], [sx * (W / 2 - 0.08), 0.34, sz * 0.3], shade(WOOD, -0.1));
+      k.box("runner", [W * 0.6, 0.01, 0.2], [0, 0.76, 0], "#F6EEDC");
+      k.cyl("bowl", [0.16, 0.1, 0.1], [-W * 0.2, 0.81, 0.04], "#F2C14E", { facets: 8 });
+      k.cyl("cup", [0.05, 0.04, 0.09], [W * 0.18, 0.79, -0.08], "#5CB8E8", { facets: 6 });
+    }
     return {};
   },
 };

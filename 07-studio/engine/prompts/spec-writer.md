@@ -716,6 +716,7 @@ target them). Run `node cli.mjs builders` for the catalog: every builder with it
   (crown, helmet, pirate, tophat, bandana, hard-hat, cap, beanie) and `outfit` (coat, armor, robe, suit, cape).
 - city and engineering: `building`, `house`, `bridge`, `road`, `car-lowpoly`, `factory`, `crane` (`hook` group),
   `wind-turbine` (`rotor` group), `solar-panel`, `battery`, `gear-train`, `pipe-run`, `valve`, `slab`, `rebar-grid`, `fence`.
+- home and cutaway: `appliance` (kind sofa, tv, lamp, kettle, microwave, fridge, bed, washer, heater, table; `on` starts it lit, beats recolor `tv/screen`, `lamp/bulb`, `kettle/led`, `heater/glow`), `house` with `cutaway: true` plus `furnish: false`, `stairs`, `partition`, `backWindows` for empty rooms you furnish with appliance actors, `person` `expression` (smile, surprised, worried), `glasses`, `beard`, `pipe-run` `style: "cable"`. Full example: `examples/cutaway-stage.spec.json` (a blackout, a home battery and an inverter; tiny base zoom needs `camera` scale beats for close-ups).
 - office and finance: `desk`, `chart-3d` (`bar-k`), `coin-stack`, `safe` (`door` group), `calendar` (`day-k`).
 In `stage.world.parts` a call becomes a group root (`pos`, `rot`, `scale`) with the parts hanging from it; `grass-tufts`, `flowers`
 and any call with `"scatter": {count, area, avoid, seed}` become instanced scatter copies (they follow the terrain). Budgets: 160
