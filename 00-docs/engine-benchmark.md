@@ -154,3 +154,34 @@ node 07-studio/engine/cli.mjs build 07-studio/engine/examples/cutaway-explainer.
 # 5. Generate HyperFrames brief for bespoke 2D motion graphics
 node 07-studio/engine/cli.mjs hyperframes-brief 07-studio/engine/examples/data-atlas.spec.json
 ```
+
+---
+
+## 7. Round 2: persistent 3D stage, builders and polish (2026-11-02)
+
+The first round (sections 1 to 6) rendered short cuts of the two reference formulas. A review of the resulting 3D projects found the quality limited by the engine, not only by the authoring pass: objects capped at 40 parts, worlds rebuilt in every scene, looping `{speed, amp}` presets instead of state changes, titles overlapping models. Round 2 changed the engine and re-rendered the references at full length.
+
+### What changed in the engine
+| Area | Before | After |
+| :--- | :--- | :--- |
+| Part caps | 40 per object, 24 per world (160 expanded) | 160 per object, 120 per world, 1500 expanded with instancing |
+| World | one per scene | one persistent `stage` shared by all scenes, state persists |
+| Animation | looping presets | timeline `beats` (tweens of pos, rot, scale, color, opacity, visibility, liquid level), terrain `carve`, liquids |
+| Models | hand-written primitives | 50+ seeded parametric builders (tech, science, history, city, office) |
+| Framing and captions | subject kept out of the caption band, large two-tone captions | subject fills the 9:16 frame, `frame` presets, small centered captions, label collision layout |
+| Palette | per template | shared contrast adaptation (text 4.5, accents 3 for user palettes) |
+
+### Full-length renders (1080x1920, 30 fps, Remotion/three.js, Apple Silicon)
+| Video | Engine path | Duration | Render time |
+| :--- | :--- | :---: | :---: |
+| datos.zip recreation, "El clavo de oro" (`data-atlas-documentary`) | 2D/2.5D Remotion | 45 s | 2:03 total (44.9 s Remotion render) |
+| kodadmc recreation, home battery blackout (`cutaway-stage`) | 3D stage | 52 s | 81 s |
+| Acceptance: pool, tech tutorial, story | 3D stage | 49 s, 37 s, 35 s | 69 s, 43 s, 40 s |
+| Standalone: how solar panels work (`process-solar`, with voice) | 3D stage | 134.6 s | 177 s (silent render), voiced build in the project folder |
+
+Real-time throughput stays above 0.7x in every case; Blender was not used for the stage videos (it ignores `stage`; a warning is emitted).
+
+### Findings
+- Continuity, real state changes and builders account for most of the visible gain; the extra render cost is small (a 1400-part world plans in under 1.5 s).
+- The remaining gaps against the references: smaller and less detailed houses and characters, point-sprite photons and electrons instead of animated particles, a translucent night veil instead of real relighting, flat ground in story and tutorial scenes with no cutaway, labels that still crowd wide equipment shots, and `beats` timed in seconds rather than on narration words.
+- Recommendation: use `process-explainer` (3D stage) for explainers, tutorials and stories; `data-atlas` (2.5D) for data documentaries; keep Blender for single hero shots, not stage videos.
