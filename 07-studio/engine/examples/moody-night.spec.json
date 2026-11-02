@@ -24,7 +24,9 @@
             "label": "Tú",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true,
+        "set": "road"
       }
     },
     {
@@ -48,7 +50,9 @@
             "model": "car-sedan",
             "size": 0.8
           }
-        ]
+        ],
+        "stock": true,
+        "set": "road"
       }
     },
     {
@@ -72,7 +76,9 @@
             "value": "1 s",
             "label": "perdido"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "road"
       }
     },
     {
@@ -99,7 +105,9 @@
             "id": "b",
             "label": "Tú"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "road"
       }
     },
     {
@@ -121,7 +129,9 @@
             "kind": "cross",
             "label": "Pegado"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "road"
       }
     },
     {
@@ -142,7 +152,8 @@
             "label": "En casa",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true
       }
     }
   ]

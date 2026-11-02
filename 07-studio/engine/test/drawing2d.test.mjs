@@ -151,7 +151,7 @@ test("2D fx errors: unknown type, missing target, too many", () => {
 });
 
 test("3D fx keep validating on scene3d visuals and 2D fx are rejected there", () => {
-  const spec = (fx) => ({ version: 1, title: "x", template: "clay-diorama", scenes: [{ id: "a", narration: "hola mundo", title: { main: "x" }, visual: { type: "scene3d", objects: [{ kind: "coin", id: "c" }], fx } }] });
+  const spec = (fx) => ({ version: 1, title: "x", template: "clay-diorama", scenes: [{ id: "a", narration: "hola mundo", title: { main: "x" }, visual: { type: "scene3d", stock: true, objects: [{ kind: "coin", id: "c" }], fx } }] });
   assert.equal(validateSpec(spec([{ type: "sweep" }, { type: "particles", kind: "sparks" }])).ok, true);
   hasError(errorsOf(spec([{ type: "sparkles" }])), "scenes.0.visual.fx.0.type", /2D fx.*3D scenes use: particles/);
 });

@@ -5,14 +5,15 @@ import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { ThreeCanvas } from "@remotion/three";
 import { AbsoluteFill, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { boundsOf, cameraAt, floatY, LOOK3D, look3dOf, projectPoint, RENDER3D } from "../../lib/scene3d.mjs";
+import { boundsOf, cameraAt, cornerPlacement, floatY, LOOK3D, look3dOf, projectPoint, RENDER3D } from "../../lib/scene3d.mjs";
 import type { IconData, ResolvedSpec, Scene, ScenePlan3D, ThreeAssets } from "../types";
 import { rgba } from "../util";
 import { Headline } from "../illustrated/IllustratedScene";
 import { BloomRender, CameraRig, Connection, Floor, HighlightRing, Kit3DContext, Lights, Particles, makeToonRamp, mixHex } from "./kit";
 import { SetView } from "./sets";
+import { backdropStops, WorldGround, WorldView } from "./world";
 import { KIND_COLOR, ObjectView } from "./objects";
-import { color3d, look3dFor, type Look3D } from "./looks";
+import { color3d, look3dFor, mixHexColor, type Look3D } from "./looks";
 import { Headline3D, Overlay3D } from "./headlines3d";
 import { ensureLookFonts } from "../illustrated/looks";
 import { looksAtCamera, momentSec, motionList, nodeDelta } from "../../lib/scene3d-motion.mjs";
@@ -156,7 +157,7 @@ const Label: React.FC<{ tag: Tag; look: Look3D; accent: string; frame: number; f
   const iso = look.id === "iso-toon";
   const hero = look.label.leader === "dashed";
   // light-stage looks print big numbers in the accent color (white would vanish on paper or a desk)
-  const light = look.id === "clay-diorama" || look.id === "paper-world" || look.id === "toy-blocks" || look.id === "soft-studio" || look.id === "voxel-world";
+  const light = look.id === "clay-diorama" || look.id === "paper-world" || look.id === "toy-blocks" || look.id === "soft-studio" || look.id === "voxel-world" || look.id === "clay-mascot";
   const leader = hero || Math.hypot(tag.x - tag.ax, tag.y - tag.ay) > 60;
   const text = tag.text;
   return (
@@ -244,8 +245,18 @@ export const Scene3DView: React.FC<{ scene: Scene; index: number; spec: Resolved
   const ownEntrance = objs.map((o) => motionList((o as CustomObject).motion).some((m: { type: string }) => m.type === "pop-in" || m.type === "assemble"));
   /** Full state of object k at time tt: look entrance + keyframes/presets + aim at the camera. */
   const stateAt = (k: number, tt: number): ObjState => {
-    const lv = liveTransform(look, lookId, p, k, Math.round(tt * fps), fps, ownEntrance[k]);
+    let lv = liveTransform(look, lookId, p, k, Math.round(tt * fps), fps, ownEntrance[k]);
     const o = objs[k] as CustomObject;
+    const corner = p.objects[k]?.corner;
+    if (corner) {
+      // a pinned mascot rides the camera: its base sits at a screen corner for the whole scene
+      const pl = p.objects[k];
+      const cc = tt === t ? cam : camAt(tt);
+      const cp = cornerPlacement(cc, corner, pl.h / Math.max(1e-6, pl.scale), pl.scale);
+      // keep the look's entrance (drop / squash) and idle float: they were computed from the placeholder origin
+      const k3 = lv.scale.map((x) => (x / Math.max(1e-6, pl.scale)) * cp.scale) as Vec3;
+      lv = { ...lv, pos: [cp.pos[0] + lv.pos[0], cp.pos[1] + lv.pos[1] * cp.scale, cp.pos[2] + lv.pos[2]] as Vec3, scale: k3, rotY: lv.rotY + cp.yaw };
+    }
     const d = nodeDelta(o, tt, motionCtx(k));
     const pos: Vec3 = [lv.pos[0] + d.pos[0], lv.pos[1] + d.pos[1], lv.pos[2] + d.pos[2]];
     const c = tt === t ? cam : camAt(tt);
@@ -274,7 +285,10 @@ export const Scene3DView: React.FC<{ scene: Scene; index: number; spec: Resolved
   const center: [number, number] = [(max[0] + min[0]) / 2, (max[2] + min[2]) / 2];
   const span = Math.max(half[0], half[1], max[1]) + 3;
   const hdri = three?.hdri ? staticFile(three.hdri) : null;
-  const bg = look.bg(palette);
+  const world = p.world ?? null;
+  // the keyed backdrop is blended halfway toward the palette background so the palette text stays readable on it
+  const worldBackdrop = world?.backdrop ? mixHexColor(color3d(palette, look, world.backdrop, palette.bg[0]), palette.bg[0], 0.5) : null;
+  const bg = worldBackdrop ? { ...look.bg(palette), stops: backdropStops(worldBackdrop) } : look.bg(palette);
   const profile = (RENDER3D as Record<string, RenderProfile>)[lookId] ?? (RENDER3D as Record<string, RenderProfile>)["clay-diorama"];
   const set = p.set ?? "none";
   // fog melts the set into the backdrop's horizon
@@ -355,7 +369,8 @@ export const Scene3DView: React.FC<{ scene: Scene; index: number; spec: Resolved
           {profile.bloom ? <color attach="background" args={[mixHex(bg.stops[1] ?? "#04050B", "#000000", 0.35)]} /> : null}
           {profile.fog ? <fog attach="fog" args={[fogColor, p.frame.dist * profile.fog.near + profile.fog.add, p.frame.dist * profile.fog.far + profile.fog.add * 3]} /> : null}
           <Lights hdri={hdri} span={span} envIntensity={profile.envIntensity} shadowRadius={profile.shadowRadius} set={set !== "none"} />
-          {set === "none" ? <Floor half={half} center={center} /> : <SetView set={set} center={center} half={half} models={three?.models ?? {}} t={t} />}
+          {world?.ground && world.ground.kind !== "look" ? <WorldGround ground={world.ground} center={center} half={half} /> : set === "none" ? <Floor half={half} center={center} /> : <SetView set={set} center={center} half={half} models={three?.models ?? {}} t={t} />}
+          {world ? <WorldView world={world} t={t} sec={sec} seed={index + 1} /> : null}
           {objs.map((o, k) => {
             const lv = lives[k];
             const pl = p.objects[k];

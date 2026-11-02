@@ -7,10 +7,10 @@
 // Nothing here may import Node built-ins: it is bundled by Remotion through lib/spec.mjs.
 import { z } from "zod";
 import { COLOR_TOKENS } from "./illustration-schema.mjs";
-import { customExtent, customHeight, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords } from "./scene3d-motion.mjs";
+import { customExtent, customHeight, expandWorldParts, partsSignature, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords, shotsToKeys } from "./scene3d-motion.mjs";
 
 /** Templates rendered with the 3D kit. Their look id equals the template id. */
-export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world"];
+export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot"];
 export const usesThreeKit = (templateId) => THREE_D_TEMPLATE_IDS.includes(templateId);
 /** The 3D look of a resolved spec: theme.look3d when valid, else the template id, else clay-diorama. */
 export const look3dOf = (spec) => {
@@ -18,6 +18,9 @@ export const look3dOf = (spec) => {
   if (THREE_D_TEMPLATE_IDS.includes(l)) return l;
   return THREE_D_TEMPLATE_IDS.includes(spec?.template) ? spec.template : "clay-diorama";
 };
+
+/** Catalog kinds that stage stock GLB models: allowed only with `stock: true` (object or scene). */
+export const STOCK_KINDS = ["character", "car", "model"];
 
 /**
  * Procedural object kinds (built from primitives in src/three/objects.tsx; no external models needed).
@@ -77,8 +80,9 @@ export const MODEL_IDS = [
   "street-light", "sign-highway", "construction-barrier",
 ];
 /**
- * Environment sets: the world the camera is inside (the objects stand in its clear middle).
- * none = the look's own floor (plinth, baseplate, pad...); auto = the look's default set (RENDER3D).
+ * Stock environment sets (catalog scenery). No look stages one by default: `none` is the default everywhere and the
+ * agent builds the world from scratch with `world`. A named set needs `stock: true` on the scene.
+ * none = the look's own floor (plinth, baseplate, pad...); auto = the look's default (none).
  */
 export const SETS_3D = ["auto", "none", "road", "desk", "room", "grid", "stage", "city", "voxel"];
 /** Models each set dresses itself with (staged with the spec; a missing file just leaves the prop out). */
@@ -92,7 +96,8 @@ export const SET_MODELS = {
   city: ["city-building-a", "city-building-c", "city-building-skyscraper-a", "city-building-skyscraper-c", "street-light", "construction-barrier"],
   voxel: [],
 };
-export const CAMERA_MOVES = ["auto", "orbit", "dolly", "push", "crane", "pan", "turntable", "topdown", "static", "glide", "rise"];
+export const CAMERA_MOVES = ["auto", "orbit", "dolly", "push", "crane", "pan", "turntable", "topdown", "static", "glide", "rise", "handheld"];
+export const CORNERS = ["bl", "br", "tl", "tr"];
 export const LAYOUTS_3D = ["auto", "row", "grid", "flow", "circle", "stack", "hero"];
 
 const hex = z.string().regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/, "must be a hex color like #1A2B3C");
@@ -114,6 +119,8 @@ export const object3dSchema = z.object({
   pos: vec3.optional().describe("World position override [x, y, z]; ground is y = 0"),
   at: momentSchema.optional().describe("When it appears: seconds or a narration word; omitted = auto-staggered"),
   highlight: z.boolean().optional().describe("Accent glow ring + pulse"),
+  stock: z.boolean().optional().describe("true = this catalog kind (character, car, model) is wanted on purpose"),
+  corner: z.enum(CORNERS).optional().describe("custom only: pin the object to a screen corner (bl, br, tl, tr) as a persistent mascot; it follows the camera"),
   ...customObjectFields,
 });
 
@@ -130,7 +137,7 @@ export const scene3dFields = {
   focus: z.string().min(1).optional().describe("Object id the camera pushes in on during the scene"),
   connect: z.array(connection3dSchema).max(8).optional().describe("Animated arrows between object ids"),
   explode: z.boolean().optional().describe("Objects fly out from the center (exploded view)"),
-  set: z.enum(SETS_3D, { error: (iss) => `unknown set${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SETS_3D.join(", ")}` }).optional().describe("Environment set the camera is inside; auto = the look's default"),
+  set: z.enum(SETS_3D, { error: (iss) => `unknown set${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SETS_3D.join(", ")}` }).optional().describe("Stock environment set (needs stock: true on the scene); auto/none = no stock set. Build the world with `world` instead"),
   ...generativeSceneFields,
 };
 
@@ -140,6 +147,24 @@ export function refineScene3d(v, ctx) {
   const objs = v.objects ?? [];
   if (!objs.length) ctx.addIssue({ code: "custom", path: ["objects"], message: 'visual.type "scene3d" requires at least one object in visual.objects' });
   const ids = new Set(objs.map((o) => o.id).filter(Boolean));
+  // 3D is built from scratch: a custom object or a custom world, unless the scene opts into catalog content
+  const world = v.world;
+  const builds = objs.some((o) => o.kind === "custom") || Boolean(world && ((world.parts ?? []).length || world.crowd));
+  if (objs.length && !v.stock && !builds) {
+    ctx.addIssue({ code: "custom", path: ["objects"], message: "3D scenes are built from scratch: add a `custom` object (parts) or a custom `world` (parts or crowd); set `stock: true` on the visual only to use catalog content on purpose" });
+  }
+  if (!v.stock && v.set && v.set !== "auto" && v.set !== "none") {
+    ctx.addIssue({ code: "custom", path: ["set"], message: `stock set "${v.set}" needs \`stock: true\` on the scene; build the set with \`world\` instead` });
+  }
+  objs.forEach((o, k) => {
+    if (STOCK_KINDS.includes(o.kind) && !o.stock && !v.stock) {
+      ctx.addIssue({ code: "custom", path: ["objects", k, "kind"], message: `kind "${o.kind}" stages a stock catalog model: build it with a \`custom\` object, or set \`stock: true\` on the object to use the catalog on purpose` });
+    }
+    if (o.corner && o.kind !== "custom") ctx.addIssue({ code: "custom", path: ["objects", k, "corner"], message: "`corner` pins a custom object (a mascot); use kind custom" });
+  });
+  const corners = objs.map((o) => o.corner).filter(Boolean);
+  if (new Set(corners).size !== corners.length) ctx.addIssue({ code: "custom", path: ["objects"], message: "one object per screen corner" });
+  if (corners.length && corners.length === objs.length) ctx.addIssue({ code: "custom", path: ["objects"], message: "a scene needs an object that is not pinned to a corner" });
   objs.forEach((o, k) => {
     const need = (field, msg) => ctx.addIssue({ code: "custom", path: ["objects", k, field], message: msg });
     if (o.kind === "chart" && !o.values) need("values", "chart objects need `values` (2-6 numbers)");
@@ -170,26 +195,32 @@ export function refineScene3d(v, ctx) {
  * iso-toon uses an orthographic camera at the true isometric angle.
  */
 export const LOOK3D = {
-  "clay-diorama": { ortho: false, fov: 30, yaw: -24, pitch: 30, moves: ["orbit", "dolly", "crane", "orbit", "push"], float: 0.06, spin: 0 },
+  "clay-diorama": { ortho: false, fov: 30, yaw: -20, pitch: 22, moves: ["orbit", "dolly", "crane", "orbit", "push"], float: 0.06, spin: 0 },
   "iso-toon": { ortho: true, fov: 30, yaw: 45, pitch: 35.264, moves: ["pan", "dolly", "orbit", "static"], float: 0, spin: 0 },
   "neon-glass": { ortho: false, fov: 34, yaw: 18, pitch: 16, moves: ["push", "orbit", "dolly", "crane"], float: 0.08, spin: 0 },
   "pedestal": { ortho: false, fov: 26, yaw: -10, pitch: 10, moves: ["turntable", "push", "orbit", "dolly"], float: 0.04, spin: 0.35 },
   // pop-up book seen from above: high pitch, cranes down as the pages open
-  "paper-world": { ortho: false, fov: 28, yaw: 28, pitch: 40, moves: ["crane", "orbit", "dolly", "push"], float: 0, spin: 0 },
+  "paper-world": { ortho: false, fov: 28, yaw: 20, pitch: 26, moves: ["crane", "orbit", "dolly", "push"], float: 0, spin: 0 },
   // macro toy photography: a long lens (narrow fov) from a tabletop angle; the tilt-shift blur is a 2D overlay
-  "toy-blocks": { ortho: false, fov: 17, yaw: -34, pitch: 32, moves: ["orbit", "topdown", "dolly", "pan"], float: 0, spin: 0 },
+  "toy-blocks": { ortho: false, fov: 17, yaw: -30, pitch: 22, moves: ["orbit", "topdown", "dolly", "pan"], float: 0, spin: 0 },
   // hologram on a projector pad: low eye-level camera, objects hover and slowly rotate on the pad
   "holo-studio": { ortho: false, fov: 32, yaw: 0, pitch: 11, moves: ["turntable", "orbit", "push", "crane"], float: 0.1, spin: 0.45 },
   // rendered formats: slow moves through a set (glide = lateral truck, rise = pedestal up), never a punch-in by default;
   // `wide` pulls the framing back so the set around the subject reads
-  // a low camera over a glowing grid floor that recedes into fog
+  // a low camera in a fogged void; any grid or floor is built by the agent
   "neon-grid": { ortho: false, fov: 36, yaw: -22, pitch: 13, moves: ["glide", "orbit", "dolly", "rise"], float: 0, spin: 0, wide: 1.3 },
-  // product-photo lens over a wooden desk: long-ish focal length, three-quarter angle
+  // product-photo lens: long-ish focal length, three-quarter angle (the set is built by the agent)
   "soft-studio": { ortho: false, fov: 27, yaw: -30, pitch: 24, moves: ["dolly", "glide", "orbit", "rise"], float: 0, spin: 0, wide: 1.25 },
-  // low chase-camera angle on a night road: the lamps and the fogged horizon stay in frame
-  "moody-night": { ortho: false, fov: 30, yaw: 14, pitch: 12, moves: ["rise", "glide", "dolly", "orbit"], float: 0, spin: 0, wide: 1.2 },
-  // a high three-quarter view of a voxel island
-  "voxel-world": { ortho: false, fov: 31, yaw: -38, pitch: 34, moves: ["orbit", "rise", "glide", "dolly"], float: 0, spin: 0, wide: 1.3 },
+  // low cinematic camera with night light and fog and a slightly handheld feel; the scenery is built by the agent
+  "moody-night": { ortho: false, fov: 30, yaw: 14, pitch: 9, moves: ["rise", "handheld", "dolly", "orbit"], float: 0, spin: 0, wide: 1.2 },
+  // a low hero angle on blocky builds (never an isometric view: that belongs to iso-toon)
+  "voxel-world": { ortho: false, fov: 31, yaw: -22, pitch: 15, moves: ["orbit", "rise", "handheld", "dolly"], float: 0, spin: 0, wide: 1.3 },
+  // formats: a low hero camera looking toward a lit stage; a long push or a rise
+  "data-stage": { ortho: false, fov: 34, yaw: 8, pitch: 7, moves: ["rise", "dolly", "glide", "push"], float: 0, spin: 0, wide: 1.35 },
+  // a recurring monolith seen from below: push-ins, orbits and a handheld drift
+  "monolith-story": { ortho: false, fov: 30, yaw: -12, pitch: 5, moves: ["push", "orbit", "handheld", "rise", "dolly"], float: 0, spin: 0, wide: 1.2 },
+  // soft product camera at table height; the mascot rides in a screen corner
+  "clay-mascot": { ortho: false, fov: 28, yaw: -14, pitch: 14, moves: ["dolly", "orbit", "glide", "push"], float: 0.05, spin: 0, wide: 1.1 },
 };
 
 /**
@@ -207,13 +238,16 @@ export const RENDER3D = {
   "paper-world": { tone: "neutral", exposure: 1.05, hdri: null, envIntensity: 0.8, shadowRadius: 4, bloom: null, fog: null, set: "none" },
   "toy-blocks": { tone: "aces", exposure: 1.05, hdri: null, envIntensity: 0.8, shadowRadius: 5, bloom: null, fog: null, set: "none" },
   "holo-studio": { tone: "aces", exposure: 1.0, hdri: null, envIntensity: 0.8, shadowRadius: 1, bloom: { strength: 0.6, threshold: 0.88, radius: 0.55 }, fog: { near: 0.9, far: 2.4, add: 4 }, set: "none" },
-  "neon-grid": { tone: "aces", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 4, bloom: null, fog: { near: 1.1, far: 3.4, add: 0 }, set: "grid" },
-  "soft-studio": { tone: "neutral", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: { near: 1.6, far: 5.0, add: 0 }, set: "desk" },
-  "moody-night": { tone: "aces", exposure: 1.05, hdri: null, envIntensity: 0, shadowRadius: 4, bloom: null, fog: { near: 1.2, far: 4.5, add: 0 }, set: "road" },
-  "voxel-world": { tone: "neutral", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 3, bloom: null, fog: { near: 1.4, far: 4.2, add: 0 }, set: "voxel" },
+  "neon-grid": { tone: "aces", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 4, bloom: null, fog: { near: 1.1, far: 3.4, add: 0 }, set: "none" },
+  "soft-studio": { tone: "neutral", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: { near: 1.6, far: 5.0, add: 0 }, set: "none" },
+  "moody-night": { tone: "aces", exposure: 1.05, hdri: null, envIntensity: 0, shadowRadius: 4, bloom: null, fog: { near: 1.2, far: 4.5, add: 0 }, set: "none" },
+  "voxel-world": { tone: "neutral", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 3, bloom: null, fog: { near: 1.4, far: 4.2, add: 0 }, set: "none" },
+  "data-stage": { tone: "aces", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 4, bloom: { strength: 0.55, threshold: 0.85, radius: 0.5 }, fog: { near: 1.2, far: 3.6, add: 0 }, set: "none" },
+  "monolith-story": { tone: "aces", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 5, bloom: null, fog: { near: 1.0, far: 3.4, add: 0 }, set: "none" },
+  "clay-mascot": { tone: "neutral", exposure: 1.05, hdri: "brown-photostudio-02", envIntensity: 0.5, shadowRadius: 8, bloom: null, fog: null, set: "none" },
 };
 
-/** The environment set of a scene3d visual: explicit set, else the look's default. */
+/** The stock environment set of a scene3d visual: explicit set, else the look's default (none for every look). */
 export const setOf = (v, look) => (v?.set && v.set !== "auto" ? v.set : (RENDER3D[look]?.set ?? "none"));
 
 // ---------------- layout ----------------
@@ -228,7 +262,7 @@ export const heightOf = (o) => (o.kind === "custom" ? customHeight(o.parts) : ob
 
 /** Effective layout for a visual: auto picks hero for 1 object, row for 2, flow when there are connections, else grid. */
 export const layoutOf = (v) => {
-  const n = v.objects?.length ?? 0;
+  const n = (v.objects ?? []).filter((o) => !o.corner).length;
   if (v.layout && v.layout !== "auto") return v.layout;
   if (n <= 1) return "hero";
   if (n === 2) return "row";
@@ -240,16 +274,24 @@ export const layoutOf = (v) => {
  * Deterministic and overlap-free for up to 7 objects.
  */
 export function layoutObjects(v) {
-  const objs = v.objects ?? [];
+  const all = v.objects ?? [];
+  // corner-pinned mascots are placed by cornerPlacement (screen space), not on the ground plane
+  const idx = all.map((_, i) => i).filter((i) => !all[i].corner);
+  const objs = idx.map((i) => all[i]);
   const n = objs.length;
   const layout = layoutOf(v);
   const out = [];
-  const put = (i, x, y, z, scale = 1) => {
-    const s = scale * (objs[i].size ?? 1);
-    out[i] = { pos: objs[i].pos ? objs[i].pos.map(r3) : [r3(x), r3(y), r3(z)], scale: r3(s), h: r3(heightOf(objs[i]) * s) };
+  all.forEach((o, i) => {
+    if (o.corner) out[i] = { pos: [0, 0, 0], scale: r3(o.size ?? 1), h: r3(heightOf(o) * (o.size ?? 1)), corner: o.corner };
+  });
+  const put = (j, x, y, z, scale = 1) => {
+    const i = idx[j];
+    const s = scale * (objs[j].size ?? 1);
+    out[i] = { pos: objs[j].pos ? objs[j].pos.map(r3) : [r3(x), r3(y), r3(z)], scale: r3(s), h: r3(heightOf(objs[j]) * s) };
     // custom models carry their real half-width, so wide or tilted models are framed whole
-    if (objs[i].kind === "custom") out[i].half = r3(Math.max(0.75, customExtent(objs[i].parts).half) * s);
+    if (objs[j].kind === "custom") out[i].half = r3(Math.max(0.75, customExtent(objs[j].parts).half) * s);
   };
+  if (!n) return out;
   if (layout === "row") {
     objs.forEach((_, i) => put(i, (i - (n - 1) / 2) * SX, 0, 0, n > 3 ? 0.8 : 1));
   } else if (layout === "flow") {
@@ -287,7 +329,8 @@ export function layoutObjects(v) {
 }
 
 /** Axis-aligned bounds of the placed objects (footprint 1.5 x 1.5 per unit of scale, or a custom model's `half`). */
-export function boundsOf(placed) {
+export function boundsOf(all) {
+  const placed = all.filter((p) => !p.corner);
   if (!placed.length) return { min: [-1, 0, -1], max: [1, 1.2, 1] };
   const min = [Infinity, Infinity, Infinity];
   const max = [-Infinity, -Infinity, -Infinity];
@@ -404,6 +447,15 @@ export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, 
       target = [target[0], target[1] + mix(-0.15, 0.1, ease(u)), target[2]];
       zoom(mix(1.1, 0.98, ease(u)));
       break;
+    case "handheld": {
+      // hand-held feel: slow deterministic drift in yaw, pitch and the look-at point, plus a gentle push
+      const w = t * 0.9;
+      yaw += Math.sin(w * 1.3) * 2.2 + Math.sin(w * 2.9 + 1) * 0.9;
+      pitch += Math.sin(w * 1.1 + 2) * 1.3 + Math.sin(w * 3.3) * 0.5;
+      target = [target[0] + Math.sin(w * 1.7) * 0.12, target[1] + Math.sin(w * 2.1 + 0.5) * 0.08, target[2]];
+      zoom(mix(1.08, 0.97, ease(u)));
+      break;
+    }
     default:
       break;
   }
@@ -465,6 +517,27 @@ export function projectPoint(cam, p, width = 1080, height = 1920) {
   return { x: ((nx + 1) / 2) * width, y: ((1 - ny) / 2) * height, depth: z };
 }
 
+/**
+ * World placement of a corner-pinned mascot for a camera state: its base sits at a screen corner (inside the safe
+ * area), `frac` of the frame tall at `size` 1, turned slightly toward the center. Pure, perspective and ortho.
+ * @returns {{pos: number[], scale: number, yaw: number}}
+ */
+export function cornerPlacement(cam, corner, baseHeight, size = 1, dist = null) {
+  const px = { bl: [280, 1560], br: [800, 1560], tl: [280, 700], tr: [800, 700] }[corner] ?? [200, 1470];
+  const fwd = norm(sub(cam.target, cam.position));
+  const right = norm(cross(fwd, [0, 1, 0]));
+  const up = cross(right, fwd);
+  const d = dist ?? Math.hypot(...sub(cam.target, cam.position)) * 0.6;
+  const aspect = 1080 / 1920;
+  const nx = (px[0] / 1080) * 2 - 1;
+  const ny = 1 - (px[1] / 1920) * 2;
+  const halfH = cam.ortho ? cam.viewH / 2 : Math.tan((cam.fov / 2) * DEG) * d;
+  const pos = [0, 1, 2].map((a) => cam.position[a] + fwd[a] * d + right[a] * nx * halfH * aspect + up[a] * ny * halfH);
+  const scale = (0.15 * size * 2 * halfH) / Math.max(0.2, baseHeight);
+  const yaw = Math.atan2(cam.position[0] - pos[0], cam.position[2] - pos[2]) + (corner.endsWith("l") ? 0.4 : -0.4);
+  return { pos: pos.map(r3), scale: r3(scale), yaw: r3(yaw) };
+}
+
 /** Idle float offset (y) of object `i` at `t` seconds (frame-driven replacement for drei <Float>). */
 export const floatY = (look, t, i) => (LOOK3D[look]?.float ?? 0) * Math.sin(t * 1.6 + i * 1.7);
 
@@ -506,7 +579,8 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
   const focus = v.focus !== undefined ? byId[v.focus] : undefined;
   const frame = frameContent(placed, look);
   // camera keys: moments -> seconds, focus -> a shift of the look-at point onto that object
-  const cameraKeys = (v.cameraKeys ?? []).map((k) => {
+  const rawKeys = v.shots ? shotsToKeys(v.shots, sceneSec, (m) => momentSec(m, moments)) : (v.cameraKeys ?? []);
+  const cameraKeys = rawKeys.map((k) => {
     const out = { t: round(momentSec(k.at, moments)), ease: k.ease };
     if (k.yaw !== undefined) out.yaw = k.yaw;
     if (k.pitch !== undefined) out.pitch = k.pitch;
@@ -517,9 +591,11 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
     if (f) out.shift = [0, 1, 2].map((a) => r3(f.pos[a] + (a === 1 ? f.h * 0.5 : 0) - frame.target[a] + shift[a]));
     else if (k.shift) out.shift = k.shift;
     return out;
-  });
+  }).sort((a, b) => a.t - b.t);
+  const w = v.world;
   return {
     kind: "scene3d",
+    world: w ? { concept: w.concept, ground: w.ground ?? null, backdrop: w.backdrop ?? null, parts: expandWorldParts(w.parts ?? []), crowd: w.crowd ?? null } : null,
     set: setOf(v, look),
     layout: layoutOf(v),
     move: resolveMove(v.camera, look, index),
@@ -559,6 +635,23 @@ export const modelOf = (o, i) => {
   if (o.kind === "character") return o.model ?? CHARACTER_MODELS[i % CHARACTER_MODELS.length];
   return o.kind === "model" ? (o.model ?? null) : null;
 };
+
+/**
+ * Novelty guard across the scenes of one spec: three or more built-from-scratch scenes must not all show the identical
+ * subject and world (same parts, same backdrop). Scenes that opt into `stock` are skipped.
+ */
+export function refineThreeNovelty(scenes, ctx, basePath = ["scenes"]) {
+  const sigs = [];
+  scenes.forEach((s, i) => {
+    const v = s.visual;
+    if (v?.type !== "scene3d" || v.stock) return;
+    const subject = (v.objects ?? []).filter((o) => o.kind === "custom").map((o) => partsSignature(o.parts));
+    sigs.push({ i, sig: JSON.stringify([subject, partsSignature(v.world?.parts), v.world?.backdrop ?? null, (v.objects ?? []).map((o) => o.kind)]) });
+  });
+  if (sigs.length >= 3 && sigs.every((x) => x.sig === sigs[0].sig)) {
+    ctx.addIssue({ code: "custom", path: [...basePath, sigs[sigs.length - 1].i, "visual"], message: "every 3D scene shows the same subject and world: vary the models, the world or the backdrop from scene to scene (a recurring mascot or monolith may persist, but its surroundings change)" });
+  }
+}
 
 /** Model ids referenced by a spec (objects, default cars and characters, set props) to stage their GLB files. */
 export const collectModelIds = (spec) => {

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { MOODS, MUSIC_PROVIDERS } from "./music-moods.mjs";
 import { elementsSchema, hasEmoji, hudItemSchema, hudOverrideSchema, lookSchema, sceneTitleSchema } from "./illustration-schema.mjs";
 import { ART_LOOKS, FORMAT_2D_LOOKS, usesIllustratedKit } from "./illustrated.mjs";
-import { THREE_D_TEMPLATE_IDS, refineScene3d, scene3dFields, usesThreeKit } from "./scene3d.mjs";
+import { THREE_D_TEMPLATE_IDS, refineScene3d, refineThreeNovelty, scene3dFields, usesThreeKit } from "./scene3d.mjs";
 import { REELS_TEMPLATE_IDS } from "./reels.mjs";
 import { PIXEL_TEMPLATE_IDS, pixelSceneSchema, refinePixel, refinePixelSpec, usesPixelKit } from "./pixel.mjs";
 import { reelSceneSchema, reelsOptionsSchema, refineReels } from "./reels-schema.mjs";
@@ -300,10 +300,11 @@ export const videoSpecSchema = z
     if (three) {
       // 3D looks draw everything; emoji are not allowed in anything shown on screen.
       spec.scenes.forEach((s, i) => {
-        const visible = { onScreenText: s.onScreenText, title: s.title, hud: s.hud, visual: { objects: s.visual?.objects, connect: s.visual?.connect } };
+        const visible = { onScreenText: s.onScreenText, title: s.title, hud: s.hud, visual: { objects: s.visual?.objects, connect: s.visual?.connect, world: (s.visual?.world?.parts ?? []).map((p) => p.text) } };
         for (const where of findEmoji(visible)) ctx.addIssue({ code: "custom", path: ["scenes", i, ...where], message: "emoji are not allowed in 3D templates; use a 3D object (kind icon, check, cross...) instead" });
       });
       for (const where of findEmoji(spec.hud)) ctx.addIssue({ code: "custom", path: ["hud", ...where], message: "emoji are not allowed in 3D templates" });
+      refineThreeNovelty(spec.scenes, ctx);
       return;
     }
     if (!usesIllustratedKit(spec.template)) return;

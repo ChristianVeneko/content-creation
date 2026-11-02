@@ -23,6 +23,7 @@ export const PART_SIZE = {
   torus: { n: [2, 3], about: "[R, tube] or [R, tube, arcDegrees]; stands in the XY plane (faces +z)" },
   capsule: { n: [2], about: "[r, length of the straight part]" },
   plane: { n: [2], about: "[w, h], faces +z" },
+  sign: { n: [2], about: "[w, h] flat pixel-font sign facing +z that prints `text` (<= 24 chars) in `textColor` on a `color` panel" },
   ring: { n: [2], about: "[inner, outer] flat ring, faces +z" },
   tube: { n: [1], about: "[radius] along `points` (3D, smooth curve)" },
   extrude: { n: [1], about: "[depth] of the 2D outline `points` [[x, y], ...] (faces +z); `radius` bevels it" },
@@ -66,10 +67,27 @@ export const FX_ABOUT = {
   glow: "soft halo behind `target`",
   sweep: "a colored light sweeps across the scene",
   hologram: "rotating rings + scanline shell around `target`",
+  spotlight: "volumetric cone of light from `pos` (default: above the scene) onto `target`, `aim` or the scene center; sways slowly; `size` widens it",
 };
 export const FX_TYPES = Object.keys(FX_ABOUT);
 const TARGET_NEEDED = ["trail", "pulse", "glow", "hologram"];
 export const MAX_PARTS = 40;
+/** Parts of a custom `world` (ground dressing, backdrops, props, signs) and the cap after `repeat` expansion. */
+export const MAX_WORLD_PARTS = 24;
+export const MAX_WORLD_EXPANDED = 160;
+export const WORLD_GROUNDS = ["look", "none", "plane", "disc", "grid", "mirror"];
+/** Camera shot presets: offsets added on top of the scene's camera move (see `shots`). */
+export const SHOT_PRESETS = {
+  wide: { zoom: 1.25, pitch: -3 },
+  medium: { zoom: 1 },
+  close: { zoom: 0.62, pitch: -2 },
+  low: { pitch: -12, zoom: 0.9 },
+  high: { pitch: 14, zoom: 1.05 },
+  overhead: { pitch: 34, zoom: 1.1 },
+  left: { yaw: -32, zoom: 0.95 },
+  right: { yaw: 32, zoom: 0.95 },
+};
+export const SHOT_NAMES = Object.keys(SHOT_PRESETS);
 
 // ---------------- moments ----------------
 
@@ -159,6 +177,8 @@ export const partSchema = z
     size: z.array(n(0.005, 360)).max(3).optional().describe("Dimensions in world units (<= 8), meaning per shape; torus arc in degrees"),
     points: z.array(z.array(n(-6, 6)).min(2).max(3)).max(64).optional().describe("tube: [[x,y,z]...]; extrude: outline [[x,y]...]; lathe: profile [[r,y]...]"),
     radius: n(0, 0.5).optional().describe("box: edge rounding; extrude: bevel"),
+    text: z.string().min(1).max(24).optional().describe("sign: the text printed on the sign (pixel font)"),
+    textColor: color.optional().describe("sign: text color (default: readable on the panel)"),
     pos: v3(-5, 5).optional().describe("Center, relative to the parent part's center (or the object's base)"),
     rot: v3(-360, 360).optional().describe("Degrees [x, y, z]"),
     scale: scaleField.optional(),
@@ -181,6 +201,62 @@ export const customObjectFields = {
   keys: keysField,
 };
 
+const repeatSchema = z
+  .object({
+    count: z.number().int().min(2).max(40).describe("Number of copies (including the original)"),
+    step: v3(-10, 10).describe("Offset between copies [x, y, z]; e.g. [0, 0, -1.2] makes a row receding into depth"),
+    scaleStep: n(0.5, 1.5).optional().describe("Scale multiplier applied cumulatively per copy (default 1)"),
+  })
+  .strict();
+
+/** A part of the agent-built world: like an object part, but over the whole stage (|pos| <= 30) and repeatable. */
+export const worldPartSchema = partSchema.extend({
+  pos: v3(-30, 30).optional().describe("Center in world units (objects stand near the origin; negative z recedes)"),
+  repeat: repeatSchema.optional().describe("Copies of this part (and the parts hanging from it)"),
+});
+
+const groundSchema = z
+  .object({
+    kind: z.enum(WORLD_GROUNDS).optional().describe("look = the look's own floor (default), none = shadow catcher only, plane | disc | grid | mirror"),
+    color: color.optional(),
+    size: n(2, 60).optional().describe("plane/grid/mirror: side length; disc: diameter"),
+  })
+  .strict();
+
+const crowdSchema = z
+  .object({
+    count: z.number().int().min(8).max(160),
+    area: z.tuple([n(2, 40), n(1, 30)]).describe("Width and depth of the area the silhouettes fill"),
+    pos: v3(-30, 30).optional().describe("Center of the area (default [0, 0, -6])"),
+    height: n(0.4, 2.5).optional().describe("Silhouette height (default 1.1)"),
+    color: color.optional().describe("Silhouette color (default: near-black of the backdrop)"),
+  })
+  .strict();
+
+/** The set the agent builds from scratch for one scene: ground, backdrop color, parts, crowd. `concept` is required. */
+export const worldSchema = z
+  .object({
+    concept: z.string().min(3).max(80).describe("The world idea of THIS video in a few words (setting + silhouette language); never reuse a previous video's"),
+    ground: groundSchema.optional(),
+    backdrop: color.optional().describe("Flat backdrop color of the scene (default: the look's gradient)"),
+    parts: z.array(worldPartSchema).max(MAX_WORLD_PARTS, `at most ${MAX_WORLD_PARTS} world parts (repeat copies are expanded)`).optional().describe("Props, walls, signs and stage dressing built from primitive parts"),
+    crowd: crowdSchema.optional().describe("Instanced crowd silhouettes"),
+  })
+  .strict();
+
+const shotSchema = z
+  .object({
+    at: momentSchema.optional().describe("When the shot starts (default: evenly spaced over the scene)"),
+    shot: z.enum(SHOT_NAMES, { error: (iss) => `unknown shot${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SHOT_NAMES.join(", ")}` }),
+    focus: z.string().min(1).max(40).optional().describe("Object id the shot aims at"),
+    yaw: n(-180, 180).optional(),
+    pitch: n(-60, 60).optional(),
+    zoom: n(0.3, 3).optional(),
+    shift: v3(-5, 5).optional(),
+    ease: z.enum(EASINGS).optional(),
+  })
+  .strict();
+
 /** One 3D effect (lib/spec.mjs unions it with the 2D fx of lib/fx2d.mjs for `visual.fx`). */
 export const fx3dSchema = z
   .object({
@@ -192,6 +268,8 @@ export const fx3dSchema = z
     until: momentSchema.optional(),
     count: z.number().int().min(4).max(200).optional(),
     size: n(0.2, 4).optional().describe("Size multiplier"),
+    pos: v3(-30, 30).optional().describe("spotlight: apex of the cone [x, y, z]"),
+    aim: v3(-30, 30).optional().describe("spotlight: world point the cone lights (when there is no `target`)"),
     burst: z.boolean().optional().describe("particles: one burst from the target at `at` instead of an ambient field"),
   })
   .strict();
@@ -212,6 +290,9 @@ const cameraKeySchema = z
 export const generativeSceneFields = {
   cameraKeys: z.array(cameraKeySchema).min(1).max(8).optional().describe("Camera keyframes on top of `camera` (use camera: static for keys only)"),
   fx: z.array(fx3dSchema).max(6).optional().describe(`Visual effects: ${FX_TYPES.join(", ")}`),
+  world: worldSchema.optional().describe("The set built from scratch for this scene (ground, backdrop, parts, crowd)"),
+  shots: z.array(shotSchema).min(2).max(4).optional().describe(`2-4 camera shots over the scene (${SHOT_NAMES.join(", ")}); use instead of cameraKeys`),
+  stock: z.boolean().optional().describe("true = this scene uses catalog content on purpose (stock kinds, models, sets) instead of agent-built custom parts / world"),
 };
 
 /** Checks of the generative fields of a scene3d visual (paths relative to the visual). */
@@ -237,24 +318,22 @@ export function refineGenerative(v, ctx) {
         if (partIds && !partIds.has(p)) add([...base, i, "parts", k], `no part with id "${p}" in this object`);
       });
     });
-  objs.forEach((o, k) => {
-    const base = ["objects", k];
-    at([...base, "at"], o.at);
-    const parts = o.parts ?? [];
-    if (o.kind === "custom" && !parts.length) add([...base, "parts"], "custom objects need `parts` (1-40 primitive parts)");
-    if (o.kind !== "custom" && parts.length) add([...base, "parts"], "`parts` belongs to kind custom");
+  /** Checks of a list of parts (object parts or world parts); returns the id map. */
+  const checkParts = (parts, base, maxSize) => {
     const ids = new Map();
     parts.forEach((p, i) => {
-      if (ids.has(p.id)) add([...base, "parts", i, "id"], `duplicate part id "${p.id}"`);
+      if (ids.has(p.id)) add([...base, i, "id"], `duplicate part id "${p.id}"`);
       else ids.set(p.id, p);
     });
     parts.forEach((p, i) => {
-      const pb = [...base, "parts", i];
+      const pb = [...base, i];
       const spec = PART_SIZE[p.shape];
       if (p.size && spec && !spec.n.includes(p.size.length)) add([...pb, "size"], `${p.shape} \`size\` is ${spec.about}`);
       (p.size ?? []).forEach((x, j) => {
-        if (x > 8 && !(p.shape === "torus" && j === 2)) add([...pb, "size", j], "sizes are world units: at most 8 (the torus arc, size[2], is in degrees)");
+        if (x > maxSize && !(p.shape === "torus" && j === 2)) add([...pb, "size", j], `sizes are world units: at most ${maxSize} (the torus arc, size[2], is in degrees)`);
       });
+      if (p.shape === "sign" && !p.text) add([...pb, "text"], "sign parts need `text` (<= 24 characters)");
+      if (p.shape !== "sign" && (p.text !== undefined || p.textColor !== undefined)) add([...pb, "text"], "`text` / `textColor` belong to the sign shape");
       const pts = p.points ?? [];
       if (p.shape === "tube") {
         if (pts.length < 2) add([...pb, "points"], "tube parts need `points`: at least 2 [x, y, z] points");
@@ -276,7 +355,7 @@ export function refineGenerative(v, ctx) {
       let cur = p;
       while (cur?.parent !== undefined && ids.has(cur.parent)) {
         if (cur.parent === p.id) {
-          if (!chain.some((c) => reported.has(c))) add([...base, "parts", i, "parent"], `parent cycle: ${[...chain, p.id].join(" -> ")}`);
+          if (!chain.some((c) => reported.has(c))) add([...base, i, "parent"], `parent cycle: ${[...chain, p.id].join(" -> ")}`);
           chain.forEach((c) => reported.add(c));
           break;
         }
@@ -285,6 +364,15 @@ export function refineGenerative(v, ctx) {
         cur = ids.get(cur.parent);
       }
     });
+    return ids;
+  };
+  objs.forEach((o, k) => {
+    const base = ["objects", k];
+    at([...base, "at"], o.at);
+    const parts = o.parts ?? [];
+    if (o.kind === "custom" && !parts.length) add([...base, "parts"], "custom objects need `parts` (1-40 primitive parts)");
+    if (o.kind !== "custom" && parts.length) add([...base, "parts"], "`parts` belongs to kind custom");
+    const ids = checkParts(parts, [...base, "parts"], 8);
     checkMotion(o.motion, [...base, "motion"], { partIds: o.kind === "custom" ? ids : null, isPart: false });
     checkKeys(o.keys, [...base, "keys"]);
   });
@@ -308,6 +396,20 @@ export function refineGenerative(v, ctx) {
     at(["cameraKeys", i, "at"], k.at);
     if (k.focus && !byId.has(k.focus)) add(["cameraKeys", i, "focus"], `no object with id "${k.focus}" in this scene`);
   });
+  if (v.shots && v.cameraKeys) add(["shots"], "use either `shots` or `cameraKeys`, not both");
+  (v.shots ?? []).forEach((k, i) => {
+    at(["shots", i, "at"], k.at);
+    if (k.focus && !byId.has(k.focus)) add(["shots", i, "focus"], `no object with id "${k.focus}" in this scene`);
+  });
+  if (v.world) {
+    const wp = v.world.parts ?? [];
+    const ids = checkParts(wp, ["world", "parts"], 40);
+    wp.forEach((p, i) => {
+      if (p.repeat && (p.parent !== undefined)) add(["world", "parts", i, "repeat"], "`repeat` goes on a root part (no `parent`); its children are copied with it");
+    });
+    if (ids.size === wp.length && expandWorldParts(wp).length > MAX_WORLD_EXPANDED) add(["world", "parts"], `the world expands to more than ${MAX_WORLD_EXPANDED} parts after \`repeat\`; lower the counts`);
+    if (!wp.length && !v.world.crowd && !v.world.ground && !v.world.backdrop) add(["world"], "an empty world: add `parts`, `crowd`, `ground` or `backdrop`");
+  }
 }
 
 // ---------------- easing + keyframes ----------------
@@ -497,6 +599,67 @@ export function nodeDelta(node, t, ctx, inherited = [], partId = null, info = nu
 /** Whether a node aims at the camera. */
 export const looksAtCamera = (node) => motionList(node?.motion).some((m) => m.type === "look-at-camera");
 
+// ---------------- world ----------------
+
+/**
+ * Flatten `repeat` of world parts: each copy of a repeated root part (with the parts hanging from it) gets the id suffix
+ * `#k`, its position moved by `step * k` and its scale multiplied by `scaleStep ** k`. Pure; the original is copy 0.
+ */
+export function expandWorldParts(parts) {
+  const out = [];
+  const kids = (id) => parts.filter((q) => q.parent === id);
+  const clone = (p, k, suffix, offset, sc, isRoot) => {
+    const c = { ...p, id: k === 0 ? p.id : p.id + suffix };
+    delete c.repeat;
+    if (k > 0) {
+      if (p.parent !== undefined) c.parent = p.parent + suffix;
+      if (isRoot) {
+        const pos = p.pos ?? [0, 0, 0];
+        c.pos = pos.map((x, a) => Math.round((x + offset[a]) * 1000) / 1000);
+        if (sc !== 1) c.scale = (Array.isArray(p.scale) ? p.scale : [p.scale ?? 1, p.scale ?? 1, p.scale ?? 1]).map((x) => Math.round(x * sc * 1000) / 1000);
+      }
+    }
+    out.push(c);
+    for (const ch of kids(p.id)) clone(ch, k, suffix, offset, sc, false);
+  };
+  const placed = new Set();
+  const markSub = (p) => {
+    placed.add(p.id);
+    for (const ch of kids(p.id)) markSub(ch);
+  };
+  for (const p of parts) {
+    if (p.parent !== undefined || placed.has(p.id)) continue;
+    markSub(p);
+    const r = p.repeat;
+    const count = r?.count ?? 1;
+    for (let k = 0; k < count; k++) {
+      const step = r?.step ?? [0, 0, 0];
+      clone(p, k, `#${k}`, step.map((x) => x * k), (r?.scaleStep ?? 1) ** k, true);
+    }
+  }
+  // parts whose parent is missing or cyclic stay as they are (the schema reports them)
+  for (const p of parts) if (!placed.has(p.id)) out.push({ ...p });
+  return out;
+}
+
+/** A stable signature of an agent-built subject or world: shapes, sizes and colors (used by the novelty guard). */
+export const partsSignature = (parts) => JSON.stringify((parts ?? []).map((p) => [p.shape, p.size, p.color, p.pos]));
+
+/**
+ * Expand `shots` into camera keys (the shape of `cameraKeys`): preset offsets merged with the shot's own overrides.
+ * `sec` resolves a moment; shots without `at` are spread evenly over `sceneSec`.
+ */
+export function shotsToKeys(shots, sceneSec, sec) {
+  const n = shots?.length ?? 0;
+  return (shots ?? []).map((s, i) => {
+    // every channel is set on every key, so a shot never inherits the previous shot's pitch / yaw / zoom
+    const key = { yaw: 0, pitch: 0, zoom: 1, ...SHOT_PRESETS[s.shot] };
+    for (const f of ["yaw", "pitch", "zoom", "shift"]) if (s[f] !== undefined) key[f] = s[f];
+    const t = s.at === undefined ? (sceneSec * i) / n : sec(s.at);
+    return { at: Math.round(t * 1000) / 1000, ...key, ...(s.focus ? { focus: s.focus } : {}), ...(s.ease ? { ease: s.ease } : {}) };
+  });
+}
+
 // ---------------- geometry estimates ----------------
 
 const partScaleY = (p) => (p.scale === undefined ? 1 : Array.isArray(p.scale) ? p.scale[1] : p.scale);
@@ -518,6 +681,7 @@ export function partHalfHeight(p) {
     case "capsule":
       return (s[0] ?? 0.3) + (s[1] ?? 0.5) / 2;
     case "plane":
+    case "sign":
       return (s[1] ?? 1) / 2;
     case "ring":
       return s[1] ?? 0.5;
@@ -567,6 +731,7 @@ export function partRadius(p) {
     case "capsule":
       return (s[0] ?? 0.3) + (s[1] ?? 0.5) / 2;
     case "plane":
+    case "sign":
       return Math.hypot(s[0] ?? 1, s[1] ?? 1) / 2;
     case "ring":
       return s[1] ?? 0.5;
@@ -630,6 +795,8 @@ export function momentStrings(v) {
   }
   for (const f of v?.fx ?? []) (add(f.at), add(f.until));
   for (const k of v?.cameraKeys ?? []) add(k.at);
+  for (const k of v?.shots ?? []) add(k.at);
+  for (const p of v?.world?.parts ?? []) node(p);
   return [...out];
 }
 

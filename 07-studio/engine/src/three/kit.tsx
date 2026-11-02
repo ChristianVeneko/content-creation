@@ -331,6 +331,27 @@ export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity:
           <directionalLight position={[0, 6, 6]} intensity={0.4} color="#9FEFFF" />
         </>
       );
+    case "data-stage":
+      // a dark arena: a top key, an accent rim from behind and a faint cool fill; spotlights come from `fx`
+      return (
+        <>
+          {env}
+          <hemisphereLight args={["#3A4A80", "#05060C", 0.7]} />
+          <directionalLight ref={shadowCam} position={[-3, 11, 6]} intensity={1.5} color="#FFEBC8" {...key} />
+          <directionalLight position={[0, 4, -9]} intensity={1.4} color={palette.accent2 ?? palette.accent} />
+        </>
+      );
+    case "monolith-story":
+      // a raking low key that carves the faces of a tall object, plus a colored rim from behind
+      return (
+        <>
+          {env}
+          <hemisphereLight args={["#8FA0D0", "#171A28", 0.9]} />
+          <directionalLight ref={shadowCam} position={[-6, 4, 6]} intensity={2.3} color="#FFE3C0" {...key} />
+          <directionalLight position={[5, 3, -8]} intensity={1.3} color={palette.accent2 ?? palette.accent} />
+        </>
+      );
+    case "clay-mascot":
     case "clay-diorama":
     default:
       return (
@@ -449,7 +470,7 @@ export const Floor: React.FC<{ half: [number, number]; center: [number, number] 
       return (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[center[0], -0.01, center[1]]} receiveShadow>
           <planeGeometry args={[200, 200]} />
-          <meshStandardMaterial color={mixHex(palette.bg[1] ?? palette.bg[0], "#000000", 0.25)} roughness={0.85} />
+          <meshStandardMaterial color={look.ground ? look.ground(palette) : mixHex(palette.bg[1] ?? palette.bg[0], "#000000", 0.25)} roughness={0.85} />
         </mesh>
       );
     case "holopad": {

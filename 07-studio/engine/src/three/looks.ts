@@ -46,6 +46,8 @@ export type Look3D = {
   blocky?: boolean;
   /** Night look: car objects switch on headlights and tail lights. */
   night?: boolean;
+  /** Color of the plain ground a look gets when no floor or world ground is set (default: the darkened backdrop). */
+  ground?: (p: Palette) => string;
 };
 
 export const LOOKS3D: Record<Look3DId, Look3D> = {
@@ -282,7 +284,86 @@ export const LOOKS3D: Record<Look3DId, Look3D> = {
     vignette: 0.18,
     blocky: true,
   },
+  // ---------------- format looks: the template is camera + light + material + motion; the agent builds the scene ----------------
+  "data-stage": {
+    id: "data-stage",
+    material: "gloss",
+    floor: "set",
+    tone: "aces",
+    exposure: 1.1,
+    shadows: true,
+    outline: null,
+    bloom: { intensity: 0.55, threshold: 0.85 },
+    particles: "motes",
+    enter: "rise",
+    dark: "#10131F",
+    light: "#F4F1EA",
+    good: "#3DDC97",
+    bad: "#FF4D5E",
+    screen: "#05070F",
+    // a dark arena: the palette's darkest tones with a faint accent glow behind the subject
+    bg: (p) => ({ stops: [mixHexColor(p.bg[0], "#000000", 0.55), mixHexColor(p.bg[1] ?? p.bg[0], "#000000", 0.35), mixHexColor(p.bg[1] ?? p.bg[0], "#000000", 0.6)], glow: p.accent, glowAlpha: 0.12 }),
+    label: { bg: "rgba(8,10,20,0.78)", fg: "#FFFFFF", border: "rgba(255,255,255,0.4)", radius: 12, font: fontStack("Montserrat"), weight: 800, size: 32, shadow: "0 8px 26px rgba(0,0,0,0.55)", leader: "none" },
+    vignette: 0.55,
+    ground: (p) => mixHexColor(p.bg[0], "#000000", 0.55),
+  },
+  "monolith-story": {
+    id: "monolith-story",
+    material: "paint",
+    floor: "set",
+    tone: "aces",
+    exposure: 1.0,
+    shadows: true,
+    outline: null,
+    bloom: null,
+    particles: "motes",
+    enter: "rise",
+    dark: "#14171F",
+    light: "#F2F0EA",
+    good: "#4FD08A",
+    bad: "#F0584A",
+    screen: "#06080D",
+    bg: (p) => ({ stops: [mixHexColor(p.bg[0], "#000000", 0.2), p.bg[1] ?? p.bg[0], mixHexColor(p.bg[1] ?? p.bg[0], "#000000", 0.3)], glow: p.accent, glowAlpha: 0.1 }),
+    // pixel-font signs: the label skin is the same pixel face
+    label: { bg: "rgba(6,8,14,0.82)", fg: "#FFFFFF", border: "rgba(255,255,255,0.75)", radius: 0, font: fontStack("Press Start 2P"), weight: 400, size: 24, shadow: "6px 6px 0 rgba(0,0,0,0.5)", leader: "none" },
+    vignette: 0.42,
+    ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#000000", 0.35),
+  },
+  "clay-mascot": {
+    id: "clay-mascot",
+    material: "clay",
+    floor: "set",
+    tone: "neutral",
+    exposure: 1.05,
+    shadows: true,
+    outline: null,
+    bloom: null,
+    particles: "dust",
+    enter: "drop",
+    dark: "#3B3446",
+    light: "#FFF8F0",
+    good: "#2FB98F",
+    bad: "#F25F5C",
+    screen: "#2B2433",
+    // a pastel mesh-like gradient: the backdrop and two accents washed toward white
+    bg: (p) => ({ stops: [mixHexColor(p.bg[0], "#FFFFFF", 0.25), p.bg[1] ?? p.bg[0], mixHexColor(p.accent2 ?? p.accent, "#FFFFFF", 0.55)], glow: mixHexColor(p.accent, "#FFFFFF", 0.4), glowAlpha: 0.5 }),
+    label: { bg: "#FFFFFF", fg: "#2B2433", border: "rgba(43,36,51,0.08)", radius: 999, font: fontStack("Poppins"), weight: 900, size: 34, shadow: "0 10px 24px rgba(80,50,30,0.18), 0 3px 0 rgba(43,36,51,0.12)", leader: "none" },
+    vignette: 0.1,
+    ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#FFFFFF", 0.3),
+  },
 };
+
+/** "#rrggbb" blend of two colors (hex stops are parsed by the gradient fog, so no css strings). */
+export function mixHexColor(a: string, b: string, t: number): string {
+  const rgb = (c: string) => {
+    const h = c.replace("#", "");
+    const f = h.length === 3 ? h.split("").map((x) => x + x).join("") : h.slice(0, 6);
+    return [0, 2, 4].map((i) => parseInt(f.slice(i, i + 2), 16));
+  };
+  const x = rgb(a);
+  const y = rgb(b);
+  return `#${x.map((v, k) => Math.round(v + (y[k] - v) * t).toString(16).padStart(2, "0")).join("")}`;
+}
 
 export const look3dFor = (id: string): Look3D => LOOKS3D[id as Look3DId] ?? LOOKS3D["clay-diorama"];
 

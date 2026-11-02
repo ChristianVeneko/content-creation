@@ -11,7 +11,7 @@ export type Caption = {
 export type CaptionPage = { startMs: number; endMs: number; words: Caption[] };
 
 export type Animation = "pop" | "slide" | "typewriter" | "zoom";
-export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world";
+export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world" | "data-stage" | "monolith-story" | "clay-mascot";
 export type ArtTemplateId = "watercolor" | "paper-collage" | "chalkboard" | "risograph" | "ukiyo-e" | "pop-comic";
 export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient";
 export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono";
@@ -163,12 +163,15 @@ export type DrawingPlan = { kind: "drawing2d"; moments: Record<string, number>; 
 export type IconData = { viewBox: string; back: string[]; outline: string[] };
 
 /** One planned 3D object (lib/scene3d.mjs planScene3d). Times are seconds into the scene. */
-export type Placed3D = { pos: [number, number, number]; scale: number; h: number; enter: number; items: number[] };
+export type Placed3D = { pos: [number, number, number]; scale: number; h: number; enter: number; items: number[]; half?: number; /** corner-pinned mascot: placed from the camera each frame */ corner?: "bl" | "br" | "tl" | "tr" };
+export type World3D = { concept: string; ground: { kind?: string; color?: string; size?: number } | null; backdrop: string | null; parts: Record<string, unknown>[]; crowd: { count: number; area: [number, number]; pos?: [number, number, number]; height?: number; color?: string } | null };
 export type CameraFrame = { target: [number, number, number]; dist: number; viewH: number };
 export type ScenePlan3D = {
   kind: "scene3d";
   /** environment set (resolved: never "auto") */
   set?: string;
+  /** the agent-built world of this scene (parts already expanded) */
+  world?: World3D | null;
   layout: string;
   move: string;
   frame: CameraFrame;

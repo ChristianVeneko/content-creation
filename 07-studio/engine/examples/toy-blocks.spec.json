@@ -22,7 +22,8 @@
             "kind": "rocket",
             "label": "tu idea"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -45,7 +46,8 @@
             "label": "idea",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -69,7 +71,8 @@
             "icon": "code",
             "label": "web"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -95,7 +98,8 @@
           {
             "kind": "person"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -124,7 +128,8 @@
             ],
             "label": "crecimiento"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -150,7 +155,8 @@
             "kind": "building",
             "label": "empresa"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -170,7 +176,8 @@
             "value": "5",
             "label": "piezas clave"
           }
-        ]
+        ],
+        "stock": true
       }
     }
   ]
