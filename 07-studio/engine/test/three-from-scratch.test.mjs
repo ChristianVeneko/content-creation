@@ -20,6 +20,7 @@ import {
   frameContent,
   layoutObjects,
   planThree,
+  projectPoint,
   setOf,
 } from "../lib/scene3d.mjs";
 import { SHOT_NAMES, expandWorldParts, shotsToKeys } from "../lib/scene3d-motion.mjs";
@@ -202,6 +203,13 @@ test("corner mascot: pinned objects leave the ground layout, frame ignores them 
   const a = cornerPlacement(cam, "br", 2, 1);
   assert.deepEqual(a, cornerPlacement(cam, "br", 2, 1));
   assert.notDeepEqual(a.pos, cornerPlacement(cam, "bl", 2, 1).pos);
+  // the pinned mascot's base stays above the caption band (y 1130+) and its top below the headline
+  for (const corner of ["bl", "br", "tl", "tr"]) {
+    const cp = cornerPlacement(cam, corner, 2, 1);
+    const px = projectPoint(cam, cp.pos);
+    assert.ok(px.y < 1130, `${corner} base y ${px.y} must clear the captions`);
+    assert.ok(px.x > 150 && px.x < 930, `${corner} x ${px.x} inside the frame`);
+  }
   assert.ok(has(spec({ objects: [{ kind: "laptop", corner: "bl", stock: true }, BLOCK] }), "scenes.0.visual.objects.0.corner", /custom/));
   assert.ok(has(spec({ objects: [{ ...BLOCK, corner: "bl" }, { ...BLOCK, id: "c2", corner: "bl" }, BLOCK] }), "scenes.0.visual.objects", /one object per screen corner/));
 });

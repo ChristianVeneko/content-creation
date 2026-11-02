@@ -67,44 +67,121 @@ export const WorldGround: React.FC<{ ground: NonNullable<World3D["ground"]>; cen
   }
 };
 
-/** Instanced crowd silhouettes: capsule bodies + sphere heads on rising tiers, with a small deterministic sway. */
+/**
+ * Instanced crowd: heads and shoulders on stepped risers (never floating), a share of the people with raised arms that
+ * sway, a faint rim light in the palette's accent2 (a slightly larger back-face shell) and a few phone-light specks.
+ * Lit by the scene's lights and spotlights; 7 instanced meshes however large the crowd.
+ */
 const Crowd: React.FC<{ crowd: NonNullable<World3D["crowd"]>; t: number; seed: number }> = ({ crowd, t, seed }) => {
   const { look, palette } = useKit3D();
-  const body = useRef<THREE.InstancedMesh>(null);
-  const head = useRef<THREE.InstancedMesh>(null);
+  const refs = {
+    riser: useRef<THREE.InstancedMesh>(null),
+    shoulder: useRef<THREE.InstancedMesh>(null),
+    head: useRef<THREE.InstancedMesh>(null),
+    arm: useRef<THREE.InstancedMesh>(null),
+    phone: useRef<THREE.InstancedMesh>(null),
+    rimS: useRef<THREE.InstancedMesh>(null),
+    rimH: useRef<THREE.InstancedMesh>(null),
+  };
   const n = crowd.count;
   const [w, d] = crowd.area;
   const c = crowd.pos ?? ([0, 0, -6] as V3);
   const hgt = crowd.height ?? 1.1;
-  const color = color3d(palette, look, crowd.color, mixHexColor(palette.bg[0], "#000000", 0.7));
+  const rows = Math.max(1, Math.min(8, Math.round(d / 0.9)));
+  const perRow = Math.ceil(n / rows);
+  const tier = 0.34;
+  const body = color3d(palette, look, crowd.color, mixHexColor(palette.bg[1] ?? palette.bg[0], "#000000", 0.5));
+  const rim = palette.accent2 ?? palette.accent;
   const people = useMemo(
     () =>
       Array.from({ length: n }, (_, i) => {
-        const x = c[0] + (random(`cx${seed}-${i}`) - 0.5) * w;
-        const z = c[2] + (random(`cz${seed}-${i}`) - 0.5) * d;
-        return { x, z, y: c[1] + (c[2] + d / 2 - z) * 0.18, s: hgt * (0.85 + 0.3 * random(`ch${seed}-${i}`)), ph: random(`cp${seed}-${i}`) * 6.28 };
+        const row = Math.floor(i / perRow);
+        const col = i % perRow;
+        const r = (k: string) => random(`${k}${seed}-${i}`);
+        return {
+          x: c[0] + ((col + 0.5) / perRow - 0.5) * w + (r("jx") - 0.5) * (w / perRow) * 0.6,
+          z: c[2] + d / 2 - (row + 0.5) * (d / rows) + (r("jz") - 0.5) * 0.2,
+          y: c[1] + (row + 1) * tier,
+          s: hgt * (0.85 + 0.3 * r("s")),
+          ph: r("p") * 6.28,
+          up: r("u") > 0.55,
+          phone: r("ph") > 0.7,
+        };
       }),
-    [n, w, d, c[0], c[1], c[2], hgt, seed],
+    [n, w, d, c[0], c[1], c[2], hgt, seed, rows, perRow],
   );
   useLayoutEffect(() => {
     const m = new THREE.Matrix4();
     const q = new THREE.Quaternion();
+    const e = new THREE.Euler();
+    const hide = new THREE.Matrix4().makeScale(0, 0, 0);
+    const put = (ref: React.RefObject<THREE.InstancedMesh | null>, i: number, pos: V3, sc: V3, rz = 0) => {
+      q.setFromEuler(e.set(0, 0, rz));
+      ref.current?.setMatrixAt(i, m.compose(new THREE.Vector3(...pos), q, new THREE.Vector3(...sc)));
+    };
+    for (let k = 0; k < rows; k++) {
+      const h = (k + 1) * tier;
+      put(refs.riser, k, [c[0], c[1] + h / 2, c[2] + d / 2 - (k + 0.5) * (d / rows)], [w + 1, h, (d / rows) * 0.96]);
+    }
+    for (let k = rows; k < n; k++) refs.riser.current?.setMatrixAt(k, hide);
     people.forEach((p, i) => {
       const bob = Math.max(0, Math.sin(t * 3.2 + p.ph)) * 0.05 * p.s;
-      body.current?.setMatrixAt(i, m.compose(new THREE.Vector3(p.x, p.y + bob + p.s * 0.36, p.z), q, new THREE.Vector3(p.s, p.s, p.s)));
-      head.current?.setMatrixAt(i, m.compose(new THREE.Vector3(p.x, p.y + bob + p.s * 0.86, p.z), q, new THREE.Vector3(p.s, p.s, p.s)));
+      const sy = p.y + bob;
+      const shoulder: V3 = [p.x, sy + p.s * 0.5, p.z];
+      const head: V3 = [p.x, sy + p.s * 0.86, p.z];
+      put(refs.shoulder, i, shoulder, [0.3 * p.s, 0.22 * p.s, 0.17 * p.s]);
+      put(refs.head, i, head, [0.16 * p.s, 0.18 * p.s, 0.16 * p.s]);
+      put(refs.rimS, i, shoulder, [0.3 * p.s * 1.14, 0.22 * p.s * 1.14, 0.17 * p.s * 1.14]);
+      put(refs.rimH, i, head, [0.16 * p.s * 1.18, 0.18 * p.s * 1.18, 0.16 * p.s * 1.18]);
+      for (const side of [0, 1]) {
+        const idx = i * 2 + side;
+        if (!p.up) {
+          refs.arm.current?.setMatrixAt(idx, hide);
+          continue;
+        }
+        // arms up and out, swaying with the beat
+        const sgn = side ? 1 : -1;
+        const rot = sgn * -(0.35 + 0.28 * Math.sin(t * 4 + p.ph + side));
+        const base: V3 = [shoulder[0] + sgn * 0.2 * p.s, shoulder[1] + 0.04 * p.s, shoulder[2]];
+        put(refs.arm, idx, [base[0] - Math.sin(rot) * 0.24 * p.s, base[1] + Math.cos(rot) * 0.24 * p.s, base[2]], [p.s, p.s, p.s], rot);
+      }
+      if (p.up && p.phone) {
+        const rot = 1 * -(0.35 + 0.28 * Math.sin(t * 4 + p.ph + 1));
+        put(refs.phone, i, [shoulder[0] + 0.2 * p.s - Math.sin(rot) * 0.5 * p.s, shoulder[1] + 0.04 * p.s + Math.cos(rot) * 0.5 * p.s, shoulder[2] + 0.02], [p.s, p.s, p.s]);
+      } else refs.phone.current?.setMatrixAt(i, hide);
     });
-    for (const r of [body, head]) if (r.current) r.current.instanceMatrix.needsUpdate = true;
+    for (const r of Object.values(refs)) if (r.current) r.current.instanceMatrix.needsUpdate = true;
   });
   return (
     <>
-      <instancedMesh ref={body} args={[undefined, undefined, n]} frustumCulled={false}>
-        <capsuleGeometry args={[0.2, 0.34, 4, 10]} />
-        <meshBasicMaterial color={color} />
+      <instancedMesh ref={refs.riser} args={[undefined, undefined, Math.max(rows, 1)]} frustumCulled={false} receiveShadow>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color={mixHexColor(body, "#000000", 0.35)} roughness={1} />
       </instancedMesh>
-      <instancedMesh ref={head} args={[undefined, undefined, n]} frustumCulled={false}>
-        <sphereGeometry args={[0.17, 12, 10]} />
-        <meshBasicMaterial color={color} />
+      <instancedMesh ref={refs.shoulder} args={[undefined, undefined, n]} frustumCulled={false}>
+        <sphereGeometry args={[1, 14, 10]} />
+        <meshStandardMaterial color={body} roughness={0.95} />
+      </instancedMesh>
+      <instancedMesh ref={refs.head} args={[undefined, undefined, n]} frustumCulled={false}>
+        <sphereGeometry args={[1, 14, 10]} />
+        <meshStandardMaterial color={body} roughness={0.95} />
+      </instancedMesh>
+      <instancedMesh ref={refs.arm} args={[undefined, undefined, n * 2]} frustumCulled={false}>
+        <capsuleGeometry args={[0.05, 0.4, 3, 6]} />
+        <meshStandardMaterial color={body} roughness={0.95} />
+      </instancedMesh>
+      {/* the rim light: a slightly larger back-face shell in accent2 reads as a lit edge behind each silhouette */}
+      <instancedMesh ref={refs.rimS} args={[undefined, undefined, n]} frustumCulled={false}>
+        <sphereGeometry args={[1, 12, 8]} />
+        <meshBasicMaterial color={rim} side={THREE.BackSide} transparent opacity={0.32} depthWrite={false} />
+      </instancedMesh>
+      <instancedMesh ref={refs.rimH} args={[undefined, undefined, n]} frustumCulled={false}>
+        <sphereGeometry args={[1, 12, 8]} />
+        <meshBasicMaterial color={rim} side={THREE.BackSide} transparent opacity={0.32} depthWrite={false} />
+      </instancedMesh>
+      <instancedMesh ref={refs.phone} args={[undefined, undefined, n]} frustumCulled={false}>
+        <sphereGeometry args={[0.035, 6, 6]} />
+        <meshBasicMaterial color={new THREE.Color("#EAF6FF").multiplyScalar(2)} toneMapped={false} />
       </instancedMesh>
     </>
   );
