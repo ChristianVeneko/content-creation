@@ -62,7 +62,7 @@ const rgb = (h) => {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 };
 /** Mix two colors (t = 0 → a, 1 → b). */
-const mix = (a, b, t) => {
+export const mix = (a, b, t) => {
   const [x, y] = [rgb(a), rgb(b)];
   return `#${x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, "0")).join("").toUpperCase()}`;
 };
@@ -77,12 +77,12 @@ const worst = (fg, surfaces) => Math.min(...surfaces.map((s) => contrastRatio(fg
 export const readableOn = (bg) => (contrastRatio(INK_LIGHT, bg) >= contrastRatio(INK_DARK, bg) ? INK_LIGHT : INK_DARK);
 
 /** Push `fg` toward the readable ink of the surfaces until it reaches the minimum contrast over all of them. */
-function readableWord(fg, surfaces) {
-  if (worst(fg, surfaces) >= CAPTION_MIN_CONTRAST) return fg;
+export function readableWord(fg, surfaces, min = CAPTION_MIN_CONTRAST) {
+  if (worst(fg, surfaces) >= min) return fg;
   const ink = worst(INK_LIGHT, surfaces) >= worst(INK_DARK, surfaces) ? INK_LIGHT : INK_DARK;
   for (let i = 1; i < 20; i++) {
     const c = mix(fg, ink, i / 20);
-    if (worst(c, surfaces) >= CAPTION_MIN_CONTRAST) return c;
+    if (worst(c, surfaces) >= min) return c;
   }
   return ink;
 }

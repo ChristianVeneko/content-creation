@@ -8,7 +8,7 @@
   "best_for": ["motivation", "manifestos", "hot takes", "announcements", "quotes"],
   "preview": { "emoji": "🔠", "gradient": ["#000000", "#FF0055", "#FFCC00"], "accent": "#FFCC00", "sample_text": "STOP SCROLLING" },
   "defaults": {
-    "theme": { "palette": { "bg": ["#0A0A0A", "#FF0055"], "text": "#FFFFFF", "accent": "#FFCC00" }, "font": "Anton", "captionStyle": "clean" },
+    "theme": { "palette": { "bg": ["#0A0A0A", "#E6004D"], "text": "#FFFFFF", "accent": "#FFCC00" }, "font": "Anton", "captionStyle": "clean" },
     "voice": { "provider": "kokoro", "voiceId": "em_alex", "speed": 1.05 },
     "music": { "volume": 0.14 },
     "captions": { "enabled": false, "wordsPerPage": 3 },

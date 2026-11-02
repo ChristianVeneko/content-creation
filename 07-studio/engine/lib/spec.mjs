@@ -1,6 +1,7 @@
 // VideoSpec schema (zod) — the single source of truth for spec.schema.json.
 // The shape is the "Shared contract" of the Video Studio feature; do not rename fields.
 import { z } from "zod";
+import { adaptPalette } from "./palette-adapt.mjs";
 import { MOODS, MUSIC_PROVIDERS } from "./music-moods.mjs";
 import { elementsSchema, hasEmoji, hudItemSchema, hudOverrideSchema, lookSchema, sceneTitleSchema } from "./illustration-schema.mjs";
 import { ART_LOOKS, FORMAT_2D_LOOKS, usesIllustratedKit } from "./illustrated.mjs";
@@ -384,6 +385,8 @@ export function resolveSpec(spec, template) {
   const merged = deepMerge(base, spec);
   merged.scenes = spec.scenes.map((s) => ({ ...s, animation: s.animation ?? base.animation }));
   delete merged.animation;
+  // the palette the user picked or typed gets the full contrast rule; a template's own palette only guarantees readable text
+  merged.theme.palette = adaptPalette(merged.theme.palette, { accents: Boolean(spec.theme?.palette) });
   merged.post = spec.post ?? { tiktok: "", instagram: "", youtube: { title: spec.title, description: "" }, hashtags: [] };
   return merged;
 }
