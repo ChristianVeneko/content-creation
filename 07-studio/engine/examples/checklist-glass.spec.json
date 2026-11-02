@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "title": "Checklist: cuatro reglas para contraseñas seguras",
+  "template": "checklist-glass",
+  "language": "es",
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Cuatro reglas para que nadie entre en tus cuentas. Marca cada una.",
+      "title": {
+        "kicker": "Checklist 0 / 4",
+        "main": "Cuentas *seguras*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "checklist",
+            "title": "Hoy revisamos",
+            "items": [
+              "Contraseña larga",
+              "Una por cuenta",
+              "Verificación en dos pasos",
+              "Gestor de claves"
+            ]
+          },
+          {
+            "type": "mascot",
+            "mood": "wow",
+            "pose": "wave"
+          }
+        ]
+      }
+    },
+    {
+      "id": "regla1",
+      "narration": "Regla uno: mejor una frase larga que una palabra rara.",
+      "title": {
+        "kicker": "Checklist 1 / 4",
+        "main": "Frases, no *palabras*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "window",
+            "title": "Nueva contraseña",
+            "kind": "browser",
+            "rows": [
+              {
+                "label": "perro2024",
+                "value": "debil",
+                "icon": "x-circle"
+              },
+              {
+                "label": "mi gato odia los lunes",
+                "value": "fuerte",
+                "icon": "check-circle"
+              }
+            ],
+            "highlight": 1,
+            "cursor": 1
+          },
+          {
+            "type": "mascot",
+            "mood": "think",
+            "pose": "point"
+          }
+        ]
+      }
+    },
+    {
+      "id": "regla2",
+      "narration": "Regla dos: nunca repitas la misma clave en dos cuentas.",
+      "title": {
+        "kicker": "Checklist 2 / 4",
+        "main": "Una clave por *cuenta*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "window",
+            "title": "Mis cuentas",
+            "kind": "app",
+            "rows": [
+              {
+                "label": "Correo",
+                "value": "clave A",
+                "icon": "envelope-simple"
+              },
+              {
+                "label": "Banco",
+                "value": "clave B",
+                "icon": "bank"
+              },
+              {
+                "label": "Redes",
+                "value": "clave C",
+                "icon": "chats-circle"
+              }
+            ],
+            "highlight": 2
+          },
+          {
+            "type": "mascot",
+            "mood": "happy",
+            "pose": "idle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "regla3",
+      "narration": "Regla tres: activa la verificación en dos pasos.",
+      "title": {
+        "kicker": "Checklist 3 / 4",
+        "main": "Activa *dos pasos*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "window",
+            "title": "Seguridad",
+            "kind": "settings",
+            "rows": [
+              {
+                "label": "Verificación en dos pasos",
+                "toggle": "turn-on",
+                "icon": "shield-check"
+              },
+              {
+                "label": "Avisar de accesos nuevos",
+                "toggle": "on",
+                "icon": "bell"
+              }
+            ],
+            "cursor": 0,
+            "button": "Guardar"
+          },
+          {
+            "type": "mascot",
+            "mood": "proud",
+            "pose": "cheer"
+          }
+        ]
+      }
+    },
+    {
+      "id": "regla4",
+      "narration": "Regla cuatro: guarda todo en un gestor de claves.",
+      "title": {
+        "kicker": "Checklist 4 / 4",
+        "main": "Usa un *gestor*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stat",
+            "value": "1 clave",
+            "label": "para recordarlas todas",
+            "icon": "key"
+          },
+          {
+            "type": "mascot",
+            "mood": "proud",
+            "pose": "cheer"
+          }
+        ]
+      }
+    }
+  ]
+}

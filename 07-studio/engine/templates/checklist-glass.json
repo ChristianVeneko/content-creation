@@ -1,0 +1,61 @@
+{
+  "id": "checklist-glass",
+  "name": "Glass Checklist",
+  "category": "illustrated-2d",
+  "format": "checklist-glass",
+  "description": "FORMAT: a rule-by-rule checklist. A pastel mesh gradient with drifting color pools and a glossy sheen, frosted-glass UI-mockup cards (window chrome, list rows, toggles, a gliding cursor and a highlighter) that illustrate each rule, a 'Checklist n / N' progress pill with a fill track above the headline, a bold sans headline with one serif-italic accent word, and a persistent mascot of rounded shaded shapes in the bottom-right corner whose mood and pose change per scene. The cards, the rules and the mascot's colors are new in every video: the format is the structure and the motion, never a fixed subject. No emoji.",
+  "prompt_hint": "Write one scene per rule (3-5 s each) plus a hook and a short close: 6-12 scenes. title.kicker is the progress pill written 'Checklist 3 / 12' (the label, then n / N; the track fills to n of N) and title.main the rule as a headline (max ~28 chars) with the accent word between *asterisks* (without them the last word is the accent). Illustrate each rule with a window element: a UI mockup for THIS video's topic with title, kind (app, settings, browser), rows (label, value, icon, toggle on|off|turn-on|turn-off), button, cursor (row to click) and highlight (row to sweep); use checklist, card or stat when a mockup does not fit, and draw a new subject with a drawing element when the rule needs an object. Add one mascot element per scene and switch mood (happy, wow, think, proud) and pose (idle, wave, point, cheer) to react to the sentence. Invent the rows, labels and drawn subjects for this topic every video and never reuse the example's. Never use emoji.",
+  "best_for": [
+    "lists of rules",
+    "do and don't checklists",
+    "settings and security tips",
+    "habit and productivity rules",
+    "app best practices"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#E9E4FF",
+      "#FFE3F0",
+      "#6A4CE0"
+    ],
+    "accent": "#6A4CE0",
+    "sample_text": "CHECKLIST"
+  },
+  "defaults": {
+    "theme": {
+      "look": "checklist-glass",
+      "palette": {
+        "bg": [
+          "#E9E4FF",
+          "#FFE3F0"
+        ],
+        "text": "#26233D",
+        "accent": "#5B3FD6",
+        "accent2": "#FF8AB0",
+        "accent3": "#2DB7B0"
+      },
+      "font": "Montserrat",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.0
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

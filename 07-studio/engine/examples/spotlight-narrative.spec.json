@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "title": "Veinte minutos al día",
+  "template": "spotlight-narrative",
+  "language": "es",
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Imagina que pierdes veinte minutos cada día. Parece nada.",
+      "title": {
+        "kicker": "Imagina",
+        "main": "Veinte minutos al día"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "beacon",
+            "icon": "clock",
+            "value": 20,
+            "suffix": " min",
+            "label": "cada día",
+            "rings": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "anio",
+      "narration": "Pero el día vuelve a llegar. Trescientas sesenta y cinco veces.",
+      "title": {
+        "kicker": "Un año",
+        "main": "Se repite sin parar"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "beacon",
+            "icon": "calendar-blank",
+            "value": 365,
+            "label": "días",
+            "rings": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "suma",
+      "narration": "Y esos minutos se convierten en ciento veintidós horas.",
+      "title": {
+        "kicker": "La suma",
+        "main": "Se acumulan en silencio"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "beacon",
+            "icon": "hourglass",
+            "value": 122,
+            "suffix": " h",
+            "label": "al año",
+            "rings": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "dias",
+      "narration": "Son cinco días enteros, sin dormir, sin parar, solo para eso.",
+      "title": {
+        "kicker": "En días",
+        "main": "Cinco días completos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "drawing",
+            "id": "escritorio",
+            "height": 560,
+            "at": 0.3,
+            "parts": [
+              {
+                "id": "wall-glow",
+                "shape": "ellipse",
+                "cx": 200,
+                "cy": 210,
+                "rx": 190,
+                "ry": 170,
+                "fill": "accent2",
+                "opacity": 0.12
+              },
+              {
+                "id": "desk",
+                "shape": "rect",
+                "x": 10,
+                "y": 380,
+                "w": 380,
+                "h": 36,
+                "rx": 8,
+                "fill": "surface",
+                "stroke": "muted",
+                "width": 3
+              },
+              {
+                "id": "pool",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 392,
+                "rx": 120,
+                "ry": 16,
+                "fill": "accent2",
+                "opacity": 0.28
+              },
+              {
+                "id": "books",
+                "shape": "group",
+                "origin": [
+                  90,
+                  380
+                ]
+              },
+              {
+                "id": "b1",
+                "shape": "rect",
+                "x": 40,
+                "y": 340,
+                "w": 110,
+                "h": 40,
+                "rx": 4,
+                "fill": "accent3",
+                "parent": "books"
+              },
+              {
+                "id": "b2",
+                "shape": "rect",
+                "x": 52,
+                "y": 304,
+                "w": 96,
+                "h": 36,
+                "rx": 4,
+                "fill": "accent",
+                "parent": "books"
+              },
+              {
+                "id": "plant-pot",
+                "shape": "path",
+                "d": "M300 380 L312 336 L352 336 L364 380 Z",
+                "fill": "accent",
+                "stroke": "muted",
+                "width": 3
+              },
+              {
+                "id": "leaf-l",
+                "shape": "path",
+                "d": "M332 336 C300 320 296 292 318 280 C334 296 336 316 332 336 Z",
+                "fill": "good",
+                "origin": [
+                  332,
+                  336
+                ],
+                "motion": [
+                  "sway"
+                ]
+              },
+              {
+                "id": "leaf-r",
+                "shape": "path",
+                "d": "M334 336 C366 322 372 290 350 276 C334 296 332 318 334 336 Z",
+                "fill": "good",
+                "origin": [
+                  334,
+                  336
+                ],
+                "motion": [
+                  {
+                    "type": "sway",
+                    "speed": 0.8
+                  }
+                ]
+              },
+              {
+                "id": "lamp",
+                "shape": "group",
+                "origin": [
+                  205,
+                  380
+                ]
+              },
+              {
+                "id": "lamp-base",
+                "shape": "ellipse",
+                "cx": 205,
+                "cy": 378,
+                "rx": 44,
+                "ry": 9,
+                "fill": "ink",
+                "parent": "lamp"
+              },
+              {
+                "id": "lamp-arm",
+                "shape": "path",
+                "d": "M205 378 L205 250 L252 190",
+                "stroke": "ink",
+                "width": 9,
+                "fill": "none",
+                "parent": "lamp"
+              },
+              {
+                "id": "lamp-head",
+                "shape": "path",
+                "d": "M222 172 L292 214 L276 240 L206 198 Z",
+                "fill": "accent",
+                "stroke": "ink",
+                "width": 4,
+                "parent": "lamp"
+              },
+              {
+                "id": "bulb",
+                "shape": "ellipse",
+                "cx": 256,
+                "cy": 228,
+                "rx": 16,
+                "ry": 11,
+                "fill": "accent2",
+                "parent": "lamp",
+                "motion": [
+                  {
+                    "type": "pulse",
+                    "amp": 0.08
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "La pregunta es en qué quieres gastarlas.",
+      "title": {
+        "kicker": "Tu turno",
+        "main": "Elige tú"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "beacon",
+            "icon": "compass",
+            "value": 1,
+            "label": "decisión",
+            "rings": 3
+          }
+        ]
+      }
+    }
+  ]
+}

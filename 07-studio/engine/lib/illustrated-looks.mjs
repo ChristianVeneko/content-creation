@@ -11,7 +11,8 @@ export const ART_LOOKS = ["watercolor", "paper-collage", "chalkboard", "risograp
  */
 /**
  * Format looks with depth (src/illustrated/formats2d.tsx): dark-grid UI cards, flat-shaded 2.5D scenes in
- * perspective, and pastel glass cards. Each is also a template id.
+ * perspective, pastel glass cards, a numbered host tutorial on warm paper, a glass checklist with a mascot and a
+ * cinematic spotlight narrative. Each is also a template id.
  */
-export const FORMAT_2D_LOOKS = ["ui-cards", "flat-depth", "soft-gradient"];
+export const FORMAT_2D_LOOKS = ["ui-cards", "flat-depth", "soft-gradient", "host-tutorial", "checklist-glass", "spotlight-narrative"];
 export const LOOKS = ["blueprint", "whiteboard", "broadcast", "editorial-chart", "editor-window", "rank-numbers", ...ART_LOOKS, ...FORMAT_2D_LOOKS];

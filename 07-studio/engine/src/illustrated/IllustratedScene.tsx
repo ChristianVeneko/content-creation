@@ -104,7 +104,7 @@ export const IllustratedScene: React.FC<{ scene: Scene; index: number; spec: Res
 
   // camera shake on stamp impacts (calm looks do not shake)
   const stamps = (plan?.elements ?? []).filter((p) => p.el.type === "stamp" || (p.el.type === "doc" && p.el.stamp)).map((p) => (p.el.type === "stamp" ? p.enter + 0.1 : (p.items[p.items.length - 1] ?? p.enter) + 0.18));
-  const shakeAmp = { blueprint: 9, whiteboard: 4, "broadcast": 16, "editorial-chart": 0, "editor-window": 0, "rank-numbers": 12, watercolor: 0, "paper-collage": 6, chalkboard: 3, risograph: 5, "ukiyo-e": 2, "pop-comic": 18 , "ui-cards": 10, "flat-depth": 6, "soft-gradient": 0 }[look.id];
+  const shakeAmp = { blueprint: 9, whiteboard: 4, "broadcast": 16, "editorial-chart": 0, "editor-window": 0, "rank-numbers": 12, watercolor: 0, "paper-collage": 6, chalkboard: 3, risograph: 5, "ukiyo-e": 2, "pop-comic": 18 , "ui-cards": 10, "flat-depth": 6, "soft-gradient": 0, "host-tutorial": 0, "checklist-glass": 0, "spotlight-narrative": 4 }[look.id];
   let shake = 0;
   for (const s of stamps) if (t >= s && t < s + 0.3) shake += Math.sin((t - s) * 70) * shakeAmp * (1 - (t - s) / 0.3);
 

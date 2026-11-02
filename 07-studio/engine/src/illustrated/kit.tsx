@@ -312,6 +312,12 @@ const basePanelStyle = (ink: Ink, accent?: string): React.CSSProperties => {
     return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: accent ? `3px solid ${accent}` : "none", boxShadow: `0 10px 0 ${rgba("#0A0A28", 0.45)}` };
   if (L.id === "soft-gradient")
     return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.6) : "rgba(255,255,255,0.95)"}`, backdropFilter: "blur(14px)", boxShadow: accent ? `0 0 0 6px ${rgba(accent, 0.12)}` : "none" };
+  if (L.id === "host-tutorial")
+    return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `3px solid ${ink.paperInk}`, boxShadow: `7px 7px 0 ${accent ?? ink.paperInk}` };
+  if (L.id === "checklist-glass")
+    return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.55) : "rgba(255,255,255,0.95)"}`, backdropFilter: "blur(16px)", boxShadow: L.panel.shadow };
+  if (L.id === "spotlight-narrative")
+    return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: `1px solid ${accent ? rgba(accent, 0.55) : ink.line}`, boxShadow: `${L.panel.shadow}${accent ? `, 0 0 40px ${rgba(accent, 0.14)}` : ""}` };
   return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.7) : ink.line}`, boxShadow: L.panel.shadow };
 };
 

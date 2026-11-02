@@ -38,7 +38,9 @@ export const PACING = {
 const GAP = 28;
 // Overlays take no room in the column: stamps aimed at a target and callouts without a label.
 // An untargeted stamp and a labelled callout (its tag) get their own row so they never cover content.
-const isOverlay = (e) => (e.type === "stamp" && e.target) || (e.type === "callout" && !e.label);
+// The host and the mascot are persistent character slots drawn in fixed frame positions, never in the column.
+export const SLOT_TYPES = ["host", "mascot"];
+const isOverlay = (e) => (e.type === "stamp" && e.target) || (e.type === "callout" && !e.label) || SLOT_TYPES.includes(e.type);
 export const MAX_UPSCALE = 1;
 /**
  * How much a look may enlarge a sparse stage (the blueprint look never upscales). An upscaled stack is laid out
@@ -60,6 +62,9 @@ export const LOOK_UPSCALE = {
   "ui-cards": 1.35,
   "flat-depth": 1.5,
   "soft-gradient": 1.4,
+  "host-tutorial": 1.25,
+  "checklist-glass": 1.3,
+  "spotlight-narrative": 1.2,
 };
 
 /**
@@ -81,6 +86,9 @@ export const LOOK_DEPTH = {
   "ui-cards": { shadow: "soft", fill: "gradient", ground: "none", parallax: 2, vignette: 0.45 },
   "flat-depth": { shadow: "soft", fill: "gradient", ground: "table", parallax: 1, vignette: 0.4 },
   "soft-gradient": { shadow: "paper", fill: "gradient", ground: "none", parallax: 2, vignette: 0.08 },
+  "host-tutorial": { shadow: "paper", fill: "flat", ground: "none", parallax: 0, vignette: 0.1 },
+  "checklist-glass": { shadow: "paper", fill: "gradient", ground: "none", parallax: 2, vignette: 0.06 },
+  "spotlight-narrative": { shadow: "soft", fill: "gradient", ground: "none", parallax: 2, vignette: 0.6 },
 };
 /** The depth pass of a look, or null when the look keeps its flat media. */
 export const depthOf = (look) => (Object.hasOwn(LOOK_DEPTH, look) ? LOOK_DEPTH[look] : null);
@@ -97,6 +105,23 @@ const wrapLines = (text, width, fontPx, em = 0.58) => {
   }
   return lines;
 };
+/**
+ * Words of a headline with its accent word flagged: the word between *asterisks*, else the last word of a headline
+ * of two or more words (the serif-italic / gradient accent of the host-tutorial and checklist-glass headlines).
+ */
+export function splitAccent(text) {
+  const raw = String(text ?? "").trim().split(/\s+/).filter(Boolean);
+  const words = raw.map((w) => ({ text: w.replace(/\*/g, ""), accent: w.includes("*") }));
+  if (words.some((w) => w.accent)) return words;
+  if (words.length > 1) words[words.length - 1].accent = true;
+  return words;
+}
+
+/** "Checklist 3 / 12" -> {n: 3, total: 12, label: "Checklist"} (the progress pill); null when there is no "n / N". */
+export function parseProgress(text) {
+  const m = /^(.*?)\s*(\d{1,3})\s*\/\s*(\d{1,3})\s*$/.exec(String(text ?? "").trim());
+  return m ? { n: Number(m[2]), total: Number(m[3]), label: m[1].trim() } : null;
+}
 const label = (x) => (typeof x === "string" ? x : x.label ?? x.text ?? "");
 
 /** Natural height (px) of one element rendered at width `w`. Mirrors the renderer's sizes. */
@@ -173,6 +198,13 @@ export function measure(el, w) {
       return 300 + (el.label ? 64 : 0);
     case "character":
       return 400 + (el.label ? 64 : 0);
+    // ---- host-tutorial, checklist-glass, spotlight-narrative ----
+    case "window":
+      return 84 + el.rows.length * 88 + (el.button ? 96 : 0) + 28;
+    case "roadmap":
+      return 150 + el.items.length * 68 + 28;
+    case "beacon":
+      return 560;
     default:
       return 0;
   }
@@ -221,6 +253,10 @@ const itemCount = (el) => {
       return el.paths.length;
     case "post":
       return el.lines.length;
+    case "window":
+      return el.rows.length;
+    case "roadmap":
+      return el.items.length;
     case "chart":
     case "tags":
     case "panels":

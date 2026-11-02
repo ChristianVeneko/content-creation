@@ -13,8 +13,8 @@ export type CaptionPage = { startMs: number; endMs: number; words: Caption[] };
 export type Animation = "pop" | "slide" | "typewriter" | "zoom";
 export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world";
 export type ArtTemplateId = "watercolor" | "paper-collage" | "chalkboard" | "risograph" | "ukiyo-e" | "pop-comic";
-export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient";
-export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono";
+export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient" | "host-tutorial" | "checklist-glass" | "spotlight-narrative";
+export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono" | "pixel-versus";
 export type ReelsTemplateId = "reels-nube" | "reels-noche" | "reels-menta" | "reels-limon" | "reels-pizarra";
 export type TemplateId = "illustrated" | "captions-voice" | "kinetic-type" | "countdown" | "glass-cards" | "letterbox" | "whiteboard" | "broadcast" | "editorial-chart" | "editor-window" | "rank-numbers" | ArtTemplateId | FormatTemplateId | ThreeTemplateId | PixelTemplateId | ReelsTemplateId;
 export type CaptionStyle =
@@ -186,6 +186,9 @@ export type PixelPlan = {
   props: { x: number; enter: number }[];
   panelAt: number;
   checks: number[];
+  /** pixel-versus: the ROUND card window and the reveal time of each ranking / verdict row (seconds into the scene) */
+  round?: { at: number; until: number };
+  rows?: number[];
 };
 export type ThreeAssets = { hdri: string | null; models: Record<string, string> };
 

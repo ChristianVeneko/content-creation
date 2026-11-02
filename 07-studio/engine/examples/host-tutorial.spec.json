@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "title": "Ordena tu bandeja de correo en 4 pasos",
+  "template": "host-tutorial",
+  "language": "es",
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tu correo es un caos. Vamos a ordenarlo en cuatro pasos, uno por uno.",
+      "title": {
+        "kicker": "// guia rapida",
+        "main": "Ordena tu *correo* en 4 pasos"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "roadmap",
+            "title": "PASOS",
+            "items": [
+              "Crea un filtro",
+              "Pon una etiqueta",
+              "Apaga los avisos",
+              "Revisa una vez"
+            ],
+            "at": 0.6
+          },
+          {
+            "type": "host",
+            "pose": "present",
+            "expression": "wow"
+          }
+        ]
+      }
+    },
+    {
+      "id": "paso1",
+      "narration": "Primero, crea un filtro para que los correos de una tienda se guarden solos.",
+      "title": {
+        "kicker": "// paso 1 . filtros",
+        "main": "Crea un *filtro*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "window",
+            "title": "Filtros",
+            "kind": "app",
+            "rows": [
+              {
+                "label": "De: tienda",
+                "icon": "envelope-simple",
+                "value": "12"
+              },
+              {
+                "label": "Asunto: oferta",
+                "icon": "magnifying-glass"
+              },
+              {
+                "label": "Mover a Tiendas",
+                "icon": "folder-simple",
+                "toggle": "turn-on"
+              }
+            ],
+            "highlight": 0,
+            "cursor": 2,
+            "button": "Crear filtro"
+          },
+          {
+            "type": "host",
+            "pose": "point",
+            "expression": "smile"
+          }
+        ]
+      }
+    },
+    {
+      "id": "paso2",
+      "narration": "Segundo, pon una etiqueta de color a cada tema, para encontrarlo de un vistazo.",
+      "title": {
+        "kicker": "// paso 2 . etiquetas",
+        "main": "Pon una *etiqueta*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "card",
+            "title": "Una etiqueta por tema",
+            "body": [
+              "Trabajo en azul",
+              "Facturas en verde",
+              "Familia en naranja"
+            ],
+            "icon": "tag"
+          },
+          {
+            "type": "badge",
+            "text": "1 tema = 1 color",
+            "at": 1.6
+          },
+          {
+            "type": "host",
+            "pose": "think",
+            "expression": "think"
+          }
+        ]
+      }
+    },
+    {
+      "id": "paso3",
+      "narration": "Tercero, apaga los avisos de promociones y deja solo los de facturas.",
+      "title": {
+        "kicker": "// paso 3 . avisos",
+        "main": "Apaga los *avisos*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "window",
+            "title": "Avisos",
+            "kind": "settings",
+            "rows": [
+              {
+                "label": "Promociones",
+                "toggle": "turn-off",
+                "icon": "megaphone"
+              },
+              {
+                "label": "Facturas",
+                "toggle": "on",
+                "icon": "receipt"
+              },
+              {
+                "label": "Novedades",
+                "toggle": "turn-off",
+                "icon": "newspaper"
+              }
+            ],
+            "cursor": 0
+          },
+          {
+            "type": "host",
+            "pose": "wave",
+            "expression": "wink"
+          }
+        ]
+      }
+    },
+    {
+      "id": "paso4",
+      "narration": "Cuarto, revisa el correo una sola vez al día y listo.",
+      "title": {
+        "kicker": "// paso 4 . rutina",
+        "main": "Revisa una *vez*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "stat",
+            "value": "10 min",
+            "label": "una vez al día",
+            "icon": "clock"
+          },
+          {
+            "type": "host",
+            "pose": "cheer",
+            "expression": "smile"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cierre",
+      "narration": "Cuatro pasos y tu bandeja queda en orden. Guarda esta guía para hacerlo hoy.",
+      "title": {
+        "kicker": "// resumen",
+        "main": "Guarda esta *guia*"
+      },
+      "visual": {
+        "type": "illustration",
+        "elements": [
+          {
+            "type": "roadmap",
+            "title": "PASOS",
+            "items": [
+              "Crea un filtro",
+              "Pon una etiqueta",
+              "Apaga los avisos",
+              "Revisa una vez"
+            ],
+            "active": 3,
+            "at": 0.4
+          },
+          {
+            "type": "host",
+            "pose": "shrug",
+            "expression": "calm"
+          }
+        ]
+      }
+    }
+  ]
+}
