@@ -137,6 +137,7 @@ const COMPONENTS: Record<Look3DId, React.FC<TransitionPresentationComponentProps
   "data-stage": LightStreak,
   "monolith-story": DipZoom,
   "clay-mascot": IrisPop,
+  "cutaway-explainer": IrisPop,
 };
 
 /** The scene transition of a 3D look. */

@@ -68,6 +68,7 @@ export const FX_ABOUT = {
   sweep: "a colored light sweeps across the scene",
   hologram: "rotating rings + scanline shell around `target`",
   spotlight: "volumetric cone of light from `pos` (default: above the scene) onto `target`, `aim` or the scene center; sways slowly; `size` widens it",
+  signal: "glowing dots travel along the pipe path `points` (2-12 [x, y, z]) in a loop between `at` and `until`; `count` dots, `size` scales them (give the pipe the same points as a `tube` part)",
 };
 export const FX_TYPES = Object.keys(FX_ABOUT);
 const TARGET_NEEDED = ["trail", "pulse", "glow", "hologram"];
@@ -86,6 +87,11 @@ export const SHOT_PRESETS = {
   overhead: { pitch: 34, zoom: 1.1 },
   left: { yaw: -32, zoom: 0.95 },
   right: { yaw: 32, zoom: 0.95 },
+  // cutaway explainers: a pull-out that shows the whole cross-section, a shot over a character's shoulder, and a
+  // push to the wall the camera dollies through (fade the wall with part `keys`)
+  reveal: { zoom: 1.7, pitch: 2 },
+  shoulder: { yaw: 26, pitch: -4, zoom: 0.55 },
+  through: { zoom: 0.42, pitch: -5 },
 };
 export const SHOT_NAMES = Object.keys(SHOT_PRESETS);
 
@@ -271,8 +277,65 @@ export const fx3dSchema = z
     pos: v3(-30, 30).optional().describe("spotlight: apex of the cone [x, y, z]"),
     aim: v3(-30, 30).optional().describe("spotlight: world point the cone lights (when there is no `target`)"),
     burst: z.boolean().optional().describe("particles: one burst from the target at `at` instead of an ambient field"),
+    points: z.array(v3(-30, 30)).max(12).optional().describe("signal: the pipe path the dots travel [[x, y, z], ...] (2-12 points)"),
   })
   .strict();
+
+
+// ---------------- overlay kit (diegetic 2D explainer UI over the 3D stage) ----------------
+
+/** Slots of the overlay kit: `flow` = the top chip strip, `concept` = the name pill, `limit` / `versus` = the card. */
+export const OVERLAY_TYPES = ["flow", "concept", "limit", "versus"];
+export const OVERLAY_ABOUT = {
+  flow: "top strip of flow-diagram chips (icon, label, live value) joined by arrows; the active chip is highlighted and signal dots run along the arrows",
+  concept: "a pill with the name of the concept being explained",
+  limit: "a demand bar with a limit tick: it turns to the over-limit color when the demand passes the limit and shows `note`",
+  versus: "a card that says two things are NOT the same: two titled halves with a not-equal sign between them",
+};
+const chipId = z.string().min(1).max(16);
+const iconName = z.string().min(1).max(40);
+const overlayWindow = {
+  at: momentSchema.optional().describe("When it appears: seconds or a narration word (default: 0.4 s)"),
+  until: momentSchema.optional().describe("When it leaves (default: the end of the scene)"),
+};
+const flowStepSchema = z
+  .object({
+    at: momentSchema,
+    active: chipId.optional().describe("Chip id highlighted from this moment"),
+    values: z.record(chipId, z.string().min(1).max(8)).optional().describe("New live values by chip id"),
+  })
+  .strict();
+const flowOverlaySchema = z
+  .object({
+    type: z.literal("flow"),
+    chips: z
+      .array(z.object({ id: chipId, icon: iconName.describe("Phosphor icon name"), label: z.string().min(1).max(10), value: z.string().min(1).max(8).optional().describe("Live value under the label") }).strict())
+      .min(2)
+      .max(5),
+    active: chipId.optional().describe("Chip id highlighted at the start (default: the first)"),
+    steps: z.array(flowStepSchema).max(6).optional().describe("Moments that move the highlight and update the values"),
+    ...overlayWindow,
+  })
+  .strict();
+const conceptOverlaySchema = z.object({ type: z.literal("concept"), text: z.string().min(3).max(28), ...overlayWindow }).strict();
+const limitOverlaySchema = z
+  .object({
+    type: z.literal("limit"),
+    label: z.string().min(1).max(14),
+    value: n(0, 1).optional().describe("Demand at the start, 0..1 (default 0)"),
+    limit: n(0.1, 1).optional().describe("Where the limit tick sits, 0.1..1 (default 0.8)"),
+    steps: z.array(z.object({ at: momentSchema, value: n(0, 1) }).strict()).max(6).optional().describe("Moments that move the demand"),
+    limitLabel: z.string().min(1).max(22).optional().describe("Caption of the limit tick"),
+    note: z.string().min(1).max(28).optional().describe("Warning shown while the demand is over the limit"),
+    icons: z.array(iconName).max(3).optional().describe("Small Phosphor icons of the loads, right of the label"),
+    ...overlayWindow,
+  })
+  .strict();
+const versusSide = z.object({ title: z.string().min(1).max(14), sub: z.string().min(1).max(16).optional(), icon: iconName.optional() }).strict();
+const versusOverlaySchema = z.object({ type: z.literal("versus"), left: versusSide, right: versusSide, ...overlayWindow }).strict();
+export const overlaySchema = z.discriminatedUnion("type", [flowOverlaySchema, conceptOverlaySchema, limitOverlaySchema, versusOverlaySchema], {
+  error: (iss) => `unknown overlay type${iss.input?.type === undefined ? "" : ` "${iss.input.type}"`}; use one of: ${OVERLAY_TYPES.join(", ")}`,
+});
 
 const cameraKeySchema = z
   .object({
@@ -293,6 +356,7 @@ export const generativeSceneFields = {
   world: worldSchema.optional().describe("The set built from scratch for this scene (ground, backdrop, parts, crowd)"),
   shots: z.array(shotSchema).min(2).max(4).optional().describe(`2-4 camera shots over the scene (${SHOT_NAMES.join(", ")}); use instead of cameraKeys`),
   stock: z.boolean().optional().describe("true = this scene uses catalog content on purpose (stock kinds, models, sets) instead of agent-built custom parts / world"),
+  overlay: z.array(overlaySchema).max(4).optional().describe(`Diegetic explainer UI over the stage (${OVERLAY_TYPES.join(", ")}); one flow, one concept and one card (limit or versus) per scene`),
 };
 
 /** Checks of the generative fields of a scene3d visual (paths relative to the visual). */
@@ -384,6 +448,8 @@ export function refineGenerative(v, ctx) {
     at([...base, "at"], f.at);
     at([...base, "until"], f.until);
     if (f.type === "particles" && !f.kind) add([...base, "kind"], `particles need \`kind\`: ${PARTICLE_KINDS.join(", ")}`);
+    if (f.type === "signal" && (f.points ?? []).length < 2) add([...base, "points"], "signal needs `points`: the pipe path, at least 2 [x, y, z] points");
+    if (f.type !== "signal" && f.points) add([...base, "points"], "`points` belongs to the signal fx");
     if (TARGET_NEEDED.includes(f.type) && !f.target) add([...base, "target"], `${f.type} needs \`target\` (an object id or "object/part")`);
     if (f.target) {
       const [oid, pid] = f.target.split("/");
@@ -400,6 +466,27 @@ export function refineGenerative(v, ctx) {
   (v.shots ?? []).forEach((k, i) => {
     at(["shots", i, "at"], k.at);
     if (k.focus && !byId.has(k.focus)) add(["shots", i, "focus"], `no object with id "${k.focus}" in this scene`);
+  });
+  const overlay = v.overlay ?? [];
+  const slot = (o) => (o.type === "limit" || o.type === "versus" ? "card" : o.type);
+  overlay.forEach((o, i) => {
+    const base = ["overlay", i];
+    at([...base, "at"], o.at);
+    at([...base, "until"], o.until);
+    if (overlay.findIndex((x) => slot(x) === slot(o)) !== i) {
+      add(["overlay"], slot(o) === "card" ? "one card (`limit` or `versus`) per scene" : `one \`${o.type}\` per scene`);
+    }
+    if (o.type === "flow") {
+      const chips = new Set(o.chips.map((c) => c.id));
+      if (chips.size !== o.chips.length) add([...base, "chips"], "chip ids must be unique");
+      if (o.active && !chips.has(o.active)) add([...base, "active"], `no chip with id "${o.active}" in this flow`);
+      (o.steps ?? []).forEach((st, j) => {
+        at([...base, "steps", j, "at"], st.at);
+        if (st.active && !chips.has(st.active)) add([...base, "steps", j, "active"], `no chip with id "${st.active}" in this flow`);
+        for (const id of Object.keys(st.values ?? {})) if (!chips.has(id)) add([...base, "steps", j, "values"], `no chip with id "${id}" in this flow`);
+      });
+    }
+    if (o.type === "limit") (o.steps ?? []).forEach((st, j) => at([...base, "steps", j, "at"], st.at));
   });
   if (v.world) {
     const wp = v.world.parts ?? [];
@@ -794,6 +881,11 @@ export function momentStrings(v) {
     for (const p of o.parts ?? []) node(p);
   }
   for (const f of v?.fx ?? []) (add(f.at), add(f.until));
+  for (const o of v?.overlay ?? []) {
+    add(o.at);
+    add(o.until);
+    for (const st of o.steps ?? []) add(st.at);
+  }
   for (const k of v?.cameraKeys ?? []) add(k.at);
   for (const k of v?.shots ?? []) add(k.at);
   for (const p of v?.world?.parts ?? []) node(p);

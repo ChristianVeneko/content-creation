@@ -5,8 +5,8 @@ import { fontStack } from "../fonts";
 
 /** The 3D looks (one per 3D template id). */
 export type Look3DId = ThreeTemplateId;
-/** matte: dark navy body for the neon grid; soft: pastel studio plastic; paint: glossy clearcoat car paint; voxel: flat-shaded blocks. */
-export type MaterialKind = "clay" | "toon" | "glass" | "gloss" | "paper" | "plastic" | "holo" | "matte" | "soft" | "paint" | "voxel";
+/** lowpoly: flat-shaded matte facets in daylight (cutaway explainers). matte: dark navy body for the neon grid; soft: pastel studio plastic; paint: glossy clearcoat car paint; voxel: flat-shaded blocks. */
+export type MaterialKind = "clay" | "toon" | "glass" | "gloss" | "paper" | "plastic" | "holo" | "matte" | "soft" | "paint" | "voxel" | "lowpoly";
 /** set: the scene's environment set is the floor (src/three/sets.tsx). */
 export type FloorKind = "plinth" | "iso" | "neon" | "mirror" | "paper" | "baseplate" | "holopad" | "set";
 /** unfold: pop-up book hinge; snap: stop-motion brick placement on twos; scan: a scan plane grows the object. */
@@ -350,6 +350,28 @@ export const LOOKS3D: Record<Look3DId, Look3D> = {
     label: { bg: "#FFFFFF", fg: "#2B2433", border: "rgba(43,36,51,0.08)", radius: 999, font: fontStack("Poppins"), weight: 900, size: 34, shadow: "0 10px 24px rgba(80,50,30,0.18), 0 3px 0 rgba(43,36,51,0.12)", leader: "none" },
     vignette: 0.1,
     ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#FFFFFF", 0.3),
+  },
+  "cutaway-explainer": {
+    id: "cutaway-explainer",
+    material: "lowpoly",
+    floor: "set",
+    tone: "neutral",
+    exposure: 1.0,
+    shadows: true,
+    outline: null,
+    bloom: null,
+    particles: "dust",
+    enter: "rise",
+    dark: "#2B3550",
+    light: "#FFF7E6",
+    good: "#2FB98F",
+    bad: "#E5484D",
+    screen: "#1E2A44",
+    // a daylight sky washed toward white, a soft sun glow behind the cutaway
+    bg: (p) => ({ stops: [mixHexColor(p.bg[0], "#FFFFFF", 0.12), p.bg[1] ?? p.bg[0]], glow: "#FFFFFF", glowAlpha: 0.4 }),
+    label: { bg: "#FFFFFF", fg: "#14213D", border: "rgba(20,33,61,0.12)", radius: 999, font: fontStack("Poppins"), weight: 800, size: 32, shadow: "0 8px 20px rgba(60,50,30,0.2), 0 3px 0 rgba(20,33,61,0.14)", leader: "none" },
+    vignette: 0.06,
+    ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#FFFFFF", 0.2),
   },
 };
 

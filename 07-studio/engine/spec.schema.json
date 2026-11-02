@@ -48,6 +48,7 @@
         "data-stage",
         "monolith-story",
         "clay-mascot",
+        "cutaway-explainer",
         "pixel-dusk",
         "pixel-night",
         "pixel-arcade",
@@ -177,7 +178,8 @@
             "voxel-world",
             "data-stage",
             "monolith-story",
-            "clay-mascot"
+            "clay-mascot",
+            "cutaway-explainer"
           ]
         },
         "captionStyle": {
@@ -11418,7 +11420,8 @@
                   "static",
                   "glide",
                   "rise",
-                  "handheld"
+                  "handheld",
+                  "pullout"
                 ]
               },
               "focus": {
@@ -11564,7 +11567,7 @@
                 }
               },
               "fx": {
-                "description": "Effects. 2D scenes (illustrated kit, classic, reels): sparkles, confetti, dust, bubbles, leaves, stars, ink-splash, light-leak, grain, scribbles, burst, flash, zoom-punch, shake, glitch, chromatic, speed-lines. 3D scenes (max 6): particles, trail, pulse, shockwave, glow, sweep, hologram, spotlight",
+                "description": "Effects. 2D scenes (illustrated kit, classic, reels): sparkles, confetti, dust, bubbles, leaves, stars, ink-splash, light-leak, grain, scribbles, burst, flash, zoom-punch, shake, glitch, chromatic, speed-lines. 3D scenes (max 6): particles, trail, pulse, shockwave, glow, sweep, hologram, spotlight, signal",
                 "maxItems": 8,
                 "type": "array",
                 "items": {
@@ -11582,7 +11585,8 @@
                             "glow",
                             "sweep",
                             "hologram",
-                            "spotlight"
+                            "spotlight",
+                            "signal"
                           ]
                         },
                         "kind": {
@@ -11715,6 +11719,34 @@
                         "burst": {
                           "description": "particles: one burst from the target at `at` instead of an ambient field",
                           "type": "boolean"
+                        },
+                        "points": {
+                          "description": "signal: the pipe path the dots travel [[x, y, z], ...] (2-12 points)",
+                          "maxItems": 12,
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "prefixItems": [
+                              {
+                                "type": "number",
+                                "minimum": -30,
+                                "maximum": 30
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -30,
+                                "maximum": 30
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -30,
+                                "maximum": 30
+                              }
+                            ],
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3
+                          }
                         }
                       },
                       "required": [
@@ -12550,7 +12582,7 @@
                 "additionalProperties": false
               },
               "shots": {
-                "description": "2-4 camera shots over the scene (wide, medium, close, low, high, overhead, left, right); use instead of cameraKeys",
+                "description": "2-4 camera shots over the scene (wide, medium, close, low, high, overhead, left, right, reveal, shoulder, through); use instead of cameraKeys",
                 "minItems": 2,
                 "maxItems": 4,
                 "type": "array",
@@ -12582,7 +12614,10 @@
                         "high",
                         "overhead",
                         "left",
-                        "right"
+                        "right",
+                        "reveal",
+                        "shoulder",
+                        "through"
                       ]
                     },
                     "focus": {
@@ -12652,6 +12687,412 @@
               "stock": {
                 "description": "true = this scene uses catalog content on purpose (stock kinds, models, sets) instead of agent-built custom parts / world",
                 "type": "boolean"
+              },
+              "overlay": {
+                "description": "Diegetic explainer UI over the stage (flow, concept, limit, versus); one flow, one concept and one card (limit or versus) per scene",
+                "maxItems": 4,
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "flow"
+                        },
+                        "chips": {
+                          "minItems": 2,
+                          "maxItems": 5,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 16
+                              },
+                              "icon": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 40,
+                                "description": "Phosphor icon name"
+                              },
+                              "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 10
+                              },
+                              "value": {
+                                "description": "Live value under the label",
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "icon",
+                              "label"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "active": {
+                          "description": "Chip id highlighted at the start (default: the first)",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 16
+                        },
+                        "steps": {
+                          "description": "Moments that move the highlight and update the values",
+                          "maxItems": 6,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "at": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                ],
+                                "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                              },
+                              "active": {
+                                "description": "Chip id highlighted from this moment",
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 16
+                              },
+                              "values": {
+                                "description": "New live values by chip id",
+                                "type": "object",
+                                "propertyNames": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 16
+                                },
+                                "additionalProperties": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 8
+                                }
+                              }
+                            },
+                            "required": [
+                              "at"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "at": {
+                          "description": "When it appears: seconds or a narration word (default: 0.4 s)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "until": {
+                          "description": "When it leaves (default: the end of the scene)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "chips"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "concept"
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 28
+                        },
+                        "at": {
+                          "description": "When it appears: seconds or a narration word (default: 0.4 s)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "until": {
+                          "description": "When it leaves (default: the end of the scene)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "text"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "limit"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 14
+                        },
+                        "value": {
+                          "description": "Demand at the start, 0..1 (default 0)",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "limit": {
+                          "description": "Where the limit tick sits, 0.1..1 (default 0.8)",
+                          "type": "number",
+                          "minimum": 0.1,
+                          "maximum": 1
+                        },
+                        "steps": {
+                          "description": "Moments that move the demand",
+                          "maxItems": 6,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "at": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                ],
+                                "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                              },
+                              "value": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1
+                              }
+                            },
+                            "required": [
+                              "at",
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "limitLabel": {
+                          "description": "Caption of the limit tick",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 22
+                        },
+                        "note": {
+                          "description": "Warning shown while the demand is over the limit",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 28
+                        },
+                        "icons": {
+                          "description": "Small Phosphor icons of the loads, right of the label",
+                          "maxItems": 3,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 40
+                          }
+                        },
+                        "at": {
+                          "description": "When it appears: seconds or a narration word (default: 0.4 s)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "until": {
+                          "description": "When it leaves (default: the end of the scene)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "label"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "versus"
+                        },
+                        "left": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 14
+                            },
+                            "sub": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 16
+                            },
+                            "icon": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          },
+                          "required": [
+                            "title"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "right": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 14
+                            },
+                            "sub": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 16
+                            },
+                            "icon": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          },
+                          "required": [
+                            "title"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "at": {
+                          "description": "When it appears: seconds or a narration word (default: 0.4 s)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "until": {
+                          "description": "When it leaves (default: the end of the scene)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "left",
+                        "right"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
               },
               "reel": {
                 "description": "Reels scene (visual.type \"reel\", reels-* templates)",

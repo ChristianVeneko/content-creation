@@ -15,6 +15,7 @@ import { backdropStops, WorldGround, WorldView } from "./world";
 import { KIND_COLOR, ObjectView } from "./objects";
 import { color3d, look3dFor, mixHexColor, type Look3D } from "./looks";
 import { Headline3D, Overlay3D } from "./headlines3d";
+import { CutawayOverlay } from "./overlay3d";
 import { ensureLookFonts } from "../illustrated/looks";
 import { looksAtCamera, momentSec, motionList, nodeDelta } from "../../lib/scene3d-motion.mjs";
 import { CustomModel, partWorldMatrix, useOpacity, type CustomObject, type MotionCtx, type Pulse } from "./custom";
@@ -157,7 +158,7 @@ const Label: React.FC<{ tag: Tag; look: Look3D; accent: string; frame: number; f
   const iso = look.id === "iso-toon";
   const hero = look.label.leader === "dashed";
   // light-stage looks print big numbers in the accent color (white would vanish on paper or a desk)
-  const light = look.id === "clay-diorama" || look.id === "paper-world" || look.id === "toy-blocks" || look.id === "soft-studio" || look.id === "voxel-world" || look.id === "clay-mascot";
+  const light = look.id === "clay-diorama" || look.id === "paper-world" || look.id === "toy-blocks" || look.id === "soft-studio" || look.id === "voxel-world" || look.id === "clay-mascot" || look.id === "cutaway-explainer";
   const leader = hero || Math.hypot(tag.x - tag.ax, tag.y - tag.ay) > 60;
   const text = tag.text;
   return (
@@ -425,6 +426,7 @@ export const Scene3DView: React.FC<{ scene: Scene; index: number; spec: Resolved
       {placedTags.map((tag, k) => (
         <Label key={k} tag={tag} look={look} accent={look.id === "pedestal" ? palette.accent : look.id === "clay-diorama" ? mixHex(palette.accent, "#000000", 0.05) : palette.accent3 ?? palette.accent} frame={frame} fps={fps} />
       ))}
+      {p.overlay?.length ? <CutawayOverlay overlay={p.overlay} palette={palette} icons={icons} look={look} /> : null}
       {(scene.title?.main || scene.onScreenText) && look.headline ? (
         <Headline3D kicker={scene.title?.kicker} main={scene.title?.main ?? scene.onScreenText ?? ""} quote={scene.title?.quote} color={color3d(palette, look, scene.title?.color, titleColor)} palette={palette} look={look} index={index} />
       ) : scene.title?.main || scene.onScreenText ? (

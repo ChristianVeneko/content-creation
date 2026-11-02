@@ -7,10 +7,12 @@
 // Nothing here may import Node built-ins: it is bundled by Remotion through lib/spec.mjs.
 import { z } from "zod";
 import { COLOR_TOKENS } from "./illustration-schema.mjs";
+import { mix as mixColor, readableOn, readableWord } from "./captions.mjs";
+import { contrastRatio } from "./palettes.mjs";
 import { customExtent, customHeight, expandWorldParts, partsSignature, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords, shotsToKeys } from "./scene3d-motion.mjs";
 
 /** Templates rendered with the 3D kit. Their look id equals the template id. */
-export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot"];
+export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot", "cutaway-explainer"];
 export const usesThreeKit = (templateId) => THREE_D_TEMPLATE_IDS.includes(templateId);
 /** The 3D look of a resolved spec: theme.look3d when valid, else the template id, else clay-diorama. */
 export const look3dOf = (spec) => {
@@ -96,7 +98,7 @@ export const SET_MODELS = {
   city: ["city-building-a", "city-building-c", "city-building-skyscraper-a", "city-building-skyscraper-c", "street-light", "construction-barrier"],
   voxel: [],
 };
-export const CAMERA_MOVES = ["auto", "orbit", "dolly", "push", "crane", "pan", "turntable", "topdown", "static", "glide", "rise", "handheld"];
+export const CAMERA_MOVES = ["auto", "orbit", "dolly", "push", "crane", "pan", "turntable", "topdown", "static", "glide", "rise", "handheld", "pullout"];
 export const CORNERS = ["bl", "br", "tl", "tr"];
 export const LAYOUTS_3D = ["auto", "row", "grid", "flow", "circle", "stack", "hero"];
 
@@ -221,6 +223,8 @@ export const LOOK3D = {
   "monolith-story": { ortho: false, fov: 30, yaw: -12, pitch: 5, moves: ["push", "orbit", "handheld", "rise", "dolly"], float: 0, spin: 0, wide: 1.2 },
   // soft product camera at table height; the mascot rides in a screen corner
   "clay-mascot": { ortho: false, fov: 28, yaw: -14, pitch: 14, moves: ["dolly", "orbit", "glide", "push"], float: 0.05, spin: 0, wide: 1.1 },
+  // cutaway explainer: a gentle three-quarter view of a cross-section that starts close on the character and pulls out
+  "cutaway-explainer": { ortho: false, fov: 30, yaw: -16, pitch: 10, moves: ["pullout", "orbit", "dolly", "glide", "pullout"], float: 0, spin: 0, wide: 1.55 },
 };
 
 /**
@@ -245,6 +249,7 @@ export const RENDER3D = {
   "data-stage": { tone: "aces", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 4, bloom: { strength: 0.55, threshold: 0.85, radius: 0.5 }, fog: { near: 1.2, far: 3.6, add: 0 }, set: "none" },
   "monolith-story": { tone: "aces", exposure: 1.0, hdri: null, envIntensity: 0, shadowRadius: 5, bloom: null, fog: { near: 1.0, far: 3.4, add: 0 }, set: "none" },
   "clay-mascot": { tone: "neutral", exposure: 1.05, hdri: "brown-photostudio-02", envIntensity: 0.5, shadowRadius: 8, bloom: null, fog: null, set: "none" },
+  "cutaway-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
 };
 
 /** The stock environment set of a scene3d visual: explicit set, else the look's default (none for every look). */
@@ -447,6 +452,14 @@ export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, 
       target = [target[0], target[1] + mix(-0.15, 0.1, ease(u)), target[2]];
       zoom(mix(1.1, 0.98, ease(u)));
       break;
+    case "pullout": {
+      // starts close on the subject and pulls out to show the whole cutaway, drifting a little sideways
+      const p = ease(u);
+      zoom(mix(0.5, 1.12, p));
+      yaw += mix(-9, 7, p);
+      pitch = mix(L.pitch * 0.5, L.pitch * 1.25, p);
+      break;
+    }
     case "handheld": {
       // hand-held feel: slow deterministic drift in yaw, pitch and the look-at point, plus a gentle push
       const w = t * 0.9;
@@ -552,6 +565,17 @@ export function objectTimes(objects, sceneSec, moments = {}) {
   return objects.map((o, i) => round(o.at === undefined ? first + i * step : momentSec(o.at, moments)));
 }
 
+/** Default appearance time of an overlay element (after the cut and the first object). */
+const OVERLAY_AT = 0.4;
+/** Overlay elements with every moment resolved to seconds into the scene (steps sorted by time). */
+export function planOverlay(overlay, moments = {}) {
+  return (overlay ?? []).map((o) => {
+    const out = { ...o, at: round(momentSec(o.at ?? OVERLAY_AT, moments)), until: o.until === undefined ? null : round(momentSec(o.until, moments)) };
+    if (o.steps) out.steps = o.steps.map((st) => ({ ...st, at: round(momentSec(st.at, moments)) })).sort((a, b) => a.at - b.at);
+    return out;
+  });
+}
+
 /**
  * Plan one `scene3d` visual: layout, entrances, chart bar times, connections, the resolved camera move, and
  * `elements` in the illustrated planner's shape so `computeBeats` turns them into SFX beats.
@@ -574,6 +598,8 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
     ...connections.map((c) => ({ el: { type: "svg" }, box: null, enter: c.enter, items: [] })),
     // impact effects are beats too (a pop on the shockwave / burst)
     ...(v.fx ?? []).filter((f) => f.type === "shockwave" || (f.type === "particles" && f.burst)).map((f) => ({ el: { type: "icon", kind: f.type }, box: null, enter: round(momentSec(f.at, moments)), items: [] })),
+    // overlay cards and strips pop in as beats too
+    ...planOverlay(v.overlay, moments).map((o) => ({ el: { type: "icon", kind: `overlay-${o.type}` }, box: null, enter: o.at, items: [] })),
   ];
   const focus = v.focus !== undefined ? byId[v.focus] : undefined;
   const frame = frameContent(placed, look);
@@ -592,6 +618,7 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
     return out;
   }).sort((a, b) => a.t - b.t);
   const w = v.world;
+  const overlay = planOverlay(v.overlay, moments);
   return {
     kind: "scene3d",
     world: w ? { concept: w.concept, ground: w.ground ?? null, backdrop: w.backdrop ?? null, parts: expandWorldParts(w.parts ?? []), crowd: w.crowd ?? null } : null,
@@ -606,6 +633,7 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
     elements,
     moments,
     cameraKeys,
+    ...(overlay.length ? { overlay } : {}),
     warnings,
   };
 }
@@ -664,4 +692,65 @@ export const collectModelIds = (spec) => {
 
 /** Icon names referenced by a spec's 3D objects (for lib/icons.mjs). */
 export const collectIconNames3d = (spec) =>
-  [...new Set(spec.scenes.flatMap((s) => (s.visual?.objects ?? []).map((o) => o.icon).filter(Boolean)))].map((n) => String(n).trim().toLowerCase().replace(/[\s_]+/g, "-").replace(/-duotone$/, ""));
+  [...new Set(spec.scenes.flatMap((s) => [...(s.visual?.objects ?? []).map((o) => o.icon), ...overlayIcons(s.visual?.overlay)].filter(Boolean)))].map((n) => String(n).trim().toLowerCase().replace(/[\s_]+/g, "-").replace(/-duotone$/, ""));
+
+/** Icon names an overlay uses: flow chips, limit loads and versus halves. */
+export const overlayIcons = (overlay) =>
+  (overlay ?? []).flatMap((o) => (o.type === "flow" ? o.chips.map((c) => c.icon) : o.type === "limit" ? (o.icons ?? []) : o.type === "versus" ? [o.left.icon, o.right.icon] : []));
+
+// ---------------- overlay colors ----------------
+
+const OVERLAY_RED = "#E5484D";
+/**
+ * Colors of the overlay kit (flow chips, concept pill, limit bar, versus card), computed from the palette roles plus
+ * neutrals so every label reads (>= 4.5:1) and every fill stays distinct from its surface (>= 3:1) on any palette.
+ * Pure: the renderer and the tests share it.
+ * @param {{bg: string[], text: string, accent: string, accent2?: string, accent3?: string}} p
+ */
+export function overlayColors(p) {
+  const white = "#FFFFFF";
+  const panel = mixColor(p.bg[p.bg.length - 1] ?? p.bg[0], "#000000", 0.82);
+  const track = mixColor(panel, white, 0.2);
+  const surfaces = [panel, track];
+  const chip = mixColor(white, p.accent3 ?? p.accent, 0.1);
+  const active = readableWord(p.accent2 ?? p.accent, [panel], 3);
+  const concept = p.accent2 ?? p.accent;
+  const over = readableWord(OVERLAY_RED, surfaces, 3);
+  return {
+    panel,
+    panelText: white,
+    muted: readableWord(mixColor(white, panel, 0.3), [panel], 4.5),
+    accentText: readableWord(p.accent, [panel], 4.5),
+    chip,
+    chipInk: readableOn(chip),
+    active,
+    activeInk: readableOn(active),
+    concept,
+    conceptInk: readableOn(concept),
+    track,
+    fill: readableWord(p.accent3 ?? p.accent, surfaces, 3),
+    over,
+    overText: readableWord(over, [panel], 4.5),
+    signal: readableWord(p.accent2 ?? p.accent, [panel], 3),
+  };
+}
+
+/** The label / fill pairs of the overlay kit with their measured contrast and the minimum each needs: [name, ratio, min]. */
+export function overlayContrast(c) {
+  const cr = contrastRatio;
+  return [
+    ["panel text", cr(c.panelText, c.panel), 4.5],
+    ["muted label", cr(c.muted, c.panel), 4.5],
+    ["accent text", cr(c.accentText, c.panel), 4.5],
+    ["chip ink on chip", cr(c.chipInk, c.chip), 4.5],
+    ["chip fill on panel", cr(c.chip, c.panel), 3],
+    ["active chip on panel", cr(c.active, c.panel), 3],
+    ["active ink on active chip", cr(c.activeInk, c.active), 4.5],
+    ["concept ink on concept pill", cr(c.conceptInk, c.concept), 4.5],
+    ["bar fill on track", cr(c.fill, c.track), 3],
+    ["bar fill on panel", cr(c.fill, c.panel), 3],
+    ["over-limit fill on track", cr(c.over, c.track), 3],
+    ["over-limit note on panel", cr(c.overText, c.panel), 4.5],
+    ["signal dot on panel", cr(c.signal, c.panel), 3],
+  ];
+}

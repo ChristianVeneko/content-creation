@@ -1,0 +1,60 @@
+{
+  "id": "cutaway-explainer",
+  "name": "Cutaway Explainer 3D",
+  "category": "3d",
+  "format": "cutaway-explainer",
+  "description": "Low-poly cutaway explainer: a clean matte toon-like look in soft daylight with one warm key and soft shadows, a camera that opens close on a recurring cartoon character and pulls out to reveal the whole cross-section, and a diegetic overlay kit (a top strip of flow-diagram chips with live values, a concept-name pill, a demand bar that turns red over its limit, a not-equal comparison card) plus signal dots running down in-world pipes. A format, not a scene: the agent builds the cutaway set, the character and the pipes from scratch (custom parts) for every video. No emoji.",
+  "prompt_hint": "6-8 scenes (4-7 s) about how a system works (power, water, data, money, traffic). EVERY scene: visual.type \"scene3d\" with the SAME recurring custom character (head, hat, body, arms with wave / walk motion, drawn from scratch with a new design per video) plus the custom parts that explain the step, and a `world` of the cutaway set built from parts (walls with one face removed, floor plates, furniture, pipes as `tube` parts) whose concept names the setting. Use camera \"pullout\" on the opening scene and shots close / reveal / shoulder / through on others. Fill `overlay`: one `flow` strip (3-5 chips whose active chip moves with the narration), a `concept` pill when a new term is introduced, a `limit` bar for demand versus capacity, a `versus` card for an \"X is not Y\" idea; add `fx` signal along every pipe. Captions stay at the bottom; when a scene has a `title`, set `title.color` to \"accent\" or \"accent3\" (the yellow role is for the overlay). No emoji.",
+  "best_for": [
+    "how things work",
+    "science and tech explainers",
+    "cutaway cross-sections",
+    "systems and flows",
+    "educational shorts"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#CFE8FF",
+      "#F6EFD9",
+      "#FFC72C"
+    ],
+    "accent": "#FFC72C",
+    "sample_text": "CORTE"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#BFE0FF",
+          "#F4EBD3"
+        ],
+        "text": "#14213D",
+        "accent": "#C8381A",
+        "accent2": "#FFC72C",
+        "accent3": "#1F6F9C"
+      },
+      "font": "Poppins",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.03
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.95
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

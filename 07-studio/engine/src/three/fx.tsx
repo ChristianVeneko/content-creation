@@ -9,7 +9,7 @@ import { radialTexture } from "./sets";
 import { color3d } from "./looks";
 
 type V3 = [number, number, number];
-export type Fx3D = { type: string; kind?: string; target?: string; color?: string; at?: number | string; until?: number | string; count?: number; size?: number; burst?: boolean; pos?: V3; aim?: V3 };
+export type Fx3D = { type: string; kind?: string; target?: string; color?: string; at?: number | string; until?: number | string; count?: number; size?: number; burst?: boolean; pos?: V3; aim?: V3; points?: V3[] };
 /** World anchor of a target at time t: its base position and height (null when hidden or missing). */
 export type TargetAt = (target: string, t: number) => { pos: V3; h: number } | null;
 
@@ -295,6 +295,45 @@ const Spotlight: React.FC<{ pos: V3; aim: V3; size: number; color: string; t: nu
   );
 };
 
+/** Pipe signal: dots flow along a polyline in a loop (a pure function of t), fading in at `start` and out at `end`. */
+const Signal: React.FC<{ points: V3[]; t: number; start: number; end: number; count: number; size: number; color: string }> = ({ points, t, start, end, count, size, color }) => {
+  const bright = useBright();
+  const path = useMemo(() => {
+    const seg = points.slice(1).map((p, i) => ({ a: points[i], b: p, len: Math.hypot(p[0] - points[i][0], p[1] - points[i][1], p[2] - points[i][2]) }));
+    return { seg, total: Math.max(1e-6, seg.reduce((s, x) => s + x.len, 0)) };
+  }, [points]);
+  const w = windowW(t, start, end);
+  if (w <= 0.001) return null;
+  const SPEED = 1.5;
+  const at = (d: number): V3 => {
+    let left = ((d % path.total) + path.total) % path.total;
+    for (const sg of path.seg) {
+      if (left <= sg.len || sg === path.seg[path.seg.length - 1]) {
+        const u = sg.len > 0 ? Math.min(1, left / sg.len) : 0;
+        return [sg.a[0] + (sg.b[0] - sg.a[0]) * u, sg.a[1] + (sg.b[1] - sg.a[1]) * u, sg.a[2] + (sg.b[2] - sg.a[2]) * u];
+      }
+      left -= sg.len;
+    }
+    return points[0];
+  };
+  return (
+    <>
+      {Array.from({ length: count }, (_, i) => {
+        const p = at((t - start) * SPEED + (i * path.total) / count);
+        return (
+          <group key={i} position={p} scale={w}>
+            <mesh>
+              <sphereGeometry args={[0.09 * size, 14, 10]} />
+              <meshBasicMaterial {...bright(color)} />
+            </mesh>
+            <Halo pos={[0, 0, 0]} size={0.5 * size} color={color} opacity={0.5} />
+          </group>
+        );
+      })}
+    </>
+  );
+};
+
 /** Light sweep: a strong colored point light glides across the front of the scene. */
 const Sweep: React.FC<{ t: number; start: number; end: number; center: V3; color: string; size: number }> = ({ t, start, end, center, color, size }) => {
   const stop = end === Infinity ? start + 2.4 : end;
@@ -360,6 +399,8 @@ export const FxLayer: React.FC<{ fx: Fx3D[]; t: number; sec: (m: number | string
             const from = f.pos ?? ([aim[0], 10, aim[2] - 1.5] as V3);
             return <Spotlight key={key} pos={from} aim={aim} size={size} color={color} t={t} w={windowW(t, start, end, 0.6)} seed={seed + i} />;
           }
+          case "signal":
+            return f.points && f.points.length >= 2 ? <Signal key={key} points={f.points} t={t} start={start} end={end} count={f.count ?? 5} size={size} color={f.color ? color : (palette.accent2 ?? palette.accent)} /> : null;
           case "sweep":
             return <Sweep key={key} t={t} start={start} end={end} center={center} color={color} size={size} />;
           default:

@@ -390,7 +390,7 @@ viewBox), fx that hide text, empty or repeated scenes, then render again.
 ## 3D templates
 
 `clay-diorama`, `iso-toon`, `neon-glass`, `pedestal`, `paper-world`, `toy-blocks`, `holo-studio`, `neon-grid`, `soft-studio`,
-`moody-night`, `voxel-world`, `data-stage`, `monolith-story` and `clay-mascot` render every scene as a real 3D scene
+`moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot` and `cutaway-explainer` render every scene as a real 3D scene
 (three.js), with the same voice, captions, HUD, brand footer, SFX and ducked music as the illustrated kit. Same rules as
 `illustrated` for `title` (kicker + main on every scene), `hud`, `brand`, no emoji anywhere, and **do not set `theme`**
 unless the user asked for brand colors. Differences: **5-10 scenes** (3-6 s each, ~30-50 s), and every scene uses
@@ -417,10 +417,11 @@ three or more scenes all show the identical subject and world is rejected.
   "world"?: { "concept": string, "ground"?: { "kind"?: "look" | "none" | "plane" | "disc" | "grid" | "mirror", "color"?: hex | token, "size"?: 2-60 },
               "backdrop"?: hex | token, "parts"?: [ ...world parts, max 24 ], "crowd"?: { "count": 8-160, "area": [w, d], "pos"?: [x, y, z], "height"?: 0.4-2.5, "color"?: ... } },
   "layout"?: "auto" | "row" | "grid" | "flow" | "circle" | "stack" | "hero",
-  "camera"?: "auto" | "orbit" | "dolly" | "push" | "crane" | "pan" | "turntable" | "topdown" | "static" | "glide" | "rise" | "handheld",
-  "shots"?: [ { "shot": "wide" | "medium" | "close" | "low" | "high" | "overhead" | "left" | "right", "at"?: seconds | word, "focus"?: object id } ],   // 2-4
+  "camera"?: "auto" | "orbit" | "dolly" | "push" | "crane" | "pan" | "turntable" | "topdown" | "static" | "glide" | "rise" | "handheld" | "pullout",
+  "shots"?: [ { "shot": "wide" | "medium" | "close" | "low" | "high" | "overhead" | "left" | "right" | "reveal" | "shoulder" | "through", "at"?: seconds | word, "focus"?: object id } ],   // 2-4
   "cameraKeys"?: [ { "at", "yaw", "pitch", "zoom", "shift", "focus", "ease" } ],   // alternative to shots, not both
-  "fx"?: [ { "type": "particles" | "trail" | "pulse" | "shockwave" | "glow" | "sweep" | "hologram" | "spotlight", "target"?: "id" | "id/part", "color"?, "at"?, "until"?, "size"? } ],  // max 6
+  "fx"?: [ { "type": "particles" | "trail" | "pulse" | "shockwave" | "glow" | "sweep" | "hologram" | "spotlight" | "signal", "target"?: "id" | "id/part", "points"?: [[x, y, z]...] (signal), "color"?, "at"?, "until"?, "size"?, "count"? } ],  // max 6
+  "overlay"?: [ flow | concept | limit | versus ],   // diegetic explainer UI, see `cutaway-explainer`
   "focus"?: object id, "connect"?: [ { "from": id, "to": id, "label"?: string } ], "explode"?: boolean,
   "set"?: "none" | "road" | "desk" | "room" | "grid" | "stage" | "city" | "voxel",   // stock sets: need stock: true; build a `world` instead
   "stock"?: boolean            // only when the user asked for catalog content
@@ -451,7 +452,9 @@ after repeats. Change the world between scenes; keep the recurring subject. `cor
 as a persistent mascot (it follows the camera; one object per corner).
 
 **Shots.** Try 2-4 `shots` per scene instead of one fixed view: `wide`, `medium`, `close` (give it a `focus`), `low`, `high`,
-`overhead`, `left`, `right`; they spread over the scene (or use `at`), with `camera: "static"` or a slow move under them.
+`overhead`, `left`, `right`, and for cutaways `reveal` (pull far out to show the whole cross-section), `shoulder` (over the
+shoulder of the character) and `through` (push in toward a wall; fade that wall with part `keys` on `opacity` so the camera
+dollies through it); they spread over the scene (or use `at`), with `camera: "static"` or a slow move under them.
 Vary the camera between scenes: only `iso-toon` is isometric; the other looks use low hero angles, orbits, dollies, top-down
 and `handheld`.
 
@@ -539,12 +542,49 @@ face with `blink`, a waving arm with `wave`) and give it `corner: "br"` (or `bl`
 corner and follows the camera. Each scene adds one or two custom props that illustrate that tip (a piggy bank, a calendar, a
 card) with a pastel `world` (`ground` plane or disc) and a `stat` counter such as "3/10". Never reuse a mascot from another video.
 
+### `cutaway-explainer`
+A low-poly cutaway explainer for "how does it work" topics: clean flat-shaded matte materials, soft daylight (one warm key,
+soft shadows), a camera that opens close on one recurring character and **pulls out** to show the whole cross-section. It
+supplies only style: you build the cutaway set, the character and the pipes from scratch for every video (new topic, new
+setting, new character design; never a previous video's house or cast). 6-8 scenes of 4-7 s. Camera: `camera: "pullout"`
+(close on the character, then a slow pull-out reveal) on the opening scene and the finale, `orbit`/`dolly` or `static` +
+`shots` elsewhere: `close` on the subject, `shoulder` for the over-the-shoulder view, `through` + a fading wall for the dolly
+through a wall, `reveal` for the full cutaway.
+
+**Overlay kit** (`visual.overlay`, max one `flow`, one `concept` and one card per scene; all colors come from the palette,
+contrast-checked, so never set colors). All times are seconds or a narration word (`at`, `until`; default appears at 0.4 s).
+- `flow`: the top strip of 2-5 chips `{id, icon (Phosphor name), label (<= 10 chars), value? (<= 8)}` joined by arrows; `active`
+  is the highlighted chip and `steps: [{at, active?, values?: {chipId: "text"}}]` move the highlight and update the live values
+  as the narration moves along the process. Same chips in every scene of the video, only `active` and the values change.
+- `concept`: `{text (<= 28)}` a yellow pill with the name of the term being introduced. Show it when the narration names it.
+- `limit`: a demand bar `{label (<= 14), value 0-1, limit 0.1-1, steps: [{at, value}], limitLabel?, note?, icons?: [3 names]}`;
+  it turns red and shows `note` when the demand passes the limit (demand vs capacity, load vs budget, speed vs limit).
+- `versus`: the "not equal" card `{left: {title, sub?, icon?}, right: {...}}` for "A is not B" ideas.
+The strip sits at the top (HUD band) and the pill and card under it, above the 3D stage: do not also set `title` on those
+scenes (if you do, give it `title.color` "accent" or "accent3"). Captions stay at the bottom as usual.
+
+**Recipes** (build them from parts every video; sizes and positions are starting points, never fixed stock):
+- **Cutaway house**: world parts `floor` (a box plate, 7 x 0.24 x 4.4), a `back` wall and one side wall (boxes 0.2 thick), a thin
+  ceiling `slab`; the front face and the other side are simply not built (that is the cutaway). Add a divider wall with
+  `keys` on `opacity` (1 -> 0.12) for the "through the wall" shot, furniture from boxes and cylinders (sofa = seat box + back
+  box, table = top + legs, lamp = pole + cone shade, shelf = plank + jars) and the machine the topic is about (a tank = cylinder
+  + band + dial). Use `ground: {kind: "plane"}` outside and a different `backdrop` token per scene. Keep ~17-22 world parts.
+- **Small cartoon character** (one `custom` object, `size` ~0.6, ~17 parts): `body` rounded box, `head` sphere, a hat or cap
+  (cylinder + visor box), `eyeL`/`eyeR` spheres with `{type: "blink", parts: [...]}`, `nose`, a `torus` smile, `armL`/`armR`
+  capsules with `pivot` at the shoulder and hands as child spheres, `legL`/`legR` cylinders with `pivot` at the hip. Motion:
+  `breathe` always, `wave` on the right arm part, `{type: "walk", parts: ["legL","legR","armL","armR"]}` plus object `keys` on
+  `pos` to cross the room. Same design in every scene; vary only `pos` and motion.
+- **Flow-pipe signals**: pipes are world `tube` parts (`size: [0.07]`, `points` the path, `pos: [0, 0, 0]`) in an accent
+  token; add `{type: "signal", points: <the same points>, count: 6, color: "accent2", at}` to make dots run along them. Pipe
+  elbows are just more points; one `signal` per pipe, at most 6 `fx` per scene.
+
 3D checklist (silently verify): 5-10 scenes; every scene has `title.kicker` + `title.main` and a `scene3d` visual with a
 `custom` object or a `world` (with `concept`); no `stock` unless asked; the subject and world differ from the last video and
 vary between scenes; `chart` has `values`, `stat` has `value`; every `connect`/`focus` id exists in the same scene; part ids
 are unique and parents exist; labels 1-3 words; no emoji anywhere.
 
 Full examples: `examples/data-stage.spec.json`, `examples/monolith-story.spec.json`, `examples/clay-mascot.spec.json`,
+`examples/cutaway-explainer.spec.json`,
 `examples/3d-generative.spec.json` (a character built from parts), plus one per older look in `examples/`.
 
 ## Creative mode: 3D
@@ -574,8 +614,8 @@ camera: change `shots` and compare the stills. Reference build: `examples/3d-gen
 omitted; ease is `linear|in|out|in-out|back|elastic|bounce|step`. **Camera keys**: start wide (`zoom` 1.2-1.3, `yaw` -20)
 and push in on the key word (`zoom` 0.85, `focus` id). **FX**: `particles` (`kind` `sparks|dust|snow|embers|confetti|stars`;
 ambient, or `burst: true` from a `target` at `at`), `trail`, `pulse` (`target` `"id"` or `"id/part"`), `shockwave`, `glow`,
-`sweep`, `hologram`, `spotlight` (a volumetric cone from `pos` onto `target` or `aim`; `size` widens it). Bursts and
-shockwaves are SFX beats.
+`sweep`, `hologram`, `spotlight` (a volumetric cone from `pos` onto `target` or `aim`; `size` widens it), `signal` (`points`
+[[x,y,z]...], 2-12: glowing dots travel that path in a loop, `count` dots). Bursts and shockwaves are SFX beats.
 
 Example character (17 parts; reuse the same model across scenes, vary its motion):
 ```

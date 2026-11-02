@@ -301,7 +301,7 @@ export const videoSpecSchema = z
     if (three) {
       // 3D looks draw everything; emoji are not allowed in anything shown on screen.
       spec.scenes.forEach((s, i) => {
-        const visible = { onScreenText: s.onScreenText, title: s.title, hud: s.hud, visual: { objects: s.visual?.objects, connect: s.visual?.connect, world: (s.visual?.world?.parts ?? []).map((p) => p.text) } };
+        const visible = { onScreenText: s.onScreenText, title: s.title, hud: s.hud, visual: { objects: s.visual?.objects, connect: s.visual?.connect, overlay: s.visual?.overlay, world: (s.visual?.world?.parts ?? []).map((p) => p.text) } };
         for (const where of findEmoji(visible)) ctx.addIssue({ code: "custom", path: ["scenes", i, ...where], message: "emoji are not allowed in 3D templates; use a 3D object (kind icon, check, cross...) instead" });
       });
       for (const where of findEmoji(spec.hud)) ctx.addIssue({ code: "custom", path: ["hud", ...where], message: "emoji are not allowed in 3D templates" });

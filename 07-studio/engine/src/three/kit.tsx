@@ -93,6 +93,11 @@ export const Mat: React.FC<{ finish?: Finish; color?: string; intensity?: number
       if (finish === "metal") return <meshStandardMaterial color="#C9CED8" metalness={0.7} roughness={0.35} />;
       if (finish === "screen") return <meshStandardMaterial color={c} roughness={0.25} emissive={c} emissiveIntensity={0.2} />;
       return <meshStandardMaterial color={c} map={map} metalness={0.1} roughness={finish === "dark" ? 0.6 : 0.45} />;
+    case "lowpoly":
+      // cutaway explainer: flat-shaded matte facets (the low-poly read), no gloss
+      if (finish === "metal") return <meshStandardMaterial color="#C9CDD6" metalness={0.25} roughness={0.55} flatShading />;
+      if (finish === "screen") return <meshStandardMaterial color={c} roughness={0.5} emissive={c} emissiveIntensity={0.35} flatShading />;
+      return <meshStandardMaterial color={c} map={map} roughness={0.92} metalness={0} flatShading />;
     case "voxel":
       if (finish === "metal") return <meshStandardMaterial color="#C9CCD2" metalness={0.6} roughness={0.45} flatShading />;
       if (finish === "screen") return <meshStandardMaterial color={c} roughness={0.5} emissive={c} emissiveIntensity={0.2} flatShading />;
@@ -349,6 +354,15 @@ export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity:
           <hemisphereLight args={["#8FA0D0", "#171A28", 0.9]} />
           <directionalLight ref={shadowCam} position={[-6, 4, 6]} intensity={2.3} color="#FFE3C0" {...key} />
           <directionalLight position={[5, 3, -8]} intensity={1.3} color={palette.accent2 ?? palette.accent} />
+        </>
+      );
+    case "cutaway-explainer":
+      // soft daylight: a sky/ground hemisphere, one warm key with a soft shadow, a faint cool fill from the left
+      return (
+        <>
+          <hemisphereLight args={["#F2F8FF", "#D8C7A8", 2.3]} />
+          <directionalLight ref={shadowCam} position={[4, 9, 8]} intensity={1.5} color="#FFE2B5" {...key} />
+          <directionalLight position={[-6, 3, 4]} intensity={0.45} color="#CFE0FF" />
         </>
       );
     case "clay-mascot":

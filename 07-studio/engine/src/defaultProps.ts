@@ -53,6 +53,8 @@ import monolithStoryExample from "../examples/monolith-story.spec.json";
 import monolithStoryTemplate from "../templates/monolith-story.json";
 import clayMascotExample from "../examples/clay-mascot.spec.json";
 import clayMascotTemplate from "../templates/clay-mascot.json";
+import cutawayExample from "../examples/cutaway-explainer.spec.json";
+import cutawayTemplate from "../templates/cutaway-explainer.json";
 import { computeTimeline, paginateCaptions, syntheticCaptions } from "../lib/timeline.mjs";
 import { resolveSpec } from "../lib/spec.mjs";
 import { planIllustration } from "../lib/illustrated.mjs";
@@ -75,6 +77,7 @@ const THREE_EXAMPLES: Record<string, [unknown, unknown]> = {
   "data-stage": [dataStageExample, dataStageTemplate],
   "monolith-story": [monolithStoryExample, monolithStoryTemplate],
   "clay-mascot": [clayMascotExample, clayMascotTemplate],
+  "cutaway-explainer": [cutawayExample, cutawayTemplate],
 };
 
 // Format looks preview their own example spec (their elements need a plan).

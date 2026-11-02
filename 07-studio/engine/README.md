@@ -203,6 +203,7 @@ formats. The hand-drawn and printed looks (whiteboard and the art styles) keep t
 | `data-stage` | 3D format: dark arena, volumetric spotlights, instanced crowd, rows receding into depth, scales and tubes built from parts |
 | `monolith-story` | 3D format: one recurring monolith, a color-keyed backdrop per scene, pixel-font signs, push and orbit camera |
 | `clay-mascot` | 3D format: soft clay look, a persistent mascot pinned to a screen corner, pastel backdrop, soft shadows |
+| `cutaway-explainer` | 3D format: low-poly cutaway cross-section in soft daylight, close-up to pull-out reveal camera, diegetic overlay kit (`visual.overlay`: flow chips, concept pill, limit bar, not-equal card) and `signal` fx along pipes |
 | `captions-voice` | Voiceover + kinetic captions over gradients, photos or b-roll |
 | `kinetic-type` | Huge animated words, ghost outline type, no b-roll |
 | `countdown` | Hook with TOP N chip, big numbered items, payoff |
@@ -272,7 +273,7 @@ Dev loop: `node scripts/illustrated-stills.mjs <spec> <outDir> --at=0.5,0.97` re
 ## 3D templates
 
 The 3D templates (`clay-diorama`, `iso-toon`, `neon-glass`, `pedestal`, `paper-world`, `toy-blocks`, `holo-studio`,
-`neon-grid`, `soft-studio`, `moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot`) render each scene as a real three.js scene through
+`neon-grid`, `soft-studio`, `moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot`, `cutaway-explainer`) render each scene as a real three.js scene through
 [`@remotion/three`](https://www.remotion.dev/docs/three) (React Three Fiber 9, drei 10, three 0.186). Headline, captions,
 HUD, footer, SFX beats and the music bed are the illustrated kit's, so they stay 2D, sharp and in the safe zone.
 
