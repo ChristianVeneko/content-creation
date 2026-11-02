@@ -74,6 +74,16 @@ const ZoomThrough: React.FC<TransitionPresentationComponentProps<P>> = ({ childr
   return <AbsoluteFill style={{ transform: `scale(${scale})`, transformOrigin: "50% 55%", opacity, filter: `blur(${exiting ? q * 6 : (1 - q) * 6}px)` }}>{children}</AbsoluteFill>;
 };
 
+/** Data atlas: a slow cinematic dissolve; the old shot keeps pushing in and fades late, the new one settles in from a slight push. */
+const AtlasDissolve: React.FC<TransitionPresentationComponentProps<P>> = ({ children, presentationDirection, presentationProgress }) => {
+  const q = interpolate(presentationProgress, [0, 1], [0, 1], { ...clamp, easing: Easing.bezier(0.45, 0, 0.25, 1) });
+  const exiting = presentationDirection === "exiting";
+  const scale = exiting ? interpolate(q, [0, 1], [1, 1.07]) : interpolate(q, [0, 1], [1.05, 1]);
+  const opacity = exiting ? interpolate(q, [0.5, 1], [1, 0], clamp) : interpolate(q, [0, 0.8], [0, 1], clamp);
+  const bright = exiting ? 1 + Math.sin(q * Math.PI) * 0.12 : 1;
+  return <AbsoluteFill style={{ transform: `scale(${scale})`, transformOrigin: "50% 55%", opacity, filter: bright !== 1 ? `brightness(${bright})` : undefined }}>{children}</AbsoluteFill>;
+};
+
 /** Code tutorial: CRT power cycle; the old screen collapses to a bright line, the new one expands from it. */
 const CrtCut: React.FC<TransitionPresentationComponentProps<P>> = ({ children, presentationDirection, presentationProgress }) => {
   const exiting = presentationDirection === "exiting";
@@ -106,7 +116,7 @@ const COMPONENTS: Partial<Record<LookId, React.FC<TransitionPresentationComponen
   // host-tutorial: halftone dots swell until the next step shows; spotlight-narrative: a slow push through the dark
   "host-tutorial": ART_TRANSITIONS.risograph as React.FC<TransitionPresentationComponentProps<P>>,
   "spotlight-narrative": ZoomThrough,
-  "data-atlas": ZoomThrough,
+  "data-atlas": AtlasDissolve,
   // art-style looks: wash dissolve, stop-motion paper slide, smudge wipe, halftone wipe, ink bleed, panel slam
   ...(ART_TRANSITIONS as Partial<Record<LookId, React.FC<TransitionPresentationComponentProps<P>>>>),
 };

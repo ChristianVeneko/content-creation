@@ -10,6 +10,7 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate } from "remotion";
 import { noise2D } from "@remotion/noise";
+import { expandLayer } from "../../lib/drawing-gen.mjs";
 import { DEPTH_ORDER, LEDGER, formatCount, layerMotion, routePointAt, routeSamples } from "../../lib/illustrated.mjs";
 import type { Box, Planned } from "../types";
 import { DrawingSvg } from "../components/Drawing2D";
@@ -42,7 +43,7 @@ export const Backdrop: React.FC<{ el: El; sceneSec: number; index: number; momen
   const mode = el.mode === "flat" ? "flat" : "2.5d";
   const p = clamp01(t / Math.max(0.1, sceneSec));
   const dir = index % 2 ? -1 : 1;
-  const layers = [...(el.layers as El[])].sort((a, b) => DEPTH_ORDER.indexOf(a.depth ?? "subject") - DEPTH_ORDER.indexOf(b.depth ?? "subject"));
+  const layers = (el.layers as El[]).map((l) => expandLayer(l) as El).sort((a, b) => DEPTH_ORDER.indexOf(a.depth ?? "subject") - DEPTH_ORDER.indexOf(b.depth ?? "subject"));
   const colors = inkColors(ink);
   const skin = lookDrawingSkin(ink);
   return (
@@ -236,7 +237,7 @@ const RouteLabel: React.FC<{ text: string; x: number; y: number; t: number; star
 
 /* ================================================================ counter pill ================================================================ */
 
-const PILL = { y: 1108, h: 128 };
+const PILL = { y: 1400, h: 140 };
 
 /** A dark rounded pill at the bottom of the picture window with a big number that counts up; an optional tag sits above it. */
 export const CounterPill: React.FC<{ p: Planned; language: string }> = ({ p, language }) => {
