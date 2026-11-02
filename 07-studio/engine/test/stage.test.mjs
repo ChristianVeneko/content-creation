@@ -228,7 +228,7 @@ test("buoyancy: the ball rocks only while a beat has lifted it", () => {
 
 test("caps: 160 parts per custom object, 120 world parts, 1500 expanded; a 1500-instance world plans and expands fast", () => {
   assert.equal(MAX_PARTS, 160);
-  assert.equal(MAX_WORLD_PARTS, 120);
+  assert.equal(MAX_WORLD_PARTS, 400);
   assert.equal(MAX_WORLD_EXPANDED, 1500);
   const many = Array.from({ length: 160 }, (_, i) => ({ id: `p${i}`, shape: "box", size: [0.1], pos: [(i % 16) * 0.1, Math.floor(i / 16) * 0.1, 0] }));
   assert.equal(errs(spec({ stage: { ...STAGE, actors: [...STAGE.actors, { id: "big", parts: many }] } })).length, 0);

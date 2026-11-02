@@ -82,7 +82,7 @@ const TARGET_NEEDED = ["trail", "pulse", "glow", "hologram"];
 /** Parts of one custom object (a model; stage actors use the same cap). */
 export const MAX_PARTS = 160;
 /** Parts of a custom `world` (ground dressing, backdrops, props, signs), and the cap after `repeat` and `scatter` expansion (rendered instanced). */
-export const MAX_WORLD_PARTS = 120;
+export const MAX_WORLD_PARTS = 400;
 export const MAX_WORLD_EXPANDED = 1500;
 /** Worlds up to this many expanded parts keep the classic one-mesh-per-part rendering; repeat copies of bigger worlds are instanced. */
 export const WORLD_INSTANCE_FROM = 160;

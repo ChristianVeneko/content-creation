@@ -7,6 +7,7 @@ import { elementsSchema, hasEmoji, hudItemSchema, hudOverrideSchema, lookSchema,
 import { ART_LOOKS, FORMAT_2D_LOOKS, usesIllustratedKit } from "./illustrated.mjs";
 import { stageSchema, refineStageSpec } from "./scene3d-stage.mjs";
 import { expandBuilders } from "./scene3d-builders.mjs";
+import { normalizeStageAuthoring } from "./scene3d-lenient.mjs";
 import { THREE_D_TEMPLATE_IDS, refineScene3d, refineThreeNovelty, scene3dFields, usesThreeKit } from "./scene3d.mjs";
 import { REELS_TEMPLATE_IDS } from "./reels.mjs";
 import { PIXEL_TEMPLATE_IDS, pixelSceneSchema, refinePixel, refinePixelSpec, usesPixelKit } from "./pixel.mjs";
@@ -372,7 +373,7 @@ export function formatIssues(error) {
  */
 export function validateSpec(raw) {
   // stage builder calls ({ build, params, seed }) expand to plain parts first, so everything downstream sees ordinary specs
-  const { spec: expanded, errors: buildErrors } = expandBuilders(migrateLegacyIds(raw));
+  const { spec: expanded, errors: buildErrors } = expandBuilders(normalizeStageAuthoring(migrateLegacyIds(raw)));
   if (buildErrors.length) return { ok: false, errors: buildErrors };
   const res = videoSpecSchema.safeParse(expanded);
   if (!res.success) return { ok: false, errors: formatIssues(res.error) };

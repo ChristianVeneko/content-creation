@@ -333,7 +333,7 @@ the start of scene N+1 is exactly the stage at the end of scene N (a hole dug in
   `actor/part`, a liquid id, `terrain`, `camera`. Unknown targets and parts are rejected by name.
 - `terrain`: low-poly heightfield (24-64 grid) with a strata cutaway face; `carve` beats `dig`, `raise` or `collapse` a `box` or `disc`
   region. `liquids`: translucent volumes with a waved surface, `level` 0..1 tweened by beats, vapor while it drops.
-- `world.scatter`: deterministic (seeded) instanced copies; caps: 160 parts per object, 120 world parts, 1500 expanded.
+- `world.scatter`: deterministic (seeded) instanced copies; caps: 160 parts per object, 400 world parts, 1500 expanded.
 - Camera: one continuous path over all scenes (`shots` are keys on one timeline; `cut: true` for a hard cut); `zoom-to` a `focus` (actor,
   `terrain:<carve id>`...) and `dive` to the cutaway face. The title sits on a slim palette-derived pill in the top band (y 200-350).
 - Portrait framing: the default framing fills the 9:16 frame (`STAGE_FRAME` in `lib/scene3d.mjs`: the world is cropped to about 9.5 units

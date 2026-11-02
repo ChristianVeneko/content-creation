@@ -304,7 +304,7 @@
             },
             "parts": {
               "description": "Props, walls, signs and stage dressing built from primitive parts",
-              "maxItems": 120,
+              "maxItems": 400,
               "type": "array",
               "items": {
                 "type": "object",
@@ -21141,7 +21141,7 @@
                   },
                   "parts": {
                     "description": "Props, walls, signs and stage dressing built from primitive parts",
-                    "maxItems": 120,
+                    "maxItems": 400,
                     "type": "array",
                     "items": {
                       "type": "object",

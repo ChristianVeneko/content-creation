@@ -460,7 +460,7 @@ three or more scenes all show the identical subject and world is rejected.
                  "value"?: number | string, "values"?: number[], "items"?: string[], "icon"?: string,
                  "size"?: 0.4-2.2, "pos"?: [x, y, z], "highlight"?: boolean, "at"?: seconds | narration word } ],   // 1-7 objects
   "world"?: { "concept": string, "ground"?: { "kind"?: "look" | "none" | "plane" | "disc" | "grid" | "mirror", "color"?: hex | token, "size"?: 2-60 },
-              "backdrop"?: hex | token, "parts"?: [ ...world parts, max 24 ], "crowd"?: { "count": 8-160, "area": [w, d], "pos"?: [x, y, z], "height"?: 0.4-2.5, "color"?: ... } },
+              "backdrop"?: hex | token, "parts"?: [ ...world parts, max 400 ], "crowd"?: { "count": 8-160, "area": [w, d], "pos"?: [x, y, z], "height"?: 0.4-2.5, "color"?: ... } },
   "layout"?: "auto" | "row" | "grid" | "flow" | "circle" | "stack" | "hero",
   "camera"?: "auto" | "orbit" | "dolly" | "push" | "crane" | "pan" | "turntable" | "topdown" | "static" | "glide" | "rise" | "handheld" | "pullout",
   "shots"?: [ { "shot": "wide" | "medium" | "close" | "low" | "high" | "overhead" | "left" | "right" | "reveal" | "shoulder" | "through", "at"?: seconds | word, "focus"?: object id } ],   // 2-4
@@ -611,7 +611,7 @@ through a wall, `reveal` for the full cutaway.
 
 **Overlay kit** (`visual.overlay`, max one `flow`, one `concept` and one card per scene; all colors come from the palette,
 contrast-checked, so never set colors). All times are seconds or a narration word (`at`, `until`; default appears at 0.4 s).
-- `flow`: the top strip of 2-5 chips `{id, icon (Phosphor name), label (<= 10 chars), value? (<= 8)}` joined by arrows; `active`
+- `flow`: the top strip of 2-5 chips as OBJECTS `{id, icon (Phosphor name), label (<= 10 chars), value? (<= 8)}` (never bare strings) joined by arrows; `active`
   is the highlighted chip and `steps: [{at, active?, values?: {chipId: "text"}}]` move the highlight and update the live values
   as the narration moves along the process. Same chips in every scene of the video, only `active` and the values change.
 - `concept`: `{text (<= 28)}` a yellow pill with the name of the term being introduced. Show it when the narration names it.
@@ -720,7 +720,7 @@ target them). Run `node cli.mjs builders` for the catalog: every builder with it
 - office and finance: `desk`, `chart-3d` (`bar-k`), `coin-stack`, `safe` (`door` group), `calendar` (`day-k`).
 In `stage.world.parts` a call becomes a group root (`pos`, `rot`, `scale`) with the parts hanging from it; `grass-tufts`, `flowers`
 and any call with `"scatter": {count, area, avoid, seed}` become instanced scatter copies (they follow the terrain). Budgets: 160
-parts per actor, 120 world parts, 1500 expanded; keep scenery light (use scatter) and put the hero models in `actors`. An actor
+parts per actor, 400 world parts (builder calls expand into them), 1500 expanded; keep scenery light (use scatter) and put the hero models in `actors`. An actor
 call must fit within 5 units of its center (the error tells you): lower the size params or scale with `size`. A builder with a water hook
 (see its `about` in the catalog) accepts `"liquid": "<id>"` to add a matching water volume.
 

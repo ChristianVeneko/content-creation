@@ -111,7 +111,7 @@ test("world schema: accepts concept, ground, backdrop, parts (wide pos, repeat),
   assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: [{ id: "b", shape: "box", size: [60, 1, 1] }] } }), "scenes.0.visual.world.parts.0.size.0", /at most 40/));
   assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: Array.from({ length: 40 }, (_, i) => ({ id: `r${i}`, shape: "box", repeat: { count: 40, step: [0, 0, -1] } })) } }), "scenes.0.visual.world.parts", /more than 1500/));
   assert.ok(errs(spec({ objects: [BLOCK], world: { ...WORLD, ground: { kind: "lava" } } })).length > 0, "unknown ground kind");
-  assert.ok(errs(spec({ objects: [BLOCK], world: { ...WORLD, parts: Array.from({ length: 121 }, (_, i) => ({ id: `p${i}`, shape: "box" })) } })).length > 0, "at most 120 world parts");
+  assert.ok(errs(spec({ objects: [BLOCK], world: { ...WORLD, parts: Array.from({ length: 401 }, (_, i) => ({ id: `p${i}`, shape: "box" })) } })).length > 0, "at most 400 world parts");
   assert.ok(has(spec({ objects: [BLOCK], world: { concept: "empty" } }), "scenes.0.visual.world", /empty world/));
 });
 
