@@ -25,7 +25,7 @@ type Vec3 = [number, number, number];
 type RenderProfile = { tone: string; exposure: number; envIntensity: number; shadowRadius: number; bloom: { strength: number; threshold: number; radius: number } | null; fog: { near: number; far: number; add: number } | null };
 
 /** Hex of a vertical CSS gradient (evenly spaced stops) at v in 0..1: the fog color melts the set into the backdrop. */
-const gradientHex = (stops: string[], v: number): string => {
+export const gradientHex = (stops: string[], v: number): string => {
   const rgb = (c: string) => [0, 2, 4].map((i) => parseInt(c.replace("#", "").slice(i, i + 2), 16));
   const x = Math.max(0, Math.min(1, v)) * Math.max(0, stops.length - 1);
   const i = Math.min(Math.max(0, stops.length - 2), Math.floor(x));
@@ -34,7 +34,7 @@ const gradientHex = (stops: string[], v: number): string => {
   return `#${a.map((c, k) => Math.round(c + (b[k] - c) * (x - i)).toString(16).padStart(2, "0")).join("")}`;
 };
 const EMPTY: ScenePlan3D = { kind: "scene3d", layout: "hero", move: "static", frame: { target: [0, 0.5, 0], dist: 9, viewH: 8 }, focus: null, explode: false, objects: [], connections: [] };
-const STAGE = { x0: 90, x1: 990, y0: 600, y1: 1236 };
+export const STAGE = { x0: 90, x1: 990, y0: 600, y1: 1236 };
 
 type Live = { pos: Vec3; scale: Vec3; rotY: number; visible: boolean; p: number; rotX?: number };
 
@@ -133,10 +133,10 @@ const ObjGroup: React.FC<{ st: ObjState; children: React.ReactNode }> = ({ st, c
   );
 };
 
-type Tag = { x: number; y: number; ax: number; ay: number; w: number; text: string; enter: number; big?: string; side?: "left" | "right" };
+export type Tag = { x: number; y: number; ax: number; ay: number; w: number; text: string; enter: number; big?: string; side?: "left" | "right" };
 
 /** Push overlapping labels apart vertically (deterministic), then clamp them into the stage band. */
-const resolveTags = (tags: Tag[]): Tag[] => {
+export const resolveTags = (tags: Tag[]): Tag[] => {
   const out = tags.map((t) => ({ ...t, x: Math.max(STAGE.x0 + t.w / 2, Math.min(STAGE.x1 - t.w / 2, t.x)), y: Math.max(STAGE.y0 + 30, Math.min(STAGE.y1 - 30, t.y)) }));
   out.sort((a, b) => a.y - b.y);
   for (let i = 1; i < out.length; i++) {
@@ -150,7 +150,7 @@ const resolveTags = (tags: Tag[]): Tag[] => {
   return out.map((t) => ({ ...t, y: Math.min(STAGE.y1 - 30, t.y) }));
 };
 
-const Label: React.FC<{ tag: Tag; look: Look3D; accent: string; frame: number; fps: number }> = ({ tag, look, accent, frame, fps }) => {
+export const Label: React.FC<{ tag: Tag; look: Look3D; accent: string; frame: number; fps: number }> = ({ tag, look, accent, frame, fps }) => {
   const p = spring({ frame: frame - Math.round(tag.enter * fps), fps, config: { damping: 12, stiffness: 170 } });
   if (p <= 0.001) return null;
   const L = look.label;

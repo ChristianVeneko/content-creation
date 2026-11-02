@@ -607,8 +607,61 @@ scenes (if you do, give it `title.color` "accent" or "accent3"). Captions stay a
 
 3D checklist (silently verify): 5-10 scenes; every scene has `title.kicker` + `title.main` and a `scene3d` visual with a
 `custom` object or a `world` (with `concept`); no `stock` unless asked; the subject and world differ from the last video and
-vary between scenes; `chart` has `values`, `stat` has `value`; every `connect`/`focus` id exists in the same scene; part ids
+vary between scenes; `chart` has `values`, `stat` has `value`; every `connect`/`focus` id exists in the same scene (a staged spec: in `stage`); part ids
 are unique and parents exist; labels 1-3 words; no emoji anywhere.
+
+**Persistent stage (process explainers: "how X works", "what happened").** When ONE world must change over time (dig a hole,
+fill it with water, something floats), do not build a new world per scene: put the world in a top-level `stage` and let
+scenes only declare `shots`, `beats`, `overlay`, `focus` (+ `title`). Scenes of a staged spec take no `objects` and no `world`;
+state persists, so a hole dug in scene 2 is still dug in scene 3. Template: `engineering-explainer` (or any 3D look).
+- `stage: {concept, world?, actors?, terrain?, liquids?}`; `concept` (3-80 chars) and at least one actor with `parts` or world
+  `parts` are required. `actors[]`: `{id, parts (<= 160), pos [x,y,z] world, rot, size, color, label, at (seconds from the
+  video start), buoyant {amp?, speed?}, motion?, keys?}`; actor part ids are what beats address as `"actor/part"`.
+  Stage-level times (`at` in actor motion/keys) are plain seconds from the start of the video; words work in `beats`.
+- `world` is like a scene world (`ground`, `backdrop`, `parts` <= 120, `repeat` copies, `crowd`) plus **`scatter`**:
+  `[{part, count, area: [x0,z0,x1,z1], seed, jitter: {scale, rot}, avoid: [[x0,z0,x1,z1] or [x,z,r]], y}]` makes `count`
+  deterministic instanced copies of the template part `part` (grass tufts, flowers, stones, trees; the template itself is not
+  drawn; children hang from it with `parent`). Same seed = same layout. At most 1500 parts after `repeat` and `scatter`.
+  On a stage with terrain the copies follow the ground and vanish where it is dug away.
+- `terrain: {size [w,d] (default [14,10]), grid 24-64, depth, top (grass color), strata [{to, color}], bumps, seed, stones
+  {count, seed, size [min,max], buried}}`: a low-poly heightfield (ground y = 0, camera side = +z) with a cutaway face
+  showing the soil layers on the front and sides. Dig with beats (below). To show a hole in the cutaway, the region must
+  reach the front edge (`z1` >= `pos[1] + size[1]/2`).
+- `liquids: [{id, kind pit|box, area [x0,z0,x1,z1], floor, top, color, opacity, level 0..1, wave}]`: translucent volume with a
+  waved surface; `level` goes from `floor` (0) to `top` (1) and is tweened by beats; rising vapor shows while it drops.
+- **`beats`** (per scene): `{at, target, dur, ease, set | to | carve}`. `at`: seconds into the scene or a narration word
+  (`"cavas"`, `"word#2"`). `target`: `"actorId"`, `"actorId/partId"`, a liquid id, `"terrain"` or `"camera"`. `to` tweens from
+  the CURRENT state (beats accumulate across scenes, nothing resets), `set` jumps. Channels: `pos` (offset from rest),
+  `rot` (degrees added), `scale` (multiplier), `color`, `opacity`, `visible`, `emissive` (actor/part); `level`, `color`,
+  `opacity` (liquid); `pos`, `rot [pitch,yaw,0]`, `scale` (camera zoom). Terrain takes `carve: {id?, region: {box:[x0,z0,x1,z1]}
+  | {disc:[x,z,r]}, depth, mode dig|raise|collapse, bank}`: dig lowers, raise heaps a mound (raise the same region to refill),
+  collapse relaxes the heights so walls slump. Unknown targets and part ids are rejected by name.
+- **Buoyancy** is a beat: lift the actor with `to: {pos: [0, 1.4, 0]}`; a `buoyant` actor rocks gently only while lifted.
+- **Camera** is one continuous path across all scenes: every `shots` entry is a key on the global timeline, eased between keys
+  (a hard cut only with `cut: true`). `shots: [{shot, at, focus, cut}]` accepts one shot per scene; `zoom-to` punches in on
+  `focus` (an actor, `"actor/part"`, a liquid id, `"terrain"` or `"terrain:<carve id>"`); `dive` levels the camera with the
+  cutaway face for a close look at the layers; `wide` pulls back. Scenes without `shots` keep the previous camera.
+- The title sits on a palette-derived pill in the top band and the default framing keeps the subject below it; do not put
+  anything important in the top 25% of the frame.
+Mini example (dig, fill, float):
+```json
+{"stage": {"concept": "backyard pool", "terrain": {"size": [24, 10], "grid": 48, "depth": 3.4},
+  "world": {"backdrop": "#8EC9F2", "parts": [{"id": "tuft", "shape": "cone", "size": [0.05, 0.3], "pos": [0, 0.15, 0], "color": "#4F9A38"}],
+            "scatter": [{"part": "tuft", "count": 300, "area": [-9, -4.5, 9, 4.6], "seed": 3, "avoid": [[0.5, 0.5, 6.5, 6]]}]},
+  "actors": [{"id": "barrel", "pos": [3.3, -1.7, 2.8], "buoyant": {}, "parts": [{"id": "shell", "shape": "cylinder", "size": [0.5, 0.5, 0.9], "pos": [0, 0.45, 0], "color": "#3E78C4"}]}],
+  "liquids": [{"id": "water", "area": [0.7, 0.6, 6.3, 5], "floor": -1.75, "top": -0.2}]},
+ "scenes": [
+  {"id": "dig", "narration": "Primero cavas un hoyo profundo.", "title": {"main": "Cavas el hoyo"}, "visual": {"type": "scene3d",
+    "shots": [{"shot": "wide"}, {"shot": "zoom-to", "focus": "terrain:pit", "at": "cavas"}],
+    "beats": [{"at": "cavas", "target": "terrain", "dur": 2.5, "carve": {"id": "pit", "region": {"box": [0.8, 0.8, 6.2, 6]}, "depth": 1.75}}]}},
+  {"id": "fill", "narration": "Luego lo llenas de agua.", "title": {"main": "Lo llenas"}, "visual": {"type": "scene3d",
+    "shots": [{"shot": "dive", "focus": "terrain:pit", "at": 0}],
+    "beats": [{"at": "llenas", "target": "water", "dur": 3, "to": {"level": 1}}]}},
+  {"id": "float", "narration": "Y el barril sube y flota.", "title": {"main": "Flota"}, "visual": {"type": "scene3d",
+    "shots": [{"shot": "zoom-to", "focus": "barrel", "at": 0.4}],
+    "beats": [{"at": "sube", "target": "barrel", "dur": 2.2, "to": {"pos": [0, 1.4, 0]}}]}}]}
+```
+Full stage example: `examples/stage-yard.spec.json` (a 58-part house, 490 instanced tufts, flowers and trees, a dug and filled pit with strata, a floating barrel).
 
 Full examples: `examples/data-stage.spec.json`, `examples/monolith-story.spec.json`, `examples/clay-mascot.spec.json`,
 `examples/cutaway-explainer.spec.json`,

@@ -399,8 +399,9 @@ export function frameContent(placed, look, opts = {}) {
 /**
  * Camera state at `t` seconds into a scene of `sceneSec` seconds. Pure: the R3F camera and the 2D label anchors
  * both call it, so labels stay locked to objects.
- * @param {{t: number, sceneSec: number, look: string, move: string, frame: {target: number[], dist: number, viewH: number}, focusPos?: number[] | null, keys?: {t: number, yaw?: number, pitch?: number, zoom?: number, shift?: number[], ease?: string}[] | null}} args
+ * @param {{t: number, sceneSec: number, look: string, move: string, frame: {target: number[], dist: number, viewH: number}, focusPos?: number[] | null, keys?: {t: number, yaw?: number, pitch?: number, zoom?: number, shift?: number[], ease?: string}[] | null, extra?: {yaw?: number, pitch?: number, zoom?: number, shift?: number[]} | null}} args
  *   keys: resolved camera keyframes (plan.cameraKeys) layered on top of the move
+ *   extra: {yaw?, pitch?, zoom?, shift?} offsets added last (stage camera beats)
  * @returns {{ortho: boolean, fov: number, viewH: number, position: number[], target: number[]}}
  */
 export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, keys = null, extra = null }) {
@@ -695,7 +696,7 @@ export function planStageScenes(spec, timeline, captions = null) {
   const palette = spec.theme?.palette ?? { bg: ["#0F0C29"], text: "#FFFFFF", accent: "#FFD60A" };
   // framing: actors + the ground block, filling the stage band (not the title and caption bands)
   const items = [...placed];
-  if (terrain) items.push({ pos: [terrain.pos[0], -terrain.depth * 0.5, terrain.pos[1]], scale: 1, h: terrain.depth * 0.5 + 0.2, half: Math.max(terrain.size[0], terrain.size[1] * 0.8) / 2 });
+  if (terrain) items.push({ pos: [terrain.pos[0], -terrain.depth * 0.5, terrain.pos[1]], scale: 1, h: terrain.depth * 0.5 + 0.2, half: Math.min(8, Math.max(terrain.size[0], terrain.size[1] * 0.8) / 2) });
   if (!items.length) items.push({ pos: [0, 0, 0], scale: 1, h: 2, half: 3 });
   const frame = frameContent(items, look, { fill: 0.34 });
   const front = terrain ? terrain.pos[1] + terrain.size[1] / 2 : 0;

@@ -165,6 +165,23 @@ export type IconData = { viewBox: string; back: string[]; outline: string[] };
 /** One planned 3D object (lib/scene3d.mjs planScene3d). Times are seconds into the scene. */
 export type Placed3D = { pos: [number, number, number]; scale: number; h: number; enter: number; items: number[]; half?: number; /** corner-pinned mascot: placed from the camera each frame */ corner?: "bl" | "br" | "tl" | "tr" };
 export type World3D = { concept: string; ground: { kind?: string; color?: string; size?: number } | null; backdrop: string | null; parts: Record<string, unknown>[]; crowd: { count: number; area: [number, number]; pos?: [number, number, number]; height?: number; color?: string } | null };
+/** Persistent stage (lib/scene3d-stage.mjs, planStageScenes): shared by every scene of a spec; state is a pure function of global seconds. */
+export type StageActor3D = { id: string; label: string | null; color: string | null; size: number; rot: [number, number, number]; at: number; buoyant: { amp?: number; speed?: number } | null; highlight: boolean; parts: Record<string, unknown>[]; motion: unknown[]; keys: unknown[]; placed: Placed3D };
+export type StageRegion = { box?: [number, number, number, number]; disc?: [number, number, number] };
+export type StageCarve = { t: number; dur: number; ease?: string; id?: string; region: StageRegion; depth?: number; mode?: string; bank?: number };
+export type StageTerrain3D = { size: [number, number]; pos: [number, number]; grid: number; depth: number; bumps: number; seed: number; top: string | null; strata: { to: number; color: string }[]; stones: { count: number; seed?: number; size?: [number, number]; buried?: boolean } | null; carves: StageCarve[] };
+export type StageLiquid3D = { id: string; kind: "pit" | "box"; area: [number, number, number, number]; floor: number; top: number; color?: string; opacity: number; level: number; wave: number };
+export type StagePlan3D = {
+  concept: string;
+  world: World3D | null;
+  actors: StageActor3D[];
+  terrain: StageTerrain3D | null;
+  liquids: StageLiquid3D[];
+  tracks: Record<string, Record<string, { t: number; v: unknown; ease?: string }[]>>;
+  totalSec: number;
+  safe: { top: number; bottom: number; title: { y: number; h: number } };
+  title: { mode: "pill"; fill: string; fillAlpha: number; ink: string; rule: string; kickerInk: string; contrast: number };
+};
 export type CameraFrame = { target: [number, number, number]; dist: number; viewH: number };
 export type ScenePlan3D = {
   kind: "scene3d";
@@ -181,6 +198,12 @@ export type ScenePlan3D = {
   connections: { from: number; to: number; label?: string; enter: number }[];
   /** diegetic explainer UI (lib/scene3d.mjs planOverlay): moments already in seconds */
   overlay?: Overlay3DPlan[];
+  /** persistent stage (spec.stage): shared plan, and this scene's start in global seconds */
+  stage?: StagePlan3D;
+  t0?: number;
+  /** resolved camera keys (global seconds with a stage) */
+  cameraKeys?: { t: number; yaw?: number; pitch?: number; zoom?: number; shift?: [number, number, number]; ease?: string }[];
+  moments?: Record<string, number>;
 };
 export type OverlayWindow = { at: number; until: number | null };
 export type Overlay3DPlan =

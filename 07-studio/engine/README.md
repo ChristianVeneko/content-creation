@@ -289,7 +289,7 @@ exist; `chart` needs `values`, `stat` a `value`, `icon` an `icon`, `model` a lis
 | `objects[]` extras | `id`, `label` (2D tag locked to the object), `color` (hex or token), `icon`, `value`, `values` + `items` (chart), `model`, `anim`, `size`, `pos`, `at`, `highlight` |
 | `layout` | `auto` (by count), `row`, `grid`, `flow` (zigzag, auto arrows), `circle`, `stack` (layers), `hero` |
 | `camera` | `auto` (the look's rotation), `orbit`, `dolly`, `push`, `crane`, `pan`, `turntable`, `topdown`, `static`, `glide` (lateral truck), `rise` (pedestal up), `handheld` (slow deterministic drift) |
-| `world` | The set the agent builds from scratch for the scene: `concept` (required, a few words), `ground` (`look`, `none`, `plane`, `disc`, `grid`, `mirror`), `backdrop` (flat color, blended toward the palette background), `parts` (custom parts, `pos` up to +-30, sizes up to 40, `repeat` copies, `sign` pixel-font signs; max 24, 160 after repeats) and `crowd` (instanced silhouettes). Renders in `src/three/world.tsx` |
+| `world` | The set the agent builds from scratch for the scene: `concept` (required, a few words), `ground` (`look`, `none`, `plane`, `disc`, `grid`, `mirror`), `backdrop` (flat color, blended toward the palette background), `parts` (custom parts, `pos` up to +-30, sizes up to 40, `repeat` copies, `sign` pixel-font signs; max 120, 1500 after `repeat` and `scatter`, copies of big worlds are instanced), `scatter` (seeded instanced copies of a template part over an area, with keep-out zones) and `crowd` (instanced silhouettes). Renders in `src/three/world.tsx` |
 | `shots` | 2-4 camera shots (`wide`, `medium`, `close`, `low`, `high`, `overhead`, `left`, `right`, each with optional `at`, `focus`, `yaw`, `pitch`, `zoom`) expanded to camera keys; use instead of `cameraKeys` |
 | `objects[].corner` | Custom object pinned to a screen corner (`bl`, `br`, `tl`, `tr`) as a persistent mascot that follows the camera |
 | `set`, `stock` | Stock catalog scenery (`road`, `desk`, `room`, `grid`, `stage`, `city`, `voxel`; props are CC0 GLBs in `SET_MODELS`). No look has a default set (`auto` = `none`); a named set, or a `character`/`car`/`model` object, needs `stock: true` on the scene (or on the object) |
@@ -321,6 +321,24 @@ How it works:
 Dev loop: `node scripts/illustrated-stills.mjs examples/clay-diorama.spec.json <outDir> --at=0.3,0.9` (also `--frames=`,
 `--png`, `--verbose`). Rendering needs an awake display on macOS: if the Mac display sleeps, headless Chrome stalls on
 "Waiting for root component to load"; wrap long renders in `02-scripts/keepawake.sh` (uses `caffeinate` on macOS).
+
+### Persistent stage (process explainers)
+
+A top-level `stage` (`lib/scene3d-stage.mjs`) is ONE world shared by every scene of a spec: `{concept, world, actors, terrain, liquids}`.
+Scenes then declare only `shots`, `beats`, `overlay`, `focus` and `title`. State is a pure function of global seconds, so the stage at
+the start of scene N+1 is exactly the stage at the end of scene N (a hole dug in scene 2 is still dug in scene 3).
+
+- `beats: [{at, target, dur, ease, set | to | carve}]`: real tweens between states (`pos`, `rot`, `scale`, `color`, `opacity`, `visible`,
+  `emissive`, liquid `level`, camera), applied cumulatively; `at` is seconds into the scene or a narration word. Targets: `actor`,
+  `actor/part`, a liquid id, `terrain`, `camera`. Unknown targets and parts are rejected by name.
+- `terrain`: low-poly heightfield (24-64 grid) with a strata cutaway face; `carve` beats `dig`, `raise` or `collapse` a `box` or `disc`
+  region. `liquids`: translucent volumes with a waved surface, `level` 0..1 tweened by beats, vapor while it drops.
+- `world.scatter`: deterministic (seeded) instanced copies; caps: 160 parts per object, 120 world parts, 1500 expanded.
+- Camera: one continuous path over all scenes (`shots` are keys on one timeline; `cut: true` for a hard cut); `zoom-to` a `focus` (actor,
+  `terrain:<carve id>`...) and `dive` to the cutaway face. The title sits on a palette-derived pill in the top band and the default
+  framing keeps the subject out of the title and caption bands.
+- Example: `examples/stage-yard.spec.json` (render: `node cli.mjs build examples/stage-yard.spec.json --out <dir>`, about 19 s for 16 s of video).
+  Known limit: the 3D looks' scene transitions (iris, wipe...) still run between staged scenes; a stage-aware fade belongs in `src/Video.tsx`.
 
 ## Pixel templates
 

@@ -8,7 +8,8 @@ import { random } from "remotion";
 import type { World3D } from "../types";
 import { useKit3D } from "./kit";
 import { color3d, mixHexColor } from "./looks";
-import { CustomModel, useOpacity, type CustomObject, type CustomPart, type MotionCtx } from "./custom";
+import { CustomModel, makeGeometry, useOpacity, type CustomObject, type CustomPart, type MotionCtx } from "./custom";
+import { Mat, type Finish } from "./kit";
 
 type V3 = [number, number, number];
 
@@ -187,6 +188,90 @@ const Crowd: React.FC<{ crowd: NonNullable<World3D["crowd"]>; t: number; seed: n
   );
 };
 
+
+
+const DEGR = Math.PI / 180;
+const FINISH: Record<string, Finish> = { body: "body", accent: "body", dark: "dark", light: "light", metal: "metal", screen: "screen", glow: "glow" };
+
+/** Instanced draw of the world parts flagged `inst` (scatter copies, repeat copies of big worlds): one InstancedMesh per geometry + color. */
+const InstancedParts: React.FC<{ parts: CustomPart[]; heightAt?: ((x: number, z: number) => number) | null }> = ({ parts, heightAt = null }) => {
+  const { look, palette } = useKit3D();
+  const byId = useMemo(() => new Map(parts.map((p) => [p.id, p])), [parts]);
+  // static world matrix of every part (its mesh sits one pivot back inside its own node, as in CustomModel)
+  const built = useMemo(() => {
+    const memo = new Map<string, THREE.Matrix4>();
+    const outer = (p: CustomPart): THREE.Matrix4 => {
+      const hit = memo.get(p.id);
+      if (hit) return hit;
+      const pv = p.pivot ?? [0, 0, 0];
+      const pos = p.pos ?? [0, 0, 0];
+      const rot = p.rot ?? [0, 0, 0];
+      const sc = Array.isArray(p.scale) ? p.scale : [p.scale ?? 1, p.scale ?? 1, p.scale ?? 1];
+      const local = new THREE.Matrix4().compose(new THREE.Vector3(pos[0] + pv[0], pos[1] + pv[1], pos[2] + pv[2]), new THREE.Quaternion().setFromEuler(new THREE.Euler(rot[0] * DEGR, rot[1] * DEGR, rot[2] * DEGR)), new THREE.Vector3(sc[0], sc[1], sc[2]));
+      const par = p.parent !== undefined ? byId.get(p.parent) : undefined;
+      const m = par ? outer(par).clone().multiply(new THREE.Matrix4().makeTranslation(-(par.pivot?.[0] ?? 0), -(par.pivot?.[1] ?? 0), -(par.pivot?.[2] ?? 0))).multiply(local) : local;
+      memo.set(p.id, m);
+      return m;
+    };
+    const rootOf = (p: CustomPart): CustomPart => {
+      let q = p;
+      for (let k = 0; k < 8 && q.parent !== undefined && byId.has(q.parent); k++) q = byId.get(q.parent)!;
+      return q;
+    };
+    const groups = new Map<string, { part: CustomPart; color: string; items: { m: THREE.Matrix4; root: THREE.Vector3 }[] }>();
+    for (const p of parts) {
+      if (p.shape === "group" || p.shape === "sign") continue;
+      const role = p.role ?? "body";
+      const fallback = role === "accent" || role === "glow" ? (palette.accent3 ?? palette.accent) : role === "dark" ? look.dark : role === "light" ? look.light : role === "screen" ? look.screen : role === "metal" ? "#CDD1DA" : (palette.accent2 ?? palette.accent);
+      const color = color3d(palette, look, p.color, fallback);
+      const pv = p.pivot ?? [0, 0, 0];
+      const m = outer(p).clone().multiply(new THREE.Matrix4().makeTranslation(-pv[0], -pv[1], -pv[2]));
+      const r = rootOf(p);
+      const key = JSON.stringify([p.shape, p.size, p.points, p.radius, p.material, role === "glow" ? "glow" : role, color]);
+      const g = groups.get(key) ?? { part: p, color, items: [] };
+      g.items.push({ m, root: new THREE.Vector3().setFromMatrixPosition(outer(r)) });
+      groups.set(key, g);
+    }
+    return [...groups.values()];
+  }, [parts, look, palette]);
+  return (
+    <>
+      {built.map((g, k) => (
+        <InstGroup key={k} g={g} heightAt={heightAt} />
+      ))}
+    </>
+  );
+};
+
+const HIDE = new THREE.Matrix4().makeScale(0, 0, 0);
+const InstGroup: React.FC<{ g: { part: CustomPart; color: string; items: { m: THREE.Matrix4; root: THREE.Vector3 }[] }; heightAt: ((x: number, z: number) => number) | null }> = ({ g, heightAt }) => {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const { look } = useKit3D();
+  const key = JSON.stringify([g.part.shape, g.part.size, g.part.points, g.part.radius]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const geo = useMemo(() => makeGeometry(g.part, true), [key]);
+  const glow = g.part.material === "emissive" || g.part.role === "glow";
+  useLayoutEffect(() => {
+    const mesh = ref.current;
+    if (!mesh) return;
+    const tmp = new THREE.Matrix4();
+    g.items.forEach((it, i) => {
+      if (!heightAt) return mesh.setMatrixAt(i, it.m);
+      // scattered copies follow the terrain: they ride its height and vanish where it has been dug away
+      const h = heightAt(it.root.x, it.root.z);
+      if (h < -0.08) return mesh.setMatrixAt(i, HIDE);
+      mesh.setMatrixAt(i, tmp.makeTranslation(0, h, 0).multiply(it.m));
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+  if (!geo) return null;
+  return (
+    <instancedMesh ref={ref} args={[geo, undefined, g.items.length]} frustumCulled={false} castShadow={look.shadows && !glow && g.items.length < 400} receiveShadow={look.shadows}>
+      {glow ? <meshBasicMaterial color={g.color} /> : <Mat finish={FINISH[g.part.role ?? "body"] ?? "body"} color={g.color} />}
+    </instancedMesh>
+  );
+};
+
 /** Parts of the world (props, walls, signs): one custom model at the origin, nodes already expanded by `repeat`. */
 const WorldParts: React.FC<{ parts: CustomPart[]; t: number; ctx: MotionCtx }> = ({ parts, t, ctx }) => {
   const { palette } = useKit3D();
@@ -200,9 +285,16 @@ const WorldParts: React.FC<{ parts: CustomPart[]; t: number; ctx: MotionCtx }> =
   );
 };
 
-export const WorldView: React.FC<{ world: World3D; t: number; sec: MotionCtx["sec"]; seed: number }> = ({ world, t, sec, seed }) => (
+export const WorldView: React.FC<{ world: World3D; t: number; sec: MotionCtx["sec"]; seed: number; heightAt?: ((x: number, z: number) => number) | null }> = ({ world, t, sec, seed, heightAt = null }) => {
+  // classic parts keep one mesh each (motion, keys, signs); parts flagged `inst` (scatter and big repeats) are instanced
+  const all = world.parts as unknown as (CustomPart & { inst?: boolean })[];
+  const plain = useMemo(() => all.filter((p) => !p.inst), [all]);
+  const inst = useMemo(() => all.filter((p) => p.inst), [all]);
+  return (
   <>
-    {world.parts.length ? <WorldParts parts={world.parts as unknown as CustomPart[]} t={t} ctx={{ sec, enter: 0, seed: seed * 31 + 977 }} /> : null}
+    {plain.length ? <WorldParts parts={plain} t={t} ctx={{ sec, enter: 0, seed: seed * 31 + 977 }} /> : null}
+    {inst.length ? <InstancedParts parts={inst} heightAt={heightAt} /> : null}
     {world.crowd ? <Crowd crowd={world.crowd} t={t} seed={seed} /> : null}
   </>
-);
+  );
+};

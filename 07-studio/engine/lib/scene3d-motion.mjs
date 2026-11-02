@@ -104,8 +104,8 @@ export const SHOT_PRESETS = {
   through: { zoom: 0.42, pitch: -5 },
   // process explainers (stage): a smooth punch-in on `focus`, and a dive toward the cutaway face (a stage plan levels the
   // camera to the face; without a stage it is a close, slightly lowered shot)
-  "zoom-to": { zoom: 0.55, pitch: -2 },
-  dive: { zoom: 0.42, pitch: -8 },
+  "zoom-to": { zoom: 0.5, pitch: -2 },
+  dive: { zoom: 0.36, pitch: -8 },
 };
 export const SHOT_NAMES = Object.keys(SHOT_PRESETS);
 

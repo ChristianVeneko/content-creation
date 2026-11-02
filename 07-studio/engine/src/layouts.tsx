@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import type { DrawingPlan, IconData, Palette, PixelPlan, ResolvedSpec, Scene, ScenePlan, ScenePlan3D, ThreeAssets } from "./types";
 import { Scene3DView } from "./three/Scene3D";
+import { StageView } from "./three/stage";
 import { PixelScene } from "./pixel/PixelScene";
 import { IllustratedScene } from "./illustrated/IllustratedScene";
 import { AnimatedText } from "./components/AnimatedText";
@@ -366,7 +367,10 @@ const IllustratedLayout: React.FC<SceneProps> = ({ scene, index, spec, durationI
   <IllustratedScene scene={scene} index={index} spec={spec} durationInFrames={durationInFrames} plan={(plan as ScenePlan | null) ?? null} icons={icons ?? {}} />
 );
 
-const ThreeLayout: React.FC<SceneProps> = ({ scene, index, spec, durationInFrames, plan, icons, three }) => (
+const ThreeLayout: React.FC<SceneProps> = ({ scene, index, spec, durationInFrames, plan, icons, three }) =>
+  (plan as ScenePlan3D | null)?.stage ? (
+    <StageView scene={scene} index={index} spec={spec} durationInFrames={durationInFrames} plan={plan as ScenePlan3D} icons={icons ?? {}} three={three ?? null} />
+  ) : (
   <Scene3DView scene={scene} index={index} spec={spec} durationInFrames={durationInFrames} plan={(plan as ScenePlan3D | null) ?? null} icons={icons ?? {}} three={three ?? null} />
 );
 

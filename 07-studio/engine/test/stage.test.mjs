@@ -316,3 +316,26 @@ test("frameContent keeps its default fill and exposes a fill option", () => {
   assert.deepEqual(a, frameContent(placed, "clay-diorama", {}));
   assert.ok(b.dist >= a.dist);
 });
+
+test("the stage-yard example validates, has a 40+ part house and instanced scatter, and plans within budget", () => {
+  const raw = read("../examples/stage-yard.spec.json");
+  const { plans } = planOf(raw);
+  const house = plans[0].stage.actors.find((a) => a.id === "house");
+  assert.ok(house.parts.length >= 40, `${house.parts.length} house parts`);
+  assert.ok(plans[0].stage.world.parts.filter((p) => p.inst).length > 400);
+  assert.equal(plans.length, 3);
+  assert.ok(JSON.stringify(plans).length < 1_000_000);
+});
+
+test("the spec-writer prompt documents the stage, scatter, beats, terrain, liquids and camera shots", () => {
+  const md = readFileSync(fileURLToPath(new URL("../prompts/spec-writer.md", import.meta.url)), "utf8");
+  for (const needle of ["Persistent stage", "scatter", "beats", "terrain", "liquids", "carve", "zoom-to", "dive", "buoyant", "cut: true"]) assert.ok(md.includes(needle), needle);
+});
+
+test("the Blender job generator tolerates a staged plan (it ignores the stage and keeps its world)", async () => {
+  const { blenderJob } = await import("../lib/blender-job.mjs");
+  const raw = read("../examples/stage-yard.spec.json");
+  const { plans, timeline, res } = planOf(raw);
+  const out = blenderJob({ spec: res, timeline, plans });
+  assert.equal(out.scenes.length, 3);
+});

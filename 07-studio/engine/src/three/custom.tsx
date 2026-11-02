@@ -43,7 +43,9 @@ const DEG = Math.PI / 180;
 const vec = (s: number | V3 | undefined, d = 1): V3 => (s === undefined ? [d, d, d] : Array.isArray(s) ? s : [s, s, s]);
 
 /** Local transform of one part at t (rest pose + motion), shared by the renderer and the world-position helper. */
-export const partTransform = (o: CustomObject, i: number, t: number, ctx: MotionCtx, centers: V3[], camYawLocal: number | null) => {
+/** State a stage beat gives one part (lib/scene3d-stage.mjs stageState): offsets on top of the rest pose and the motion. */
+export type PartState = { pos: V3; rot: V3; scale: V3; opacity: number; visible: boolean; emissive: number; color: { c: string; w: number } | null };
+export const partTransform = (o: CustomObject, i: number, t: number, ctx: MotionCtx, centers: V3[], camYawLocal: number | null, ps?: ((id: string) => PartState | undefined) | null) => {
   const p = (o.parts ?? [])[i];
   const h = customHeight(o.parts);
   const side = Math.sign((p.pos ?? [0, 0, 0])[0]) || 1;
@@ -52,36 +54,40 @@ export const partTransform = (o: CustomObject, i: number, t: number, ctx: Motion
   const rot = (p.rot ?? [0, 0, 0]).map((r, a) => r * DEG + d.rot[a]) as V3;
   if (camYawLocal !== null && looksAtCamera(p)) rot[1] += Math.max(-1.1, Math.min(1.1, camYawLocal));
   const s = vec(p.scale);
+  const sp = ps?.(p.id);
+  if (sp) for (let a = 0; a < 3; a++) rot[a] += sp.rot[a] * DEG;
   return {
-    pos: rest.map((x, a) => x + d.pos[a]) as V3,
+    pos: rest.map((x, a) => x + d.pos[a] + (sp ? sp.pos[a] : 0)) as V3,
     rot,
-    scale: s.map((x, a) => Math.max(1e-4, x * d.scale[a])) as V3,
-    opacity: (p.opacity ?? 1) * d.opacity,
+    scale: s.map((x, a) => (sp && !sp.visible ? 1e-4 : Math.max(1e-4, x * d.scale[a] * (sp ? sp.scale[a] : 1)))) as V3,
+    opacity: (p.opacity ?? 1) * d.opacity * (sp ? sp.opacity : 1),
   };
 };
 
 /** Geometry of a part (centered on its own origin). */
-const makeGeometry = (p: CustomPart): THREE.BufferGeometry | null => {
+export const makeGeometry = (p: CustomPart, low = false): THREE.BufferGeometry | null => {
+  // low: coarse segment counts for instanced copies (grass, flowers, stones, trees): the low-poly read and a cheap draw
+  const q = low ? 0.4 : 1;
   const s = p.size ?? [];
   const pts = p.points ?? [];
   switch (p.shape) {
     case "box": {
       const [w, h, d] = s.length === 3 ? s : [s[0] ?? 0.5, s[0] ?? 0.5, s[0] ?? 0.5];
       const r = Math.min(p.radius ?? 0, Math.min(w, h, d) / 2 - 0.001);
-      return r > 0.002 ? new RoundedBoxGeometry(w, h, d, 4, r) : new THREE.BoxGeometry(w, h, d);
+      return r > 0.002 ? new RoundedBoxGeometry(w, h, d, low ? 2 : 4, r) : new THREE.BoxGeometry(w, h, d);
     }
     case "sphere": {
-      const g = new THREE.SphereGeometry(1, 40, 28);
+      const g = new THREE.SphereGeometry(1, Math.max(8, Math.round(40 * q)), Math.max(6, Math.round(28 * q)));
       const [rx, ry, rz] = s.length === 3 ? s : [s[0] ?? 0.5, s[0] ?? 0.5, s[0] ?? 0.5];
       g.scale(rx, ry, rz);
       return g;
     }
     case "cylinder": {
       const [rt, rb, h] = s.length === 3 ? s : [s[0] ?? 0.3, s[0] ?? 0.3, s[1] ?? 1];
-      return new THREE.CylinderGeometry(rt, rb, h, 36);
+      return new THREE.CylinderGeometry(rt, rb, h, Math.max(6, Math.round(36 * q)));
     }
     case "cone":
-      return new THREE.ConeGeometry(s[0] ?? 0.3, s[1] ?? 1, 36);
+      return new THREE.ConeGeometry(s[0] ?? 0.3, s[1] ?? 1, Math.max(5, Math.round(36 * q)));
     case "torus":
       return new THREE.TorusGeometry(s[0] ?? 0.5, s[1] ?? 0.1, 18, 56, (s[2] ?? 360) * DEG);
     case "capsule":
@@ -270,7 +276,7 @@ export const applyOpacity = (root: THREE.Object3D | null, rootOp = 1) => {
 };
 
 /** A custom model at the origin (the parent group places, scales and turns it). */
-export const CustomModel: React.FC<{ o: CustomObject; color: string; accent: string; t: number; ctx: MotionCtx; camYawLocal: number | null; pulses: Pulse[] }> = ({ o, color, accent, t, ctx, camYawLocal, pulses }) => {
+export const CustomModel: React.FC<{ o: CustomObject; color: string; accent: string; t: number; ctx: MotionCtx; camYawLocal: number | null; pulses: Pulse[]; ps?: ((id: string) => PartState | undefined) | null }> = ({ o, color, accent, t, ctx, camYawLocal, pulses, ps = null }) => {
   const { look, palette } = useKit3D();
   const parts = o.parts ?? [];
   const centers = useMemo(() => partCenters(parts) as V3[], [parts]);
@@ -294,12 +300,16 @@ export const CustomModel: React.FC<{ o: CustomObject; color: string; accent: str
     if (seen.has(i)) return null; // defensive: cycles are rejected by the schema
     seen.add(i);
     const p = parts[i];
-    const tr = partTransform(o, i, t, ctx, centers, camYawLocal);
+    const tr = partTransform(o, i, t, ctx, centers, camYawLocal, ps);
     const pv = p.pivot ?? [0, 0, 0];
+    const sp = ps?.(p.id);
+    // a stage beat can tint (color) or make a part glow (emissive)
+    const tint = sp?.color ? mixHex(colorOf(p), sp.color.c, sp.color.w) : colorOf(p);
+    const drawn = sp && sp.emissive > 0 ? { ...p, emissive: (p.emissive ?? 0) + sp.emissive } : p;
     return (
       <group key={p.id} position={[tr.pos[0] + pv[0], tr.pos[1] + pv[1], tr.pos[2] + pv[2]]} rotation={tr.rot} scale={tr.scale} userData={{ op: tr.opacity }}>
         <group position={[-pv[0], -pv[1], -pv[2]]}>
-          {p.shape === "group" ? null : <PartMesh p={p} color={colorOf(p)} pulse={pulseOf(p.id)} />}
+          {p.shape === "group" ? null : <PartMesh p={drawn} color={tint} pulse={pulseOf(p.id)} />}
           {(children.get(p.id) ?? []).map(node)}
         </group>
       </group>
@@ -309,7 +319,7 @@ export const CustomModel: React.FC<{ o: CustomObject; color: string; accent: str
 };
 
 /** World matrix of a part (object matrix x the chain of part transforms) at time t: trails and fx anchor on it. */
-export const partWorldMatrix = (o: CustomObject, partId: string, t: number, ctx: MotionCtx, objectMatrix: THREE.Matrix4, camYawLocal: number | null = null): THREE.Matrix4 | null => {
+export const partWorldMatrix = (o: CustomObject, partId: string, t: number, ctx: MotionCtx, objectMatrix: THREE.Matrix4, camYawLocal: number | null = null, ps: ((id: string) => PartState | undefined) | null = null): THREE.Matrix4 | null => {
   const parts = o.parts ?? [];
   const idx = new Map(parts.map((p, i) => [p.id, i]));
   if (!idx.has(partId)) return null;
@@ -324,7 +334,7 @@ export const partWorldMatrix = (o: CustomObject, partId: string, t: number, ctx:
   const m = objectMatrix.clone();
   const tmp = new THREE.Matrix4();
   for (const i of chain) {
-    const tr = partTransform(o, i, t, ctx, centers, camYawLocal);
+    const tr = partTransform(o, i, t, ctx, centers, camYawLocal, ps);
     const pv = parts[i].pivot ?? [0, 0, 0];
     tmp.compose(new THREE.Vector3(tr.pos[0] + pv[0], tr.pos[1] + pv[1], tr.pos[2] + pv[2]), new THREE.Quaternion().setFromEuler(new THREE.Euler(...tr.rot)), new THREE.Vector3(...tr.scale));
     m.multiply(tmp);
