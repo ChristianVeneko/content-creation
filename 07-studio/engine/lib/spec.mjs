@@ -249,7 +249,7 @@ export const videoSpecSchema = z
     scenes: z
       .array(sceneSchema)
       .min(1, "at least one scene is required")
-      .max(14)
+      .max(60)
       .superRefine((scenes, ctx) => {
         const seen = new Set();
         scenes.forEach((s, i) => {

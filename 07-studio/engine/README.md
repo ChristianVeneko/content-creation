@@ -23,7 +23,7 @@ environment as `env.sh` by itself, so it is safe to spawn from other processes.
 
 ```bash
 node cli.mjs templates                                  # JSON array of the templates (~92 KB)
-node cli.mjs templates --brief                          # one line per template: id, category, name, best for (~5 KB, for agents)
+node cli.mjs templates --brief                          # one line per template: id, category, format, name, best for (~5 KB, for agents)
 node cli.mjs template <id>                              # one template's full entry (defaults, prompt hint)
 node cli.mjs prompt <template>                          # spec-writer prompt trimmed to that template's family (9-19 KB of 42 KB)
 node cli.mjs music                                      # JSON: moods (id, label, count), library tracks, level references

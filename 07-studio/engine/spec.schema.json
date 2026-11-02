@@ -526,7 +526,7 @@
     },
     "scenes": {
       "minItems": 1,
-      "maxItems": 14,
+      "maxItems": 60,
       "type": "array",
       "items": {
         "type": "object",

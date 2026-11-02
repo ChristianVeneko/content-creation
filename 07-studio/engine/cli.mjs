@@ -15,7 +15,7 @@ import { listTemplates } from "./lib/templates.mjs";
 
 const USAGE = `Usage:
   node cli.mjs templates                                   Print the template list as JSON
-  node cli.mjs templates --brief                           One line per template: id, category, name, best for (for agents)
+  node cli.mjs templates --brief                           One line per template: id, category, format, name, best for (for agents)
   node cli.mjs template <id>                               Print one template's full entry as JSON
   node cli.mjs prompt <template> [--creative]              Print the spec-writer prompt trimmed to that template's family
                                                            (--creative adds the originals-first sections for Claude Code)
@@ -59,7 +59,7 @@ async function main() {
     const list = listTemplates();
     if (flags.brief) {
       const bestFor = (t) => (Array.isArray(t.best_for) ? t.best_for.join(", ") : (t.best_for ?? ""));
-      process.stdout.write(list.map((t) => [t.id, t.category, t.name, bestFor(t)].join("\t")).join("\n") + "\n");
+      process.stdout.write(list.map((t) => [t.id, t.category, t.format, t.name, bestFor(t)].join("\t")).join("\n") + "\n");
     } else process.stdout.write(JSON.stringify(list, null, 2) + "\n");
     return 0;
   }

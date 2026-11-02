@@ -18,6 +18,24 @@ test("templates --brief prints one short line per template", () => {
   assert.ok(r.stdout.length < full.stdout.length / 4);
 });
 
+test("templates --brief columns: id, category, format, name, best for (format right after category)", () => {
+  const r = run("templates", "--brief");
+  const byId = new Map(JSON.parse(full.stdout).map((t) => [t.id, t]));
+  for (const line of r.stdout.trim().split("\n")) {
+    const [id, category, format, name] = line.split("\t");
+    const t = byId.get(id);
+    assert.equal(category, t.category);
+    assert.equal(format, t.format);
+    assert.equal(name, t.name);
+    assert.match(format, /^[a-z0-9]+(-[a-z0-9]+)*$/);
+  }
+});
+
+test("template <id> exposes format (defaults to the id)", () => {
+  const t = JSON.parse(run("template", "reels-nube").stdout);
+  assert.equal(typeof t.format, "string");
+});
+
 test("template <id> prints that template's full entry; unknown id exits 1", () => {
   const r = run("template", "reels-nube");
   assert.equal(r.status, 0);

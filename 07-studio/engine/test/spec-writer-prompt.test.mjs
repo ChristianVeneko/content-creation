@@ -58,3 +58,11 @@ test("unknown templates get the full manual without creative sections unless cre
   assert.ok(!specWriterPromptFor("no-such-template", SYN).includes("Creative mode"));
   assert.equal(specWriterPromptFor("no-such-template", SYN, { creative: true }), SYN);
 });
+
+test("the prompt tells the writer how to plan videos up to 180 s: more scenes, never longer ones", () => {
+  for (const id of ["illustrated", "reels-nube"]) {
+    const p = specWriterPromptFor(id, FULL);
+    assert.match(p, /15 to 180/);
+    assert.match(p, /MORE scenes, never longer ones/);
+  }
+});

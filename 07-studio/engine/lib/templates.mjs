@@ -11,8 +11,13 @@ export const TEMPLATES_DIR = join(dirname(fileURLToPath(import.meta.url)), "..",
 /** Canonical order: the spec's TEMPLATE_IDS, then any illustrated-kit template not listed there yet. */
 export const templateOrder = () => [...TEMPLATE_IDS, ...ILLUSTRATED_TEMPLATE_IDS.filter((id) => !TEMPLATE_IDS.includes(id))];
 
-/** Throws when a template's look (defaults.theme.look) is not a known look. */
+/** Throws when a template's format (optional kebab slug) or look (defaults.theme.look) is not a known look. */
+export const FORMAT_SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
 export function validateTemplate(t) {
+  if (t?.format !== undefined && !(typeof t.format === "string" && FORMAT_SLUG.test(t.format))) {
+    throw new Error(`Template "${t.id}": format must be a kebab slug (a-z, 0-9, hyphens), got ${JSON.stringify(t.format)}`);
+  }
   const look = t?.defaults?.theme?.look;
   if (look === undefined) return t;
   const r = lookSchema.safeParse(look);
@@ -26,6 +31,7 @@ export function listTemplates(dir = TEMPLATES_DIR) {
     readdirSync(dir)
       .filter((f) => f.endsWith(".json"))
       .map((f) => validateTemplate(JSON.parse(readFileSync(join(dir, f), "utf8"))))
+      .map((t) => ({ ...t, format: t.format ?? t.id }))
       .map((t) => [t.id, t]),
   );
   return templateOrder().filter((id) => byId.has(id)).map((id) => byId.get(id));
