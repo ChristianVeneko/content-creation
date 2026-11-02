@@ -962,6 +962,181 @@ const Character: React.FC<EP> = ({ p, box, index }) => {
   );
 };
 
+/* ================================================================ window ================================================================ */
+
+/** Chrome colors of the three dots, taken from the look's own good / bad / warm colors. */
+const dotsOf = (ink: InkT) => [ink.bad, yellowOf(ink), ink.good];
+
+const Switch: React.FC<{ on: number; color: string; ink: InkT }> = ({ on, color, ink }) => (
+  <div style={{ position: "relative", width: 88, height: 48, borderRadius: 24, background: on > 0.5 ? color : rgba(isHex(ink.text) ? ink.text : "#888888", 0.24), boxShadow: "inset 0 2px 4px rgba(0,0,0,0.18)", flex: "none" }}>
+    <div style={{ position: "absolute", top: 4, left: 4 + on * 40, width: 40, height: 40, borderRadius: 20, background: "#FFFFFF", boxShadow: "0 3px 8px rgba(0,0,0,0.3)" }} />
+  </div>
+);
+
+/** UI-window mockup: chrome, rows with labels / values / switches, an optional button, a gliding cursor and a highlighter sweep. */
+const UiWindow: React.FC<EP> = ({ p, box, index }) => {
+  const { ink } = useKit();
+  const t = useSec();
+  const el = p.el;
+  const enter = useEnter(p.enter, index);
+  const w = Math.min(box.w, 800);
+  const x0 = (box.w - w) / 2;
+  const accent = col(ink, el.color, ink.accent);
+  const rows: { label: string; value?: string; icon?: string; toggle?: string }[] = el.rows;
+  const HEAD = 84;
+  const ROW = 88;
+  const rowStart = (k: number) => p.items[k] ?? p.enter + 0.4 + k * 0.35;
+  const hl = el.highlight as number | undefined;
+  const cur = el.cursor as number | undefined;
+  const hasButton = Boolean(el.button);
+  const bodyH = rows.length * ROW;
+  // cursor: glides from the lower right of the window to the target row's right end, then clicks
+  const cursorAt = cur !== undefined ? rowStart(cur) + 0.15 : 0;
+  const glide = cur !== undefined ? progress(t, cursorAt, 0.7, Easing.bezier(0.5, 0, 0.2, 1)) : 0;
+  const clickT = cursorAt + 0.75;
+  const click = cur !== undefined ? progress(t, clickT, 0.3) : 0;
+  const tx = w - 130;
+  const ty = HEAD + cur! * ROW + ROW / 2 + 10;
+  const cx = interpolate(glide, [0, 1], [w - 30, tx]);
+  const cy = interpolate(glide, [0, 1], [HEAD + bodyH + 70, ty]);
+  const flipAt = clickT + 0.05;
+  const textC = cardText(ink);
+  const browser = el.kind === "browser";
+  return (
+    <div style={{ ...abs(box), ...enter }}>
+      <div style={{ ...panelStyle(ink, accent), position: "absolute", left: x0, top: 0, width: w, height: box.h - 6, overflow: "hidden" }}>
+        <div style={{ height: HEAD, display: "flex", alignItems: "center", gap: 12, padding: "0 28px", borderBottom: `2px solid ${ink.line}`, background: rgba("#FFFFFF", ink.look.light ? 0.4 : 0.04) }}>
+          {dotsOf(ink).map((c, k) => (
+            <div key={k} style={{ width: 20, height: 20, borderRadius: 10, background: c }} />
+          ))}
+          {browser ? (
+            <div style={{ flex: 1, marginLeft: 16, height: 42, borderRadius: 21, background: rgba(isHex(ink.text) ? ink.text : "#888888", 0.1), display: "flex", alignItems: "center", padding: "0 22px", fontFamily: ink.look.mono, fontSize: 24, color: ink.muted, overflow: "hidden", whiteSpace: "nowrap" }}>{el.title}</div>
+          ) : (
+            <div style={{ flex: 1, textAlign: "center", marginRight: 92, fontFamily: ink.look.display, fontWeight: 800, fontSize: 32, color: textC, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{el.title}</div>
+          )}
+        </div>
+        {rows.map((r, k) => {
+          const q = progress(t, rowStart(k), 0.4);
+          const tog = r.toggle;
+          const state = tog === "on" ? 1 : tog === "off" ? 0 : tog === "turn-on" ? progress(t, flipAt, 0.25) : tog === "turn-off" ? 1 - progress(t, flipAt, 0.25) : 0;
+          const sweep = hl === k ? progress(t, rowStart(k) + 0.35, 0.55, Easing.bezier(0.5, 0, 0.3, 1)) : 0;
+          return (
+            <div key={k} style={{ position: "absolute", left: 0, right: 0, top: HEAD + k * ROW, height: ROW, display: "flex", alignItems: "center", gap: 20, padding: "0 30px", borderBottom: k < rows.length - 1 ? `2px solid ${ink.line}` : "none", opacity: q, transform: `translateX(${(1 - q) * 40}px)` }}>
+              {sweep > 0 ? <div style={{ position: "absolute", left: 18, top: 12, bottom: 12, width: `calc((100% - 36px) * ${sweep})`, borderRadius: 14, background: rgba(yellowOf(ink), 0.42), zIndex: 0 }} /> : null}
+              {r.icon ? (
+                <div style={{ position: "relative", zIndex: 1, width: 54, height: 54, borderRadius: 16, background: rgba(accent, 0.18), display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                  <PhosphorIcon name={r.icon} size={34} color={accent} t={t} start={rowStart(k)} draw={false} />
+                </div>
+              ) : null}
+              <div style={{ position: "relative", zIndex: 1, flex: 1, minWidth: 0, fontFamily: ink.look.body, fontWeight: 700, fontSize: 36, color: textC, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.label}</div>
+              {r.value ? <div style={{ position: "relative", zIndex: 1, fontFamily: ink.look.mono, fontWeight: 700, fontSize: 30, color: ink.muted }}>{r.value}</div> : null}
+              {tog ? (
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  <Switch on={state} color={accent} ink={ink} />
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+        {hasButton ? (
+          <div style={{ position: "absolute", left: 30, right: 30, top: HEAD + bodyH + 14, height: 68, borderRadius: 34, background: accent, color: textOn(accent), display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ink.look.display, fontWeight: 800, fontSize: 34, boxShadow: `0 8px 18px -8px ${rgba(accent, 0.7)}`, opacity: progress(t, rowStart(rows.length - 1) + 0.3, 0.35), transform: `scale(${1 - 0.04 * Math.sin(Math.PI * click)})` }}>
+            {el.button}
+          </div>
+        ) : null}
+        {cur !== undefined && t >= cursorAt - 0.05 ? (
+          <svg width={60} height={60} viewBox="0 0 60 60" style={{ position: "absolute", left: cx, top: cy, overflow: "visible", transform: `scale(${1 - 0.15 * Math.sin(Math.PI * click)})`, filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}>
+            <path d="M 4 2 L 4 40 L 14 31 L 22 50 L 30 46 L 22 28 L 36 28 Z" fill="#FFFFFF" stroke="#1B1B24" strokeWidth={3} strokeLinejoin="round" />
+            {click > 0 && click < 1 ? <circle cx={6} cy={4} r={10 + click * 34} fill="none" stroke={accent} strokeWidth={4} opacity={1 - click} /> : null}
+          </svg>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+/* ================================================================ roadmap ================================================================ */
+
+/** "n STEPS" card: the big count in the accent, the word after it, then the numbered steps with the active one lit. */
+const Roadmap: React.FC<EP> = ({ p, box, index }) => {
+  const { ink } = useKit();
+  const t = useSec();
+  const el = p.el;
+  const enter = useEnter(p.enter, index);
+  const w = Math.min(box.w, 800);
+  const x0 = (box.w - w) / 2;
+  const accent = col(ink, el.color, ink.accent);
+  const items: string[] = el.items;
+  const active = el.active as number | undefined;
+  const n = items.length;
+  const textC = cardText(ink);
+  const count = Math.round(interpolate(progress(t, p.enter + 0.1, 0.5), [0, 1], [0, n]));
+  return (
+    <div style={{ ...abs(box), ...enter }}>
+      <div style={{ ...panelStyle(ink, accent), position: "absolute", left: x0, top: 0, width: w, height: box.h - 6 }}>
+        <div style={{ height: 150, display: "flex", alignItems: "baseline", justifyContent: "center", gap: 20, paddingTop: 22 }}>
+          <div style={{ fontFamily: ink.look.display, fontWeight: 900, fontSize: 118, lineHeight: 1, color: accent, letterSpacing: -3 }}>{count}</div>
+          <div style={{ fontFamily: ink.look.display, fontWeight: 800, fontSize: 54, color: textC, textTransform: UP(ink), letterSpacing: 2 }}>{el.title}</div>
+        </div>
+        {items.map((it, k) => {
+          const q = progress(t, p.items[k] ?? p.enter + 0.4 + k * 0.3, 0.4);
+          const on = active === k;
+          return (
+            <div key={k} style={{ position: "absolute", left: 22, right: 22, top: 150 + k * 68, height: 60, display: "flex", alignItems: "center", gap: 20, padding: "0 16px", borderRadius: 16, background: on ? rgba(accent, 0.16) : "transparent", opacity: q, transform: `translateX(${(1 - q) * 36}px)` }}>
+              <div style={{ width: 42, height: 42, borderRadius: 21, background: on ? accent : "transparent", border: `3px solid ${accent}`, color: on ? textOn(accent) : accent, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ink.look.display, fontWeight: 900, fontSize: 24, flex: "none" }}>{k + 1}</div>
+              <div style={{ flex: 1, minWidth: 0, fontFamily: ink.look.body, fontWeight: on ? 800 : 600, fontSize: 34, color: textC, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{it}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+/* ================================================================ beacon ================================================================ */
+
+/** An icon metaphor inside glowing concentric rings with a big counting number and a label under it. */
+const Beacon: React.FC<EP> = ({ p, box, index }) => {
+  const { ink } = useKit();
+  const t = useSec();
+  const el = p.el;
+  const enter = useEnter(p.enter, index);
+  const c = col(ink, el.color, ink.accent2);
+  const rings = (el.rings as number | undefined) ?? 3;
+  const cx = box.w / 2;
+  const cy = 190;
+  const open = progress(t, p.enter + 0.05, 0.6);
+  const from = (el.from as number | undefined) ?? 0;
+  const k = progress(t, p.enter + 0.35, 1.4, Easing.bezier(0.2, 0.7, 0.2, 1));
+  const val = from + ((el.value as number) - from) * k;
+  const shown = Number.isInteger(el.value) && Number.isInteger(from) ? String(Math.round(val)) : val.toFixed(1);
+  const text = `${el.prefix ?? ""}${shown}${el.suffix ?? ""}`;
+  const size = fitPx(text, Math.min(box.w, 780) - 40, 0.62, 168);
+  return (
+    <div style={{ ...abs(box), ...enter }}>
+      <svg width={box.w} height={380} style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
+        <defs>
+          <radialGradient id="bc-glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stopColor={c} stopOpacity={0.55} />
+            <stop offset="1" stopColor={c} stopOpacity={0} />
+          </radialGradient>
+        </defs>
+        <circle cx={cx} cy={cy} r={230 * open} fill="url(#bc-glow)" />
+        {Array.from({ length: rings }, (_, i) => {
+          const r = (104 + i * 54) * open;
+          const pulse = 0.5 + 0.5 * Math.sin(t * 2.1 - i * 0.9);
+          return <circle key={i} cx={cx} cy={cy} r={r + pulse * 6} fill="none" stroke={c} strokeWidth={4 - i * 0.5} opacity={(0.85 - i * 0.16) * (0.6 + 0.4 * pulse)} style={{ filter: `drop-shadow(0 0 10px ${c})` }} />;
+        })}
+        <circle cx={cx} cy={cy} r={88 * open} fill={ink.surface2} stroke={c} strokeWidth={3} />
+      </svg>
+      <div style={{ position: "absolute", left: cx - 56, top: cy - 56, width: 112, height: 112, opacity: open }}>
+        <PhosphorIcon name={el.icon} size={112} color={c} t={t} start={p.enter + 0.15} />
+      </div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 372, textAlign: "center", fontFamily: ink.look.display, fontWeight: 900, fontSize: size, lineHeight: 1.05, color: ink.text, letterSpacing: -2, textShadow: `0 0 34px ${rgba(c, 0.55)}`, opacity: progress(t, p.enter + 0.25, 0.3) }}>{text}</div>
+      <div style={{ position: "absolute", left: 20, right: 20, top: 372 + size * 1.1 + 12, textAlign: "center", fontFamily: ink.look.body, fontWeight: 600, fontSize: 38, color: ink.muted, textTransform: UP(ink), letterSpacing: 1, opacity: progress(t, p.enter + 0.6, 0.4) }}>{el.label}</div>
+    </div>
+  );
+};
+
 /** Renderer of a format element type, or null when the type is not a format element. */
 export const FormatElement: React.FC<EP> = (props) => {
   switch (props.p.el.type) {
@@ -985,8 +1160,14 @@ export const FormatElement: React.FC<EP> = (props) => {
       return <FlatObject {...props} />;
     case "character":
       return <Character {...props} />;
+    case "window":
+      return <UiWindow {...props} />;
+    case "roadmap":
+      return <Roadmap {...props} />;
+    case "beacon":
+      return <Beacon {...props} />;
     default:
       return null;
   }
 };
-export const FORMAT_ELEMENT_TYPES = new Set(["post", "chart", "meter", "hourglass", "tags", "stat", "timer", "panels", "object", "character"]);
+export const FORMAT_ELEMENT_TYPES = new Set(["post", "chart", "meter", "hourglass", "tags", "stat", "timer", "panels", "object", "character", "window", "roadmap", "beacon"]);

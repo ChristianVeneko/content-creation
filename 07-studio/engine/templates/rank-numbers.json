@@ -2,8 +2,9 @@
   "id": "rank-numbers",
   "name": "Rank Numbers",
   "category": "illustrated-2d",
-  "description": "Giant rank numbers: a big number slams in for every item, one big illustrated item per scene, a segmented N/total progress HUD, and whip-pan transitions with motion blur. Saturated purple, yellow and pink, bold condensed type and springy, bouncy motion. No emoji.",
-  "prompt_hint": "Scene 1 is the hook (e.g. 5 herramientas que...), then one scene per item counting down (title.number = rank, best item last), then a payoff/CTA scene. Each item scene: title.main = the item name (2-4 words), title.kicker = a short category, and 1-3 elements that depict the item: a big icon or svg, a badge with its key benefit, a card or bars to back it up. Use a HUD chip with value like 3/5 that updates per scene. Never use emoji.",
+  "format": "ranking",
+  "description": "Giant rank numbers: a big number slams in for every item, one big illustrated item per scene, a segmented N/total progress HUD, and whip-pan transitions with motion blur. Saturated purple, yellow and pink, bold condensed type and springy, bouncy motion. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Scene 1 is the hook (e.g. 5 herramientas que...), then one scene per item counting down (title.number = rank, best item last), then a payoff/CTA scene. Each item scene: title.main = the item name (2-4 words), title.kicker = a short category, and 1-3 elements that depict the item: a big icon or svg, a badge with its key benefit, a card or bars to back it up. Use a HUD chip with value like 3/5 that updates per scene. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": ["top N lists", "tools and apps", "tips", "mistakes to avoid", "rankings"],
   "preview": {
     "style": "illustrated",

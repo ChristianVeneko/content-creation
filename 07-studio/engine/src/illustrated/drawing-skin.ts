@@ -45,7 +45,12 @@ export const lookDrawingSkin = (ink: Ink): DrawingSkin => {
       return { fonts, ink: ink.text, shadow: `drop-shadow(0 12px 0 ${rgba("#0A0A28", 0.4)})` };
     case "editorial-chart":
     case "soft-gradient":
+    case "checklist-glass":
       return { fonts, ink: ink.text, shadow: "drop-shadow(0 14px 22px rgba(30, 30, 60, 0.18))" };
+    case "host-tutorial":
+      return { fonts, ink: ink.paperInk, shadow: `drop-shadow(5px 6px 0 ${rgba(ink.paperInk, 0.85)})` };
+    case "spotlight-narrative":
+      return { fonts, ink: ink.text, shadow: `drop-shadow(0 0 22px ${rgba(ink.accent2, 0.28)}) drop-shadow(0 22px 28px rgba(0, 0, 0, 0.55))` };
     case "editor-window":
       return { fonts, ink: ink.text, stroke: 0.9 };
     case "broadcast":

@@ -1,0 +1,60 @@
+{
+  "id": "pixel-versus",
+  "name": "Pixel Versus Arena",
+  "category": "pixel",
+  "format": "pixel-versus",
+  "description": "FORMAT: arcade rounds and head-to-head comparisons. A fixed arena stage (crowd silhouettes with glow sticks, truss lights, a lit fighting floor with a neon ring) that stays the same from round to round, 'ROUND n/N' title cards, contestants drawn by the agent as pixel sprites with a header strip of names and half-step star ratings, ranking panels (rows with rank, name, score and a growing bar), a verdict panel that fills in row by row and crowns the winner, and fight effects: energy beams, power-up flames and hit flashes with screen shake. Punchy and loud, CRT scanlines. The contestants, the rounds and the sprites are new in every video: the format is the stage, the rhythm and the effects, never fixed characters. No emoji.",
+  "prompt_hint": "Write 8-14 scenes (2-5 s each) shaped like a tournament: a hook, one block per round (a round card scene with visual.pixel.round {n, of, title}, then 1-2 fight scenes, then a ranking scene), and a final verdict scene. Every scene has visual.type \"pixel\" with visual.pixel.set \"arena\" (keep it for the whole video: it is the fixed stage). Draw the contestants yourself as pixel sprites in visual.pixel.sprites (id, rows, palette; draw them facing right, 16-32 px tall; each id is defined once and reused in every scene; invent new contestants for THIS topic every video, never reuse the example's) and place them with visual.pixel.fighters [{sprite, name (<=12 chars), stars 0-5 in 0.5 steps, side left|center|right, crown, anim bob|jump|shake|pulse|sway, scale}], which also draws the header strip of names and stars. Fight scenes use fx: energy-beam {x, y, to: {x, y}, at: a word of the narration}, power-up {x, y} on the charging fighter, hit-flash {x, y} on the impact, plus burst or shockwave. Ranking scenes use visual.pixel.ranking {title, unit, rows: 2-5 of {name, score, crown}} (give no fighters or keep them small: the panel covers the middle of the stage) and the closing scene visual.pixel.verdict {title, rows: 2-5 of {name, score, note}, winner} that fills in one row at a time. One UI panel per scene. The narration is typed into the dialog box, so keep sentences short. Never use emoji.",
+  "best_for": [
+    "head-to-head comparisons",
+    "tournaments and bracket rounds",
+    "tool and product showdowns",
+    "rankings with a verdict",
+    "tier lists and scoreboards"
+  ],
+  "preview": {
+    "style": "pixel",
+    "gradient": [
+      "#0B0720",
+      "#7A1E5E",
+      "#FF3B5C"
+    ],
+    "accent": "#FFD23F",
+    "sample_text": "ROUND 1/5"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#0B0720",
+          "#2A0F4C"
+        ],
+        "text": "#FFFFFF",
+        "accent": "#FFD23F",
+        "accent2": "#FF3B5C",
+        "accent3": "#4FE6FF"
+      },
+      "font": "Pixelify Sans",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.06
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 1
+    },
+    "captions": {
+      "enabled": false,
+      "wordsPerPage": 7
+    },
+    "animation": "pop"
+  }
+}

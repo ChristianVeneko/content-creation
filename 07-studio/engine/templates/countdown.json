@@ -2,6 +2,7 @@
   "id": "countdown",
   "name": "Countdown",
   "category": "kinetic",
+  "format": "countdown",
   "description": "Numbered countdown with a big animated number per item. Scene 1 is the hook, middle scenes are the items, the last scene is the payoff and CTA.",
   "prompt_hint": "Scene 1: 'N things that X' hook teasing the best item. Middle scenes: one item each, onScreenText = the item title (2-5 words), best item last. Final scene: payoff + one CTA like 'save this'. 3-6 seconds per item. Use an emoji visual per item.",
   "best_for": ["top N lists", "tools", "tips", "mistakes to avoid", "recommendations"],

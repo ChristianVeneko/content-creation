@@ -2,8 +2,9 @@
   "id": "risograph",
   "name": "Risograph Zine",
   "category": "illustrated-2d",
-  "description": "Animation printed on a stencil duplicator: two or three translucent spot inks (fluoro pink, medium blue, yellow) overprinting on warm off-white stock, halftone dots, ink grain, pinholes and plates that never quite line up (an SVG misregistration filter on every scene). Elements land off register and snap together, the sheet creeps through the press, and scenes arrive as swelling halftone dots. Indie, graphic and zine-like. No emoji.",
-  "prompt_hint": "Write 8-12 scenes (3-5 s each) like pages of an indie zine. title.main short and bold (it is set in a wide mono display face, so 2-5 words); title.kicker is a small label. visual.type \"illustration\" with 1-3 flat, graphic elements: counter and bars for numbers, icon (size l), badge, checklist, compare. Keep text short. Never use emoji.",
+  "format": "riso-print",
+  "description": "Animation printed on a stencil duplicator: two or three translucent spot inks (fluoro pink, medium blue, yellow) overprinting on warm off-white stock, halftone dots, ink grain, pinholes and plates that never quite line up (an SVG misregistration filter on every scene). Elements land off register and snap together, the sheet creeps through the press, and scenes arrive as swelling halftone dots. Indie, graphic and zine-like. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-12 scenes (3-5 s each) like pages of an indie zine. title.main short and bold (it is set in a wide mono display face, so 2-5 words); title.kicker is a small label. visual.type \"illustration\" with 1-3 flat, graphic elements: counter and bars for numbers, icon (size l), badge, checklist, compare. Keep text short. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": [
     "indie and design topics",
     "music and culture",

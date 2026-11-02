@@ -11,6 +11,7 @@ import { type Look, ensureLookFonts, lookFor } from "./looks";
 import { ArtBackground, ArtCutFx, artHudSkin } from "./artstyles";
 import { DepthBackdrop } from "./depth";
 import { FormatBackground, formatHudSkin, isFormatLook } from "./formats2d";
+import { CharacterLayer } from "./slots";
 
 export const IllustratedBackground: React.FC<{ spec: ResolvedSpec }> = ({ spec }) => {
   ensureLookFonts();
@@ -184,7 +185,13 @@ export const Footer: React.FC<{ spec: ResolvedSpec; avatar: string | null }> = (
 export const CutFlash: React.FC<{ scenes: TimelineScene[]; transitionFrames: number; spec?: ResolvedSpec }> = ({ scenes, transitionFrames, spec }) => {
   const frame = useCurrentFrame();
   const look = spec ? lookFor(spec) : null;
-  if (look && look.id !== "blueprint") return <LookCutFx scenes={scenes} transitionFrames={transitionFrames} look={look} />;
+  if (look && look.id !== "blueprint")
+    return (
+      <>
+        {spec ? <CharacterLayer spec={spec} look={look} scenes={scenes} transitionFrames={transitionFrames} /> : null}
+        <LookCutFx scenes={scenes} transitionFrames={transitionFrames} look={look} />
+      </>
+    );
   let a = 0;
   scenes.forEach((s, i) => {
     if (i === 0) return;

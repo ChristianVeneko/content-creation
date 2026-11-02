@@ -221,7 +221,81 @@ const character = z.object({
   hair: color.optional(),
 });
 
-const LEAF = [card, flow, compare, checklist, bars, counter, code, terminal, chat, doc, timeline, icon, badge, stamp, callout, svg, drawing, post, chart, meter, hourglass, tags, stat, timer, panels, object, character];
+// ---------------- host-tutorial, checklist-glass and spotlight-narrative elements ----------------
+
+export const HOST_POSES = ["point", "wave", "think", "shrug", "cheer", "present"];
+export const HOST_EXPRESSIONS = ["smile", "wow", "wink", "calm", "think"];
+/** The persistent cutout host at the bottom of a host-tutorial scene: a flat vector bust built from shapes. A slot, not a column element. */
+const host = z.object({
+  type: z.literal("host"),
+  ...base,
+  pose: z.enum(HOST_POSES).default("point"),
+  expression: z.enum(HOST_EXPRESSIONS).default("smile"),
+  skin: z.number().int().min(0).max(3).default(0).describe("Skin tone index 0..3"),
+  shirt: color.optional(),
+  hair: color.optional(),
+});
+
+export const MASCOT_MOODS = ["happy", "wow", "think", "proud"];
+export const MASCOT_POSES = ["idle", "wave", "point", "cheer"];
+/** The persistent mascot slot at the bottom right of a checklist-glass scene: a small creature of rounded, shaded shapes. */
+const mascot = z.object({
+  type: z.literal("mascot"),
+  ...base,
+  mood: z.enum(MASCOT_MOODS).default("happy"),
+  pose: z.enum(MASCOT_POSES).default("idle"),
+});
+
+export const WINDOW_KINDS = ["app", "settings", "browser"];
+const windowRow = z.object({
+  label: text(30),
+  value: text(14).optional().describe("Right-aligned value (a setting, a count)"),
+  icon: z.string().optional(),
+  toggle: z.enum(["on", "off", "turn-on", "turn-off"]).optional().describe("A switch; turn-on / turn-off flip while the row is revealed"),
+});
+/** UI-window mockup: chrome with three dots, rows (labels, values, switches), an optional button, a gliding cursor and a highlight sweep. */
+const windowEl = z
+  .object({
+    type: z.literal("window"),
+    ...base,
+    title: text(28),
+    kind: z.enum(WINDOW_KINDS).default("app"),
+    rows: z.array(windowRow).min(1).max(5),
+    button: text(16).optional().describe("Primary button under the rows"),
+    cursor: z.number().int().min(0).max(4).optional().describe("0-based row the cursor glides to and clicks"),
+    highlight: z.number().int().min(0).max(4).optional().describe("0-based row swept with a highlighter"),
+  })
+  .superRefine((w, ctx) => {
+    for (const k of ["cursor", "highlight"]) if (w[k] !== undefined && w[k] >= w.rows.length) ctx.addIssue({ code: "custom", path: [k], message: `${k} must point at one of the ${w.rows.length} rows (0-based)` });
+  });
+
+/** "n STEPS" roadmap card: the big count, the word after it, and the steps; `active` marks the step being taught. */
+const roadmap = z
+  .object({
+    type: z.literal("roadmap"),
+    ...base,
+    title: text(14).default("STEPS").describe("Word after the count (n STEPS)"),
+    items: z.array(text(30)).min(2).max(8),
+    active: z.number().int().min(0).max(7).optional().describe("0-based step highlighted"),
+  })
+  .superRefine((r, ctx) => {
+    if (r.active !== undefined && r.active >= r.items.length) ctx.addIssue({ code: "custom", path: ["active"], message: `active must point at one of the ${r.items.length} steps (0-based)` });
+  });
+
+/** One icon metaphor in glowing concentric rings with a big counting number (spotlight-narrative). */
+const beacon = z.object({
+  type: z.literal("beacon"),
+  ...base,
+  icon: z.string().min(1).describe("Icon name (Lucide / Phosphor) of the metaphor"),
+  value: z.number(),
+  from: z.number().optional(),
+  prefix: z.string().max(3).optional(),
+  suffix: z.string().max(5).optional(),
+  label: text(28),
+  rings: z.number().int().min(2).max(5).default(3),
+});
+
+const LEAF = [card, flow, compare, checklist, bars, counter, code, terminal, chat, doc, timeline, icon, badge, stamp, callout, svg, drawing, post, chart, meter, hourglass, tags, stat, timer, panels, object, character, host, mascot, windowEl, roadmap, beacon];
 export const LEAF_TYPES = LEAF.map((s) => s.shape.type.value);
 export const ELEMENT_TYPES = [...LEAF_TYPES, "split"];
 

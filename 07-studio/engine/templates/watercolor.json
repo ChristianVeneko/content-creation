@@ -2,8 +2,9 @@
   "id": "watercolor",
   "name": "Watercolor Storybook",
   "category": "illustrated-2d",
-  "description": "A hand-painted field journal: warm cold-press paper, translucent watercolor washes that bleed at the edges (SVG turbulence and displacement), blooms of pigment that breathe, a soft serif title over a painted swash and handwritten notes. Elements bleed in from a blur, the camera sways slowly and scenes soak through each other in a blotchy wash dissolve. Calm, curious and gentle. No emoji.",
-  "prompt_hint": "Write 8-12 calm scenes (4-6 s each) like pages of a nature or field journal. Every scene: title.kicker as a short handwritten note and title.main as a gentle serif headline; visual.type \"illustration\" with 1-3 airy elements: icon (big, size l) for the subject, svg sketches, timeline or flow for cycles and processes, card for a definition, counter for one real number. Avoid dense panels and code. Never use emoji.",
+  "format": "painted-story",
+  "description": "A hand-painted field journal: warm cold-press paper, translucent watercolor washes that bleed at the edges (SVG turbulence and displacement), blooms of pigment that breathe, a soft serif title over a painted swash and handwritten notes. Elements bleed in from a blur, the camera sways slowly and scenes soak through each other in a blotchy wash dissolve. Calm, curious and gentle. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-12 calm scenes (4-6 s each) like pages of a nature or field journal. Every scene: title.kicker as a short handwritten note and title.main as a gentle serif headline; visual.type \"illustration\" with 1-3 airy elements: icon (big, size l) for the subject, svg sketches, timeline or flow for cycles and processes, card for a definition, counter for one real number. Avoid dense panels and code. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": [
     "nature and science explainers",
     "wellness and slow living",

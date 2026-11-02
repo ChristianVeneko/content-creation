@@ -59,7 +59,7 @@ const errorsOf = (spec) => {
 };
 
 test("pixel template ids are registered, ordered after the 3D looks, and only they use the pixel kit", () => {
-  assert.deepEqual(PIXEL_TEMPLATE_IDS, PIXEL);
+  assert.deepEqual(PIXEL_TEMPLATE_IDS.slice(0, PIXEL.length), PIXEL, "later pixel formats are appended after these four");
   for (const id of PIXEL) assert.ok(TEMPLATE_IDS.includes(id), id);
   const ids = listTemplates().map((t) => t.id);
   const at = ids.indexOf("pixel-dusk");

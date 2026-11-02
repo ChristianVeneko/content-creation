@@ -2,8 +2,9 @@
   "id": "whiteboard",
   "name": "Whiteboard Marker",
   "category": "illustrated-2d",
-  "description": "A hand-drawn explainer on a clean whiteboard: dark marker ink plus red and blue accent markers, wobbly rough.js strokes that boil like real marker lines, handwritten headlines that write themselves on, and scenes that are wiped away by an eraser. Warm, human and teacher-like. No emoji.",
-  "prompt_hint": "Write 8-14 short scenes (3-6 s each) like a teacher sketching on a whiteboard. Every scene: title.kicker + title.main (short, handwritten feel), optional title.number for numbered steps, and visual.type \"illustration\" with 1-4 simple elements: icon/svg sketches, flow and timeline for processes, compare or split for before/after, checklist for steps, callout (circle, underline, arrow) to point at the key idea. Prefer few big drawings over dense panels. Never use emoji.",
+  "format": "whiteboard",
+  "description": "A hand-drawn explainer on a clean whiteboard: dark marker ink plus red and blue accent markers, wobbly rough.js strokes that boil like real marker lines, handwritten headlines that write themselves on, and scenes that are wiped away by an eraser. Warm, human and teacher-like. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-14 short scenes (3-6 s each) like a teacher sketching on a whiteboard. Every scene: title.kicker + title.main (short, handwritten feel), optional title.number for numbered steps, and visual.type \"illustration\" with 1-4 simple elements: icon/svg sketches, flow and timeline for processes, compare or split for before/after, checklist for steps, callout (circle, underline, arrow) to point at the key idea. Prefer few big drawings over dense panels. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": ["concept explainers", "how it works", "teaching and onboarding", "mental models", "storytelling"],
   "preview": {
     "style": "illustrated",

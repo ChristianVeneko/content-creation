@@ -1,0 +1,338 @@
+{
+  "version": 1,
+  "title": "Bolt contra Ember: duelo de bots",
+  "template": "pixel-versus",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Dos bots, dos rondas y un solo ganador.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "sprites": [
+            {
+              "id": "bolt",
+              "palette": [
+                "ink",
+                "metal1",
+                "paper",
+                "glow2",
+                "accent",
+                "metal0",
+                "accent2"
+              ],
+              "mirror": "odd",
+              "glow": "36",
+              "frames": [
+                [
+                  ".......6",
+                  ".......0",
+                  "...00000",
+                  "..011111",
+                  ".0111111",
+                  ".0100000",
+                  ".0103333",
+                  ".0100000",
+                  ".0111111",
+                  "..055555",
+                  ".0044444",
+                  "00144444",
+                  "00144444",
+                  "0014..00",
+                  "..0...00",
+                  ".00....."
+                ]
+              ]
+            },
+            {
+              "id": "ember",
+              "palette": [
+                "ink",
+                "accent",
+                "accent2",
+                "paper",
+                "wood2",
+                "wood1"
+              ],
+              "mirror": "odd",
+              "glow": "2",
+              "frames": [
+                [
+                  ".......2",
+                  "......22",
+                  ".....222",
+                  "....1221",
+                  "...11111",
+                  "..011111",
+                  ".0111111",
+                  ".0113311",
+                  ".0113011",
+                  ".0111111",
+                  ".0114444",
+                  "..011111",
+                  "..011111",
+                  "..00.001",
+                  "...0..00",
+                  "........"
+                ]
+              ]
+            }
+          ],
+          "banner": {
+            "text": "Duelo de bots",
+            "accent": "bots",
+            "big": true
+          },
+          "fighters": [
+            {
+              "sprite": "bolt",
+              "name": "BOLT",
+              "stars": 4,
+              "side": "left",
+              "anim": "bob"
+            },
+            {
+              "sprite": "ember",
+              "name": "EMBER",
+              "stars": 3.5,
+              "side": "right",
+              "anim": "bob"
+            }
+          ],
+          "speaker": "PRESENTADOR",
+          "camera": "rise"
+        }
+      }
+    },
+    {
+      "id": "ronda1",
+      "narration": "Primera ronda: la velocidad.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "round": {
+            "n": 1,
+            "of": 2,
+            "title": "Velocidad"
+          },
+          "banner": {
+            "text": "Ronda de velocidad",
+            "accent": "velocidad"
+          },
+          "camera": "push-in",
+          "transition": "diamond"
+        }
+      }
+    },
+    {
+      "id": "pelea1",
+      "narration": "Bolt carga energía y dispara su rayo contra Ember, que recibe el golpe.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "fighters": [
+            {
+              "sprite": "bolt",
+              "name": "BOLT",
+              "stars": 4,
+              "side": "left",
+              "anim": "bob"
+            },
+            {
+              "sprite": "ember",
+              "name": "EMBER",
+              "stars": 3.5,
+              "side": "right",
+              "anim": "bob"
+            }
+          ],
+          "fx": [
+            {
+              "type": "power-up",
+              "x": 0.27,
+              "y": 0.72,
+              "at": "carga",
+              "duration": 1.6,
+              "intensity": 0.8,
+              "color": "glow2"
+            },
+            {
+              "type": "energy-beam",
+              "x": 0.34,
+              "y": 0.62,
+              "to": {
+                "x": 0.68,
+                "y": 0.62
+              },
+              "at": "dispara",
+              "intensity": 0.8,
+              "color": "glow2"
+            },
+            {
+              "type": "hit-flash",
+              "x": 0.72,
+              "y": 0.62,
+              "at": "golpe"
+            }
+          ],
+          "camera": "static"
+        }
+      }
+    },
+    {
+      "id": "rank1",
+      "narration": "Bolt gana la velocidad con noventa y dos puntos.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "banner": {
+            "text": "Velocidad",
+            "accent": "Velocidad"
+          },
+          "ranking": {
+            "title": "Resultado",
+            "unit": " pts",
+            "rows": [
+              {
+                "name": "BOLT",
+                "score": 92,
+                "crown": true
+              },
+              {
+                "name": "EMBER",
+                "score": 78
+              }
+            ]
+          },
+          "transition": "wipe"
+        }
+      }
+    },
+    {
+      "id": "ronda2",
+      "narration": "Segunda ronda: la resistencia.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "round": {
+            "n": 2,
+            "of": 2,
+            "title": "Resistencia"
+          },
+          "fighters": [
+            {
+              "sprite": "bolt",
+              "name": "BOLT",
+              "stars": 4,
+              "side": "left",
+              "anim": "bob"
+            },
+            {
+              "sprite": "ember",
+              "name": "EMBER",
+              "stars": 4.5,
+              "side": "right",
+              "anim": "bob"
+            }
+          ],
+          "camera": "push-in"
+        }
+      }
+    },
+    {
+      "id": "pelea2",
+      "narration": "Ember enciende su llama, aguanta el golpe y gana la ronda.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "fighters": [
+            {
+              "sprite": "bolt",
+              "name": "BOLT",
+              "stars": 4,
+              "side": "left",
+              "anim": "bob"
+            },
+            {
+              "sprite": "ember",
+              "name": "EMBER",
+              "stars": 3.5,
+              "side": "right",
+              "anim": "pulse",
+              "crown": true
+            }
+          ],
+          "fx": [
+            {
+              "type": "power-up",
+              "x": 0.73,
+              "y": 0.72,
+              "at": "llama",
+              "color": "accent2",
+              "intensity": 0.9
+            },
+            {
+              "type": "hit-flash",
+              "x": 0.3,
+              "y": 0.62,
+              "at": "golpe",
+              "color": "accent2"
+            },
+            {
+              "type": "burst",
+              "x": 0.73,
+              "y": 0.5,
+              "at": "gana"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "verdict",
+      "narration": "El veredicto final: Ember se lleva la corona.",
+      "visual": {
+        "type": "pixel",
+        "pixel": {
+          "set": "arena",
+          "banner": {
+            "text": "Veredicto",
+            "accent": "Veredicto"
+          },
+          "verdict": {
+            "title": "Ganador",
+            "rows": [
+              {
+                "name": "EMBER",
+                "score": "170",
+                "note": "CAMPEON"
+              },
+              {
+                "name": "BOLT",
+                "score": "165"
+              }
+            ],
+            "winner": 0
+          },
+          "fx": [
+            {
+              "type": "confetti",
+              "at": 2.2,
+              "duration": 3
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

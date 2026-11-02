@@ -2,6 +2,7 @@
   "id": "captions-voice",
   "name": "Captions + Voice",
   "category": "kinetic",
+  "format": "captions-voice",
   "description": "Voiceover with bold word-by-word TikTok captions over animated gradients, photos or b-roll. The all-rounder for tips, news and opinions.",
   "prompt_hint": "Conversational voiceover, one idea per scene. Scene 1 states the payoff in under 3 seconds. Use short onScreenText headlines (2-5 words) that reinforce, not repeat, the narration. Prefer image/video visuals when the user provides files, otherwise gradient or emoji.",
   "best_for": ["tips", "news", "opinions", "talking points", "b-roll edits"],

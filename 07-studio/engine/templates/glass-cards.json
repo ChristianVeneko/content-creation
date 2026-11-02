@@ -2,6 +2,7 @@
   "id": "glass-cards",
   "name": "Glass Cards",
   "category": "kinetic",
+  "format": "glass-cards",
   "description": "Glassy cards with a big icon and a short title per scene. Clear and friendly, one idea per card.",
   "prompt_hint": "Teach one concept in 4-6 steps. Each scene: emoji visual that represents the idea, onScreenText = card title (2-5 words), narration explains it plainly. End with the result and one CTA.",
   "best_for": ["how-tos", "concepts", "tutorials", "comparisons", "finance and tech tips"],

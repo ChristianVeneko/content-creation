@@ -103,6 +103,9 @@ const COMPONENTS: Partial<Record<LookId, React.FC<TransitionPresentationComponen
   "editorial-chart": ZoomThrough,
   "editor-window": CrtCut,
   "rank-numbers": WhipPan,
+  // host-tutorial: halftone dots swell until the next step shows; spotlight-narrative: a slow push through the dark
+  "host-tutorial": ART_TRANSITIONS.risograph as React.FC<TransitionPresentationComponentProps<P>>,
+  "spotlight-narrative": ZoomThrough,
   // art-style looks: wash dissolve, stop-motion paper slide, smudge wipe, halftone wipe, ink bleed, panel slam
   ...(ART_TRANSITIONS as Partial<Record<LookId, React.FC<TransitionPresentationComponentProps<P>>>>),
 };

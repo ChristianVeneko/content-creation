@@ -2,8 +2,9 @@
   "id": "ukiyo-e",
   "name": "Ukiyo-e Ink Print",
   "category": "illustrated-2d",
-  "description": "A woodblock print brought to life: washi paper with long fibres, a Prussian-blue bokashi sky, a seigaiha wave band, a double key-block border and a vermilion seal. Titles are printed serif type beside a vertical red cartouche and underlined by a tapered sumi brush stroke; elements spread in like ink on wet paper, red hanko seals stamp verdicts, the camera pans like an unrolling handscroll and scenes are flooded by a sumi ink blot that thins into the next print. Calm, poetic and precise. No emoji.",
-  "prompt_hint": "Write 8-12 contemplative scenes (4-6 s each). title.kicker is a short label shown in a vertical red cartouche (1-3 words); title.main a calm printed headline. visual.type \"illustration\" with 1-3 elements: icon (size l, shown inside a brush enso), timeline for sequences, card, compare, counter, stamp for a key verdict (a red seal). Leave space. Never use emoji.",
+  "format": "woodblock-scroll",
+  "description": "A woodblock print brought to life: washi paper with long fibres, a Prussian-blue bokashi sky, a seigaiha wave band, a double key-block border and a vermilion seal. Titles are printed serif type beside a vertical red cartouche and underlined by a tapered sumi brush stroke; elements spread in like ink on wet paper, red hanko seals stamp verdicts, the camera pans like an unrolling handscroll and scenes are flooded by a sumi ink blot that thins into the next print. Calm, poetic and precise. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-12 contemplative scenes (4-6 s each). title.kicker is a short label shown in a vertical red cartouche (1-3 words); title.main a calm printed headline. visual.type \"illustration\" with 1-3 elements: icon (size l, shown inside a brush enso), timeline for sequences, card, compare, counter, stamp for a key verdict (a red seal). Leave space. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": [
     "history and culture",
     "philosophy and habits",

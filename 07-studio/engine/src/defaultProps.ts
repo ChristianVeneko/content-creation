@@ -21,6 +21,12 @@ import uiCardsTemplate from "../templates/ui-cards.json";
 import flatDepthExample from "../examples/flat-depth.spec.json";
 import flatDepthTemplate from "../templates/flat-depth.json";
 import softGradientExample from "../examples/soft-gradient.spec.json";
+import hostTutorialExample from "../examples/host-tutorial.spec.json";
+import hostTutorialTemplate from "../templates/host-tutorial.json";
+import checklistGlassExample from "../examples/checklist-glass.spec.json";
+import checklistGlassTemplate from "../templates/checklist-glass.json";
+import spotlightExample from "../examples/spotlight-narrative.spec.json";
+import spotlightTemplate from "../templates/spotlight-narrative.json";
 import softGradientTemplate from "../templates/soft-gradient.json";
 import pixelDuskExample from "../examples/pixel-dusk.spec.json";
 import pixelNightExample from "../examples/pixel-night.spec.json";
@@ -29,6 +35,8 @@ import pixelMonoExample from "../examples/pixel-mono.spec.json";
 import pixelDuskTemplate from "../templates/pixel-dusk.json";
 import pixelNightTemplate from "../templates/pixel-night.json";
 import pixelArcadeTemplate from "../templates/pixel-arcade.json";
+import pixelVersusExample from "../examples/pixel-versus.spec.json";
+import pixelVersusTemplate from "../templates/pixel-versus.json";
 import pixelMonoTemplate from "../templates/pixel-mono.json";
 import { planPixel, usesPixelKit } from "../lib/pixel.mjs";
 import neonGridExample from "../examples/neon-grid.spec.json";
@@ -74,12 +82,16 @@ const FORMAT_EXAMPLES: Record<string, [unknown, unknown]> = {
   "ui-cards": [uiCardsExample, uiCardsTemplate],
   "flat-depth": [flatDepthExample, flatDepthTemplate],
   "soft-gradient": [softGradientExample, softGradientTemplate],
+  "host-tutorial": [hostTutorialExample, hostTutorialTemplate],
+  "checklist-glass": [checklistGlassExample, checklistGlassTemplate],
+  "spotlight-narrative": [spotlightExample, spotlightTemplate],
 };
 const PIXEL_EXAMPLES: Record<string, [unknown, unknown]> = {
   "pixel-dusk": [pixelDuskExample, pixelDuskTemplate],
   "pixel-night": [pixelNightExample, pixelNightTemplate],
   "pixel-arcade": [pixelArcadeExample, pixelArcadeTemplate],
   "pixel-mono": [pixelMonoExample, pixelMonoTemplate],
+  "pixel-versus": [pixelVersusExample, pixelVersusTemplate],
 };
 
 export const previewProps = (template: TemplateId): RenderProps => {
