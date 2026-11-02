@@ -316,7 +316,7 @@ const AccentHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote, co
     <div style={{ position: "absolute", left: r.x, top: r.y, width: r.w, height: r.h, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
       {kicker ? (
         glass ? (
-          <div style={{ height: 58, marginBottom: 16, display: "flex", alignItems: "center", gap: 16, padding: "0 26px", borderRadius: 30, background: "rgba(255,255,255,0.72)", border: "2px solid rgba(255,255,255,0.98)", boxShadow: `0 14px 28px -12px ${rgba(ink.accent, 0.45)}`, color: ink.paperInk, fontFamily: look.body, fontWeight: 700, fontSize: 30, opacity: k, transform: `translateY(${(1 - k) * 14}px)` }}>
+          <div style={{ height: 58, marginBottom: 16, display: "flex", alignItems: "center", gap: 16, padding: "0 26px", borderRadius: 30, background: ink.surface2, border: `2px solid ${luminance(ink.paperInk) > 0.5 ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.98)"}`, boxShadow: `0 14px 28px -12px ${rgba(ink.accent, 0.45)}`, color: ink.paperInk, fontFamily: look.body, fontWeight: 700, fontSize: 30, opacity: k, transform: `translateY(${(1 - k) * 14}px)` }}>
             <span>{pg ? `${pg.label} ${pg.n} / ${pg.total}` : kicker}</span>
             {pg ? (
               <span style={{ position: "relative", width: 170, height: 12, borderRadius: 6, background: rgba(ink.paperInk, 0.14), overflow: "hidden" }}>

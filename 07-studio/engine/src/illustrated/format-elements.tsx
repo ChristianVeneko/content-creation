@@ -973,6 +973,9 @@ const Switch: React.FC<{ on: number; color: string; ink: InkT }> = ({ on, color,
   </div>
 );
 
+/** Where the window cursor rests: the right end of row `cur`; a window without a cursor row gets a finite default (never NaN). */
+export const cursorTarget = (cur: number | undefined, w: number, head: number, row: number) => ({ tx: w - 130, ty: head + (cur ?? 0) * row + row / 2 + 10 });
+
 /** UI-window mockup: chrome, rows with labels / values / switches, an optional button, a gliding cursor and a highlighter sweep. */
 const UiWindow: React.FC<EP> = ({ p, box, index }) => {
   const { ink } = useKit();
@@ -995,8 +998,7 @@ const UiWindow: React.FC<EP> = ({ p, box, index }) => {
   const glide = cur !== undefined ? progress(t, cursorAt, 0.7, Easing.bezier(0.5, 0, 0.2, 1)) : 0;
   const clickT = cursorAt + 0.75;
   const click = cur !== undefined ? progress(t, clickT, 0.3) : 0;
-  const tx = w - 130;
-  const ty = HEAD + cur! * ROW + ROW / 2 + 10;
+  const { tx, ty } = cursorTarget(cur, w, HEAD, ROW);
   const cx = interpolate(glide, [0, 1], [w - 30, tx]);
   const cy = interpolate(glide, [0, 1], [HEAD + bodyH + 70, ty]);
   const flipAt = clickT + 0.05;
@@ -1005,7 +1007,7 @@ const UiWindow: React.FC<EP> = ({ p, box, index }) => {
   return (
     <div style={{ ...abs(box), ...enter }}>
       <div style={{ ...panelStyle(ink, accent), position: "absolute", left: x0, top: 0, width: w, height: box.h - 6, overflow: "hidden" }}>
-        <div style={{ height: HEAD, display: "flex", alignItems: "center", gap: 12, padding: "0 28px", borderBottom: `2px solid ${ink.line}`, background: rgba("#FFFFFF", ink.look.light ? 0.4 : 0.04) }}>
+        <div style={{ height: HEAD, display: "flex", alignItems: "center", gap: 12, padding: "0 28px", borderBottom: `2px solid ${ink.line}`, background: rgba("#FFFFFF", ink.look.light && luminance(ink.paperInk) < 0.5 ? 0.4 : 0.06) }}>
           {dotsOf(ink).map((c, k) => (
             <div key={k} style={{ width: 20, height: 20, borderRadius: 10, background: c }} />
           ))}

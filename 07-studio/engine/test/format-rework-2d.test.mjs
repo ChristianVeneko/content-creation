@@ -203,3 +203,16 @@ test("previous behavior holds: ui-cards keeps its look, depth, upscale and the l
   assert.deepEqual({ scale: p.scale, offsetY: p.offsetY, stackH: p.stackH, w: p.w, box: p.elements[0].box }, { scale: 1.343, offsetY: 0, stackH: 484, w: 667, box: { x: 0, y: 0, w: 667, h: 484 } });
   assert.equal(validateSpec(example("ui-cards")).ok, true);
 });
+
+test("regression: a window without a cursor row never produces NaN animation targets", () => {
+  // the renderer interpolates the cursor from these numbers; NaN made remotion throw "outputRange must contain only finite numbers"
+  const src = read("../src/illustrated/format-elements.tsx");
+  assert.ok(!/cur!/.test(src), "no non-null assertion on the optional cursor row");
+  const m = /export const cursorTarget = \(([^)]*)\) => \(([\s\S]*?)\);\n/.exec(src);
+  assert.ok(m, "cursorTarget helper exists");
+  const fn = new Function(`return (${m[1].replace(/: [a-z| ]+/g, "")}) => (${m[2]})`)();
+  for (const cur of [undefined, 0, 2]) {
+    const r = fn(cur, 800, 84, 88);
+    assert.ok(Number.isFinite(r.tx) && Number.isFinite(r.ty), `cursor ${cur}: ${JSON.stringify(r)}`);
+  }
+});

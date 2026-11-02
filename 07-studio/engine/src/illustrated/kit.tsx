@@ -5,7 +5,7 @@ import { evolvePath } from "@remotion/paths";
 import { noise2D } from "@remotion/noise";
 import rough from "roughjs";
 import type { IconData, Palette } from "../types";
-import { rgba, seeded } from "../util";
+import { luminance, rgba, seeded } from "../util";
 import { LOOKS, type Look } from "./looks";
 import { artPanel, isArtLook } from "./artstyles";
 import { depthPanel } from "./depth";
@@ -34,6 +34,13 @@ export type Ink = {
   look: Look;
 };
 
+/** Looks whose panels are light glass / paper: with a light-text (dark) palette their surfaces turn into dark glass so card text keeps its contrast. */
+const SURFACE_FOLLOWS_PALETTE = new Set(["checklist-glass", "host-tutorial"]);
+const darkSurfaces = (look: Look, text: string): Partial<Look["colors"]> =>
+  SURFACE_FOLLOWS_PALETTE.has(look.id) && luminance(text) > 0.5
+    ? { surface: "rgba(24, 28, 48, 0.62)", surface2: "rgba(30, 34, 58, 0.82)", paper: "rgba(30, 34, 58, 0.9)", paperInk: text, line: "rgba(255, 255, 255, 0.16)", muted: "#B4B9D6", stampBg: "rgba(24, 28, 48, 0.75)" }
+    : {};
+
 export const makeInk = (p: Palette, look: Look = LOOKS.blueprint): Ink => ({
   bg: p.bg[0],
   bg2: p.bg[1] ?? p.bg[0],
@@ -42,6 +49,7 @@ export const makeInk = (p: Palette, look: Look = LOOKS.blueprint): Ink => ({
   accent2: p.accent2 ?? "#FFC145",
   accent3: p.accent3 ?? "#38D6F5",
   ...look.colors,
+  ...darkSurfaces(look, p.text),
   look,
 });
 
