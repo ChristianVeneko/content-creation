@@ -35,6 +35,16 @@ export const LEGACY_TEMPLATE_IDS = {
   "quote-story": "letterbox",
   "hero-product": "pedestal",
   "iso-explainer": "iso-toon",
+  "como-funciona": "engineering-explainer",
+  "paso-a-paso": "engineering-explainer",
+  "que-paso": "engineering-explainer",
+  "para-que-sirve": "engineering-explainer",
+  "fuerzas-ingenieria": "engineering-explainer",
+  "how-it-works": "engineering-explainer",
+  "step-by-step": "engineering-explainer",
+  "failure-forensics": "engineering-explainer",
+  "component-purpose": "engineering-explainer",
+  "engineering-forces": "engineering-explainer",
 };
 /** Map a legacy template id to its current id; unknown ids pass through unchanged. */
 export const canonicalTemplateId = (id) => (typeof id === "string" && LEGACY_TEMPLATE_IDS[id]) || id;
@@ -141,6 +151,7 @@ export const visualSchema = z
 export const sceneSchema = z.object({
   id: z.string().min(1),
   narration: z.string().min(1, "narration must not be empty"),
+  audio: z.string().optional().describe("Pre-recorded voice audio file for this scene (relative to spec or CC root)"),
   onScreenText: z.string().optional(),
   durationSec: z.number().positive().max(60).optional(),
   visual: visualSchema,

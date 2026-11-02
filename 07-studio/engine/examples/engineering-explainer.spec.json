@@ -1,0 +1,872 @@
+{
+  "version": 1,
+  "title": "Cómo construir una alberca y por qué flotan",
+  "template": "engineering-explainer",
+  "language": "es",
+  "brand": {
+    "handle": "@loconstruiste.mx"
+  },
+  "scenes": [
+    {
+      "id": "c1",
+      "narration": "Si cavas un hoyo en tu patio y lo llenas de agua para hacer una alberca rápida...",
+      "title": {
+        "kicker": "Paso 1",
+        "main": "El hoyo en el patio"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "pullout",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "pala",
+            "pos": [1.4, 0.4, 0.5],
+            "rot": [0, -25, 0],
+            "motion": [
+              {
+                "type": "dig",
+                "amp": 0.45,
+                "speed": 1.1
+              }
+            ],
+            "parts": [
+              {
+                "id": "hoja",
+                "shape": "box",
+                "size": [0.4, 0.5, 0.04],
+                "pos": [0, -0.4, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "cabo",
+                "shape": "cylinder",
+                "size": [0.05, 1.2],
+                "pos": [0, 0.4, 0],
+                "color": "#D4A373"
+              },
+              {
+                "id": "mango",
+                "shape": "torus",
+                "size": [0.12, 0.04],
+                "pos": [0, 1.05, 0],
+                "rot": [0, 0, 90],
+                "color": "#64748B"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "corte transversal de terreno con pasto y estratos de tierra",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "pasto",
+              "shape": "box",
+              "size": [8, 0.25, 6],
+              "pos": [0, 0, 0],
+              "color": "#588157"
+            },
+            {
+              "id": "tierra_alta",
+              "shape": "box",
+              "size": [8, 1.2, 6],
+              "pos": [0, -0.7, 0],
+              "color": "#BC6C25"
+            },
+            {
+              "id": "tierra_profunda",
+              "shape": "box",
+              "size": [8, 1.4, 6],
+              "pos": [0, -2.0, 0],
+              "color": "#7F4F24"
+            },
+            {
+              "id": "rocas",
+              "shape": "sphere",
+              "size": [0.2],
+              "pos": [-2.2, -1.8, 1.2],
+              "color": "#52796F"
+            },
+            {
+              "id": "casa_muro",
+              "shape": "box",
+              "size": [2.6, 2.8, 2.2],
+              "pos": [-2.4, 1.5, -1.8],
+              "color": "#F3E9D2"
+            },
+            {
+              "id": "casa_techo",
+              "shape": "cone",
+              "size": [2.0, 1.2],
+              "pos": [-2.4, 3.4, -1.8],
+              "color": "#BC4749"
+            },
+            {
+              "id": "arbol_tronco",
+              "shape": "cylinder",
+              "size": [0.15, 1.5],
+              "pos": [2.8, 0.8, -1.8],
+              "color": "#582F0E"
+            },
+            {
+              "id": "arbol_copa",
+              "shape": "cone",
+              "size": [0.9, 1.8],
+              "pos": [2.8, 2.2, -1.8],
+              "color": "#3A5A40"
+            }
+          ]
+        },
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "EXCAVACIÓN EN TIERRA",
+            "at": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2",
+      "narration": "Al día siguiente el agua desaparece por completo: la tierra se la traga y las paredes de tierra se derrumban.",
+      "title": {
+        "kicker": "El fallo",
+        "main": "La tierra se la traga"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "agua_charco",
+            "pos": [0.5, -0.5, 0.4],
+            "motion": [
+              {
+                "type": "drain",
+                "speed": 1.2,
+                "amp": 0.8
+              }
+            ],
+            "parts": [
+              {
+                "id": "agua_capa",
+                "shape": "box",
+                "size": [2.4, 0.6, 1.8],
+                "pos": [0, 0, 0],
+                "color": "#3A86FF"
+              }
+            ]
+          },
+          {
+            "kind": "custom",
+            "id": "muro_tierra",
+            "pos": [-0.8, -0.6, 0.4],
+            "motion": [
+              {
+                "type": "collapse",
+                "speed": 1.0,
+                "amp": 0.5
+              }
+            ],
+            "parts": [
+              {
+                "id": "bloque_tierra",
+                "shape": "box",
+                "size": [0.6, 0.9, 1.6],
+                "pos": [0, 0, 0],
+                "color": "#9C6644"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "corte de terreno con agua filtrándose y talud derrumbándose",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "pasto",
+              "shape": "box",
+              "size": [8, 0.25, 6],
+              "pos": [0, 0, 0],
+              "color": "#588157"
+            },
+            {
+              "id": "tierra_alta",
+              "shape": "box",
+              "size": [8, 1.2, 6],
+              "pos": [0, -0.7, 0],
+              "color": "#BC6C25"
+            },
+            {
+              "id": "tierra_profunda",
+              "shape": "box",
+              "size": [8, 1.4, 6],
+              "pos": [0, -2.0, 0],
+              "color": "#7F4F24"
+            },
+            {
+              "id": "rocas",
+              "shape": "sphere",
+              "size": [0.2],
+              "pos": [-2.2, -1.8, 1.2],
+              "color": "#52796F"
+            },
+            {
+              "id": "casa_muro",
+              "shape": "box",
+              "size": [2.6, 2.8, 2.2],
+              "pos": [-2.4, 1.5, -1.8],
+              "color": "#F3E9D2"
+            },
+            {
+              "id": "casa_techo",
+              "shape": "cone",
+              "size": [2.0, 1.2],
+              "pos": [-2.4, 3.4, -1.8],
+              "color": "#BC4749"
+            }
+          ]
+        },
+        "fx": [
+          {
+            "type": "particles",
+            "kind": "dust",
+            "burst": true,
+            "at": 1.2
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "DERRUMBE SIN CONTENCIÓN",
+            "at": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3",
+      "narration": "Por eso necesitas armar una estructura de varillas de acero entrelazadas en todo el fondo y las paredes.",
+      "title": {
+        "kicker": "Paso 2",
+        "main": "Estructura de varillas"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "armadura_varilla",
+            "pos": [0.6, -0.8, 0.4],
+            "motion": [
+              {
+                "type": "assemble",
+                "amp": 0.4,
+                "speed": 1.0
+              }
+            ],
+            "parts": [
+              {
+                "id": "varilla_base1",
+                "shape": "cylinder",
+                "size": [0.03, 2.6],
+                "pos": [0, -0.6, -0.6],
+                "rot": [0, 0, 90],
+                "color": "#4A5568"
+              },
+              {
+                "id": "varilla_base2",
+                "shape": "cylinder",
+                "size": [0.03, 2.6],
+                "pos": [0, -0.6, 0.6],
+                "rot": [0, 0, 90],
+                "color": "#4A5568"
+              },
+              {
+                "id": "varilla_cruz1",
+                "shape": "cylinder",
+                "size": [0.03, 1.8],
+                "pos": [-1.0, -0.6, 0],
+                "rot": [90, 0, 0],
+                "color": "#4A5568"
+              },
+              {
+                "id": "varilla_cruz2",
+                "shape": "cylinder",
+                "size": [0.03, 1.8],
+                "pos": [1.0, -0.6, 0],
+                "rot": [90, 0, 0],
+                "color": "#4A5568"
+              },
+              {
+                "id": "varilla_muro1",
+                "shape": "cylinder",
+                "size": [0.03, 1.2],
+                "pos": [-1.2, 0, 0],
+                "color": "#2D3748"
+              },
+              {
+                "id": "varilla_muro2",
+                "shape": "cylinder",
+                "size": [0.03, 1.2],
+                "pos": [1.2, 0, 0],
+                "color": "#2D3748"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "corte de terreno mostrando la jaula de varillas en el vaso de la alberca",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "pasto",
+              "shape": "box",
+              "size": [8, 0.25, 6],
+              "pos": [0, 0, 0],
+              "color": "#588157"
+            },
+            {
+              "id": "tierra_alta",
+              "shape": "box",
+              "size": [8, 1.2, 6],
+              "pos": [0, -0.7, 0],
+              "color": "#BC6C25"
+            },
+            {
+              "id": "tierra_profunda",
+              "shape": "box",
+              "size": [8, 1.4, 6],
+              "pos": [0, -2.0, 0],
+              "color": "#7F4F24"
+            },
+            {
+              "id": "casa_muro",
+              "shape": "box",
+              "size": [2.6, 2.8, 2.2],
+              "pos": [-2.4, 1.5, -1.8],
+              "color": "#F3E9D2"
+            },
+            {
+              "id": "casa_techo",
+              "shape": "cone",
+              "size": [2.0, 1.2],
+              "pos": [-2.4, 3.4, -1.8],
+              "color": "#BC4749"
+            }
+          ]
+        },
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "MALLA ELECTROSOLDADA",
+            "at": 0.6
+          }
+        ]
+      }
+    },
+    {
+      "id": "c4",
+      "narration": "Luego vacías una capa gruesa de concreto armado, instalas la tubería subterránea de PVC y colocas el mosaico.",
+      "title": {
+        "kicker": "Paso 3",
+        "main": "Concreto, PVC y mosaico"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "pullout",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "vaso_concreto",
+            "pos": [0.6, -0.6, 0.4],
+            "motion": [
+              {
+                "type": "pour",
+                "speed": 1.2,
+                "amp": 30
+              }
+            ],
+            "parts": [
+              {
+                "id": "concreto_piso",
+                "shape": "box",
+                "size": [2.8, 0.3, 2.0],
+                "pos": [0, -0.7, 0],
+                "color": "#CBD5E1"
+              },
+              {
+                "id": "concreto_muroL",
+                "shape": "box",
+                "size": [0.3, 1.2, 2.0],
+                "pos": [-1.3, 0, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "concreto_muroR",
+                "shape": "box",
+                "size": [0.3, 1.2, 2.0],
+                "pos": [1.3, 0, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "azulejo_fondo",
+                "shape": "box",
+                "size": [2.3, 0.05, 1.7],
+                "pos": [0, -0.5, 0],
+                "color": "#00B4D8"
+              }
+            ]
+          },
+          {
+            "kind": "custom",
+            "id": "tuberia_pvc",
+            "pos": [0.6, -0.9, 0.4],
+            "parts": [
+              {
+                "id": "tubo_dren",
+                "shape": "cylinder",
+                "size": [0.08, 2.2],
+                "pos": [0.2, 0, 0],
+                "rot": [0, 0, 90],
+                "color": "#FFFFFF"
+              },
+              {
+                "id": "cople_azul1",
+                "shape": "torus",
+                "size": [0.11, 0.04],
+                "pos": [-0.6, 0, 0],
+                "rot": [0, 90, 0],
+                "color": "#023E8A"
+              },
+              {
+                "id": "cople_azul2",
+                "shape": "torus",
+                "size": [0.11, 0.04],
+                "pos": [0.6, 0, 0],
+                "rot": [0, 90, 0],
+                "color": "#023E8A"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "corte transversal con alberca azulejada y red de tuberías de PVC bajo tierra",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "pasto",
+              "shape": "box",
+              "size": [8, 0.25, 6],
+              "pos": [0, 0, 0],
+              "color": "#588157"
+            },
+            {
+              "id": "tierra_alta",
+              "shape": "box",
+              "size": [8, 1.2, 6],
+              "pos": [0, -0.7, 0],
+              "color": "#BC6C25"
+            },
+            {
+              "id": "tierra_profunda",
+              "shape": "box",
+              "size": [8, 1.4, 6],
+              "pos": [0, -2.0, 0],
+              "color": "#7F4F24"
+            },
+            {
+              "id": "camastro1",
+              "shape": "box",
+              "size": [0.6, 0.4, 1.0],
+              "pos": [-1.8, 0.3, 0.5],
+              "color": "#0077B6"
+            },
+            {
+              "id": "camastro2",
+              "shape": "box",
+              "size": [0.6, 0.4, 1.0],
+              "pos": [-2.6, 0.3, 0.5],
+              "color": "#0077B6"
+            }
+          ]
+        },
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "c",
+                "icon": "shield",
+                "label": "CONCRETO"
+              },
+              {
+                "id": "p",
+                "icon": "git-commit",
+                "label": "DREN PVC"
+              },
+              {
+                "id": "t",
+                "icon": "check",
+                "label": "MOSAICO"
+              }
+            ],
+            "active": "p"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c5",
+      "narration": "Ahora sí retiene el agua perfectamente y tienes una alberca sólida que soporta toneladas de peso.",
+      "title": {
+        "kicker": "Llenado",
+        "main": "Alberca terminada"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "orbit",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "alberca_llena",
+            "pos": [0.6, -0.6, 0.4],
+            "parts": [
+              {
+                "id": "concreto_muroL",
+                "shape": "box",
+                "size": [0.3, 1.2, 2.0],
+                "pos": [-1.3, 0, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "concreto_muroR",
+                "shape": "box",
+                "size": [0.3, 1.2, 2.0],
+                "pos": [1.3, 0, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "concreto_piso",
+                "shape": "box",
+                "size": [2.8, 0.3, 2.0],
+                "pos": [0, -0.7, 0],
+                "color": "#CBD5E1"
+              },
+              {
+                "id": "escalera",
+                "shape": "cylinder",
+                "size": [0.04, 1.0],
+                "pos": [-1.1, 0.3, 0.6],
+                "color": "#E2E8F0"
+              }
+            ]
+          },
+          {
+            "kind": "custom",
+            "id": "volumen_agua",
+            "pos": [0.6, -0.8, 0.4],
+            "motion": [
+              {
+                "type": "fill",
+                "speed": 1.0,
+                "amp": 0.8
+              }
+            ],
+            "parts": [
+              {
+                "id": "agua_vaso",
+                "shape": "box",
+                "size": [2.2, 0.9, 1.6],
+                "pos": [0, 0.3, 0],
+                "color": "#48CAE4"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "alberca cristalina llena de agua en un jardín residencial",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "pasto",
+              "shape": "box",
+              "size": [8, 0.25, 6],
+              "pos": [0, 0, 0],
+              "color": "#588157"
+            },
+            {
+              "id": "tierra_alta",
+              "shape": "box",
+              "size": [8, 1.2, 6],
+              "pos": [0, -0.7, 0],
+              "color": "#BC6C25"
+            },
+            {
+              "id": "tierra_profunda",
+              "shape": "box",
+              "size": [8, 1.4, 6],
+              "pos": [0, -2.0, 0],
+              "color": "#7F4F24"
+            },
+            {
+              "id": "camastro1",
+              "shape": "box",
+              "size": [0.6, 0.4, 1.0],
+              "pos": [-1.8, 0.3, 0.5],
+              "color": "#0077B6"
+            },
+            {
+              "id": "trampolin",
+              "shape": "box",
+              "size": [1.4, 0.08, 0.4],
+              "pos": [1.8, 0.3, -0.4],
+              "color": "#03045E"
+            }
+          ]
+        },
+        "overlay": [
+          {
+            "type": "limit",
+            "label": "CAPACIDAD",
+            "limit": 0.8,
+            "steps": [
+              {
+                "at": 0.5,
+                "value": 0.3
+              },
+              {
+                "at": 2.2,
+                "value": 0.8
+              }
+            ],
+            "limitLabel": "NIVEL OPTIMO",
+            "note": "45,000 LITROS"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c6",
+      "narration": "Pero cuando la vacías para limpiarla ocurre el desastre: el agua del suelo empuja desde abajo y la alberca vacía flota como un barco.",
+      "title": {
+        "kicker": "Empuje hidrostático",
+        "main": "¡La alberca flota!"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "pullout",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "alberca_flotante",
+            "pos": [0.6, -0.6, 0.4],
+            "motion": [
+              {
+                "type": "buoyancy",
+                "speed": 0.9,
+                "amp": 0.95
+              }
+            ],
+            "parts": [
+              {
+                "id": "concreto_muroL",
+                "shape": "box",
+                "size": [0.3, 1.2, 2.0],
+                "pos": [-1.3, 0, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "concreto_muroR",
+                "shape": "box",
+                "size": [0.3, 1.2, 2.0],
+                "pos": [1.3, 0, 0],
+                "color": "#94A3B8"
+              },
+              {
+                "id": "concreto_piso",
+                "shape": "box",
+                "size": [2.8, 0.3, 2.0],
+                "pos": [0, -0.7, 0],
+                "color": "#CBD5E1"
+              },
+              {
+                "id": "azulejo_vacio",
+                "shape": "box",
+                "size": [2.3, 0.05, 1.7],
+                "pos": [0, -0.5, 0],
+                "color": "#00B4D8"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "terreno con nivel freático alto empujando el vaso de la alberca hacia arriba",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "pasto",
+              "shape": "box",
+              "size": [8, 0.25, 6],
+              "pos": [0, 0, 0],
+              "color": "#588157"
+            },
+            {
+              "id": "tierra_alta",
+              "shape": "box",
+              "size": [8, 1.2, 6],
+              "pos": [0, -0.7, 0],
+              "color": "#BC6C25"
+            },
+            {
+              "id": "agua_subterranea",
+              "shape": "box",
+              "size": [8, 1.4, 6],
+              "pos": [0, -2.0, 0],
+              "color": "#0077B6"
+            },
+            {
+              "id": "casa_muro",
+              "shape": "box",
+              "size": [2.6, 2.8, 2.2],
+              "pos": [-2.4, 1.5, -1.8],
+              "color": "#F3E9D2"
+            }
+          ]
+        },
+        "overlay": [
+          {
+            "type": "versus",
+            "left": {
+              "title": "LLENA",
+              "sub": "peso resiste",
+              "icon": "shield"
+            },
+            "right": {
+              "title": "VACÍA",
+              "sub": "agua la eleva",
+              "icon": "warning"
+            },
+            "at": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "c7",
+      "narration": "Para evitarlo se instala una válvula hidrostática en el dren: cuando la presión del suelo sube, la válvula se abre y deja entrar agua aliviando el empuje.",
+      "title": {
+        "kicker": "La solución",
+        "main": "Válvula hidrostática"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "dren_fondo",
+            "pos": [0, -0.6, 0],
+            "parts": [
+              {
+                "id": "piso_dren",
+                "shape": "box",
+                "size": [2.4, 0.2, 2.4],
+                "pos": [0, -0.1, 0],
+                "color": "#CBD5E1"
+              },
+              {
+                "id": "rejilla_marco",
+                "shape": "box",
+                "size": [0.7, 0.06, 0.7],
+                "pos": [0, 0.05, 0],
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "kind": "custom",
+            "id": "valvula_hidrostatica",
+            "pos": [0, 0.1, 0],
+            "motion": [
+              {
+                "type": "insert",
+                "speed": 1.0,
+                "amp": 0.8
+              }
+            ],
+            "parts": [
+              {
+                "id": "valvula_cuerpo",
+                "shape": "cylinder",
+                "size": [0.22, 0.3],
+                "pos": [0, -0.1, 0],
+                "color": "#E2E8F0"
+              },
+              {
+                "id": "valvula_disco",
+                "shape": "cylinder",
+                "size": [0.28, 0.08],
+                "pos": [0, 0.08, 0],
+                "color": "#F72585"
+              },
+              {
+                "id": "valvula_anillo",
+                "shape": "torus",
+                "size": [0.29, 0.03],
+                "pos": [0, 0.04, 0],
+                "rot": [90, 0, 0],
+                "color": "#7209B7"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "cercamiento macro del dren de fondo con la válvula hidrostática encajando",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [
+            {
+              "id": "tubo_pvc_fondo",
+              "shape": "cylinder",
+              "size": [0.12, 3.0],
+              "pos": [0, -1.2, 0],
+              "rot": [0, 0, 90],
+              "color": "#FFFFFF"
+            },
+            {
+              "id": "tierra_estrato",
+              "shape": "box",
+              "size": [6, 1.4, 6],
+              "pos": [0, -1.6, 0],
+              "color": "#8B5A2B"
+            }
+          ]
+        },
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "ALIVIO DE PRESIÓN",
+            "at": 0.8
+          }
+        ]
+      }
+    }
+  ]
+}

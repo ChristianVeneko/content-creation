@@ -116,41 +116,54 @@ export async function build({ specPath, outDir, log, keepWork = false, renderer:
     const wantWords = spec.captions.enabled || reelsKit || pixelKit;
     let audioSecs = spec.scenes.map(() => null);
     let speechFiles = [];
-    let { provider, fallback } = effectiveProvider(spec.voice);
-    if (fallback) log(step, "running", fallback, 0.06);
-    if (provider === "none") {
-      log(step, "done", "Voice disabled (provider none): timing from durationSec / reading time", 0.35);
-    } else {
-      if (provider === "elevenlabs" && needsAutoVoice(spec)) {
-        // No voice chosen: take a trending Latin American Spanish voice (stable per title) and record it in spec.json.
-        const auto = pickVoice(await trendingVoices({ gender: "male" }), spec.title);
-        if (auto) {
-          spec.voice.voiceId = auto.voiceId;
-          log(step, "running", `Auto voice: ${auto.name} (${auto.accent}, trending on ElevenLabs)`, 0.06);
-        }
-      }
-      log(step, "running", `Synthesizing ${spec.scenes.length} scenes with ${provider}`, 0.06);
-      const onItem = (done, total) => log(step, "running", `Voice ${done}/${total}`, 0.06 + 0.25 * (done / total));
-      let rawFiles;
-      try {
-        rawFiles = await synthesize({
-          provider,
-          texts: ttsTexts,
-          language: spec.language,
-          voiceId: spec.voice.voiceId,
-          speed: spec.voice.speed ?? 1,
-          dir: join(work, "audio"),
-          onItem,
-        });
-      } catch (e) {
-        if (provider !== "elevenlabs") throw e;
-        log(step, "running", `${e.message} — falling back to local Kokoro`, 0.1);
-        provider = "kokoro";
-        rawFiles = await synthesize({ provider, texts: ttsTexts, language: spec.language, voiceId: undefined, speed: spec.voice.speed ?? 1, dir: join(work, "audio"), onItem });
-      }
+    const hasSceneAudio = spec.scenes.every((s) => s.audio);
+    if (hasSceneAudio) {
+      log(step, "running", `Using pre-recorded voice audio for ${spec.scenes.length} scenes`, 0.06);
+      const rawFiles = spec.scenes.map((s, i) => {
+        const found = resolveAssetPath(s.audio, specDir);
+        if (!found) fail(`Cannot find scene ${i} audio file: "${s.audio}"`);
+        return found;
+      });
       speechFiles = rawFiles.map((_, i) => join(work, "audio", `speech-${i}.wav`));
       audioSecs = await Promise.all(rawFiles.map((f, i) => normalizeSpeech(f, speechFiles[i])));
-      log(step, "done", `Voice ready (${provider}): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
+      log(step, "done", `Voice ready (pre-recorded): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
+    } else {
+      let { provider, fallback } = effectiveProvider(spec.voice);
+      if (fallback) log(step, "running", fallback, 0.06);
+      if (provider === "none") {
+        log(step, "done", "Voice disabled (provider none): timing from durationSec / reading time", 0.35);
+      } else {
+        if (provider === "elevenlabs" && needsAutoVoice(spec)) {
+          // No voice chosen: take a trending Latin American Spanish voice (stable per title) and record it in spec.json.
+          const auto = pickVoice(await trendingVoices({ gender: "male" }), spec.title);
+          if (auto) {
+            spec.voice.voiceId = auto.voiceId;
+            log(step, "running", `Auto voice: ${auto.name} (${auto.accent}, trending on ElevenLabs)`, 0.06);
+          }
+        }
+        log(step, "running", `Synthesizing ${spec.scenes.length} scenes with ${provider}`, 0.06);
+        const onItem = (done, total) => log(step, "running", `Voice ${done}/${total}`, 0.06 + 0.25 * (done / total));
+        let rawFiles;
+        try {
+          rawFiles = await synthesize({
+            provider,
+            texts: ttsTexts,
+            language: spec.language,
+            voiceId: spec.voice.voiceId,
+            speed: spec.voice.speed ?? 1,
+            dir: join(work, "audio"),
+            onItem,
+          });
+        } catch (e) {
+          if (provider !== "elevenlabs") throw e;
+          log(step, "running", `${e.message} — falling back to local Kokoro`, 0.1);
+          provider = "kokoro";
+          rawFiles = await synthesize({ provider, texts: ttsTexts, language: spec.language, voiceId: undefined, speed: spec.voice.speed ?? 1, dir: join(work, "audio"), onItem });
+        }
+        speechFiles = rawFiles.map((_, i) => join(work, "audio", `speech-${i}.wav`));
+        audioSecs = await Promise.all(rawFiles.map((f, i) => normalizeSpeech(f, speechFiles[i])));
+        log(step, "done", `Voice ready (${provider}): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
+      }
     }
     const timeline = (reelsKit ? computeReelsTimeline : computeTimeline)(
       spec.scenes.map((s, i) => ({ audioSec: audioSecs[i], durationSec: s.durationSec, narration: s.narration })),

@@ -50,6 +50,7 @@
         "monolith-story",
         "clay-mascot",
         "cutaway-explainer",
+        "engineering-explainer",
         "pixel-dusk",
         "pixel-night",
         "pixel-arcade",
@@ -181,7 +182,8 @@
             "data-stage",
             "monolith-story",
             "clay-mascot",
-            "cutaway-explainer"
+            "cutaway-explainer",
+            "engineering-explainer"
           ]
         },
         "captionStyle": {
@@ -563,6 +565,10 @@
           "narration": {
             "type": "string",
             "minLength": 1
+          },
+          "audio": {
+            "description": "Pre-recorded voice audio file for this scene (relative to spec or CC root)",
+            "type": "string"
           },
           "onScreenText": {
             "type": "string"
@@ -14541,7 +14547,7 @@
                             "maximum": 1
                           },
                           "motion": {
-                            "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode",
+                            "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert",
                             "maxItems": 6,
                             "type": "array",
                             "items": {
@@ -14556,7 +14562,7 @@
                                     "type": {
                                       "type": "string",
                                       "minLength": 1,
-                                      "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode"
+                                      "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert"
                                     },
                                     "at": {
                                       "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",
@@ -14773,7 +14779,7 @@
                       }
                     },
                     "motion": {
-                      "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode",
+                      "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert",
                       "maxItems": 6,
                       "type": "array",
                       "items": {
@@ -14788,7 +14794,7 @@
                               "type": {
                                 "type": "string",
                                 "minLength": 1,
-                                "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode"
+                                "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert"
                               },
                               "at": {
                                 "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",
@@ -15821,7 +15827,7 @@
                           "maximum": 1
                         },
                         "motion": {
-                          "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode",
+                          "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert",
                           "maxItems": 6,
                           "type": "array",
                           "items": {
@@ -15836,7 +15842,7 @@
                                   "type": {
                                     "type": "string",
                                     "minLength": 1,
-                                    "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode"
+                                    "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert"
                                   },
                                   "at": {
                                     "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",

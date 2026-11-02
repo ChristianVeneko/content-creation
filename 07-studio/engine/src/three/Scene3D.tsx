@@ -158,7 +158,7 @@ const Label: React.FC<{ tag: Tag; look: Look3D; accent: string; frame: number; f
   const iso = look.id === "iso-toon";
   const hero = look.label.leader === "dashed";
   // light-stage looks print big numbers in the accent color (white would vanish on paper or a desk)
-  const light = look.id === "clay-diorama" || look.id === "paper-world" || look.id === "toy-blocks" || look.id === "soft-studio" || look.id === "voxel-world" || look.id === "clay-mascot" || look.id === "cutaway-explainer";
+  const light = look.id === "clay-diorama" || look.id === "paper-world" || look.id === "toy-blocks" || look.id === "soft-studio" || look.id === "voxel-world" || look.id === "clay-mascot" || look.id === "cutaway-explainer" || look.id === "engineering-explainer";
   const leader = hero || Math.hypot(tag.x - tag.ax, tag.y - tag.ay) > 60;
   const text = tag.text;
   return (

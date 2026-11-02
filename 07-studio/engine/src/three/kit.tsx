@@ -357,6 +357,7 @@ export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity:
         </>
       );
     case "cutaway-explainer":
+    case "engineering-explainer":
       // soft daylight: a sky/ground hemisphere, one warm key with a soft shadow, a faint cool fill from the left
       return (
         <>

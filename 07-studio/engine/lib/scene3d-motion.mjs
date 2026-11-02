@@ -54,10 +54,17 @@ export const MOTION_ABOUT = {
   "pop-in": "scales in with overshoot at `at`",
   assemble: "parts fly in from around the object and click together at `at`",
   explode: "parts fly apart at `at` and stay (exploded view)",
+  dig: "tool scoops down into ground, lifts and dumps; earth sinks/excavates",
+  pour: "container tilts down along z and pours liquid or concrete",
+  fill: "liquid or material level rises along y from 0 to 1 with meniscus wave",
+  drain: "liquid level drops along y from 1 down to 0",
+  collapse: "wall or soil block tips, fractures and crumbles downward with ground impact",
+  buoyancy: "object lifts upward along y and rocks with floating buoyancy pitch/roll like a boat",
+  insert: "component descends from above along y and seats with a damped snap lock",
 };
 export const MOTION_PRESETS = Object.keys(MOTION_ABOUT);
 /** Presets that act on listed parts when placed on the object. */
-const PART_TARGETING = ["walk", "blink", "assemble", "explode"];
+const PART_TARGETING = ["walk", "blink", "assemble", "explode", "dig", "pour", "fill", "drain", "collapse", "buoyancy", "insert"];
 export const PARTICLE_KINDS = ["sparks", "dust", "snow", "embers", "confetti", "stars"];
 export const FX_ABOUT = {
   particles: "`kind` sparks|dust|snow|embers|confetti|stars; ambient around `target`/the scene, or `burst: true` from `target` at `at`",
@@ -639,6 +646,88 @@ function applyPreset(d, m, t, ctx, { order = 0, info = null, key = "" } = {}) {
         d.pos = d.pos.map((x, a) => x + dir[a] * dist * u);
         d.rot = d.rot.map((r, a) => r + spin[a] * 0.4 * u);
       }
+      break;
+    }
+    case "dig": {
+      if (tau < 0) break;
+      const ph = (tau * 1.0 * sp) % 1;
+      const depth = m.amp ?? 0.35;
+      if (ph < 0.3) {
+        const u = ph / 0.3;
+        d.pos[1] -= w * depth * Math.sin(u * Math.PI * 0.5);
+        d.rot[0] += w * 25 * DEG * u;
+      } else if (ph < 0.6) {
+        const u = (ph - 0.3) / 0.3;
+        d.pos[1] -= w * depth * Math.cos(u * Math.PI * 0.5);
+        d.rot[0] += w * (25 - 45 * u) * DEG;
+      } else if (ph < 0.9) {
+        const u = (ph - 0.6) / 0.3;
+        d.rot[2] += w * 30 * DEG * Math.sin(u * Math.PI);
+        d.pos[1] += w * 0.1 * Math.sin(u * Math.PI);
+      }
+      break;
+    }
+    case "pour": {
+      if (tau < 0) break;
+      const u = clamp01((t - start) / (0.8 / sp));
+      const tilt = (m.amp ?? 55) * DEG;
+      d.rot[2] += w * tilt * EASE["in-out"](u);
+      d.pos[1] -= w * 0.1 * Math.sin(u * Math.PI);
+      break;
+    }
+    case "fill": {
+      if (t < start) {
+        d.scale[1] = 0.001;
+        break;
+      }
+      const dur = Math.max(0.2, (end === Infinity ? 2.5 : end - start) / sp);
+      const u = clamp01((t - start) / dur);
+      const level = EASE["in-out"](u);
+      d.scale[1] *= Math.max(0.001, level);
+      if (level > 0.05 && level < 0.98) {
+        d.scale[0] *= 1 + 0.02 * Math.sin(tau * 8);
+        d.scale[2] *= 1 + 0.02 * Math.cos(tau * 8);
+      }
+      break;
+    }
+    case "drain": {
+      if (t < start) break;
+      const dur = Math.max(0.2, (end === Infinity ? 2.5 : end - start) / sp);
+      const u = clamp01((t - start) / dur);
+      const level = 1 - EASE["in-out"](u);
+      d.scale[1] *= Math.max(0.001, level);
+      break;
+    }
+    case "collapse": {
+      if (t < start) break;
+      const u = clamp01((t - start) / (0.7 / sp));
+      const fall = EASE.in(u);
+      d.pos[1] -= w * (m.amp ?? 0.6) * fall;
+      d.rot[0] += w * 18 * DEG * fall;
+      d.rot[2] += w * 12 * DEG * fall;
+      if (u >= 0.95) d.scale[1] *= Math.max(0.2, 1 - 0.5 * (u - 0.95) * 20);
+      break;
+    }
+    case "buoyancy": {
+      if (t < start) break;
+      const dur = Math.max(0.3, 1.8 / sp);
+      const u = clamp01((t - start) / dur);
+      const lift = EASE.out(u) * (m.amp ?? 0.85);
+      d.pos[1] += w * lift;
+      d.rot[2] += w * 4 * DEG * Math.sin(TAU * 0.4 * sp * tau);
+      d.rot[0] += w * 2.5 * DEG * Math.cos(TAU * 0.35 * sp * tau + 1);
+      break;
+    }
+    case "insert": {
+      if (t < start) {
+        d.pos[1] += w * (m.amp ?? 1.2);
+        d.opacity = 0;
+        break;
+      }
+      const u = clamp01((t - start) / (0.6 / sp));
+      const settle = EASE.back(u);
+      d.pos[1] += w * (m.amp ?? 1.2) * (1 - settle);
+      d.opacity = Math.min(1, u * 3);
       break;
     }
     default:

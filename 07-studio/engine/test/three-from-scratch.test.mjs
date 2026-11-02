@@ -42,7 +42,7 @@ test("every 3D template carries a kebab `format` slug; the new formats are regis
   const three = listTemplates().filter((t) => t.category === "3d");
   assert.equal(three.length, THREE_D_TEMPLATE_IDS.length);
   for (const t of three) assert.match(t.format ?? "", /^[a-z]+(-[a-z]+)*$/, `${t.id} format`);
-  const want = { "clay-diorama": "diorama", "iso-toon": "isometric", "neon-glass": "glass-ui", pedestal: "product-showcase", "paper-world": "papercraft", "toy-blocks": "toybox", "holo-studio": "hologram", "neon-grid": "synthwave", "soft-studio": "soft-product", "moody-night": "night-cinematic", "voxel-world": "voxel", "data-stage": "data-stage", "monolith-story": "story-monolith", "clay-mascot": "mascot-checklist", "cutaway-explainer": "cutaway-explainer" };
+  const want = { "clay-diorama": "diorama", "iso-toon": "isometric", "neon-glass": "glass-ui", pedestal: "product-showcase", "paper-world": "papercraft", "toy-blocks": "toybox", "holo-studio": "hologram", "neon-grid": "synthwave", "soft-studio": "soft-product", "moody-night": "night-cinematic", "voxel-world": "voxel", "data-stage": "data-stage", "monolith-story": "story-monolith", "clay-mascot": "mascot-checklist", "cutaway-explainer": "cutaway-explainer", "engineering-explainer": "engineering-explainer" };
   for (const [id, f] of Object.entries(want)) assert.equal(three.find((t) => t.id === id).format, f, id);
 });
 
