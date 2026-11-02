@@ -122,6 +122,13 @@ const ScanlineSwap: React.FC<TransitionPresentationComponentProps<P>> = ({ child
   );
 };
 
+/** Documentary: the stage is one continuous world, so the cut is a short cross-dissolve with a slow push on the outgoing shot. */
+const Dissolve: React.FC<TransitionPresentationComponentProps<P>> = ({ children, presentationDirection, presentationProgress }) => {
+  const q = interpolate(presentationProgress, [0, 1], [0, 1], { ...clamp, easing: inOut });
+  if (presentationDirection === "exiting") return <AbsoluteFill style={{ transform: `scale(${interpolate(q, [0, 1], [1, 1.03])})` }}>{children}</AbsoluteFill>;
+  return <AbsoluteFill style={{ opacity: q }}>{children}</AbsoluteFill>;
+};
+
 const COMPONENTS: Record<Look3DId, React.FC<TransitionPresentationComponentProps<P>>> = {
   "clay-diorama": IrisPop,
   "iso-toon": IsoPan,
@@ -140,6 +147,7 @@ const COMPONENTS: Record<Look3DId, React.FC<TransitionPresentationComponentProps
   "cutaway-explainer": IrisPop,
   "engineering-explainer": IrisPop,
   "process-explainer": IrisPop,
+  "documentary-3d": Dissolve,
 };
 
 /** The scene transition of a 3D look. */

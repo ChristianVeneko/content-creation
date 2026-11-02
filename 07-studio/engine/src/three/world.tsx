@@ -197,7 +197,7 @@ const DEGR = Math.PI / 180;
 const FINISH: Record<string, Finish> = { body: "body", accent: "body", dark: "dark", light: "light", metal: "metal", screen: "screen", glow: "glow" };
 
 /** Instanced draw of the world parts flagged `inst` (scatter copies, repeat copies of big worlds): one InstancedMesh per geometry + color. */
-const InstancedParts: React.FC<{ parts: CustomPart[]; heightAt?: ((x: number, z: number) => number) | null }> = ({ parts, heightAt = null }) => {
+const InstancedParts: React.FC<{ parts: CustomPart[]; heightAt?: ((x: number, z: number) => number) | null; t?: number }> = ({ parts, heightAt = null, t = 0 }) => {
   const { look, palette } = useKit3D();
   const byId = useMemo(() => new Map(parts.map((p) => [p.id, p])), [parts]);
   // static world matrix of every part (its mesh sits one pivot back inside its own node, as in CustomModel)
@@ -240,14 +240,14 @@ const InstancedParts: React.FC<{ parts: CustomPart[]; heightAt?: ((x: number, z:
   return (
     <>
       {built.map((g, k) => (
-        <InstGroup key={k} g={g} heightAt={heightAt} />
+        <InstGroup key={k} g={g} heightAt={heightAt} t={t} />
       ))}
     </>
   );
 };
 
 const HIDE = new THREE.Matrix4().makeScale(0, 0, 0);
-const InstGroup: React.FC<{ g: { part: CustomPart; color: string; items: { m: THREE.Matrix4; root: THREE.Vector3 }[] }; heightAt: ((x: number, z: number) => number) | null }> = ({ g, heightAt }) => {
+const InstGroup: React.FC<{ g: { part: CustomPart; color: string; items: { m: THREE.Matrix4; root: THREE.Vector3 }[] }; heightAt: ((x: number, z: number) => number) | null; t: number }> = ({ g, heightAt, t }) => {
   const ref = useRef<THREE.InstancedMesh>(null);
   const { look } = useKit3D();
   const key = JSON.stringify([g.part.shape, g.part.size, g.part.points, g.part.radius]);
@@ -258,7 +258,24 @@ const InstGroup: React.FC<{ g: { part: CustomPart; color: string; items: { m: TH
     const mesh = ref.current;
     if (!mesh) return;
     const tmp = new THREE.Matrix4();
+    // a `wobble` motion on the template part rocks every copy about its base with a wave that travels across the field (wind)
+    const wob = (g.part.motion ?? []).find((m) => m === "wobble" || (typeof m === "object" && m.type === "wobble")) as { amp?: number; speed?: number } | "wobble" | undefined;
+    const amp = wob ? ((typeof wob === "object" ? wob.amp : undefined) ?? 6) : 0;
+    const spd = wob && typeof wob === "object" ? (wob.speed ?? 1) : 1;
+    const sway = new THREE.Matrix4();
+    const eul = new THREE.Euler();
     g.items.forEach((it, i) => {
+      if (amp) {
+        const a = Math.sin(t * spd * 1.6 + it.root.x * 0.5 + it.root.z * 0.3) * amp * 0.9 + Math.sin(t * spd * 3.1 + it.root.z * 1.3) * amp * 0.25;
+        eul.set((a * 0.45 * Math.PI) / 180, 0, (a * Math.PI) / 180);
+        sway.makeRotationFromEuler(eul);
+        const base = new THREE.Matrix4().makeTranslation(it.root.x, 0, it.root.z);
+        const mm = base.clone().multiply(sway).multiply(new THREE.Matrix4().makeTranslation(-it.root.x, 0, -it.root.z)).multiply(it.m);
+        if (!heightAt) return mesh.setMatrixAt(i, mm);
+        const hh = heightAt(it.root.x, it.root.z);
+        if (hh < -0.08) return mesh.setMatrixAt(i, HIDE);
+        return mesh.setMatrixAt(i, tmp.makeTranslation(0, hh, 0).multiply(mm));
+      }
       if (!heightAt) return mesh.setMatrixAt(i, it.m);
       // scattered copies follow the terrain: they ride its height and vanish where it has been dug away
       const h = heightAt(it.root.x, it.root.z);
@@ -296,7 +313,7 @@ export const WorldView: React.FC<{ world: World3D; t: number; sec: MotionCtx["se
   return (
   <>
     {plain.length ? <WorldParts parts={plain} t={t} ctx={{ sec, enter: 0, seed: seed * 31 + 977 }} /> : null}
-    {inst.length ? <InstancedParts parts={inst} heightAt={heightAt} /> : null}
+    {inst.length ? <InstancedParts parts={inst} heightAt={heightAt} t={t} /> : null}
     {world.crowd ? <Crowd crowd={world.crowd} t={t} seed={seed} /> : null}
   </>
   );

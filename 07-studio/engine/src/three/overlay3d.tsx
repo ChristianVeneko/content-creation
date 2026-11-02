@@ -4,7 +4,7 @@
 // contrast-checked); every value is a pure function of the frame.
 import React from "react";
 import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { overlayColors } from "../../lib/scene3d.mjs";
+import { counterValueAt, formatCounter, overlayColors } from "../../lib/scene3d.mjs";
 import { REGIONS } from "../../lib/illustrated.mjs";
 import type { IconData, Overlay3DPlan, Palette } from "../types";
 import { rgba } from "../util";
@@ -179,6 +179,28 @@ const Versus: React.FC<{ o: Extract<Overlay3DPlan, { type: "versus" }>; ctx: Ctx
   );
 };
 
+/** Documentary counter: a dark rounded pill low in the safe box with a small label and a big number that counts up. */
+const COUNTER_TOP = 1330;
+const Counter: React.FC<{ o: Extract<Overlay3DPlan, { type: "counter" }>; ctx: Ctx }> = ({ o, ctx }) => {
+  const { c, t } = ctx;
+  const w = useWindow(o, ctx.fps);
+  if (!w.visible) return null;
+  const v = counterValueAt(o, t);
+  const text = formatCounter(v, o);
+  const size = Math.min(104, 840 / Math.max(5, (text.length + (o.unit ? o.unit.length * 0.55 : 0)) * 0.66));
+  return (
+    <div style={{ position: "absolute", left: 0, right: 0, top: COUNTER_TOP, display: "flex", justifyContent: "center", opacity: w.alpha, transform: `translateY(${(1 - w.p) * 40}px) scale(${0.92 + 0.08 * w.p})`, fontFamily: ctx.font }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "16px 52px 20px", borderRadius: 44, background: "linear-gradient(180deg, rgba(14,16,26,0.92), rgba(6,8,14,0.94))", border: `2px solid ${rgba(c.accentText, 0.38)}`, boxShadow: `0 18px 44px rgba(0,0,0,0.6), 0 0 38px ${rgba(c.accentText, 0.22)}` }}>
+        {o.label ? <div style={{ fontWeight: 800, fontSize: 24, letterSpacing: 3, color: c.muted, textTransform: "uppercase", marginBottom: 2 }}>{o.label}</div> : null}
+        <div style={{ display: "flex", alignItems: "baseline", gap: 14, whiteSpace: "nowrap" }}>
+          <div style={{ fontWeight: 900, fontSize: size, lineHeight: 1.05, color: c.accentText, fontVariantNumeric: "tabular-nums", textShadow: `0 0 22px ${rgba(c.accentText, 0.45)}` }}>{text}</div>
+          {o.unit ? <div style={{ fontWeight: 800, fontSize: size * 0.4, color: c.panelText }}>{o.unit}</div> : null}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const CutawayOverlay: React.FC<{ overlay: Overlay3DPlan[]; palette: Palette; icons: Record<string, IconData>; look: Look3D; top?: number }> = ({ overlay, palette, icons, look, top }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -199,6 +221,8 @@ export const CutawayOverlay: React.FC<{ overlay: Overlay3DPlan[]; palette: Palet
             return <Concept key={i} o={o} ctx={ctx} top={base} />;
           case "limit":
             return <Limit key={i} o={o} ctx={ctx} top={cardTop} />;
+          case "counter":
+            return <Counter key={i} o={o} ctx={ctx} />;
           default:
             return <Versus key={i} o={o} ctx={ctx} top={cardTop} />;
         }

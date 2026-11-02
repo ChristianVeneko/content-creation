@@ -206,6 +206,7 @@ formats. The hand-drawn and printed looks (whiteboard and the art styles) keep t
 | `monolith-story` | 3D format: one recurring monolith, a color-keyed backdrop per scene, pixel-font signs, push and orbit camera |
 | `clay-mascot` | 3D format: soft clay look, a persistent mascot pinned to a screen corner, pastel backdrop, soft shadows |
 | `cutaway-explainer` | 3D format: low-poly cutaway cross-section in soft daylight, close-up to pull-out reveal camera, diegetic overlay kit (`visual.overlay`: flow chips, concept pill, limit bar, not-equal card) and `signal` fx along pipes |
+| `documentary-3d` | 3D format: dark cinematic data documentary on ONE persistent stage laid out as a gallery of set pieces (globe, train, domed building, particle map, ledger, wheat field...); the camera flies from piece to piece, `counter` overlay (a number that ticks up in a dark pill), word-synced captions at the top, bloom, haze and `spotlight` light shafts |
 | `captions-voice` | Voiceover + kinetic captions over gradients, photos or b-roll |
 | `kinetic-type` | Huge animated words, ghost outline type, no b-roll |
 | `countdown` | Hook with TOP N chip, big numbered items, payoff |
@@ -351,6 +352,15 @@ the start of scene N+1 is exactly the stage at the end of scene N (a hole dug in
   `pv-cell` (layered cell cross-section with electrons and holes), `night-veil` (a translucent box that tints the world to night with an
   `opacity` beat) and `power-pole`. `grass-tufts` are cheaper (group plus 3 blades) so denser fields fit the 1500-part budget, and
   `tree` carries extra faceted layers (a skirt and a light tier on pines, an underside and a cap on crowns).
+- `documentary-3d` (see `examples/documentary-3d-clavo.spec.json`, "El clavo de oro", about 50 s, 16 scenes, rendered with `voice.provider: none`
+  in about 1.5 min on a laptop; `examples/documentary-3d.spec.json` is the short sample): the look is a dusk stage (hemisphere sky, a warm low key
+  that follows the camera with a 2048 shadow map, a cool rim from behind, ACES, bloom on the emissive practicals, linear haze); the transition is a
+  cross-dissolve because the camera is one continuous flight. New builders: `globe` (continent tiles from `LAND`, a route in 8 segments, pins),
+  `train` (+ `rail-track`), `dome-building`, `aircraft`, `ledger`, `blueprint-sheet`, `desk-wood`, `wheat-field` (instanced stalks that sway: a
+  `wobble` motion on a scatter template rocks every copy as a traveling wave), `bowl`, `cracked-ground`, `particle-map`; `ship` takes `lights`,
+  `mountain` `rim` and `sun` `corona` / `rays: 0`. The `counter` overlay (`value`, `from`, `dur`, `unit`, `prefix`, `label`, `decimals`, `sep`,
+  `steps`) counts with `counterValueAt` / `formatCounter` (lib/scene3d.mjs) and sits low in the safe box; labels avoid it. Shots accept `zoom`
+  down to 0.12 for close-ups of small set pieces (the stage frame is about 15 units wide at zoom 1).
 - Example: `examples/stage-yard.spec.json` (render: `node cli.mjs build examples/stage-yard.spec.json --out <dir>`, about 19 s for 16 s of video).
   Known limit: the 3D looks' scene transitions (iris, wipe...) still run between staged scenes; a stage-aware fade belongs in `src/Video.tsx`.
 
