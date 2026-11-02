@@ -1,0 +1,1714 @@
+{
+  "version": 1,
+  "title": "5 reglas para ahorrar",
+  "template": "clay-mascot",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "r1",
+      "narration": "Regla uno: guarda primero, gasta después.",
+      "title": {
+        "kicker": "Regla 1",
+        "main": "guarda primero"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "auto",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "prop",
+            "parts": [
+              {
+                "id": "b",
+                "shape": "sphere",
+                "size": [
+                  0.8,
+                  0.65,
+                  0.65
+                ],
+                "pos": [
+                  0,
+                  0.7,
+                  0
+                ],
+                "color": "accent"
+              },
+              {
+                "id": "snout",
+                "shape": "cylinder",
+                "size": [
+                  0.22,
+                  0.22,
+                  0.2
+                ],
+                "pos": [
+                  0.8,
+                  0.65,
+                  0
+                ],
+                "rot": [
+                  0,
+                  0,
+                  90
+                ],
+                "color": "accent"
+              },
+              {
+                "id": "slot",
+                "shape": "box",
+                "size": [
+                  0.4,
+                  0.04,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  1.33,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "leg1",
+                "shape": "cylinder",
+                "size": [
+                  0.12,
+                  0.12,
+                  0.3
+                ],
+                "pos": [
+                  -0.35,
+                  0.15,
+                  0.25
+                ],
+                "color": "accent"
+              },
+              {
+                "id": "leg2",
+                "shape": "cylinder",
+                "size": [
+                  0.12,
+                  0.12,
+                  0.3
+                ],
+                "pos": [
+                  0.35,
+                  0.15,
+                  0.25
+                ],
+                "color": "accent"
+              },
+              {
+                "id": "coin",
+                "shape": "cylinder",
+                "size": [
+                  0.2,
+                  0.2,
+                  0.05
+                ],
+                "pos": [
+                  0,
+                  1.9,
+                  0
+                ],
+                "rot": [
+                  90,
+                  0,
+                  0
+                ],
+                "color": "accent3",
+                "material": "metal",
+                "keys": [
+                  {
+                    "at": 0.4,
+                    "pos": [
+                      0,
+                      0.6,
+                      0
+                    ]
+                  },
+                  {
+                    "at": 1.4,
+                    "pos": [
+                      0,
+                      -0.35,
+                      0
+                    ]
+                  }
+                ]
+              }
+            ],
+            "size": 0.95
+          },
+          {
+            "kind": "stat",
+            "value": "1/5",
+            "label": "reglas",
+            "pos": [
+              -2.5,
+              0,
+              0.6
+            ],
+            "at": 0.6,
+            "size": 0.5
+          },
+          {
+            "kind": "custom",
+            "id": "mascot",
+            "corner": "br",
+            "size": 1,
+            "color": "accent2",
+            "parts": [
+              {
+                "id": "body",
+                "shape": "sphere",
+                "size": [
+                  0.55,
+                  0.62,
+                  0.5
+                ],
+                "pos": [
+                  0,
+                  0.65,
+                  0
+                ],
+                "motion": [
+                  "breathe"
+                ]
+              },
+              {
+                "id": "belly",
+                "shape": "sphere",
+                "size": [
+                  0.34,
+                  0.38,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  -0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "role": "light"
+              },
+              {
+                "id": "eye-l",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  -0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "eye-r",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "cheek-l",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  -0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "cheek-r",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "arm-r",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -25
+                ],
+                "pivot": [
+                  0,
+                  0.25,
+                  0
+                ],
+                "motion": [
+                  {
+                    "type": "wave",
+                    "amp": 20
+                  }
+                ]
+              },
+              {
+                "id": "arm-l",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  -0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  25
+                ]
+              },
+              {
+                "id": "ear-l",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  -0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  18
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "ear-r",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -18
+                ],
+                "color": "accent3"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "soft pastel savings tips with one clay mascot",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": []
+        }
+      }
+    },
+    {
+      "id": "r2",
+      "narration": "Regla dos: ponle fecha a tu meta.",
+      "title": {
+        "kicker": "Regla 2",
+        "main": "ponle fecha"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "auto",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "prop",
+            "parts": [
+              {
+                "id": "page",
+                "shape": "box",
+                "size": [
+                  1.5,
+                  1.7,
+                  0.12
+                ],
+                "pos": [
+                  0,
+                  0.95,
+                  0
+                ],
+                "radius": 0.06,
+                "role": "light"
+              },
+              {
+                "id": "head",
+                "shape": "box",
+                "size": [
+                  1.5,
+                  0.4,
+                  0.14
+                ],
+                "pos": [
+                  0,
+                  1.65,
+                  0
+                ],
+                "radius": 0.05,
+                "color": "accent"
+              },
+              {
+                "id": "ring-l",
+                "shape": "cylinder",
+                "size": [
+                  0.05,
+                  0.05,
+                  0.3
+                ],
+                "pos": [
+                  -0.45,
+                  1.85,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "ring-r",
+                "shape": "cylinder",
+                "size": [
+                  0.05,
+                  0.05,
+                  0.3
+                ],
+                "pos": [
+                  0.45,
+                  1.85,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "d1",
+                "shape": "box",
+                "size": [
+                  0.3,
+                  0.3,
+                  0.05
+                ],
+                "pos": [
+                  -0.4,
+                  1.05,
+                  0.08
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "d2",
+                "shape": "box",
+                "size": [
+                  0.3,
+                  0.3,
+                  0.05
+                ],
+                "pos": [
+                  0,
+                  1.05,
+                  0.08
+                ],
+                "color": "accent2"
+              },
+              {
+                "id": "d3",
+                "shape": "box",
+                "size": [
+                  0.3,
+                  0.3,
+                  0.05
+                ],
+                "pos": [
+                  0.4,
+                  1.05,
+                  0.08
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "d4",
+                "shape": "box",
+                "size": [
+                  0.3,
+                  0.3,
+                  0.05
+                ],
+                "pos": [
+                  -0.4,
+                  0.6,
+                  0.08
+                ],
+                "color": "accent2"
+              }
+            ],
+            "size": 0.95
+          },
+          {
+            "kind": "stat",
+            "value": "2/5",
+            "label": "reglas",
+            "pos": [
+              -2.5,
+              0,
+              0.6
+            ],
+            "at": 0.6,
+            "size": 0.5
+          },
+          {
+            "kind": "custom",
+            "id": "mascot",
+            "corner": "br",
+            "size": 1,
+            "color": "accent2",
+            "parts": [
+              {
+                "id": "body",
+                "shape": "sphere",
+                "size": [
+                  0.55,
+                  0.62,
+                  0.5
+                ],
+                "pos": [
+                  0,
+                  0.65,
+                  0
+                ],
+                "motion": [
+                  "breathe"
+                ]
+              },
+              {
+                "id": "belly",
+                "shape": "sphere",
+                "size": [
+                  0.34,
+                  0.38,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  -0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "role": "light"
+              },
+              {
+                "id": "eye-l",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  -0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "eye-r",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "cheek-l",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  -0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "cheek-r",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "arm-r",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -25
+                ],
+                "pivot": [
+                  0,
+                  0.25,
+                  0
+                ],
+                "motion": [
+                  {
+                    "type": "wave",
+                    "amp": 20
+                  }
+                ]
+              },
+              {
+                "id": "arm-l",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  -0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  25
+                ]
+              },
+              {
+                "id": "ear-l",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  -0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  18
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "ear-r",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -18
+                ],
+                "color": "accent3"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "soft pastel savings tips with one clay mascot",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": []
+        }
+      }
+    },
+    {
+      "id": "r3",
+      "narration": "Regla tres: junta moneda a moneda.",
+      "title": {
+        "kicker": "Regla 3",
+        "main": "moneda a moneda"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "auto",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "prop",
+            "parts": [
+              {
+                "id": "c0",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.18
+                ],
+                "pos": [
+                  0,
+                  0.09,
+                  0
+                ],
+                "color": "accent3",
+                "keys": [
+                  {
+                    "at": 0.3,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 0.7,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c1",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.18
+                ],
+                "pos": [
+                  0,
+                  0.29000000000000004,
+                  0
+                ],
+                "color": "accent3",
+                "keys": [
+                  {
+                    "at": 0.6499999999999999,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 1.0499999999999998,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c2",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.18
+                ],
+                "pos": [
+                  0,
+                  0.49,
+                  0
+                ],
+                "color": "accent3",
+                "keys": [
+                  {
+                    "at": 1,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 1.4,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c3",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.18
+                ],
+                "pos": [
+                  0,
+                  0.6900000000000001,
+                  0
+                ],
+                "color": "accent3",
+                "keys": [
+                  {
+                    "at": 1.3499999999999999,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 1.7499999999999998,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c4",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.18
+                ],
+                "pos": [
+                  0,
+                  0.89,
+                  0
+                ],
+                "color": "accent3",
+                "keys": [
+                  {
+                    "at": 1.7,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 2.0999999999999996,
+                    "scale": 1
+                  }
+                ]
+              }
+            ],
+            "size": 0.95
+          },
+          {
+            "kind": "stat",
+            "value": "3/5",
+            "label": "reglas",
+            "pos": [
+              -2.5,
+              0,
+              0.6
+            ],
+            "at": 0.6,
+            "size": 0.5
+          },
+          {
+            "kind": "custom",
+            "id": "mascot",
+            "corner": "br",
+            "size": 1,
+            "color": "accent2",
+            "parts": [
+              {
+                "id": "body",
+                "shape": "sphere",
+                "size": [
+                  0.55,
+                  0.62,
+                  0.5
+                ],
+                "pos": [
+                  0,
+                  0.65,
+                  0
+                ],
+                "motion": [
+                  "breathe"
+                ]
+              },
+              {
+                "id": "belly",
+                "shape": "sphere",
+                "size": [
+                  0.34,
+                  0.38,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  -0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "role": "light"
+              },
+              {
+                "id": "eye-l",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  -0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "eye-r",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "cheek-l",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  -0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "cheek-r",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "arm-r",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -25
+                ],
+                "pivot": [
+                  0,
+                  0.25,
+                  0
+                ],
+                "motion": [
+                  {
+                    "type": "wave",
+                    "amp": 20
+                  }
+                ]
+              },
+              {
+                "id": "arm-l",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  -0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  25
+                ]
+              },
+              {
+                "id": "ear-l",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  -0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  18
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "ear-r",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -18
+                ],
+                "color": "accent3"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "soft pastel savings tips with one clay mascot",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": []
+        }
+      }
+    },
+    {
+      "id": "r4",
+      "narration": "Regla cuatro: cuidado con la tarjeta.",
+      "title": {
+        "kicker": "Regla 4",
+        "main": "cuidado con la tarjeta"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "auto",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "prop",
+            "parts": [
+              {
+                "id": "c",
+                "shape": "box",
+                "size": [
+                  1.7,
+                  1.05,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  0.9,
+                  0
+                ],
+                "radius": 0.08,
+                "color": "accent2",
+                "rot": [
+                  0,
+                  -20,
+                  0
+                ]
+              },
+              {
+                "id": "chip",
+                "shape": "box",
+                "size": [
+                  0.3,
+                  0.24,
+                  0.04
+                ],
+                "pos": [
+                  -0.5,
+                  1,
+                  0.07
+                ],
+                "color": "accent3",
+                "rot": [
+                  0,
+                  -20,
+                  0
+                ]
+              },
+              {
+                "id": "stripe",
+                "shape": "box",
+                "size": [
+                  1.7,
+                  0.16,
+                  0.04
+                ],
+                "pos": [
+                  0,
+                  1.15,
+                  0.07
+                ],
+                "role": "dark",
+                "rot": [
+                  0,
+                  -20,
+                  0
+                ]
+              }
+            ],
+            "size": 0.95
+          },
+          {
+            "kind": "stat",
+            "value": "4/5",
+            "label": "reglas",
+            "pos": [
+              -2.5,
+              0,
+              0.6
+            ],
+            "at": 0.6,
+            "size": 0.5
+          },
+          {
+            "kind": "custom",
+            "id": "mascot",
+            "corner": "br",
+            "size": 1,
+            "color": "accent2",
+            "parts": [
+              {
+                "id": "body",
+                "shape": "sphere",
+                "size": [
+                  0.55,
+                  0.62,
+                  0.5
+                ],
+                "pos": [
+                  0,
+                  0.65,
+                  0
+                ],
+                "motion": [
+                  "breathe"
+                ]
+              },
+              {
+                "id": "belly",
+                "shape": "sphere",
+                "size": [
+                  0.34,
+                  0.38,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  -0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "role": "light"
+              },
+              {
+                "id": "eye-l",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  -0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "eye-r",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "cheek-l",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  -0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "cheek-r",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "arm-r",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -25
+                ],
+                "pivot": [
+                  0,
+                  0.25,
+                  0
+                ],
+                "motion": [
+                  {
+                    "type": "wave",
+                    "amp": 20
+                  }
+                ]
+              },
+              {
+                "id": "arm-l",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  -0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  25
+                ]
+              },
+              {
+                "id": "ear-l",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  -0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  18
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "ear-r",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -18
+                ],
+                "color": "accent3"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "soft pastel savings tips with one clay mascot",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": []
+        }
+      }
+    },
+    {
+      "id": "r5",
+      "narration": "Regla cinco: ten siempre una idea nueva.",
+      "title": {
+        "kicker": "Regla 5",
+        "main": "una idea nueva"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "auto",
+        "layout": "hero",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "prop",
+            "parts": [
+              {
+                "id": "glass",
+                "shape": "sphere",
+                "size": [
+                  0.55,
+                  0.6,
+                  0.55
+                ],
+                "pos": [
+                  0,
+                  1.2,
+                  0
+                ],
+                "color": "accent3",
+                "material": "emissive",
+                "emissive": 0.8,
+                "motion": [
+                  "breathe"
+                ]
+              },
+              {
+                "id": "neck",
+                "shape": "cylinder",
+                "size": [
+                  0.25,
+                  0.3,
+                  0.3
+                ],
+                "pos": [
+                  0,
+                  0.65,
+                  0
+                ],
+                "role": "metal",
+                "material": "metal"
+              },
+              {
+                "id": "base",
+                "shape": "cylinder",
+                "size": [
+                  0.22,
+                  0.22,
+                  0.2
+                ],
+                "pos": [
+                  0,
+                  0.4,
+                  0
+                ],
+                "role": "dark"
+              }
+            ],
+            "size": 0.95
+          },
+          {
+            "kind": "stat",
+            "value": "5/5",
+            "label": "reglas",
+            "pos": [
+              -2.5,
+              0,
+              0.6
+            ],
+            "at": 0.6,
+            "size": 0.5
+          },
+          {
+            "kind": "custom",
+            "id": "mascot",
+            "corner": "br",
+            "size": 1,
+            "color": "accent2",
+            "parts": [
+              {
+                "id": "body",
+                "shape": "sphere",
+                "size": [
+                  0.55,
+                  0.62,
+                  0.5
+                ],
+                "pos": [
+                  0,
+                  0.65,
+                  0
+                ],
+                "motion": [
+                  "breathe"
+                ]
+              },
+              {
+                "id": "belly",
+                "shape": "sphere",
+                "size": [
+                  0.34,
+                  0.38,
+                  0.1
+                ],
+                "pos": [
+                  0,
+                  -0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "role": "light"
+              },
+              {
+                "id": "eye-l",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  -0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "eye-r",
+                "shape": "sphere",
+                "size": [
+                  0.07,
+                  0.1,
+                  0.05
+                ],
+                "pos": [
+                  0.18,
+                  0.2,
+                  0.44
+                ],
+                "parent": "body",
+                "role": "dark"
+              },
+              {
+                "id": "cheek-l",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  -0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "cheek-r",
+                "shape": "sphere",
+                "size": [
+                  0.09,
+                  0.06,
+                  0.03
+                ],
+                "pos": [
+                  0.32,
+                  0.05,
+                  0.4
+                ],
+                "parent": "body",
+                "color": "accent"
+              },
+              {
+                "id": "arm-r",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -25
+                ],
+                "pivot": [
+                  0,
+                  0.25,
+                  0
+                ],
+                "motion": [
+                  {
+                    "type": "wave",
+                    "amp": 20
+                  }
+                ]
+              },
+              {
+                "id": "arm-l",
+                "shape": "capsule",
+                "size": [
+                  0.11,
+                  0.3
+                ],
+                "pos": [
+                  -0.58,
+                  0,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  25
+                ]
+              },
+              {
+                "id": "ear-l",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  -0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  18
+                ],
+                "color": "accent3"
+              },
+              {
+                "id": "ear-r",
+                "shape": "cone",
+                "size": [
+                  0.14,
+                  0.3
+                ],
+                "pos": [
+                  0.3,
+                  0.62,
+                  0
+                ],
+                "parent": "body",
+                "rot": [
+                  0,
+                  0,
+                  -18
+                ],
+                "color": "accent3"
+              }
+            ],
+            "motion": [
+              {
+                "type": "blink",
+                "parts": [
+                  "eye-l",
+                  "eye-r"
+                ]
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "soft pastel savings tips with one clay mascot",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": []
+        }
+      }
+    }
+  ]
+}

@@ -385,150 +385,192 @@ viewBox), fx that hide text, empty or repeated scenes, then render again.
 ## 3D templates
 
 `clay-diorama`, `iso-toon`, `neon-glass`, `pedestal`, `paper-world`, `toy-blocks`, `holo-studio`, `neon-grid`, `soft-studio`,
-`moody-night` and `voxel-world` render every scene as a real 3D scene (three.js),
-with the same voice, captions, HUD, brand footer, SFX and ducked music as the illustrated kit. Same rules as
+`moody-night`, `voxel-world`, `data-stage`, `monolith-story` and `clay-mascot` render every scene as a real 3D scene
+(three.js), with the same voice, captions, HUD, brand footer, SFX and ducked music as the illustrated kit. Same rules as
 `illustrated` for `title` (kicker + main on every scene), `hud`, `brand`, no emoji anywhere, and **do not set `theme`**
 unless the user asked for brand colors. Differences: **5-10 scenes** (3-6 s each, ~30-50 s), and every scene uses
-`visual.type: "scene3d"` instead of `illustration`:
+`visual.type: "scene3d"` instead of `illustration`.
+
+**A 3D template is a style, never a scene.** It supplies only the camera, light, materials, motion and effects (and, for
+the format templates, a way of staging). It does not come with a road, a desk, a forest, a character or a car: **you build
+every model and the whole world from scratch for each video**, with `custom` objects and a `world`. Never reuse the same
+character, set or world as a previous video: pick a new world concept for this topic (setting, how the palette is used,
+silhouette language) and write it in `world.concept` (3-80 characters, required whenever there is a `world`). The validator
+**rejects** a scene that has neither a `custom` object nor a `world` with `parts` or a `crowd`, and rejects the stock catalog
+(`character`, `car`, `model` kinds, and any `set` other than `none`) unless you set `stock: true` on that object or scene.
+Do not set `stock` unless the user explicitly asked for catalog content. Across the scenes of one video, vary the subject
+models, the world or its backdrop (a recurring mascot or monolith may persist, its surroundings must change): a video whose
+three or more scenes all show the identical subject and world is rejected.
 
 ```
 "visual": {
   "type": "scene3d",
-  "objects": [ { "kind": string, "id"?: string, "label"?: string (<= 28 chars), "color"?: hex | token,
-                 "icon"?: string, "value"?: number | string, "values"?: number[], "items"?: string[],
-                 "model"?: string, "anim"?: string, "size"?: 0.4-2.2, "highlight"?: boolean, "at"?: seconds } ],   // 1-7 objects
+  "objects": [ { "kind": "custom" | "stat" | "chart" | ..., "id"?: string, "label"?: string (<= 28 chars), "color"?: hex | token,
+                 "parts"?: [ ...custom parts ], "motion"?: [...], "keys"?: [...], "corner"?: "bl" | "br" | "tl" | "tr",
+                 "value"?: number | string, "values"?: number[], "items"?: string[], "icon"?: string,
+                 "size"?: 0.4-2.2, "pos"?: [x, y, z], "highlight"?: boolean, "at"?: seconds | narration word } ],   // 1-7 objects
+  "world"?: { "concept": string, "ground"?: { "kind"?: "look" | "none" | "plane" | "disc" | "grid" | "mirror", "color"?: hex | token, "size"?: 2-60 },
+              "backdrop"?: hex | token, "parts"?: [ ...world parts, max 24 ], "crowd"?: { "count": 8-160, "area": [w, d], "pos"?: [x, y, z], "height"?: 0.4-2.5, "color"?: ... } },
   "layout"?: "auto" | "row" | "grid" | "flow" | "circle" | "stack" | "hero",
-  "camera"?: "auto" | "orbit" | "dolly" | "push" | "crane" | "pan" | "turntable" | "topdown" | "static" | "glide" | "rise",
-  "focus"?: object id,            // the camera pushes in on it during the scene
-  "connect"?: [ { "from": id, "to": id, "label"?: string } ],   // animated arrows with a travelling packet
-  "explode"?: boolean,            // objects fly out from the center (exploded view)
-  "set"?: "auto" | "none" | "road" | "desk" | "room" | "grid" | "stage" | "city" | "voxel"   // the world around the objects
+  "camera"?: "auto" | "orbit" | "dolly" | "push" | "crane" | "pan" | "turntable" | "topdown" | "static" | "glide" | "rise" | "handheld",
+  "shots"?: [ { "shot": "wide" | "medium" | "close" | "low" | "high" | "overhead" | "left" | "right", "at"?: seconds | word, "focus"?: object id } ],   // 2-4
+  "cameraKeys"?: [ { "at", "yaw", "pitch", "zoom", "shift", "focus", "ease" } ],   // alternative to shots, not both
+  "fx"?: [ { "type": "particles" | "trail" | "pulse" | "shockwave" | "glow" | "sweep" | "hologram" | "spotlight", "target"?: "id" | "id/part", "color"?, "at"?, "until"?, "size"? } ],  // max 6
+  "focus"?: object id, "connect"?: [ { "from": id, "to": id, "label"?: string } ], "explode"?: boolean,
+  "set"?: "none" | "road" | "desk" | "room" | "grid" | "stage" | "city" | "voxel",   // stock sets: need stock: true; build a `world` instead
+  "stock"?: boolean            // only when the user asked for catalog content
 }
 ```
 
-Object kinds (all procedural, no files needed): `cube` (shows `icon` on its face), `sphere`, `phone`, `laptop`, `monitor`
-(`icon` on the screen), `server`, `database`, `cloud`, `document` (`icon` on the page), `folder`, `envelope`, `coin`
-(`value` 2-6 = a stack), `chart` (`values` 2-6 numbers + optional `items` bar labels), `stat` (big number from `value`, with
-`label` under it), `lock`, `key`, `gear`, `globe`, `chip`, `battery` (`value` 0-1 charge), `rocket`, `lightbulb`, `person`
-(generic figure, never a mascot or a real person), `building`, `house`, `tree`, `pin`, `card`, `check`, `cross`, `icon`
-(extruded Phosphor icon on a tile; `icon` required, e.g. `brain`, `shield-check`, `camera`, `code`, `wifi-high`),
-`model` (a local CC0 model: `potted-plant-04`, `alarm-clock-01`, `food-apple-01`, `megaphone-01`), `car` (`model` one of
-`car-sedan`, `car-sedan-sports`, `car-suv`, `car-taxi`, `car-truck`), `character` (blocky figure, `model` `character-a`/`-d`/`-k`,
-`anim` `idle`, `walk`, `sprint`, `yes`, `no`, `sit`, `pick-up`). Unknown kinds are rejected. (The schema also has
-optional `custom` models, `motion`, `fx` and `cameraKeys`; the catalog above is enough, leave them out.)
+**Custom objects** (`kind: "custom"`, an `id`, `parts`: 1-40). Units are world units: a character is ~1.6-2 tall, its base on
+y = 0, its front facing +z. Part fields: `id`, `shape`, `size`, `pos` (center, relative to the parent's center), `rot`
+(degrees), `scale`, `pivot` (rotation point relative to the center), `parent` (part id; children move with it), `color` (hex
+or token) or `role` (`body`, `accent`, `dark`, `light`, `metal`, `screen`, `glow`), `material` (`auto` = the look's own finish,
+the best default; `matte`, `plastic`, `metal`, `glass`, `emissive`, `toon`, `clay`), `emissive` 0-4, `opacity`, `motion`, `keys`.
+Shapes and `size`: `box` [w,h,d] (+`radius`), `sphere` [r] or [rx,ry,rz], `cylinder` [r,h] or [rTop,rBottom,h], `cone` [r,h],
+`torus` [R,tube], `capsule` [r,length], `plane` [w,h], `ring` [inner,outer], `tube` [radius] + `points` [[x,y,z]...], `extrude`
+[depth] + outline `points` [[x,y]...], `lathe` + profile `points` [[r,y]...], `group` (empty pivot), `sign` [w,h] + `text` (<= 24
+chars, printed in a pixel font on a `color` panel, readable ink chosen automatically). Motion presets (`motion`, preset names
+or `{type, at, until, amp, speed, parts}`): `bob`, `float`, `spin`, `wobble`, `breathe`, `hop`, `orbit`, `pop-in`,
+`look-at-camera`, `wave` (arm with a shoulder `pivot`), and on the object with `parts`: `walk`, `blink`, `assemble`, `explode`.
+Keys: `keys: [{at, pos, rot, scale, opacity, ease}]` (offsets and multipliers; to grow something from its bottom, put its
+`pivot` at the bottom and key `scale`). Any `at` can be a narration word of that scene (`"chip"`, `"chip+6"`, `"fin"`).
+
+**The world** (`world`) is the set you build for this scene, around the objects (which stand near the origin, spaced ~2.3):
+`ground` (`look` keeps the template's own floor, `none` only catches shadows, `plane`, `disc`, `grid` or `mirror`), `backdrop`
+(a flat backdrop color; it is blended toward the palette background so text stays readable), `parts` (custom parts like an
+object's, but `pos` may reach +-30 and sizes up to 40: walls, props, signs, towers, rows; negative z recedes), and `crowd`
+(instanced silhouettes on rising tiers). A world part can carry `repeat: { count: 2-40, step: [x, y, z], scaleStep? }` to
+copy itself (and the parts hanging from it) in rows: `step: [0, 0, -1.6]` is a row that recedes into depth. Up to 160 parts
+after repeats. Change the world between scenes; keep the recurring subject. `corner` pins a custom object to a screen corner
+as a persistent mascot (it follows the camera; one object per corner).
+
+**Shots.** Try 2-4 `shots` per scene instead of one fixed view: `wide`, `medium`, `close` (give it a `focus`), `low`, `high`,
+`overhead`, `left`, `right`; they spread over the scene (or use `at`), with `camera: "static"` or a slow move under them.
+Vary the camera between scenes: only `iso-toon` is isometric; the other looks use low hero angles, orbits, dollies, top-down
+and `handheld`.
+
+Catalog kinds remain as supporting objects when a world exists (all procedural, no files): `stat` (big number from `value`,
+with `label`; max one per scene), `chart` (`values` 2-6 numbers + optional `items`), `icon` (extruded Phosphor icon), `cube`,
+`sphere`, `phone`, `laptop`, `monitor`, `server`, `database`, `cloud`, `document`, `coin`, `lock`, `key`, `gear`, `globe`, `chip`,
+`battery`, `rocket`, `lightbulb`, `card`, `check`, `cross`... Prefer your own `custom` model for the subject of every scene.
 
 How to write 3D scenes:
 
-1. **One idea, one picture.** A single object = hero shot (the camera frames it big). 2-3 objects = a comparison or a
-   relation. 4-5 objects = a small world. Never more than 7. Max one `stat` per scene.
-2. **Show the mechanism.** Processes use `layout: "flow"` (auto arrows, reads top to bottom) or ids + `connect`; layers
-   use `stack` (bottom first); parts of a whole use `grid` or `hero` + `explode: true`; a center with satellites uses `circle`.
-3. **Labels are short** (1-3 words). Put numbers in a `stat` object or a `chart`, not in labels. Every label sits in the
-   safe zone automatically; do not try to position text.
-4. **Motion is automatic** (objects pop in staggered, the camera moves every scene, cuts land on the beat). Use `camera`
-   only to make a point: `push` for a reveal, `turntable` for a product, `crane` for a big picture, `focus` to single out
-   one object. Vary it so consecutive scenes do not repeat the same move.
-5. **Color tokens** (`accent`, `accent2`, `accent3`, `good`, `bad`, `muted`, `text`) follow the look; `check`/`cross` are
-   already green/red. Mark the key object of a scene with `highlight: true` (at most one per scene).
-6. Headline and captions stay 2D (sharp, readable); never ask for 3D text.
+1. **One idea, one picture.** One subject = hero shot. 2-3 objects = a comparison or a relation. Never more than 7 objects.
+2. **Show the mechanism.** Processes use `layout: "flow"` or ids + `connect`; layers use `stack`; parts of a whole use `grid` or
+   `hero` + `explode: true`; a center with satellites uses `circle`.
+3. **Labels are short** (1-3 words). Put numbers in a `stat` object or a `chart`. Never ask for 3D text, except `sign` parts.
+4. **Every scene moves**: object motion or keys, a camera move or `shots`, and ideally an `fx`. Vary them so consecutive
+   scenes do not repeat the same shot.
+5. **Color tokens** (`accent`, `accent2`, `accent3`, `good`, `bad`, `muted`, `text`) follow the palette: use them for parts and
+   backdrops so the video adapts to any palette. Mark the key object with `highlight: true` (at most one per scene).
+6. Headline and captions stay 2D (sharp, readable).
 
 Per template:
 
 ### `clay-diorama`
 Pastel clay miniatures on a floating plinth, warm soft light, playful drop-in bounces, iris transitions.
-- Friendly explainers for beginners: everyday objects (`phone`, `coin`, `card`, `house`, `tree`, `person`, `lightbulb`).
-- 1-5 objects per scene; a `flow` for "how it travels", a `circle` recap at the end.
+- Friendly explainers: build the subject as a clay-like `custom` model with round parts; 1-5 objects; a `flow` for "how it
+  travels", a `circle` recap at the end.
 
 ### `iso-toon`
-Isometric toon blocks with outlines on a navy grid platform; orthographic camera; isometric pan transitions.
-- Systems and processes: `server`, `database`, `cloud`, `laptop`, `chip`, `lock`, `gear`, `building`, `document`.
-- Label every object; almost every scene has a `flow`, `connect` or `stack`. HUD: a phase `chip` + a progress `bar`.
+The only isometric look: toon blocks with outlines on a navy grid platform; orthographic camera; isometric pan transitions.
+- Systems and processes: `layout: "flow"`, `connect` or `stack`; label every object. Build the parts as `custom` blocks (or
+  add the procedural `server`, `database`, `cloud` kinds beside a custom subject). HUD: a phase `chip` + a progress `bar`.
 
 ### `neon-glass`
 Frosted glass with neon glow and bloom over a reflective black grid; punch-in camera; light-streak cuts.
-- Tech, AI, security and crypto hooks: `chip` with an `icon`, `lock`, `server`, `globe`, `coin`, `rocket`, `stat`.
-- 1-4 objects; one `highlight: true` hero per scene; short, punchy scenes (3-5 s).
+- Tech, AI, security and crypto hooks; 1-4 objects, one `highlight: true` hero per scene; short, punchy scenes (3-5 s).
 
 ### `pedestal`
-One hero object on a glossy pedestal under studio light; turntable and push-in camera; cinematic dip transitions;
-labels become thin dashed callouts.
-- One product or object per video. Scenes alternate: hero shot (`turntable`), detail (`push` on one part),
-  exploded view (`layout: "hero"` + `explode: true` with 2-4 labelled parts), a `stat` for the key spec.
+One hero object on a glossy pedestal under studio light; turntable and push-in camera; labels become thin dashed callouts.
+- One product or object per video, built from parts. Scenes alternate: hero shot, detail (`push`), exploded view (`explode`).
 
 ### `paper-world`
-A pop-up book: flat-shaded low-poly paper objects stand up from a faceted paper island; cut-paper banner titles; page-turn cuts.
-- Little stories and journeys: `house`, `tree`, `building`, `person`, `pin`, `cloud`, `lightbulb`, `coin`. 2-4 objects in a
-  `row` or `flow`; `crane` camera for reveals.
+A pop-up book: flat-shaded paper pieces stand up from a faceted paper island; cut-paper banner titles; page-turn cuts.
+- Little stories and journeys; 2-4 objects in a `row` or `flow`; `crane` camera for reveals.
 
 ### `toy-blocks`
-Macro toy photography: glossy plastic objects on a studded baseplate, tilt-shift blur, stop-motion drops, tile-by-tile cuts.
-- Building something step by step: `grid`/`row` of 2-5 objects, `connect` for flows, `topdown` for a set overview.
-  Never name a toy brand.
+Macro toy photography: glossy plastic on a studded baseplate, tilt-shift blur, stop-motion drops. Never name a toy brand.
+- Building something step by step: `grid`/`row`, `connect` for flows, `topdown` for an overview.
 
 ### `holo-studio`
-Holograms over a projector pad in a dark studio: translucent iridescent objects with glowing rims, scan-plane entrances,
-bloom, scanlines; scanline-swap cuts; glyph-rolling kickers.
-- One hero scan per scene (`chip`, `lock`, `server`, `globe`, `phone`), `focus` to push in, `stat` for big numbers.
+Holograms over a projector pad in a dark studio: translucent iridescent objects, scan-plane entrances, bloom, scanlines.
+- One hero scan per scene, `focus` to push in, `stat` for big numbers.
 
 ### `neon-grid`, `soft-studio`, `moody-night`, `voxel-world`
-Low-poly sets the camera is inside (default `set`: grid world, wooden desk, night highway, voxel island; slow `glide`/`rise`).
-Leave `set` unset unless a scene belongs elsewhere (`city`, `room`, `stage`, `road`...). 1-3 objects per scene:
-`character` for people, `car` on `moody-night`.
+Four pure lighting and camera styles: `neon-grid` (navy matte bodies, cyan rims, bloom, fog), `soft-studio` (pastel soft-matte
+look, warm key, wide soft shadow), `moody-night` (dusk-blue fill, one warm key, fog, satin, low cinematic and hand-held
+camera), `voxel-world` (flat-shaded sharp-edged blocks, snap-in placement, low hero angle). None of them brings scenery:
+no road, desk, grid world or voxel island unless you build it in `world` (or the user asked for a stock `set` with
+`stock: true`). Invent a different setting for each video and build the subjects as `custom` parts; use `shots`,
+`handheld` and `fx` (dust, embers, glow, spotlight) for the feel. 1-3 objects per scene.
 
-3D checklist (silently verify): 5-10 scenes; every scene has `title.kicker` + `title.main` and a `scene3d` visual with
-1-7 objects of known kinds; `chart` has `values`, `stat` has `value`, `icon` has `icon`, `model` has a listed `model`;
-every `connect`/`focus` id exists in the same scene; labels 1-3 words; no emoji anywhere.
+### `data-stage`
+A dark arena for numbers and comparisons: volumetric `spotlight` cones, glossy objects, a big counter. Format recipes
+(build them from parts, never from a catalog):
+- **Rows receding into depth**: one world part with `repeat: { count: 8, step: [0, 0, -1.6] }` (a glossy `metal` coin, bar or
+  bottle in `accent`); two or three rows left, center and right; the row length is the value.
+- **Crowd**: `world.crowd` ({count: 90, area: [14, 5], pos: [0, 0, -9]}) fills the stands behind the stage.
+- **Balance scale**: a custom object with a `post`, a `beam` (key `rot` z to tilt it) and two `pan` parts hanging from the beam
+  (key them back by the opposite angle so they stay level), a coin on one pan and a bag on the other.
+- **Filling tube**: a `glass` cylinder (`opacity` 0.55) around an inner emissive cylinder whose `pivot` is at its bottom and
+  whose `keys` scale y from 0.04 to 1.
+- **Counter**: a `stat` object (`value` like "x10" or "70%").
+Light it with 1-3 `fx` of type `spotlight` (`target` an object id, or `aim` + `pos`; `color` a token) and a `glow`. Ground
+`mirror` for gloss. Camera: `rise`, `dolly`, or `shots` wide -> low -> close.
 
-Full examples: `examples/clay-diorama.spec.json`, `examples/iso-toon.spec.json`, `examples/neon-glass.spec.json`,
-`examples/pedestal.spec.json`, `examples/paper-world.spec.json`, `examples/toy-blocks.spec.json`,
-`examples/holo-studio.spec.json`, `examples/<neon-grid|soft-studio|moody-night|voxel-world>.spec.json`.
+### `monolith-story`
+Low-poly story around one recurring object: **design one monolith (or totem, door, tree) once and copy its parts into every
+scene**; change the surroundings every scene with `world.backdrop` set to a different token each time (`accent`, `accent2`,
+`accent3`, `muted`), a different ground and different props (stones in a ring, a row of towers via `repeat`, floating cubes
+with `float` motion, a gate). Put pixel-font `sign` parts on posts for labels ("DIA 1", "???"), 1-2 per scene. Camera: `push`,
+`orbit`, `handheld`, `rise`; `fx` dust, embers, glow. Mysteries, lore, history, one-object storytelling.
+
+### `clay-mascot`
+Soft clay 3D layer for tips, rules and checklists (a 2D UI-card video can sit on top). **Design one mascot** (round body,
+face with `blink`, a waving arm with `wave`) and give it `corner: "br"` (or `bl`) in every scene: it stays at the screen
+corner and follows the camera. Each scene adds one or two custom props that illustrate that tip (a piggy bank, a calendar, a
+card) with a pastel `world` (`ground` plane or disc) and a `stat` counter such as "3/10". Never reuse a mascot from another video.
+
+3D checklist (silently verify): 5-10 scenes; every scene has `title.kicker` + `title.main` and a `scene3d` visual with a
+`custom` object or a `world` (with `concept`); no `stock` unless asked; the subject and world differ from the last video and
+vary between scenes; `chart` has `values`, `stat` has `value`; every `connect`/`focus` id exists in the same scene; part ids
+are unique and parents exist; labels 1-3 words; no emoji anywhere.
+
+Full examples: `examples/data-stage.spec.json`, `examples/monolith-story.spec.json`, `examples/clay-mascot.spec.json`,
+`examples/3d-generative.spec.json` (a character built from parts), plus one per older look in `examples/`.
 
 ## Creative mode: 3D
 
-You have tools and time: design an original 3D world for this video instead of arranging catalog pieces. The 3D
-template rules above still apply (titles, 5-10 scenes, no emoji, short labels); this section adds the generative layer.
+You have tools and time: design an original 3D world for this video. The 3D template rules above still apply (titles,
+5-10 scenes, no emoji, short labels, from scratch, a new world and subject every video, `world.concept`, no `stock`); this
+section adds the workflow and the details of the generative layer.
 
 **Workflow.** 1) Read the three.js skills you need first: `.claude/skills/threejs-geometry` (repo root),
-`threejs-materials`, `threejs-animation`, `threejs-lighting` (each has a `SKILL.md`). 2) Sketch the cast: who or what is
-the subject, what does it look like, how does it move? 3) Write the spec and `node cli.mjs validate` it. 4) Build a short
-draft (`node cli.mjs build <spec> --out <scratch>`), pull frames with `ffmpeg -ss <t> -i video.mp4 -frames:v 1`,
-tile them into a contact sheet, **look at it**, fix what reads badly (scale, silhouette, color, empty frames), repeat.
-Reference build: `examples/3d-generative.spec.json`.
+`threejs-materials`, `threejs-animation`, `threejs-lighting` (each has a `SKILL.md`). 2) Sketch the cast and the world: who
+or what is the subject, what does it look like, how does it move, what place does this video live in? Write the concept
+down (`world.concept`). 3) Write the spec and `node cli.mjs validate` it. 4) Build a short draft
+(`node cli.mjs build <spec> --out <scratch>`), pull frames with `ffmpeg -ss <t> -i video.mp4 -frames:v 1`, tile them into a
+contact sheet, **look at it**, fix what reads badly (scale, silhouette, color, empty frames), repeat. Try more than one
+camera: change `shots` and compare the stills. Reference build: `examples/3d-generative.spec.json`.
 
 **Originals first.**
 - Every video has at least one `custom` model built for its subject: a mascot or character (a topic about Claude gets
-  Claude's mascot, a topic about coffee gets a cup with a face), or the hero object. Catalog kinds and `model`/`car`/
-  `character` GLBs are supporting props only.
+  Claude's mascot, a topic about coffee gets a cup with a face), or the hero object, and a world built for it.
 - Give the cast personality: big heads, readable silhouettes, a signature color, glowing eyes or details (`emissive`).
-- Every scene moves: object motion (`motion`/`keys`) **and** a camera move (`camera` or `cameraKeys`), plus at least one
-  `fx`. Vary sets, layouts, cameras and effects between scenes; never repeat the same shot twice in a row.
+- Every scene moves: object motion (`motion`/`keys`) **and** a camera move (`camera`, `shots` or `cameraKeys`), plus at
+  least one `fx`. Vary worlds, layouts, cameras and effects between scenes; never repeat the same shot twice in a row.
 - Sync beats to the voice: any `at` can be a narration word (`"chip"`, `"chip#2"`, `"chip+6"` frames, `"inicio"`, `"fin"`).
 
-**`custom` objects** (`kind: "custom"`, an `id`, `parts`: 1-40). Units are world units: a character is ~1.6-2 tall, its
-base on y = 0, its front facing +z. Part fields: `id`, `shape`, `size`, `pos` (center, relative to the parent's center),
-`rot` (degrees), `scale`, `pivot` (rotation point relative to the center: the shoulder end of an arm), `parent` (part id;
-children move with it), `color` (hex or token) or `role` (`body` = the object's color, `accent`, `dark`, `light`, `metal`,
-`screen`, `glow`), `material` (`auto` = the look's own finish, best default; or `matte`, `plastic`, `metal`, `glass`,
-`emissive`, `toon`, `clay`), `emissive` 0-4, `opacity`, `motion`, `keys`.
-Shapes and `size`: `box` [w,h,d] (+`radius` rounds it), `sphere` [r] or [rx,ry,rz], `cylinder` [r,h] or [rTop,rBottom,h],
-`cone` [r,h], `torus` [R,tube] or [R,tube,arcDeg] (stands upright facing +z: a 180 arc rotated 180 on z is a smile),
-`capsule` [r,length], `plane` [w,h], `ring` [inner,outer], `tube` [radius] + `points` [[x,y,z]...], `extrude` [depth] +
-outline `points` [[x,y]...] (+`radius` bevel: logos, digits, arrows, leaves), `lathe` + profile `points` [[r,y]...] (cups,
-bottles, vases, bells), `group` (an empty pivot to hang parts from).
-
-**Motion** (`motion` on an object or a part: preset names or `{type, at, until, amp, speed, parts, axis, lift}`;
-`speed` multiplies the tempo, `amp` is world units or degrees): `bob`, `float`, `spin`, `wobble`, `breathe`, `hop`,
-`orbit`, `pop-in` (replaces the look's entrance), `look-at-camera`, `wave` (on an arm part with a shoulder `pivot`; `lift`
-degrees), and on the object with `parts`: `walk` (limbs in left/right pairs: `["leg-l","leg-r","arm-l","arm-r"]`), `blink`
-(the eyes), `assemble` (parts fly in and click together; all parts when `parts` is omitted), `explode` (exploded view).
-**Keys**: `keys: [{at, pos, rot, scale, opacity, ease}]` (pos = offset from rest, rot = degrees added, scale = multiplier;
-ease `linear|in|out|in-out|back|elastic|bounce|step`). Walk across the stage with `walk` + `keys` on `pos`.
-**Camera keys**: `cameraKeys: [{at, yaw, pitch, zoom, shift, focus, ease}]` on top of `camera` (use `camera: "static"`
-for keys only): start wide (`zoom` 1.2-1.3, `yaw` -20) and push in on the key word (`zoom` 0.85, `focus` id).
-**FX** (`fx`, max 6 per scene): `particles` (`kind` `sparks|dust|snow|embers|confetti|stars`; ambient, or `burst: true`
-from a `target` at `at`), `trail` (behind a moving `target`), `pulse` (`target` `"id"` or `"id/part"`: emissive parts
-flare), `shockwave` (ground ring at `at`), `glow` (halo behind `target`), `sweep` (a light glides across), `hologram`
-(rings + scanlines around `target`). `color`, `size`, `count`, `until` are optional. Bursts and shockwaves are SFX beats.
+**Motion details**: `amp` is world units or degrees, `speed` multiplies the tempo, `lift` is the degrees of a `wave`;
+`walk` takes limbs in left/right pairs (`["leg-l","leg-r","arm-l","arm-r"]`); `assemble` flies all parts in when `parts` is
+omitted; ease is `linear|in|out|in-out|back|elastic|bounce|step`. **Camera keys**: start wide (`zoom` 1.2-1.3, `yaw` -20)
+and push in on the key word (`zoom` 0.85, `focus` id). **FX**: `particles` (`kind` `sparks|dust|snow|embers|confetti|stars`;
+ambient, or `burst: true` from a `target` at `at`), `trail`, `pulse` (`target` `"id"` or `"id/part"`), `shockwave`, `glow`,
+`sweep`, `hologram`, `spotlight` (a volumetric cone from `pos` onto `target` or `aim`; `size` widens it). Bursts and
+shockwaves are SFX beats.
 
 Example character (17 parts; reuse the same model across scenes, vary its motion):
 ```
@@ -568,7 +610,7 @@ Example hero object that assembles on its word, with effects and a camera push:
 ```
 (Add one pin per side position for a full chip: 12 pins.)
 
-Creative checklist: one original `custom` model built for the subject (and reused, so the video has a recurring star);
+Creative checklist: one original `custom` model built for the subject (reused across the scenes of this video, never carried over from a previous video) in a world you invented for this video;
 every scene has object motion, a camera move and at least one `fx`; consecutive scenes differ in layout, camera and
 effect; every word moment is a word of that scene's narration; part ids unique, parents exist (no cycles), at most 40
 parts; you looked at rendered frames before calling it done.
