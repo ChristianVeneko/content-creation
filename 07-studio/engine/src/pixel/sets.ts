@@ -643,7 +643,60 @@ function space(L: Layers, c: SetCtx): SetInfo {
   return { floor: FLOOR + 14, surfaces: [], rays: [{ x: 196, y: 96, angle: 115, spread: 30, len: 280 }] };
 }
 
+
+/** Versus arena (pixel-versus): crowd silhouettes with glow sticks, truss lights and a lit fighting floor with a neon ring. */
+function arena(L: Layers, c: SetCtx): SetInfo {
+  const { C } = c;
+  // far: neon sky behind the stands, three rows of crowd (heads, raised arms, glow sticks that flicker)
+  L.far.p.vgrad(-24, -14, W + 48, 320, [C.sky0, C.sky1, C.sky2, mix(C.sky3, C.ink, 0.3)]);
+  for (let r = 0; r < 3; r++) {
+    const base = 196 + r * 24;
+    const tone = mix(C.far0, C.ink, 0.5 - r * 0.12);
+    L.far.p.rect(-24, base, W + 48, 40, tone);
+    for (let x = -20, i = 0; x < W + 24; x += 9 + (r % 2), i++) {
+      const bob = Math.round(Math.sin(c.t * 3 + i * 1.7 + r) * (rnd(c, `cb${r}${i}`) > 0.5 ? 2 : 1));
+      L.far.p.disc(x, base - 5 + bob, 4, tone);
+      L.far.p.rect(x - 4, base - 1 + bob, 8, 6, tone);
+      if (rnd(c, `ca${r}${i}`) > 0.62) {
+        const up = Math.round(Math.sin(c.t * 5 + i) * 2);
+        L.far.p.rect(x + 3, base - 14 + bob + up, 2, 9, tone);
+        if (rnd(c, `cs${r}${i}`) > 0.4 && Math.sin(c.t * 4 + i * 2.3) > -0.5) lit(L.far, x + 3, base - 18 + bob + up, 2, 4, [C.glow, C.glow2, C.accent][(i + r) % 3]);
+      }
+    }
+  }
+  // mid: back rail, truss with lights, a lit riser for the fighting floor
+  L.mid.p.rect(-24, 226, W + 48, 56, mix(C.wall0, C.ink, 0.4));
+  L.mid.p.rect(-24, 226, W + 48, 3, C.metal1);
+  for (let x = -24; x < W + 24; x += 12) L.mid.p.rect(x, 229, 1, 53, mix(C.wall1, C.ink, 0.3));
+  L.mid.p.rect(-24, 22, W + 48, 5, C.metal0);
+  L.mid.p.rect(-24, 22, W + 48, 1, C.metal1);
+  for (let x = -6; x < W + 24; x += 30) {
+    L.mid.p.rect(x + 3, 10, 2, 12, C.metal0);
+    lit(L.mid, x, 27, 8, 5, Math.sin(c.t * 2 + x) > -0.2 ? C.glow : C.accent);
+  }
+  // floor: perspective panels converging to the horizon, then the neon ring and the center line
+  L.mid.p.vgrad(-24, FLOOR, W + 48, 212, [C.floor1, C.floor0]);
+  for (let i = -8; i <= 8; i++) {
+    const x0 = 135 + i * 16;
+    L.mid.p.line(x0, FLOOR, 135 + i * 74, 494, mix(C.floor1, C.metal0, 0.55));
+  }
+  for (let y = FLOOR + 8, step = 8; y < 494; y += step, step += 5) L.mid.p.rect(-24, y, W + 48, 1, mix(C.floor1, C.metal0, 0.45));
+  const ringY = FLOOR + 64;
+  for (let a = 0; a < 360; a += 2) {
+    const x = Math.round(135 + Math.cos((a * Math.PI) / 180) * 118);
+    const y = Math.round(ringY + Math.sin((a * Math.PI) / 180) * 26);
+    lit(L.mid, x, y, 1, 1, C.glow2);
+    if (a % 6 === 0) lit(L.mid, x, y + 1, 1, 1, mix(C.glow2, C.ink, 0.4));
+  }
+  for (let y = ringY - 22; y < ringY + 22; y += 4) lit(L.mid, 135, y, 1, 2, C.accent);
+  L.mid.p.pool(135, ringY, 120, 30, mix(C.glow2, C.ink, 0.4), 0.4);
+  // near: blurred barrier rail and posts
+  L.near.p.rect(-24, 452, W + 48, 12, mix(C.ink, C.metal0, 0.3));
+  for (const x of [-10, 90, 190, 280]) L.near.p.rect(x, 430, 8, 70, mix(C.ink, C.metal0, 0.25));
+  return { floor: FLOOR + 14, surfaces: [], rays: [{ x: 40, y: 12, angle: 72, spread: 34, len: 330 }, { x: 232, y: 12, angle: 108, spread: 34, len: 330 }] };
+}
+
 const bayer8 = (x: number, y: number) => ((((x % 4) + 4) % 4) * 4 + (((y % 4) + 4) % 4)) / 16;
 
-export const SETS: Record<string, (L: Layers, c: SetCtx) => SetInfo> = { room, street, desert, factory, gallery, temple, forest, lab, space };
+export const SETS: Record<string, (L: Layers, c: SetCtx) => SetInfo> = { room, street, desert, factory, gallery, temple, forest, lab, space, arena };
 export const rgbRoles = (roles: Record<string, string>): Roles => Object.fromEntries(Object.entries(roles).map(([k, v]) => [k, rgb(v)]));

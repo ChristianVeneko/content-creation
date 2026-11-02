@@ -1,7 +1,7 @@
 // Pixel-native visual effects for one scene. Particles, bursts and bolts are painted into low-res buffers (so they
 // stay crisp and palette-limited); buffer effects (glitch, chromatic split, pixelate, dissolve) rewrite the layer
 // buffers; screen effects (shake, flash, CRT, bloom) come back as a Screen state the scene applies in the DOM.
-import { PX, bayer } from "../../lib/pixel.mjs";
+import { PX, bayer, versusFxOf } from "../../lib/pixel.mjs";
 import { boltPath, burstAt, fxWindow, h01, particlesAt } from "../../lib/pixel-gen.mjs";
 import { BH, BW, mix, type Painter, type RGB } from "./painter";
 import { colorOf, type Resolve } from "./gen";
@@ -113,7 +113,8 @@ function ring(L: Layer, cx: number, cy: number, r: number, c: RGB, strength: num
 export function drawFx(list: Any[], o: { C: Roles; t: number; seed: string; sceneSec: number; resolve: Resolve; front: Layer; back: Layer; rays: Ray[]; fps: number }): Screen {
   const { C, t } = o;
   const s = emptyScreen();
-  list.forEach((f, i) => {
+  list.forEach((f0, i) => {
+    const f = versusFxOf(f0);
     const seed = `${o.seed}-fx${i}`;
     const L = f.depth === "back" ? o.back : o.front;
     const win = fxWindow(f, t, o.sceneSec, o.resolve);
@@ -211,12 +212,105 @@ export function drawFx(list: Any[], o: { C: Roles; t: number; seed: string; scen
       case "dissolve-out":
         s.dissolve = Math.max(s.dissolve, f.type === "dissolve-in" ? 1 - p : p);
         break;
+      case "energy-beam": {
+        // charge an orb at the origin, fire a beam that races to the target, hold it pulsing, then thin it out
+        const tx = Math.round((f.to?.x ?? Math.min(1.1, (f.x ?? 0.3) + 0.4)) * W), ty = Math.round((f.to?.y ?? f.y ?? 0.62) * H);
+        const ox = Math.round((f.x ?? 0.3) * W), oy = Math.round((f.y ?? 0.62) * H);
+        const halo = col(C.glow2), core = C.paper;
+        const CHARGE = 0.3, TRAVEL = 0.25;
+        const fade = Math.min(1, Math.max(0, (win.dur - u) / 0.3));
+        const pulse = 0.5 + 0.5 * Math.sin(u * 38);
+        const orb = u < CHARGE ? 2 + (u / CHARGE) * (7 + 5 * k) : (7 + 5 * k) * (0.85 + 0.15 * pulse) * (0.4 + 0.6 * fade);
+        L.p.disc(ox, oy, Math.round(orb), halo);
+        L.p.disc(ox, oy, Math.max(1, Math.round(orb - 3)), core);
+        L.g.disc(ox, oy, Math.round(orb + 5), halo);
+        if (u > CHARGE) {
+          const e = Math.min(1, (u - CHARGE) / TRAVEL);
+          const hx = ox + (tx - ox) * e, hy = oy + (ty - oy) * e;
+          const len = Math.hypot(tx - ox, ty - oy) || 1;
+          const nx = -(ty - oy) / len, ny = (tx - ox) / len;
+          const half = Math.max(1, Math.round((2 + k * 5) * fade * (0.85 + 0.2 * pulse)));
+          for (let d = -half; d <= half; d++) {
+            const inner = Math.abs(d) <= Math.max(0, half - 2);
+            const c = inner ? core : halo;
+            L.p.line(ox + nx * d, oy + ny * d, hx + nx * d, hy + ny * d, c);
+            L.g.line(ox + nx * d, oy + ny * d, hx + nx * d, hy + ny * d, halo);
+          }
+          // bright dashes racing along the beam
+          for (let q = 0; q < 7; q++) {
+            const sp = ((u * 3.2 + q / 7) % 1) * e;
+            put(L, Math.round(ox + (hx - ox) * sp + nx * (q % 3 - 1) * half), Math.round(oy + (hy - oy) * sp + ny * (q % 3 - 1) * half), core, true, 1);
+          }
+          if (e >= 1) {
+            // impact: a pulsing core and rings at the target, a light shake while the beam holds
+            const age = u - CHARGE - TRAVEL;
+            L.p.disc(tx, ty, Math.round((5 + 4 * k) * fade * (0.8 + 0.4 * pulse)), core);
+            L.g.disc(tx, ty, Math.round((9 + 6 * k) * fade), halo);
+            ring(L, tx, ty, 4 + (age * 50) % 34, halo, fade * 0.9);
+            s.shake = { x: s.shake.x + (Math.floor(u * 30) % 2 ? 1 : -1) * Math.round(1 + k), y: s.shake.y };
+          }
+          s.bloom += 0.5 * k * fade;
+        }
+        break;
+      }
+      case "power-up": {
+        // a flame aura that grows around the fighter: bright core, gold body, red tips, rising sparks and rings
+        const base = py;
+        const half = Math.round(15 + k * 11), tall = (30 + k * 34) * Math.min(1, u / 0.5);
+        const fade = Math.min(1, Math.max(0, (win.dur - u) / 0.3));
+        const body = col(C.glow);
+        L.p.pool(px, base - tall * 0.45, half + 8, tall * 0.75, mix(halo2(C), C.ink, 0.35), 0.45 * fade);
+        for (let dx = -half; dx <= half; dx++) {
+          const edge = 1 - Math.abs(dx) / half;
+          const flick = 0.6 + 0.4 * h01(seed, `pf${dx}-${Math.floor(u * 14)}`);
+          const h = tall * fade * Math.pow(Math.max(0, edge), 0.75) * flick;
+          if (h < 2) continue;
+          for (let yy = 0; yy < h; yy += 1) {
+            const ratio = yy / h;
+            if (ratio > 0.82 && bayer(px + dx, base - yy) > (1 - ratio) * 5) continue;
+            const d = ratio * 0.75 + (1 - edge) * 0.65;
+            const c = d < 0.3 ? C.paper : d < 0.62 ? body : C.accent;
+            L.p.set(px + dx, base - yy, c);
+            if (d < 0.62) L.g.set(px + dx, base - yy, c);
+          }
+        }
+        for (let q = 0; q < 10; q++) {
+          const y = base - ((u * 34 + h01(seed, `sy${q}`) * 62) % 62);
+          put(L, Math.round(px + (h01(seed, `sx${q}`) - 0.5) * half * 2.2), Math.round(y), q % 2 ? body : C.paper, true, fade);
+        }
+        ring(L, px, base - 4, 6 + (u * 36) % 30, body, 0.7 * fade);
+        s.bloom += 0.45 * k * fade;
+        if (u < 1.1) s.shake = { x: s.shake.x + (Math.floor(u * 30) % 2 ? 1 : -1), y: s.shake.y };
+        break;
+      }
+      case "hit-flash": {
+        // a star-burst impact: spikes that grow then snap back, a white core, a short flash and a jolt
+        const grow = Math.sin(Math.PI * p);
+        const len = (8 + 30 * k) * grow;
+        const spin = Math.floor(u * 30) % 2 ? 22.5 : 0;
+        const c1 = C.paper, c2 = col(C.glow);
+        for (let a = 0; a < 8; a++) {
+          const ang = ((a * 45 + spin) * Math.PI) / 180;
+          const r0 = 4, r1 = r0 + len * (a % 2 ? 0.65 : 1);
+          L.p.line(px + Math.cos(ang) * r0, py + Math.sin(ang) * r0, px + Math.cos(ang) * r1, py + Math.sin(ang) * r1, a % 2 ? c2 : c1);
+          L.g.line(px + Math.cos(ang) * r0, py + Math.sin(ang) * r0, px + Math.cos(ang) * r1, py + Math.sin(ang) * r1, c2);
+        }
+        L.p.disc(px, py, Math.round((5 + 7 * k) * (1 - p * 0.5)), c1);
+        L.g.disc(px, py, Math.round(10 + 8 * k), c2);
+        s.flash = { color: hex(c1), opacity: (p < 0.25 ? 0.5 : 0.18) * (0.5 + 0.5 * k) };
+        s.shake = { x: s.shake.x + (Math.floor(u * 30) % 2 ? 2 : -2) * Math.round(1 + k), y: s.shake.y + (Math.floor(u * 30) % 3 ? 1 : -1) };
+        s.chroma = Math.max(s.chroma, 1);
+        break;
+      }
       default:
         break;
     }
   });
   return s;
 }
+
+/** The cool light color of a look (for auras). */
+const halo2 = (C: Roles): RGB => C.glow2;
 
 // ---------------- buffer effects ----------------
 
