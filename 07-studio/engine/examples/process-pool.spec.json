@@ -1,0 +1,1237 @@
+{
+  "version": 1,
+  "title": "Why a drained pool pops out of the ground",
+  "template": "process-explainer",
+  "language": "es",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "backyard pool: dig, fill, collapse, rebar, concrete, float, valve",
+    "world": {
+      "concept": "sunny low-poly backyard with a fence, trees and flowers",
+      "backdrop": "#8EC9F2",
+      "parts": [
+        {
+          "build": "grass-tufts",
+          "id": "grass",
+          "params": {
+            "count": 170,
+            "blades": 3,
+            "area": [
+              -14,
+              -5,
+              14,
+              4.8
+            ],
+            "avoid": [
+              [
+                0.3,
+                0.3,
+                6.9,
+                5.2
+              ],
+              [
+                -6.6,
+                -3.2,
+                -1.6,
+                0.8
+              ]
+            ],
+            "height": 0.42
+          },
+          "seed": 3
+        },
+        {
+          "build": "flowers",
+          "id": "flowers",
+          "params": {
+            "count": 26,
+            "area": [
+              -12,
+              -4.6,
+              12,
+              3
+            ],
+            "avoid": [
+              [
+                0.3,
+                0.3,
+                6.9,
+                5.2
+              ],
+              [
+                -6.6,
+                -3.2,
+                -1.6,
+                0.8
+              ]
+            ],
+            "colors": [
+              "#F25C78",
+              "#FFD23F"
+            ]
+          },
+          "seed": 5
+        },
+        {
+          "build": "fence",
+          "id": "fence",
+          "pos": [
+            1.2,
+            0,
+            -3.3
+          ],
+          "params": {
+            "length": 5.6,
+            "height": 0.95,
+            "gate": false
+          },
+          "seed": 2
+        },
+        {
+          "build": "tree",
+          "id": "tree-a",
+          "params": {
+            "kind": "lowpoly",
+            "height": 3.4,
+            "crown": 1.1,
+            "density": 1
+          },
+          "seed": 4,
+          "scatter": {
+            "count": 4,
+            "area": [
+              -13,
+              -8,
+              -5,
+              -5
+            ],
+            "seed": 2,
+            "jitter": {
+              "scale": 0.25,
+              "rot": 180
+            }
+          }
+        },
+        {
+          "build": "tree",
+          "id": "tree-b",
+          "params": {
+            "kind": "round",
+            "height": 3.2,
+            "crown": 1.0,
+            "density": 1
+          },
+          "seed": 7,
+          "scatter": {
+            "count": 4,
+            "area": [
+              4,
+              -9,
+              13,
+              -5
+            ],
+            "seed": 5,
+            "jitter": {
+              "scale": 0.25,
+              "rot": 180
+            }
+          }
+        }
+      ]
+    },
+    "terrain": {
+      "size": [
+        30,
+        10
+      ],
+      "grid": 64,
+      "depth": 4,
+      "bumps": 0.03,
+      "seed": 2,
+      "strata": [
+        {
+          "to": 0.4,
+          "color": "#6B4A2E"
+        },
+        {
+          "to": 1.5,
+          "color": "#B87A3F"
+        },
+        {
+          "to": 2.7,
+          "color": "#C9924F"
+        },
+        {
+          "to": 4,
+          "color": "#7E838C"
+        }
+      ],
+      "stones": {
+        "count": 26,
+        "seed": 3,
+        "size": [
+          0.12,
+          0.42
+        ]
+      }
+    },
+    "actors": [
+      {
+        "build": "house",
+        "id": "house",
+        "label": "Casa",
+        "pos": [
+          -4.2,
+          0,
+          -1.6
+        ],
+        "params": {
+          "floors": 2,
+          "width": 4.4,
+          "depth": 3.0,
+          "roof": "gable",
+          "style": "cozy"
+        },
+        "seed": 1
+      },
+      {
+        "build": "house",
+        "id": "neighbor",
+        "pos": [
+          8.5,
+          0,
+          -3.6
+        ],
+        "rot": [
+          0,
+          -18,
+          0
+        ],
+        "params": {
+          "floors": 1,
+          "width": 3.4,
+          "depth": 2.6,
+          "roof": "hip",
+          "detail": 1,
+          "chimney": false
+        },
+        "seed": 6
+      },
+      {
+        "build": "person",
+        "id": "worker",
+        "label": "Obrero",
+        "pos": [
+          0.0,
+          0,
+          3.9
+        ],
+        "params": {
+          "hat": "hard-hat",
+          "vest": true,
+          "tool": "shovel"
+        },
+        "seed": 2
+      },
+      {
+        "id": "bucket",
+        "pos": [
+          1.6,
+          2.4,
+          3.0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "parts": [
+          {
+            "id": "b-body",
+            "shape": "cylinder",
+            "size": [
+              0.3,
+              0.22,
+              0.4
+            ],
+            "pos": [
+              0,
+              0.2,
+              0
+            ],
+            "color": "#E5484D",
+            "facets": 8
+          },
+          {
+            "id": "b-rim",
+            "shape": "torus",
+            "size": [
+              0.3,
+              0.03
+            ],
+            "pos": [
+              0,
+              0.4,
+              0
+            ],
+            "rot": [
+              90,
+              0,
+              0
+            ],
+            "color": "#B93438"
+          },
+          {
+            "id": "b-water",
+            "shape": "cylinder",
+            "size": [
+              0.27,
+              0.27,
+              0.03
+            ],
+            "pos": [
+              0,
+              0.38,
+              0
+            ],
+            "color": "#5CC8F2",
+            "facets": 8
+          },
+          {
+            "id": "b-handle",
+            "shape": "torus",
+            "size": [
+              0.28,
+              0.02,
+              180
+            ],
+            "pos": [
+              0,
+              0.4,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "color": "#C8CDD4"
+          }
+        ]
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-a",
+        "pos": [
+          -3.5,
+          6.4,
+          -4
+        ],
+        "params": {
+          "size": 2.4
+        },
+        "seed": 1
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-b",
+        "pos": [
+          4.8,
+          7.2,
+          -5
+        ],
+        "params": {
+          "size": 2.0,
+          "puffs": 9
+        },
+        "seed": 3
+      },
+      {
+        "build": "rebar-grid",
+        "id": "rebar",
+        "pos": [
+          3.5,
+          -1.7,
+          3.0
+        ],
+        "params": {
+          "width": 4.4,
+          "depth": 3.6,
+          "spacing": 0.4,
+          "lift": 0.18
+        },
+        "seed": 1
+      },
+      {
+        "build": "slab",
+        "id": "slab",
+        "pos": [
+          3.5,
+          -1.75,
+          3.0
+        ],
+        "params": {
+          "width": 4.6,
+          "depth": 3.8,
+          "thickness": 0.36,
+          "layers": 3
+        },
+        "seed": 1
+      },
+      {
+        "build": "pool",
+        "id": "pool",
+        "label": "Alberca",
+        "pos": [
+          3.5,
+          -1.4,
+          3.0
+        ],
+        "buoyant": {
+          "amp": 2.5
+        },
+        "params": {
+          "length": 4.6,
+          "width": 3.8,
+          "depth": 1.4,
+          "cutaway": true
+        },
+        "seed": 1
+      },
+      {
+        "build": "pipe-run",
+        "id": "pipe",
+        "pos": [
+          3.5,
+          0,
+          5.1
+        ],
+        "params": {
+          "points": [
+            [
+              2.5,
+              -1.0,
+              0
+            ],
+            [
+              3.3,
+              -1.0,
+              0
+            ],
+            [
+              3.3,
+              -2.0,
+              0
+            ],
+            [
+              -3.3,
+              -2.0,
+              0
+            ]
+          ],
+          "radius": 0.1,
+          "dots": 5,
+          "clamps": false
+        },
+        "seed": 1
+      },
+      {
+        "build": "valve",
+        "id": "valve",
+        "pos": [
+          2.2,
+          -2.32,
+          5.1
+        ],
+        "params": {
+          "kind": "gate",
+          "size": 0.8
+        },
+        "seed": 1
+      }
+    ],
+    "liquids": [
+      {
+        "id": "water",
+        "area": [
+          0.7,
+          0.6,
+          6.3,
+          5
+        ],
+        "floor": -1.75,
+        "top": -0.2,
+        "wave": 0.6
+      },
+      {
+        "id": "pool-water",
+        "area": [
+          1.6,
+          1.3,
+          5.4,
+          4.7
+        ],
+        "floor": -1.3,
+        "top": -0.25,
+        "wave": 0.4
+      },
+      {
+        "id": "ground-water",
+        "kind": "box",
+        "area": [
+          0.2,
+          3.2,
+          7.2,
+          5.0
+        ],
+        "floor": -3.4,
+        "top": -2.2,
+        "opacity": 0.45,
+        "wave": 0.2,
+        "color": "#3B82F6"
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "dig",
+      "narration": "Un patio, una pala y un plan: primero cavas un hoyo profundo, y debajo aparecen las capas de tierra.",
+      "title": {
+        "kicker": "Paso 1",
+        "main": "Cavas el hoyo"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.42,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "terrain:pit",
+            "at": "cavas",
+            "zoom": 0.3,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "dive",
+            "focus": "terrain:pit",
+            "at": "capas",
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "rebar",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "slab",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "pool",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "valve",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "pipe",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "rebar",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                2.5,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0,
+            "target": "pool",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                3,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0,
+            "target": "valve",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                3,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "worker/arm-r",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                -70,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.9,
+            "target": "worker/arm-r",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                25,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "worker/arm-r",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                -70,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.1,
+            "target": "worker/arm-r",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                25,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "terrain",
+            "dur": 4,
+            "ease": "in-out",
+            "carve": {
+              "id": "pit",
+              "region": {
+                "box": [
+                  0.8,
+                  0.8,
+                  6.2,
+                  6
+                ]
+              },
+              "depth": 1.75,
+              "bank": 0.8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "fill",
+      "narration": "Luego lo llenas de agua: un balde la vierte y el nivel sube poco a poco hasta casi el borde.",
+      "title": {
+        "kicker": "Paso 2",
+        "main": "Lo llenas de agua"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "terrain:pit",
+            "at": 0,
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "bucket",
+            "at": 2,
+            "zoom": 0.3,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.3,
+            "target": "bucket",
+            "dur": 1.0,
+            "to": {
+              "rot": [
+                0,
+                0,
+                -75
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "water",
+            "dur": 4.2,
+            "to": {
+              "level": 1
+            }
+          },
+          {
+            "at": 5.2,
+            "target": "bucket",
+            "dur": 0.6,
+            "to": {
+              "visible": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "soak",
+      "narration": "Pero al d\u00eda siguiente el agua se evapora y se filtra en el suelo, y el hoyo vuelve a quedar vac\u00edo.",
+      "title": {
+        "kicker": "Paso 3",
+        "main": "El agua desaparece"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0,
+            "zoom": 0.42,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "dive",
+            "focus": "terrain:pit",
+            "at": 2,
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "water",
+            "dur": 4,
+            "to": {
+              "level": 0
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "cloud-a",
+            "dur": 5,
+            "to": {
+              "pos": [
+                2,
+                0.4,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "cloud-b",
+            "dur": 5,
+            "to": {
+              "pos": [
+                -2,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Se evapora y se filtra",
+            "at": 0.6
+          }
+        ]
+      }
+    },
+    {
+      "id": "collapse",
+      "narration": "Sin una estructura que lo sostenga, las paredes de tierra se derrumban y se deslizan hacia adentro.",
+      "title": {
+        "kicker": "Paso 4",
+        "main": "Las paredes se caen"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "terrain:pit",
+            "at": 0,
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "terrain:pit",
+            "at": 2.5,
+            "zoom": 0.3,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.6,
+            "target": "terrain",
+            "dur": 3.2,
+            "ease": "in-out",
+            "carve": {
+              "id": "slump",
+              "mode": "collapse",
+              "region": {
+                "box": [
+                  0.4,
+                  0.4,
+                  6.6,
+                  6
+                ]
+              },
+              "depth": 1,
+              "bank": 0.8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "rebar",
+      "narration": "Entonces cavas otra vez, armas una estructura de varilla y la cubres con una capa gruesa de concreto.",
+      "title": {
+        "kicker": "Paso 5",
+        "main": "Varilla y concreto"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "terrain:pit2",
+            "at": 0,
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "rebar",
+            "at": 2.4,
+            "zoom": 0.3,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "slab",
+            "at": 4.6,
+            "zoom": 0.3,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "terrain",
+            "dur": 1.4,
+            "carve": {
+              "id": "pit2",
+              "region": {
+                "box": [
+                  0.8,
+                  0.8,
+                  6.2,
+                  6
+                ]
+              },
+              "depth": 1.75,
+              "bank": 0.8
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "rebar",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "rebar",
+            "dur": 1.2,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 4.0,
+            "target": "slab",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 4.0,
+            "target": "slab/layer",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 4.0,
+            "target": "slab/layer-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 4.0,
+            "target": "slab/layer-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 4.1,
+            "target": "slab/layer",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 4.9,
+            "target": "slab/layer-1",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 5.7,
+            "target": "slab/layer-2",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "float",
+      "narration": "Encima instalas la alberca de azulejos y llena de agua se mantiene firme. Pero si la vac\u00edas para limpiarla, el agua del suelo la empuja desde abajo y la alberca flota como un bote.",
+      "title": {
+        "kicker": "Paso 6",
+        "main": "La alberca flota"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0,
+            "zoom": 0.42,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "dive",
+            "focus": "pool",
+            "at": 2.5,
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "wide",
+            "at": 7,
+            "zoom": 0.42,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.2,
+            "target": "rebar",
+            "dur": 0.5,
+            "to": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "pool",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "pool",
+            "dur": 1.4,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "pool-water",
+            "dur": 3,
+            "to": {
+              "level": 1
+            }
+          },
+          {
+            "at": 5.2,
+            "target": "pool-water",
+            "dur": 2.4,
+            "to": {
+              "level": 0
+            }
+          },
+          {
+            "at": 5.4,
+            "target": "ground-water",
+            "dur": 2,
+            "to": {
+              "level": 1
+            }
+          },
+          {
+            "at": 7.4,
+            "target": "pool",
+            "dur": 2.2,
+            "ease": "in-out",
+            "to": {
+              "pos": [
+                0,
+                1.3,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Presi\u00f3n del agua",
+            "at": 5.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "valve",
+      "narration": "La soluci\u00f3n es una peque\u00f1a v\u00e1lvula: deja entrar el agua, la presi\u00f3n se iguala y la alberca vuelve a su lugar.",
+      "title": {
+        "kicker": "Paso 7",
+        "main": "Instalas la v\u00e1lvula"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "valve",
+            "at": 0,
+            "zoom": 0.3,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          },
+          {
+            "shot": "dive",
+            "focus": "pool",
+            "at": 3,
+            "zoom": 0.34,
+            "shift": [
+              0,
+              1.7,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.2,
+            "target": "pipe",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "valve",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "valve",
+            "dur": 1.4,
+            "ease": "in",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "ground-water",
+            "dur": 2.4,
+            "to": {
+              "level": 0
+            }
+          },
+          {
+            "at": 2.8,
+            "target": "pool",
+            "dur": 2.4,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

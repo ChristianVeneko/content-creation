@@ -13,7 +13,7 @@ import { stageSceneFields, resolveTarget, resolveFocus, buildTracks, terrainDefa
 import { customExtent, customHeight, expandWorld, partCenters,  partsSignature, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords, shotsToKeys } from "./scene3d-motion.mjs";
 
 /** Templates rendered with the 3D kit. Their look id equals the template id. */
-export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot", "cutaway-explainer", "engineering-explainer"];
+export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot", "cutaway-explainer", "engineering-explainer", "process-explainer"];
 export const usesThreeKit = (templateId) => THREE_D_TEMPLATE_IDS.includes(templateId);
 /** The 3D look of a resolved spec: theme.look3d when valid, else the template id, else clay-diorama. */
 export const look3dOf = (spec) => {
@@ -229,6 +229,8 @@ export const LOOK3D = {
   "cutaway-explainer": { ortho: false, fov: 30, yaw: -16, pitch: 10, moves: ["pullout", "orbit", "dolly", "glide", "pullout"], float: 0, spin: 0, wide: 1.25 },
   // engineering explainer: master engineering camera framing both above-ground set and underground strata cutaway
   "engineering-explainer": { ortho: false, fov: 32, yaw: -18, pitch: 12, moves: ["pullout", "orbit", "dolly", "glide", "reveal"], float: 0, spin: 0, wide: 1.3 },
+  // process explainer: one continuous daylight world seen from a gentle three-quarter angle; stage shots drive the camera
+  "process-explainer": { ortho: false, fov: 32, yaw: -16, pitch: 13, moves: ["pullout", "glide", "orbit", "dolly", "reveal"], float: 0, spin: 0, wide: 1.3 },
 };
 
 /**
@@ -255,6 +257,7 @@ export const RENDER3D = {
   "clay-mascot": { tone: "neutral", exposure: 1.05, hdri: "brown-photostudio-02", envIntensity: 0.5, shadowRadius: 8, bloom: null, fog: null, set: "none" },
   "cutaway-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
   "engineering-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
+  "process-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
 };
 
 /** The stock environment set of a scene3d visual: explicit set, else the look's default (none for every look). */
@@ -377,7 +380,7 @@ export function frameContent(placed, look, opts = {}) {
   const w = max[0] - min[0];
   const d = max[2] - min[2];
   const h = max[1] - min[1];
-  const targetY = min[1] + h * (look === "cutaway-explainer" || look === "engineering-explainer" ? 0.32 : 0.42);
+  const targetY = min[1] + h * (look === "cutaway-explainer" || look === "engineering-explainer" || look === "process-explainer" ? 0.32 : 0.42);
   const target = [(min[0] + max[0]) / 2, targetY, (min[2] + max[2]) / 2];
   const pitch = L.pitch * DEG;
   // projected extents: width across the frame, and height (object height + depth foreshortened by the pitch)

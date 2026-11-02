@@ -11,7 +11,7 @@ export type Caption = {
 export type CaptionPage = { startMs: number; endMs: number; words: Caption[] };
 
 export type Animation = "pop" | "slide" | "typewriter" | "zoom";
-export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world" | "data-stage" | "monolith-story" | "clay-mascot" | "cutaway-explainer" | "engineering-explainer";
+export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world" | "data-stage" | "monolith-story" | "clay-mascot" | "cutaway-explainer" | "engineering-explainer" | "process-explainer";
 export type ArtTemplateId = "watercolor" | "paper-collage" | "chalkboard" | "risograph" | "ukiyo-e" | "pop-comic";
 export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient" | "host-tutorial" | "checklist-glass" | "spotlight-narrative" | "data-atlas";
 export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono" | "pixel-versus";

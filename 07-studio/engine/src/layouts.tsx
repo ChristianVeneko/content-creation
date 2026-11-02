@@ -435,6 +435,7 @@ export const LAYOUTS: Record<ResolvedSpec["template"], React.FC<SceneProps>> = {
   "clay-mascot": ThreeLayout,
   "cutaway-explainer": ThreeLayout,
   "engineering-explainer": ThreeLayout,
+  "process-explainer": ThreeLayout,
   // reels-* compositions render src/reels/ReelsVideo (see Root.tsx); these entries only satisfy the type
   "reels-nube": CaptionsVoiceScene,
   "reels-noche": CaptionsVoiceScene,

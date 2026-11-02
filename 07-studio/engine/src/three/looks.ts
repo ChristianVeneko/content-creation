@@ -394,6 +394,27 @@ export const LOOKS3D: Record<Look3DId, Look3D> = {
     vignette: 0.06,
     ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#FFFFFF", 0.2),
   },
+  "process-explainer": {
+    id: "process-explainer",
+    material: "lowpoly",
+    floor: "set",
+    tone: "neutral",
+    exposure: 1.0,
+    shadows: true,
+    outline: null,
+    bloom: null,
+    particles: "dust",
+    enter: "rise",
+    dark: "#2B3550",
+    light: "#FFF7E6",
+    good: "#2FB98F",
+    bad: "#E5484D",
+    screen: "#1E2A44",
+    bg: (p) => ({ stops: [mixHexColor(p.bg[0], "#FFFFFF", 0.12), p.bg[1] ?? p.bg[0]], glow: "#FFFFFF", glowAlpha: 0.4 }),
+    label: { bg: "#FFFFFF", fg: "#14213D", border: "rgba(20,33,61,0.12)", radius: 999, font: fontStack("Poppins"), weight: 800, size: 32, shadow: "0 8px 20px rgba(60,50,30,0.2), 0 3px 0 rgba(20,33,61,0.14)", leader: "none" },
+    vignette: 0.06,
+    ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#FFFFFF", 0.2),
+  },
 };
 
 /** "#rrggbb" blend of two colors (hex stops are parsed by the gradient fog, so no css strings). */

@@ -417,7 +417,7 @@ viewBox), fx that hide text, empty or repeated scenes, then render again.
 ## 3D templates
 
 `clay-diorama`, `iso-toon`, `neon-glass`, `pedestal`, `paper-world`, `toy-blocks`, `holo-studio`, `neon-grid`, `soft-studio`,
-`moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot` and `cutaway-explainer` render every scene as a real 3D scene
+`moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot`, `cutaway-explainer` and `process-explainer` render every scene as a real 3D scene
 (three.js), with the same voice, captions, HUD, brand footer, SFX and ducked music as the illustrated kit. Same rules as
 `illustrated` for `title` (kicker + main on every scene), `hud`, `brand`, no emoji anywhere, and **do not set `theme`**
 unless the user asked for brand colors. Differences: **5-10 scenes** (3-6 s each, ~30-50 s), and every scene uses
@@ -508,31 +508,38 @@ Per template:
 Pastel clay miniatures on a floating plinth, warm soft light, playful drop-in bounces, iris transitions.
 - Friendly explainers: build the subject as a clay-like `custom` model with round parts; 1-5 objects; a `flow` for "how it
   travels", a `circle` recap at the end.
+- Rich version: a top-level `stage` with builders in soft colors (`house` with `wall`/`roofColor` pastels, `tree` kind `lowpoly`, `person`, `rocks`, `fence`) and beats that grow the town (`set` scale 0.05 then `to` scale 1). See `examples/clay-diorama-stage.spec.json`.
 
 ### `iso-toon`
 The only isometric look: toon blocks with outlines on a navy grid platform; orthographic camera; isometric pan transitions.
 - Systems and processes: `layout: "flow"`, `connect` or `stack`; label every object. Build the parts as `custom` blocks (or
   add the procedural `server`, `database`, `cloud` kinds beside a custom subject). HUD: a phase `chip` + a progress `bar`.
+- Rich version: a stage of builders on the grid (`gear-train`, `machine-box`, `pipe-run`, `valve`, `factory`) with beats that turn gears (`rot` z) and open valves. See `examples/iso-toon-stage.spec.json`.
 
 ### `neon-glass`
 Frosted glass with neon glow and bloom over a reflective black grid; punch-in camera; light-streak cuts.
 - Tech, AI, security and crypto hooks; 1-4 objects, one `highlight: true` hero per scene; short, punchy scenes (3-5 s).
+- Rich version: a `stage` with `building` (style glass, `lit` 0.7), `server-rack`, `chip`, `data-cable` with neon `cable`/`packet` colors; beats move the packets. Neon colors go in the builder params.
 
 ### `pedestal`
 One hero object on a glossy pedestal under studio light; turntable and push-in camera; labels become thin dashed callouts.
 - One product or object per video, built from parts. Scenes alternate: hero shot, detail (`push`), exploded view (`explode`).
+- Rich version: one hero builder (`phone`, `laptop`, `battery`, `safe`) as the single actor, beats that open it (`laptop/lid` rot x, `safe/door` rot y) and `zoom-to` shots on its parts.
 
 ### `paper-world`
 A pop-up book: flat-shaded paper pieces stand up from a faceted paper island; cut-paper banner titles; page-turn cuts.
 - Little stories and journeys; 2-4 objects in a `row` or `flow`; `crane` camera for reveals.
+- Rich version: a `stage` journey with `castle`, `tent`, `cart`, `ship`, `flag` and `person` costumes (crown, helmet, pirate); beats travel the actors along the stage and raise the flag.
 
 ### `toy-blocks`
 Macro toy photography: glossy plastic on a studded baseplate, tilt-shift blur, stop-motion drops. Never name a toy brand.
 - Building something step by step: `grid`/`row`, `connect` for flows, `topdown` for an overview.
+- Rich version: a build-process `stage` of `crane`, `house`, `slab`, `rebar-grid`, `cart`; each part appears on a narration word (`set visible` then a pos tween).
 
 ### `holo-studio`
 Holograms over a projector pad in a dark studio: translucent iridescent objects, scan-plane entrances, bloom, scanlines.
 - One hero scan per scene, `focus` to push in, `stat` for big numbers.
+- Rich version: one scanned subject from the science and tech builders (`atom`, `cell`, `planet`, `chip`, `laptop`) with `hologram` fx; beats turn `atom/orbit-k` groups or open `laptop/lid`.
 
 ### `neon-grid`, `soft-studio`, `moody-night`, `voxel-world`
 Four pure lighting and camera styles: `neon-grid` (navy matte bodies, cyan rims, bloom, fog), `soft-studio` (pastel soft-matte
@@ -541,6 +548,12 @@ camera), `voxel-world` (flat-shaded sharp-edged blocks, snap-in placement, low h
 no road, desk, grid world or voxel island unless you build it in `world` (or the user asked for a stock `set` with
 `stock: true`). Invent a different setting for each video and build the subjects as `custom` parts; use `shots`,
 `handheld` and `fx` (dust, embers, glow, spotlight) for the feel. 1-3 objects per scene.
+- Rich version of each (a `stage` of builders, beats and `shots`; the look only supplies light, camera and materials):
+  `neon-grid`: `building` (glass, lit), `server-rack`, `road`, `car-lowpoly` with neon params and `world.ground.kind: "grid"`;
+  `soft-studio`: a product lineup on a table (`solar-panel`, `battery`, `machine-box`, `phone`) with beats lighting the battery
+  `seg-k`; `moody-night`: `bridge`, `car-lowpoly`, `cloud`, a dark `backdrop`; `voxel-world`: `building` (stepped, brick),
+  `road`, `car-lowpoly` driving along x. Examples: `examples/neon-grid-stage.spec.json`, `soft-studio-stage`, `moody-night-stage`,
+  `voxel-world-stage`.
 
 ### `data-stage`
 A dark arena for numbers and comparisons: volumetric `spotlight` cones, glossy objects, a big counter. Format recipes
@@ -666,6 +679,55 @@ Full stage example: `examples/stage-yard.spec.json` (a 58-part house, 490 instan
 Full examples: `examples/data-stage.spec.json`, `examples/monolith-story.spec.json`, `examples/clay-mascot.spec.json`,
 `examples/cutaway-explainer.spec.json`,
 `examples/3d-generative.spec.json` (a character built from parts), plus one per older look in `examples/`.
+
+### `process-explainer`
+The master template for any explainer, tutorial, story or comparison (a tech flow, a history, a science idea, a product A vs B, a
+build process). One continuous low-poly world in soft daylight that changes over time; it is used with a top-level `stage`
+(see "Persistent stage" above) and builders. **Never a new world per scene.**
+
+**Builders.** Instead of hand-writing parts, call a parametric builder anywhere in `stage.actors` or `stage.world.parts`:
+`{ "build": "<name>", "id": "<id>", "pos": [x, y, z], "rot"?, "size"?, "params": { ... }, "seed": n }`. It expands to 20-130
+faceted low-poly parts before validation (ids `<part>`, e.g. `laptop/lid`, `person/arm-r`, `battery/seg-3`, so beats and shots can
+target them). Run `node cli.mjs builders` for the catalog: every builder with its params, ranges and defaults. Different `seed`,
+`params` and colors (hex or palette tokens) give different models, so two videos never look alike.
+- tech: `laptop` (lid group), `phone`, `router` (waves), `data-cable` (packet dots), `server-rack` (LEDs), `chip`,
+  `database-cylinder`, `browser-window`, `machine-box`, `cloud`.
+- science and nature: `planet` (moon orbit group), `atom` (orbit groups), `cell`, `plant`, `mountain`, `river`, `volcano`, `tree`
+  (pine, round, lowpoly, oak, birch, palm), `rocks`, `flowers`, `grass-tufts`.
+- history and story: `castle`, `ship` (sails), `map-table`, `cart`, `tent`, `flag` (hoist the `cloth`), `person` with `hat`
+  (crown, helmet, pirate, tophat, bandana, hard-hat, cap, beanie) and `outfit` (coat, armor, robe, suit, cape).
+- city and engineering: `building`, `house`, `bridge`, `road`, `car-lowpoly`, `factory`, `crane` (`hook` group),
+  `wind-turbine` (`rotor` group), `solar-panel`, `battery`, `gear-train`, `pipe-run`, `valve`, `slab`, `rebar-grid`, `fence`.
+- office and finance: `desk`, `chart-3d` (`bar-k`), `coin-stack`, `safe` (`door` group), `calendar` (`day-k`).
+In `stage.world.parts` a call becomes a group root (`pos`, `rot`, `scale`) with the parts hanging from it; `grass-tufts`, `flowers`
+and any call with `"scatter": {count, area, avoid, seed}` become instanced scatter copies (they follow the terrain). Budgets: 160
+parts per actor, 120 world parts, 1500 expanded; keep scenery light (use scatter) and put the hero models in `actors`. An actor
+call must fit within 5 units of its center (the error tells you): lower the size params or scale with `size`. A builder with a water hook
+(see its `about` in the catalog) accepts `"liquid": "<id>"` to add a matching water volume.
+
+**Beats and camera.** Every change is a beat on a narration word: `{at, target: "actor" | "actor/part", dur, to | set}`
+(`pos`, `rot`, `scale`, `color`, `opacity`, `visible`, `emissive`); hide something until its moment with
+`{at: 0, set: {visible: false}}` then `{at: "word", set: {visible: true}}` plus a `to` tween. Move a data packet along a
+`data-cable` by chaining `pos` tweens on `cable/dot`. Shots: `wide`, `zoom-to` (+`focus`), `dive` (a level look into a cutaway),
+`low`; set `zoom` 0.3-0.55 for a tight frame (the preset values leave the world small) and `shift: [0, 1.4, 0]` to seat the world
+lower in the frame; keep the world compact so focus shots stay readable. Overlays: `concept` pill, `flow` chips with an active
+step per hop, `limit`, `versus`. Captions are word by word in the lower center.
+
+**Five recipes (pick one; each has a different subject in the template's `recipes`).**
+- `build-process`: an assembly or construction (a wind farm, a cart): empty site, prepare the ground, bring in the parts, assemble
+  in order, test, pull out. Builders: `crane`, `wind-turbine`, `factory`, `slab`, `rebar-grid`, `person`.
+- `how-it-works`: a technology flow (a web request from a browser to a server): a packet travels hop by hop, each stage lights up
+  as it is reached, a `flow` overlay follows. Builders: `laptop`, `router`, `data-cable`, `server-rack`, `database-cylinder`, `building`.
+- `what-happened`: a history with characters (a voyage): the world before, a council, the journey, the turning point, the
+  outcome (a flag is raised). Builders: `castle`, `map-table`, `ship`, `cart`, `flag`, `person` costumes.
+- `cause-effect`: a physics or biology idea (why a volcano erupts, how a cell works): stable state, hidden cause, threshold
+  (limit overlay turns red), effect, loop closes. Builders: `volcano`, `cell`, `atom`, `planet`, `plant`, `pipe-run`, `valve`.
+- `compare`: A vs B on one stage (two energy systems): same trigger on both actors, different outcomes, `versus` overlay.
+  Builders: `solar-panel`, `wind-turbine`, `battery`, `phone`, `chart-3d`, `coin-stack`.
+
+Examples: `examples/process-tech-tutorial.spec.json` (a web request: laptop, router, cables, ISP building, cloud, server rack),
+`examples/process-story.spec.json` (a voyage: castle, war table, characters, cart, ship, flag), `examples/process-pool.spec.json`
+(a build with terrain strata, carve and liquid beats; the largest example), `examples/process-explainer.spec.json` (a short how-it-works).
 
 ## Creative mode: 3D
 
