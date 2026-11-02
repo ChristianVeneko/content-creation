@@ -6,6 +6,7 @@ import { MOODS, MUSIC_PROVIDERS } from "./music-moods.mjs";
 import { elementsSchema, hasEmoji, hudItemSchema, hudOverrideSchema, lookSchema, sceneTitleSchema } from "./illustration-schema.mjs";
 import { ART_LOOKS, FORMAT_2D_LOOKS, usesIllustratedKit } from "./illustrated.mjs";
 import { stageSchema, refineStageSpec } from "./scene3d-stage.mjs";
+import { expandBuilders } from "./scene3d-builders.mjs";
 import { THREE_D_TEMPLATE_IDS, refineScene3d, refineThreeNovelty, scene3dFields, usesThreeKit } from "./scene3d.mjs";
 import { REELS_TEMPLATE_IDS } from "./reels.mjs";
 import { PIXEL_TEMPLATE_IDS, pixelSceneSchema, refinePixel, refinePixelSpec, usesPixelKit } from "./pixel.mjs";
@@ -370,7 +371,10 @@ export function formatIssues(error) {
  * @returns {{ok: true, spec: object, errors: []} | {ok: false, errors: {path: string, message: string}[]}}
  */
 export function validateSpec(raw) {
-  const res = videoSpecSchema.safeParse(migrateLegacyIds(raw));
+  // stage builder calls ({ build, params, seed }) expand to plain parts first, so everything downstream sees ordinary specs
+  const { spec: expanded, errors: buildErrors } = expandBuilders(migrateLegacyIds(raw));
+  if (buildErrors.length) return { ok: false, errors: buildErrors };
+  const res = videoSpecSchema.safeParse(expanded);
   if (!res.success) return { ok: false, errors: formatIssues(res.error) };
   return { ok: true, spec: res.data, errors: [] };
 }

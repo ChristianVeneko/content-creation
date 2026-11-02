@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "title": "Clean power lineup",
+  "template": "soft-studio",
+  "language": "en",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "soft studio table with a solar panel, a battery and a machine",
+    "actors": [
+      {
+        "build": "solar-panel",
+        "id": "solar",
+        "pos": [
+          -2.6,
+          0,
+          0
+        ],
+        "params": {
+          "cols": 5,
+          "rows": 3,
+          "width": 2.4,
+          "cell": "#2C4A9A"
+        },
+        "seed": 1
+      },
+      {
+        "build": "battery",
+        "id": "battery",
+        "pos": [
+          0.2,
+          0,
+          0.4
+        ],
+        "params": {
+          "body": "#38425C",
+          "glow": "#3FD6A0",
+          "charge": 0.2
+        },
+        "seed": 1
+      },
+      {
+        "build": "machine-box",
+        "id": "machine",
+        "pos": [
+          2.8,
+          0,
+          0
+        ],
+        "params": {
+          "body": "#E8743B",
+          "width": 1.8,
+          "height": 1.5
+        },
+        "seed": 2
+      }
+    ],
+    "world": {
+      "concept": "soft studio table",
+      "ground": {
+        "kind": "plane",
+        "color": "#EFE9E0",
+        "size": 24
+      },
+      "parts": []
+    }
+  },
+  "scenes": [
+    {
+      "id": "a",
+      "narration": "Sunlight lands on a solar panel, the first piece of the chain.",
+      "title": {
+        "kicker": "Step 1",
+        "main": "The panel"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "solar",
+            "zoom": 0.5
+          },
+          {
+            "shot": "wide",
+            "zoom": 0.6,
+            "at": 3
+          }
+        ],
+        "beats": []
+      }
+    },
+    {
+      "id": "b",
+      "narration": "The battery stores it: segment by segment, the charge climbs.",
+      "title": {
+        "kicker": "Step 2",
+        "main": "The battery"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "zoom": 0.45
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.5,
+            "target": "battery/seg",
+            "dur": 0,
+            "set": {
+              "color": "#3FD6A0"
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "battery/seg-3",
+            "dur": 0.4,
+            "to": {
+              "emissive": 2
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "battery/seg-5",
+            "dur": 0.4,
+            "to": {
+              "emissive": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "narration": "Then the machine runs on stored power, quiet and steady.",
+      "title": {
+        "kicker": "Step 3",
+        "main": "The machine"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "machine",
+            "zoom": 0.45
+          },
+          {
+            "shot": "wide",
+            "zoom": 0.6,
+            "at": 3
+          }
+        ],
+        "beats": []
+      }
+    }
+  ]
+}

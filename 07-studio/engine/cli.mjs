@@ -3,6 +3,7 @@
 //   node cli.mjs templates [--brief]
 //   node cli.mjs template <id>
 //   node cli.mjs prompt <template>
+//   node cli.mjs builders
 //   node cli.mjs music
 //   node cli.mjs voices [--gender male|female] [--pick <seed>]
 //   node cli.mjs validate <spec.json|->
@@ -20,6 +21,7 @@ const USAGE = `Usage:
   node cli.mjs template <id>                               Print one template's full entry as JSON
   node cli.mjs prompt <template> [--creative]              Print the spec-writer prompt trimmed to that template's family
                                                            (--creative adds the originals-first sections for Claude Code)
+  node cli.mjs builders                                    Print the 3D stage builders (names, params with defaults, part counts) as JSON
   node cli.mjs music                                       Print the music library (moods, tracks, levels) as JSON
   node cli.mjs voices [--gender male|female] [--pick <seed>]
                                                            Trending Latin American Spanish ElevenLabs voices as JSON
@@ -98,6 +100,12 @@ async function main() {
   if (cmd === "music") {
     const { libraryListing } = await import("./lib/music.mjs");
     process.stdout.write(JSON.stringify(libraryListing(), null, 2) + "\n");
+    return 0;
+  }
+
+  if (cmd === "builders") {
+    const { describeBuilders } = await import("./lib/scene3d-builders.mjs");
+    process.stdout.write(JSON.stringify(describeBuilders(), null, 2) + "\n");
     return 0;
   }
 

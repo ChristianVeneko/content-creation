@@ -59,6 +59,8 @@ import cutawayExample from "../examples/cutaway-explainer.spec.json";
 import cutawayTemplate from "../templates/cutaway-explainer.json";
 import engineeringExample from "../examples/engineering-explainer.spec.json";
 import engineeringTemplate from "../templates/engineering-explainer.json";
+import processExample from "../examples/process-explainer.spec.json";
+import processTemplate from "../templates/process-explainer.json";
 import { computeTimeline, paginateCaptions, syntheticCaptions } from "../lib/timeline.mjs";
 import { resolveSpec } from "../lib/spec.mjs";
 import { planIllustration } from "../lib/illustrated.mjs";
@@ -83,6 +85,7 @@ const THREE_EXAMPLES: Record<string, [unknown, unknown]> = {
   "clay-mascot": [clayMascotExample, clayMascotTemplate],
   "cutaway-explainer": [cutawayExample, cutawayTemplate],
   "engineering-explainer": [engineeringExample, engineeringTemplate],
+  "process-explainer": [processExample, processTemplate],
 };
 
 // Format looks preview their own example spec (their elements need a plan).

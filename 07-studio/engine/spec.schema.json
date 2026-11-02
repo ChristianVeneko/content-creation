@@ -51,6 +51,7 @@
         "clay-mascot",
         "cutaway-explainer",
         "engineering-explainer",
+        "process-explainer",
         "pixel-dusk",
         "pixel-night",
         "pixel-arcade",
@@ -183,7 +184,8 @@
             "monolith-story",
             "clay-mascot",
             "cutaway-explainer",
-            "engineering-explainer"
+            "engineering-explainer",
+            "process-explainer"
           ]
         },
         "captionStyle": {
@@ -360,6 +362,12 @@
                     "type": "number",
                     "minimum": 0,
                     "maximum": 0.5
+                  },
+                  "facets": {
+                    "description": "cylinder, cone, sphere: number of flat sides (4-8 reads as faceted low-poly; omit for a smooth round shape)",
+                    "type": "integer",
+                    "minimum": 3,
+                    "maximum": 24
                   },
                   "text": {
                     "description": "sign: the text printed on the sign (pixel font)",
@@ -1207,6 +1215,12 @@
                       "type": "number",
                       "minimum": 0,
                       "maximum": 0.5
+                    },
+                    "facets": {
+                      "description": "cylinder, cone, sphere: number of flat sides (4-8 reads as faceted low-poly; omit for a smooth round shape)",
+                      "type": "integer",
+                      "minimum": 3,
+                      "maximum": 24
                     },
                     "text": {
                       "description": "sign: the text printed on the sign (pixel font)",
@@ -19896,6 +19910,12 @@
                             "minimum": 0,
                             "maximum": 0.5
                           },
+                          "facets": {
+                            "description": "cylinder, cone, sphere: number of flat sides (4-8 reads as faceted low-poly; omit for a smooth round shape)",
+                            "type": "integer",
+                            "minimum": 3,
+                            "maximum": 24
+                          },
                           "text": {
                             "description": "sign: the text printed on the sign (pixel font)",
                             "type": "string",
@@ -21175,6 +21195,12 @@
                           "type": "number",
                           "minimum": 0,
                           "maximum": 0.5
+                        },
+                        "facets": {
+                          "description": "cylinder, cone, sphere: number of flat sides (4-8 reads as faceted low-poly; omit for a smooth round shape)",
+                          "type": "integer",
+                          "minimum": 3,
+                          "maximum": 24
                         },
                         "text": {
                           "description": "sign: the text printed on the sign (pixel font)",

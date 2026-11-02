@@ -227,7 +227,7 @@ const InstancedParts: React.FC<{ parts: CustomPart[]; heightAt?: ((x: number, z:
       const pv = p.pivot ?? [0, 0, 0];
       const m = outer(p).clone().multiply(new THREE.Matrix4().makeTranslation(-pv[0], -pv[1], -pv[2]));
       const r = rootOf(p);
-      const key = JSON.stringify([p.shape, p.size, p.points, p.radius, p.material, role === "glow" ? "glow" : role, color]);
+      const key = JSON.stringify([p.shape, p.size, p.points, p.radius, p.facets, p.material, role === "glow" ? "glow" : role, color]);
       const g = groups.get(key) ?? { part: p, color, items: [] };
       g.items.push({ m, root: new THREE.Vector3().setFromMatrixPosition(outer(r)) });
       groups.set(key, g);

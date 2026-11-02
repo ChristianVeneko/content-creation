@@ -1,0 +1,372 @@
+{
+  "version": 1,
+  "title": "How a solar panel charges a battery",
+  "template": "process-explainer",
+  "language": "en",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "daylight yard: a solar panel feeds a battery through a pipe-like cable",
+    "actors": [
+      {
+        "build": "solar-panel",
+        "id": "solar",
+        "label": "Panel",
+        "pos": [
+          -3,
+          0,
+          0
+        ],
+        "params": {
+          "cols": 6,
+          "rows": 4,
+          "width": 2.8
+        },
+        "seed": 1
+      },
+      {
+        "build": "battery",
+        "id": "battery",
+        "label": "Battery",
+        "pos": [
+          0.6,
+          0,
+          0.6
+        ],
+        "params": {
+          "charge": 0.0,
+          "glow": "#3FD6A0"
+        },
+        "seed": 1
+      },
+      {
+        "build": "machine-box",
+        "id": "lamp",
+        "label": "Load",
+        "pos": [
+          3.4,
+          0,
+          0.2
+        ],
+        "params": {
+          "body": "accent2",
+          "width": 1.6,
+          "height": 1.3
+        },
+        "seed": 2
+      }
+    ],
+    "world": {
+      "concept": "sunny yard with a fence and trees",
+      "backdrop": "#8EC9F2",
+      "parts": [
+        {
+          "build": "grass-tufts",
+          "id": "grass",
+          "params": {
+            "count": 120,
+            "blades": 3,
+            "area": [
+              -9,
+              -5,
+              9,
+              5
+            ],
+            "height": 0.4
+          },
+          "seed": 2
+        },
+        {
+          "build": "tree",
+          "id": "tree",
+          "params": {
+            "kind": "round",
+            "height": 3,
+            "density": 1
+          },
+          "seed": 3,
+          "scatter": {
+            "count": 3,
+            "area": [
+              -9,
+              -7,
+              9,
+              -4
+            ]
+          }
+        },
+        {
+          "build": "fence",
+          "id": "fence",
+          "pos": [
+            0,
+            0,
+            -3.4
+          ],
+          "params": {
+            "length": 6,
+            "height": 0.9
+          },
+          "seed": 1
+        }
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "a",
+      "narration": "The sun hits the panel, and every cell turns light into electricity.",
+      "title": {
+        "kicker": "Step 1",
+        "main": "Light in"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "solar",
+            "zoom": 0.42,
+            "at": 2
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "battery/seg",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Photovoltaic effect",
+            "at": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "b",
+      "narration": "The current flows into the battery, which stores it segment by segment.",
+      "title": {
+        "kicker": "Step 2",
+        "main": "Charge"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "zoom": 0.4
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.5,
+            "target": "battery/seg",
+            "dur": 0.4,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "battery/seg-1",
+            "dur": 0.4,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "battery/seg-2",
+            "dur": 0.4,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 3.5,
+            "target": "battery/seg-3",
+            "dur": 0.4,
+            "to": {
+              "emissive": 1.5
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "limit",
+            "label": "Charge",
+            "value": 0.1,
+            "limit": 0.9,
+            "steps": [
+              {
+                "at": 1,
+                "value": 0.4
+              },
+              {
+                "at": 3,
+                "value": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "narration": "Finally the machine draws that stored power and runs, day or night.",
+      "title": {
+        "kicker": "Step 3",
+        "main": "Power out"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "lamp",
+            "zoom": 0.4
+          },
+          {
+            "shot": "wide",
+            "zoom": 0.55,
+            "at": 3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.5,
+            "target": "lamp/led",
+            "dur": 0.5,
+            "to": {
+              "emissive": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "d",
+      "narration": "When a cloud passes, the panel makes less power, so the battery covers the gap.",
+      "title": {
+        "kicker": "Step 4",
+        "main": "Clouds pass"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "zoom": 0.4,
+            "at": 3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.3,
+            "target": "solar",
+            "dur": 2,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "battery/seg-3",
+            "dur": 0.5,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "battery/seg-2",
+            "dur": 0.5,
+            "to": {
+              "emissive": 0.2
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "limit",
+            "label": "Sun",
+            "value": 0.8,
+            "limit": 0.5,
+            "steps": [
+              {
+                "at": 1,
+                "value": 0.2
+              }
+            ],
+            "note": "Low sun"
+          }
+        ]
+      }
+    },
+    {
+      "id": "e",
+      "narration": "So a panel, a battery and a load make one small, steady system.",
+      "title": {
+        "kicker": "Step 5",
+        "main": "One system"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "solar",
+            "zoom": 0.42,
+            "at": 3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "battery/seg-2",
+            "dur": 0.6,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "battery/seg-3",
+            "dur": 0.6,
+            "to": {
+              "emissive": 1.5
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

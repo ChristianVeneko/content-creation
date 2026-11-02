@@ -19,6 +19,7 @@ export type CustomPart = {
   size?: number[];
   points?: number[][];
   radius?: number;
+  facets?: number;
   text?: string;
   textColor?: string;
   pos?: V3;
@@ -66,6 +67,18 @@ export const partTransform = (o: CustomObject, i: number, t: number, ctx: Motion
 
 /** Geometry of a part (centered on its own origin). */
 export const makeGeometry = (p: CustomPart, low = false): THREE.BufferGeometry | null => {
+  const g = rawGeometry(p, low);
+  // `facets`: a hard-edged low-poly read (flat normals) for round shapes
+  if (g && p.facets && (p.shape === "cylinder" || p.shape === "cone" || p.shape === "sphere")) {
+    const flat = g.toNonIndexed();
+    g.dispose();
+    flat.computeVertexNormals();
+    return flat;
+  }
+  return g;
+};
+
+const rawGeometry = (p: CustomPart, low = false): THREE.BufferGeometry | null => {
   // low: coarse segment counts for instanced copies (grass, flowers, stones, trees): the low-poly read and a cheap draw
   const q = low ? 0.4 : 1;
   const s = p.size ?? [];
@@ -77,17 +90,17 @@ export const makeGeometry = (p: CustomPart, low = false): THREE.BufferGeometry |
       return r > 0.002 ? new RoundedBoxGeometry(w, h, d, low ? 2 : 4, r) : new THREE.BoxGeometry(w, h, d);
     }
     case "sphere": {
-      const g = new THREE.SphereGeometry(1, Math.max(8, Math.round(40 * q)), Math.max(6, Math.round(28 * q)));
+      const g = p.facets ? new THREE.SphereGeometry(1, Math.max(3, p.facets), Math.max(2, Math.ceil(p.facets * 0.7))) : new THREE.SphereGeometry(1, Math.max(8, Math.round(40 * q)), Math.max(6, Math.round(28 * q)));
       const [rx, ry, rz] = s.length === 3 ? s : [s[0] ?? 0.5, s[0] ?? 0.5, s[0] ?? 0.5];
       g.scale(rx, ry, rz);
       return g;
     }
     case "cylinder": {
       const [rt, rb, h] = s.length === 3 ? s : [s[0] ?? 0.3, s[0] ?? 0.3, s[1] ?? 1];
-      return new THREE.CylinderGeometry(rt, rb, h, Math.max(6, Math.round(36 * q)));
+      return new THREE.CylinderGeometry(rt, rb, h, p.facets ? Math.max(3, p.facets) : Math.max(6, Math.round(36 * q)));
     }
     case "cone":
-      return new THREE.ConeGeometry(s[0] ?? 0.3, s[1] ?? 1, Math.max(5, Math.round(36 * q)));
+      return new THREE.ConeGeometry(s[0] ?? 0.3, s[1] ?? 1, p.facets ? Math.max(3, p.facets) : Math.max(5, Math.round(36 * q)));
     case "torus":
       return new THREE.TorusGeometry(s[0] ?? 0.5, s[1] ?? 0.1, 18, 56, (s[2] ?? 360) * DEG);
     case "capsule":
@@ -233,7 +246,7 @@ const SignMesh: React.FC<{ p: CustomPart; color: string; geo: THREE.BufferGeomet
 
 const PartMesh: React.FC<{ p: CustomPart; color: string; pulse: number }> = ({ p, color, pulse }) => {
   const { look } = useKit3D();
-  const key = JSON.stringify([p.shape, p.size, p.points, p.radius]);
+  const key = JSON.stringify([p.shape, p.size, p.points, p.radius, p.facets]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const geo = useMemo(() => makeGeometry(p), [key]);
   if (!geo) return null;

@@ -297,7 +297,8 @@ test("title backing: ink on the pill reads >= 4.5:1 on every palette", () => {
 
 test("backward compatibility: every existing 3D look plans byte-identically to before the stage", () => {
   const golden = { "clay-diorama": "debc4170dbb65cfc", "iso-toon": "ffcd13426ef0c295", "neon-glass": "7f71ef7df4e49937", pedestal: "f0cb0f7fb5703224", "paper-world": "ae603ccada92369b", "toy-blocks": "509c471e5f603ce3", "holo-studio": "28e08d546d7fc03c", "neon-grid": "2b5ebb95477a86fd", "soft-studio": "d159b5f8a872b068", "moody-night": "12b493a8430f94e2", "voxel-world": "f2335604755eb4d2", "data-stage": "f88dcd5977f90cd4", "monolith-story": "d439b93ca5f8da9c", "clay-mascot": "cc49ba384fe749d7", "cutaway-explainer": "941434953494502c", "engineering-explainer": "6b200949e3c4be84" };
-  assert.deepEqual(Object.keys(golden).sort(), [...THREE_D_TEMPLATE_IDS].sort());
+  // process-explainer is stage-only: its examples carry a stage (covered by builders.test.mjs)
+  assert.deepEqual(Object.keys(golden).sort(), THREE_D_TEMPLATE_IDS.filter((id) => id !== "process-explainer").sort());
   for (const [id, want] of Object.entries(golden)) {
     const raw = read(`../examples/${id}.spec.json`);
     const r = validateSpec(raw);

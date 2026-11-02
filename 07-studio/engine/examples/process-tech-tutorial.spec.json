@@ -1,0 +1,1134 @@
+{
+  "version": 1,
+  "title": "How a web request travels",
+  "template": "process-explainer",
+  "language": "en",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "a tech campus: laptop, router, an ISP building, the cloud and a data center",
+    "world": {
+      "concept": "bright tech campus with a path and trees",
+      "ground": {
+        "kind": "plane",
+        "color": "#E3ECF5",
+        "size": 40
+      },
+      "backdrop": "#CFE3F7",
+      "parts": [
+        {
+          "build": "road",
+          "id": "road",
+          "pos": [
+            0,
+            0,
+            6.4
+          ],
+          "params": {
+            "length": 12,
+            "width": 1.6,
+            "lamps": 3,
+            "crosswalk": false
+          },
+          "seed": 3
+        },
+        {
+          "build": "grass-tufts",
+          "id": "grass",
+          "params": {
+            "count": 90,
+            "blades": 3,
+            "area": [
+              -8,
+              -6,
+              8,
+              5
+            ],
+            "avoid": [
+              [
+                -5,
+                -6,
+                5,
+                5
+              ]
+            ],
+            "color": "#7FC46B"
+          },
+          "seed": 4
+        },
+        {
+          "build": "tree",
+          "id": "trees",
+          "params": {
+            "kind": "lowpoly",
+            "height": 2.6,
+            "density": 1,
+            "leaf": "#6FBF8B",
+            "leaf2": "#9ADBA8"
+          },
+          "seed": 6,
+          "scatter": {
+            "count": 5,
+            "area": [
+              -9,
+              -7,
+              9,
+              -5.5
+            ],
+            "seed": 3
+          }
+        }
+      ]
+    },
+    "actors": [
+      {
+        "build": "desk",
+        "id": "desk",
+        "pos": [
+          -2.6,
+          0,
+          3.0
+        ],
+        "size": 0.9,
+        "params": {
+          "width": 2.4,
+          "screen": "#222B3F"
+        },
+        "seed": 1
+      },
+      {
+        "build": "laptop",
+        "id": "laptop",
+        "label": "Browser",
+        "pos": [
+          -2.6,
+          0.8,
+          3.2
+        ],
+        "size": 0.75,
+        "params": {
+          "open": 105,
+          "screen": "#4FA8FF"
+        },
+        "seed": 1
+      },
+      {
+        "build": "person",
+        "id": "user",
+        "pos": [
+          -4.4,
+          0,
+          3.6
+        ],
+        "params": {
+          "hat": "cap",
+          "shirt": "#3B82F6",
+          "tool": "none"
+        },
+        "seed": 3
+      },
+      {
+        "build": "browser-window",
+        "id": "page",
+        "pos": [
+          -2.6,
+          2.2,
+          3.0
+        ],
+        "size": 0.55,
+        "params": {
+          "width": 2.6,
+          "accent": "#3B82F6"
+        },
+        "seed": 1
+      },
+      {
+        "build": "router",
+        "id": "router",
+        "label": "Router",
+        "pos": [
+          2.4,
+          0,
+          2.4
+        ],
+        "params": {
+          "antennas": 3,
+          "waves": 3
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "cable1",
+        "params": {
+          "points": [
+            [
+              -1.5,
+              0.08,
+              3.1
+            ],
+            [
+              0.2,
+              0.08,
+              3.6
+            ],
+            [
+              1.6,
+              0.08,
+              2.4
+            ]
+          ],
+          "dots": 1,
+          "cable": "#3B82F6"
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "cable2",
+        "params": {
+          "points": [
+            [
+              2.6,
+              0.08,
+              1.9
+            ],
+            [
+              3.2,
+              0.08,
+              0.9
+            ],
+            [
+              3.0,
+              0.08,
+              0.2
+            ]
+          ],
+          "dots": 1,
+          "cable": "#F2A81D"
+        },
+        "seed": 2
+      },
+      {
+        "build": "building",
+        "id": "isp",
+        "label": "ISP",
+        "pos": [
+          3.4,
+          0,
+          -0.6
+        ],
+        "params": {
+          "floors": 6,
+          "style": "glass",
+          "width": 1.6,
+          "depth": 1.2,
+          "lit": 0.2
+        },
+        "seed": 2
+      },
+      {
+        "build": "cloud",
+        "id": "internet",
+        "pos": [
+          0.4,
+          3.6,
+          -2.2
+        ],
+        "params": {
+          "size": 2.6,
+          "puffs": 12
+        },
+        "seed": 2
+      },
+      {
+        "build": "building",
+        "id": "dc",
+        "pos": [
+          -1.2,
+          0,
+          -4.6
+        ],
+        "params": {
+          "floors": 4,
+          "style": "brick",
+          "width": 3.4,
+          "depth": 1.6,
+          "body": "#8E9AB0",
+          "lit": 0.1
+        },
+        "seed": 5
+      },
+      {
+        "build": "server-rack",
+        "id": "rack",
+        "label": "Server",
+        "pos": [
+          -3.2,
+          0,
+          -3.0
+        ],
+        "params": {
+          "units": 9
+        },
+        "seed": 1
+      },
+      {
+        "build": "database-cylinder",
+        "id": "db",
+        "pos": [
+          0.4,
+          0,
+          -3.0
+        ],
+        "params": {
+          "disks": 3,
+          "radius": 0.6
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "cable3",
+        "params": {
+          "points": [
+            [
+              2.2,
+              0.08,
+              -1.0
+            ],
+            [
+              0.2,
+              0.08,
+              -2.2
+            ],
+            [
+              -2.4,
+              0.08,
+              -3.2
+            ]
+          ],
+          "dots": 1,
+          "cable": "#2FB98F"
+        },
+        "seed": 3
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "type",
+      "narration": "You type an address and press enter: the browser needs a page that lives far away.",
+      "title": {
+        "kicker": "Step 1",
+        "main": "You ask for a page"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "shift": [
+              0,
+              1.2,
+              0
+            ],
+            "zoom": 0.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "laptop",
+            "at": 2,
+            "zoom": 0.42
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "page",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "cable1/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "cable2/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "cable3/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "router/wave",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "router/wave-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "router/wave-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "user/arm-r",
+            "dur": 0.4,
+            "to": {
+              "rot": [
+                -50,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.9,
+            "target": "user/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -20,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "user/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -50,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "page",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "scale": 0.1
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "page",
+            "dur": 0.9,
+            "ease": "out",
+            "to": {
+              "scale": 1
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "b",
+                "icon": "desktop",
+                "label": "Browser"
+              },
+              {
+                "id": "r",
+                "icon": "wifi-high",
+                "label": "Router"
+              },
+              {
+                "id": "i",
+                "icon": "buildings",
+                "label": "ISP"
+              },
+              {
+                "id": "s",
+                "icon": "hard-drives",
+                "label": "Server"
+              }
+            ],
+            "active": "b",
+            "steps": [
+              {
+                "at": 3.5,
+                "active": "r"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "router",
+      "narration": "The request leaves as tiny packets along the cable and reaches your router.",
+      "title": {
+        "kicker": "Step 2",
+        "main": "Packets leave"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cable1",
+            "at": 0,
+            "zoom": 0.42
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "router",
+            "at": 3,
+            "zoom": 0.42
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "cable1/dot",
+            "dur": 0,
+            "set": {
+              "pos": [
+                -1.727,
+                0.0,
+                -0.477
+              ],
+              "visible": true
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "cable1/dot",
+            "dur": 1.37,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -0.027,
+                0.0,
+                0.023
+              ]
+            }
+          },
+          {
+            "at": 1.77,
+            "target": "cable1/dot",
+            "dur": 1.43,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                1.373,
+                0.0,
+                -1.177
+              ]
+            }
+          },
+          {
+            "at": 3.25,
+            "target": "cable1/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 3.1,
+            "target": "router/wave",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 3.4,
+            "target": "router/wave-1",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 3.7,
+            "target": "router/wave-2",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "b",
+                "icon": "desktop",
+                "label": "Browser"
+              },
+              {
+                "id": "r",
+                "icon": "wifi-high",
+                "label": "Router"
+              },
+              {
+                "id": "i",
+                "icon": "buildings",
+                "label": "ISP"
+              },
+              {
+                "id": "s",
+                "icon": "hard-drives",
+                "label": "Server"
+              }
+            ],
+            "active": "b",
+            "steps": [
+              {
+                "at": 3,
+                "active": "r"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "isp",
+      "narration": "The router passes them to your internet provider, which sorts every packet by destination.",
+      "title": {
+        "kicker": "Step 3",
+        "main": "Out to the ISP"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cable2",
+            "at": 0,
+            "zoom": 0.42
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "isp",
+            "at": 3,
+            "zoom": 0.42
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "cable2/dot",
+            "dur": 0,
+            "set": {
+              "pos": [
+                -0.487,
+                0.0,
+                0.812
+              ],
+              "visible": true
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "cable2/dot",
+            "dur": 1.6,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                0.113,
+                0.0,
+                -0.188
+              ]
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "cable2/dot",
+            "dur": 1.0,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -0.087,
+                0.0,
+                -0.888
+              ]
+            }
+          },
+          {
+            "at": 3.05,
+            "target": "cable2/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 3.1,
+            "target": "isp",
+            "dur": 0.5,
+            "to": {
+              "emissive": 0.6
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Packets and routing",
+            "at": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "cloud",
+      "narration": "From there they hop across the internet, through many routers, toward the right data center.",
+      "title": {
+        "kicker": "Step 4",
+        "main": "Across the internet"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "internet",
+            "at": 0.4,
+            "zoom": 0.42
+          },
+          {
+            "shot": "wide",
+            "shift": [
+              0,
+              0.6,
+              0
+            ],
+            "at": 4,
+            "zoom": 0.55
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "internet",
+            "dur": 1.2,
+            "to": {
+              "scale": 1.25
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "internet",
+            "dur": 1.2,
+            "to": {
+              "scale": 1.0
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "internet",
+            "dur": 4,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -0.8,
+                0.3,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "server",
+      "narration": "At the data center, the server receives the request and looks for the page you asked for.",
+      "title": {
+        "kicker": "Step 5",
+        "main": "The server listens"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cable3",
+            "at": 0,
+            "zoom": 0.42
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "rack",
+            "at": 3,
+            "zoom": 0.42
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.3,
+            "target": "cable3/dot",
+            "dur": 0,
+            "set": {
+              "pos": [
+                2.212,
+                0.0,
+                1.281
+              ],
+              "visible": true
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "cable3/dot",
+            "dur": 1.23,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                0.212,
+                0.0,
+                0.081
+              ]
+            }
+          },
+          {
+            "at": 1.53,
+            "target": "cable3/dot",
+            "dur": 1.47,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -2.388,
+                0.0,
+                -0.919
+              ]
+            }
+          },
+          {
+            "at": 3.05,
+            "target": "cable3/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 3.1,
+            "target": "rack",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.8
+            }
+          },
+          {
+            "at": 3.5,
+            "target": "db",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "reply",
+      "narration": "It reads the page from the database and sends the answer back along the same road.",
+      "title": {
+        "kicker": "Step 6",
+        "main": "The reply"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "db",
+            "at": 0,
+            "zoom": 0.42
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "cable3",
+            "at": 2,
+            "zoom": 0.42
+          }
+        ],
+        "beats": [
+          {
+            "at": 2.0,
+            "target": "cable3/dot",
+            "dur": 0,
+            "set": {
+              "pos": [
+                -2.388,
+                0.0,
+                -0.919
+              ],
+              "visible": true
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "cable3/dot",
+            "dur": 1.2,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                0.212,
+                0.0,
+                0.081
+              ]
+            }
+          },
+          {
+            "at": 3.2,
+            "target": "cable3/dot",
+            "dur": 1.0,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                2.212,
+                0.0,
+                1.281
+              ]
+            }
+          },
+          {
+            "at": 4.25,
+            "target": "cable3/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 4.4,
+            "target": "cable2/dot",
+            "dur": 0,
+            "set": {
+              "pos": [
+                -0.087,
+                0.0,
+                -0.888
+              ],
+              "visible": true
+            }
+          },
+          {
+            "at": 4.4,
+            "target": "cable2/dot",
+            "dur": 0.61,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                0.113,
+                0.0,
+                -0.188
+              ]
+            }
+          },
+          {
+            "at": 5.01,
+            "target": "cable2/dot",
+            "dur": 0.99,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -0.487,
+                0.0,
+                0.812
+              ]
+            }
+          },
+          {
+            "at": 6.05,
+            "target": "cable2/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Request and response",
+            "at": 0.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "page",
+      "narration": "Finally your browser draws the page and it appears on screen, all in a fraction of a second.",
+      "title": {
+        "kicker": "Step 7",
+        "main": "The page appears"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cable1",
+            "at": 0,
+            "zoom": 0.42
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "page",
+            "at": 2,
+            "zoom": 0.42
+          },
+          {
+            "shot": "wide",
+            "shift": [
+              0,
+              1.2,
+              0
+            ],
+            "at": 5,
+            "zoom": 0.55
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.2,
+            "target": "cable1/dot",
+            "dur": 0,
+            "set": {
+              "pos": [
+                1.373,
+                0.0,
+                -1.177
+              ],
+              "visible": true
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "cable1/dot",
+            "dur": 0.82,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -0.027,
+                0.0,
+                0.023
+              ]
+            }
+          },
+          {
+            "at": 1.02,
+            "target": "cable1/dot",
+            "dur": 0.78,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -1.727,
+                0.0,
+                -0.477
+              ]
+            }
+          },
+          {
+            "at": 1.85,
+            "target": "cable1/dot",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "page",
+            "dur": 0.5,
+            "to": {
+              "scale": 1.5
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "laptop/screen",
+            "dur": 0.3,
+            "to": {
+              "emissive": 1.4
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "b",
+                "icon": "desktop",
+                "label": "Browser"
+              },
+              {
+                "id": "r",
+                "icon": "wifi-high",
+                "label": "Router"
+              },
+              {
+                "id": "i",
+                "icon": "buildings",
+                "label": "ISP"
+              },
+              {
+                "id": "s",
+                "icon": "hard-drives",
+                "label": "Server"
+              }
+            ],
+            "active": "s",
+            "steps": [
+              {
+                "at": 2,
+                "active": "b"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
