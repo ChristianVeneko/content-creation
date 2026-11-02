@@ -237,6 +237,7 @@ Source: https://eltelar.es/articulos/video-ia-herramientas.html (read 2026-11-01
 | `host-tutorial` | illustrated-2d | template default | settle: spring settle at scene start | pop | warm paper texture, halftone dot corner, hard-shadow cards, fixed cutout host at the bottom | halftone-dot swell |
 | `checklist-glass` | illustrated-2d | template default | drift | rise | pastel mesh with a glossy sheen, frosted UI-mockup cards, progress pill, bottom-right mascot | default |
 | `spotlight-narrative` | illustrated-2d | template default | push: slow push-in | rise | dark vignette, one spotlight cone, pulsing floor rings, dust, light leak, grain | zoom-through |
+| `data-atlas` | illustrated-2d | template default | drift (the backdrop layers add their own parallax dolly) | rise | night haze, warm glow, drifting motes and a heavy vignette over a layered backdrop; dark pill counter, particle map with a self-drawing route, parchment or blueprint ledger | zoom-through |
 | `pop-comic` | illustrated-2d | panel slam: next panel slams in on a diagonal with speed lines and a burst outline | dutch: punch-in on a tilted angle | slam: drops from 1.6x with overshoot and twist | yellow stock, Ben-Day dots, speed rays, gutter frame, newsprint dot screen, action burst on the cut | stamp (impact) / pop |
 | `paper-world` | 3d | page turn hinged on the left edge | crane / orbit / dolly / push, pitch 40 | unfold: stands up from the page on its hinge | flat-shaded paper, 9-sided paper island with cone trees and hills, falling paper confetti, paper grain overlay | default |
 | `toy-blocks` | 3d | block build: tiles snap in bottom-up in 10 held poses | macro long lens (fov 17): orbit / topdown / dolly / pan | snap: drops in 0.3-unit steps on twos, clicks in | glossy plastic, studded baseplate on a wooden desk, tilt-shift blur bands, falling bricks | default |
@@ -373,6 +374,7 @@ Reference: the dark-grid UI explainers (sebastiankra.ia) and the flat 2.5D scene
 - **`host-tutorial`**: bold sans headline with a serif-italic accent word (Fraunces), mono step kicker, white hard-shadow panels.
 - **`checklist-glass`**: same headline treatment, a frosted progress pill with a fill track, glass panels.
 - **`spotlight-narrative`**: Fraunces 700 headline with a tracked kicker, glowing beacon rings, dark panels.
+- **`data-atlas`**: Montserrat 800 numbers in a dark pill, mono ledger text on paper, two-tone captions at the top; the scene is clipped to the y 302-1262 picture window, so the backdrop fades into the night at both edges.
 - **`soft-gradient`**: Rubik 800 headline with a gradient last word, a frosted pill kicker, glass panels with `backdrop-filter`.
 - **Format elements** (`src/illustrated/format-elements.tsx`): `post`, `chart`, `meter`, `hourglass`, `tags`, `stat`, `timer`, `panels`, `object`, `character`. They work in every illustrated-kit look. `character` is a generic person (round or blocky); there is no mascot.
 

@@ -180,6 +180,7 @@ Video length: 15 to 180 s in total (15, 30, 45, 60, 90, 120, 150, 180 in the UI)
 | `host-tutorial` | Illustrated kit format: numbered step tutorial on warm paper, a persistent cutout host (`host` element, pose and expression per scene), `roadmap` card, `window` UI mockups, halftone-dot transition |
 | `checklist-glass` | Illustrated kit format: "Checklist n / N" pill, frosted `window` mockups with cursor and highlight, a persistent `mascot` slot, pastel mesh |
 | `spotlight-narrative` | Illustrated kit format: dark spotlight story, one `beacon` (icon in glowing rings with a counting number) or layered `drawing` per scene |
+| `data-atlas` | Illustrated kit format: data documentary. One agent-drawn `backdrop` per scene (3-5 depth layers) in a **2.5D** mode (per-layer parallax, dolly, depth of field; default) or `flat` (one picture, one push-in), plus `counter-pill`, `particle-field`, `route` and `ledger` props; captions top, no title |
 | `pixel-versus` | Pixel family format: arena stage, `round` cards, `fighters` with a header strip of stars, `ranking` and `verdict` panels, crowns, `energy-beam` / `power-up` / `hit-flash` fx |
 
 **Depth pass.** Looks listed in `LOOK_DEPTH` (`lib/illustrated.mjs`) get soft contact shadows under elements, lit gradient

@@ -294,8 +294,8 @@ is a medium with its own texture, motion and transition; pick by tone, then foll
 - `pop-comic`: pop-art comic page (Ben-Day dots, panel slams, action bursts). Punchy caps titles; `chat` renders as speech
   bubbles; `stamp` is an action burst with one word (`BOOM`, `NOPE`); `title.number` sits on a burst.
 
-### Depth formats: `ui-cards`, `flat-depth`, `soft-gradient`, `host-tutorial`, `checklist-glass`, `spotlight-narrative`
-Same contract as above (8-14 scenes, `title` + `illustration`, no emoji, no `theme`). They draw scenes with depth: soft
+### Depth formats: `ui-cards`, `flat-depth`, `soft-gradient`, `host-tutorial`, `checklist-glass`, `spotlight-narrative`, `data-atlas`
+Same contract as above (8-14 scenes, `title` + `illustration` except `data-atlas`, which has no title, no emoji, no `theme`). They draw scenes with depth: soft
 contact shadows, lit gradient panels, parallax background layers and a ground plane. Use the format elements above:
 - `ui-cards`: dark navy grid with a HUD of labeled bars. `title.kicker` is the white first line (`HASTA HOY:`, `OJO A LA`),
   `title.main` the accent second line (max ~22 chars). 1-2 elements per scene: `post` (highlight + magnify the key line),
@@ -307,9 +307,36 @@ contact shadows, lit gradient panels, parallax background layers and a ground pl
 - `soft-gradient`: pastel mesh gradients and frosted glass cards. `title.kicker` is a small pill, `title.main` the headline
   (the last word gets a gradient). Calm 1-2 elements: `card`, `stat`, `panels`, `checklist`, `chart`, `meter` (`gauge` or
   `battery`), `timer` with `clock`.
+- `data-atlas`: a data documentary, one dramatic illustrated metaphor per scene that YOU draw for the topic (a lit globe, a
+  desk of papers, a city at dusk, a map of lit points). Scenes normally have **no `title`**: the word-synced captions
+  (upper-middle, active word highlighted) carry the words; a `title` is only a small chapter tag at the very top. 8-14 scenes
+  of 3-5 s, each one image with one number or fact. Every scene starts with a `backdrop`, then the props that fit the beat:
+  - `backdrop`: `{ "layers": [ { "depth": "far" | "mid" | "subject" | "near", "viewBox"?: "0 0 540 480", "parts": [...],
+    "motion"?, "keys"? } ] (1-5), "mode"?: "2.5d" | "flat", "glow"?: color, "haze"?: 0..1 }`. Each layer is an agent-drawn
+    `drawing` (same parts, gradients, `draw`, `motion` and `keys` as the `drawing` element) on the picture window (the band y 302-1262 of the frame, the only part of a scene that shows) whose default
+    viewBox is `0 0 540 480` (half scale; the captions sit over its top 60 units, so keep the subject around y 110-280 and
+    the pill area y 250-310 free of detail). Draw 3-5 layers: `far` (sky, globe, map, horizon), `mid` (skyline, shelves, hills),
+    `subject` (the hero object or place), `near` (foreground framing: grass, rails, a window edge, out-of-focus bokeh). Use
+    palette roles (`accent`, `accent2`, `accent3`, `bg`, `surface`, `ink`, `paper`, `text`, `muted`), gradients and a few light
+    sources so the scene looks lit; keep illustration accents clear against what they sit on. Haze, glow, drifting motes and a
+    vignette are added over it automatically.
+  - **2.5D mode** (`mode: "2.5d"`, the default): every layer drifts sideways at its own speed (far slowest, near fastest, the
+    direction flips each scene) with a slow dolly and a soft depth-of-field blur on the far and near layers. **Flat mode**
+    (`mode: "flat"`): the same layers render as one picture with a single push-in, no parallax and no blur. To tell the same
+    story flat, set `mode: "flat"` on every `backdrop`; nothing else changes.
+  - `counter-pill`: `{ "value", "from"?, "prefix"?, "suffix"?, "decimals"?, "label"? }` a dark rounded pill near the bottom with a big
+    number that counts up (grouped like the video language: `6.056.296` in Spanish, `6,056,296` in English); `label` is a small tag above it.
+  - `particle-field`: `{ "count"?: 40-500, "from"?, "to"?: 0..1 share lit at start / end, "cluster"?: [x, y] percent, "flow"?: bool }`
+    points of light that fill in as the scene plays (a populated map); with `cluster` they gather, with `flow` they stream.
+  - `route`: `{ "points": [[x, y], ...] (2-8, percent of the frame, keep y within 18-62), "dashed"?, "flow"?, "endpoints"?, "label"? }` a
+    glowing line that draws itself over the scene, with a bright head and glowing ends.
+  - `ledger`: `{ "paper": "parchment" | "blueprint", "title"?, "columns"?: [a, b], "rows": [ { "label", "value" } ] (1-8), "total"?: { "label", "value" },
+    "underline"?: true (a red underline draws under the total), "tilt"?: -6..6 }` a paper table typed in row by row; it is the one
+    prop that sits in the middle stack. `counter-pill`, `particle-field` and `route` are slots: they take no stack room.
+  Keep 1-3 props per scene on top of the backdrop. Draw new subjects every video: never reuse the example's board, rice or desk.
 
 Full examples: `examples/whiteboard.spec.json`, `examples/broadcast.spec.json`, `examples/editorial-chart.spec.json`,
-`examples/editor-window.spec.json`, `examples/rank-numbers.spec.json`, `examples/<art look>.spec.json` for each art style, and `examples/ui-cards.spec.json`, `examples/flat-depth.spec.json`, `examples/soft-gradient.spec.json`, `examples/host-tutorial.spec.json`, `examples/checklist-glass.spec.json`, `examples/spotlight-narrative.spec.json`.
+`examples/editor-window.spec.json`, `examples/rank-numbers.spec.json`, `examples/<art look>.spec.json` for each art style, and `examples/ui-cards.spec.json`, `examples/flat-depth.spec.json`, `examples/soft-gradient.spec.json`, `examples/host-tutorial.spec.json`, `examples/checklist-glass.spec.json`, `examples/spotlight-narrative.spec.json`, `examples/data-atlas.spec.json`.
 
 ## Creative mode: 2D
 
