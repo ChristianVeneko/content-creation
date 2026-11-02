@@ -132,13 +132,13 @@
         "shots": [
           {
             "shot": "wide",
-            "zoom": 0.55
+            "frame": "wide"
           },
           {
             "shot": "zoom-to",
             "focus": "solar",
-            "zoom": 0.42,
-            "at": 2
+            "at": 2,
+            "frame": "close"
           }
         ],
         "beats": [
@@ -173,7 +173,7 @@
           {
             "shot": "zoom-to",
             "focus": "battery",
-            "zoom": 0.4
+            "frame": "close"
           }
         ],
         "beats": [
@@ -243,12 +243,12 @@
           {
             "shot": "zoom-to",
             "focus": "lamp",
-            "zoom": 0.4
+            "frame": "close"
           },
           {
             "shot": "wide",
-            "zoom": 0.55,
-            "at": 3
+            "at": 3,
+            "frame": "wide"
           }
         ],
         "beats": [
@@ -275,13 +275,13 @@
         "shots": [
           {
             "shot": "wide",
-            "zoom": 0.55
+            "frame": "wide"
           },
           {
             "shot": "zoom-to",
             "focus": "battery",
-            "zoom": 0.4,
-            "at": 3
+            "at": 3,
+            "frame": "close"
           }
         ],
         "beats": [
@@ -339,13 +339,13 @@
         "shots": [
           {
             "shot": "wide",
-            "zoom": 0.55
+            "frame": "wide"
           },
           {
             "shot": "zoom-to",
             "focus": "solar",
-            "zoom": 0.42,
-            "at": 3
+            "at": 3,
+            "frame": "close"
           }
         ],
         "beats": [

@@ -11,7 +11,7 @@ import { rgba } from "../util";
 import type { Look3D } from "./looks";
 
 type Colors = ReturnType<typeof overlayColors>;
-type Ctx = { c: Colors; icons: Record<string, IconData>; font: string; t: number; frame: number; fps: number };
+type Ctx = { hudY: number; c: Colors; icons: Record<string, IconData>; font: string; t: number; frame: number; fps: number };
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const EXIT = 0.25;
@@ -66,7 +66,7 @@ const Flow: React.FC<{ o: Extract<Overlay3DPlan, { type: "flow" }>; ctx: Ctx }> 
   const ai = Math.max(0, o.chips.findIndex((x) => x.id === active));
   const tile = 70;
   return (
-    <div style={{ position: "absolute", left: REGIONS.hud.x, top: REGIONS.hud.y, width: W, height: FLOW_H, boxSizing: "border-box", padding: "14px 24px", borderRadius: 30, background: rgba(c.panel, 0.94), border: `2px solid ${rgba(c.panelText, 0.16)}`, boxShadow: "0 14px 30px rgba(20,25,40,0.32)", display: "flex", alignItems: "flex-start", justifyContent: "space-between", opacity: w.alpha, transform: `translateY(${(1 - w.p) * -40}px)`, fontFamily: ctx.font }}>
+    <div style={{ position: "absolute", left: REGIONS.hud.x, top: ctx.hudY, width: W, height: FLOW_H, boxSizing: "border-box", padding: "14px 24px", borderRadius: 30, background: rgba(c.panel, 0.94), border: `2px solid ${rgba(c.panelText, 0.16)}`, boxShadow: "0 14px 30px rgba(20,25,40,0.32)", display: "flex", alignItems: "flex-start", justifyContent: "space-between", opacity: w.alpha, transform: `translateY(${(1 - w.p) * -40}px)`, fontFamily: ctx.font }}>
       {o.chips.map((chip, i) => {
         const on = i === ai;
         const pop = stamp[chip.id] !== undefined ? spring({ frame: ctx.frame - Math.round(stamp[chip.id] * fps), fps, config: { damping: 9, stiffness: 220 } }) : 1;
@@ -179,13 +179,14 @@ const Versus: React.FC<{ o: Extract<Overlay3DPlan, { type: "versus" }>; ctx: Ctx
   );
 };
 
-export const CutawayOverlay: React.FC<{ overlay: Overlay3DPlan[]; palette: Palette; icons: Record<string, IconData>; look: Look3D }> = ({ overlay, palette, icons, look }) => {
+export const CutawayOverlay: React.FC<{ overlay: Overlay3DPlan[]; palette: Palette; icons: Record<string, IconData>; look: Look3D; top?: number }> = ({ overlay, palette, icons, look, top }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const c = overlayColors(palette);
-  const ctx: Ctx = { c, icons, font: look.label.font, t: frame / fps, frame, fps };
+  const hudY = top ?? REGIONS.hud.y;
+  const ctx: Ctx = { hudY, c, icons, font: look.label.font, t: frame / fps, frame, fps };
   const hasFlow = overlay.some((o) => o.type === "flow");
-  const base = hasFlow ? REGIONS.hud.y + FLOW_H + GAP : REGIONS.hud.y + 18;
+  const base = hasFlow ? hudY + FLOW_H + GAP : hudY + 18;
   const hasConcept = overlay.some((o) => o.type === "concept");
   const cardTop = base + (hasConcept ? 84 : 0);
   return (

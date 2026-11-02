@@ -179,7 +179,7 @@ export type StagePlan3D = {
   liquids: StageLiquid3D[];
   tracks: Record<string, Record<string, { t: number; v: unknown; ease?: string }[]>>;
   totalSec: number;
-  safe: { top: number; bottom: number; title: { y: number; h: number } };
+  safe: { top: number; bottom: number; title: { y: number; h: number }; caption: { y: number; h: number } };
   title: { mode: "pill"; fill: string; fillAlpha: number; ink: string; rule: string; kickerInk: string; contrast: number };
 };
 export type CameraFrame = { target: [number, number, number]; dist: number; viewH: number };

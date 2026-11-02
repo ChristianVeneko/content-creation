@@ -21917,6 +21917,16 @@
                       "minLength": 1,
                       "maxLength": 40
                     },
+                    "frame": {
+                      "description": "portrait framing of the shot (wide, medium, close, cutaway): wide shows the whole set, medium the subject area, close one subject, cutaway the soil section; a stage wide / medium / close shot defaults to its own frame",
+                      "type": "string",
+                      "enum": [
+                        "wide",
+                        "medium",
+                        "close",
+                        "cutaway"
+                      ]
+                    },
                     "cut": {
                       "description": "stage: hard cut to this shot instead of an eased move",
                       "type": "boolean"

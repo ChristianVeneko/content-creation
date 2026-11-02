@@ -230,7 +230,7 @@ export const LOOK3D = {
   // engineering explainer: master engineering camera framing both above-ground set and underground strata cutaway
   "engineering-explainer": { ortho: false, fov: 32, yaw: -18, pitch: 12, moves: ["pullout", "orbit", "dolly", "glide", "reveal"], float: 0, spin: 0, wide: 1.3 },
   // process explainer: one continuous daylight world seen from a gentle three-quarter angle; stage shots drive the camera
-  "process-explainer": { ortho: false, fov: 32, yaw: -16, pitch: 13, moves: ["pullout", "glide", "orbit", "dolly", "reveal"], float: 0, spin: 0, wide: 1.3 },
+  "process-explainer": { ortho: false, fov: 32, yaw: -16, pitch: 10, moves: ["pullout", "glide", "orbit", "dolly", "reveal"], float: 0, spin: 0, wide: 1.3 },
 };
 
 /**
@@ -380,22 +380,24 @@ export function frameContent(placed, look, opts = {}) {
   const w = max[0] - min[0];
   const d = max[2] - min[2];
   const h = max[1] - min[1];
-  const targetY = min[1] + h * (look === "cutaway-explainer" || look === "engineering-explainer" || look === "process-explainer" ? 0.32 : 0.42);
+  const targetY = min[1] + h * (opts.targetFrac ?? (look === "cutaway-explainer" || look === "engineering-explainer" || look === "process-explainer" ? 0.32 : 0.42));
   const target = [(min[0] + max[0]) / 2, targetY, (min[2] + max[2]) / 2];
   const pitch = L.pitch * DEG;
   // projected extents: width across the frame, and height (object height + depth foreshortened by the pitch)
   // a minimum size keeps single objects from filling the frame (stat numbers and labels need room)
-  const W = Math.max(Math.max(w, d * 0.7) + 0.6, 3.4);
+  // opts.maxW crops the sides of a wide world (the subject stays large; wide shots pull back with a zoom)
+  const W = Math.min(opts.maxW ?? Infinity, Math.max(Math.max(w, d * 0.7) + 0.6, 3.4));
   const H = h * Math.cos(pitch) + d * Math.sin(pitch) + 0.6;
   const aspect = 1080 / 1920;
-  const wide = L.wide ?? 1;
+  const wide = opts.wide ?? L.wide ?? 1;
+  const minDist = opts.minDist ?? 6;
   if (L.ortho) {
     // visible height so the content spans ~80% of the width and ~40% of the height
     const viewH = Math.max(W / (0.8 * aspect), H / 0.4, 6) * wide;
     return { target, dist: 30, viewH };
   }
   const t = Math.tan((L.fov / 2) * DEG);
-  const dist = Math.max(W / (0.8 * 2 * t * aspect), H / ((opts.fill ?? 0.42) * 2 * t), 6) * wide;
+  const dist = Math.max(W / (0.8 * 2 * t * aspect), H / ((opts.fill ?? 0.42) * 2 * t), minDist) * wide;
   return { target, dist, viewH: 0 };
 }
 
@@ -664,6 +666,9 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
  * overlay and local moments. State and camera are pure functions of global time, so a scene starts exactly where the previous
  * one ended and nothing is rebuilt per scene.
  */
+/** Framing of a staged video: the subject fills the portrait frame (a slim title band on top, the whole lower area for the cutaway or the action). */
+export const STAGE_FRAME = { fill: 0.6, wide: 1, minDist: 3.2, targetFrac: 0.5, maxW: 9.5 };
+
 export function planStageScenes(spec, timeline, captions = null) {
   const fps = spec.format.fps;
   const look = look3dOf(spec);
@@ -701,7 +706,7 @@ export function planStageScenes(spec, timeline, captions = null) {
   const items = [...placed];
   if (terrain) items.push({ pos: [terrain.pos[0], -terrain.depth * 0.5, terrain.pos[1]], scale: 1, h: terrain.depth * 0.5 + 0.2, half: Math.min(8, Math.max(terrain.size[0], terrain.size[1] * 0.8) / 2) });
   if (!items.length) items.push({ pos: [0, 0, 0], scale: 1, h: 2, half: 3 });
-  const frame = frameContent(items, look, { fill: 0.34 });
+  const frame = frameContent(items, look, STAGE_FRAME);
   const front = terrain ? terrain.pos[1] + terrain.size[1] / 2 : 0;
   const carveById = new Map(carves.filter((c) => c.id).map((c) => [c.id, c]));
   /** World point a focus reference looks at, at global second g. */
@@ -735,8 +740,8 @@ export function planStageScenes(spec, timeline, captions = null) {
   const cameraKeys = [];
   scenes.forEach((sc) => {
     const sec = (m) => momentSec(m, sc.moments);
-    let raw = sc.v.shots ? shotsToKeys(sc.v.shots, sc.sec, sec) : (sc.v.cameraKeys ?? []);
-    if (!sc.v.shots && !sc.v.cameraKeys && sc.v.focus) raw = shotsToKeys([{ shot: "zoom-to", focus: sc.v.focus, at: 0 }], sc.sec, sec);
+    let raw = sc.v.shots ? shotsToKeys(sc.v.shots, sc.sec, sec, { stage: true }) : (sc.v.cameraKeys ?? []);
+    if (!sc.v.shots && !sc.v.cameraKeys && sc.v.focus) raw = shotsToKeys([{ shot: "zoom-to", focus: sc.v.focus, at: 0 }], sc.sec, sec, { stage: true });
     raw.forEach((k, ki) => {
       const g = round(momentSec(k.at, sc.moments) + sc.t0);
       const shot = sc.v.shots?.[ki];
@@ -750,6 +755,7 @@ export function planStageScenes(spec, timeline, captions = null) {
         out.yaw = -LOOK3D[look].yaw;
         out.pitch = 4 - LOOK3D[look].pitch;
       }
+      if (k.focus) out.focusActor = k.focus.split("/")[0];
       const f = k.focus ? focusPoint(k.focus, g, dive) : null;
       const shift = k.shift ?? [0, 0, 0];
       if (f) out.shift = [0, 1, 2].map((a) => r3(f[a] - frame.target[a] + shift[a]));

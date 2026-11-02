@@ -552,5 +552,5 @@ export function titleBacking(p) {
   return { mode: "pill", fill: base, fillAlpha: 0.9, ink, rule: p.accent2 ?? p.accent, kickerInk: mixColor(ink, base, 0.25), contrast: contrastRatio(ink, base) };
 }
 
-/** Title / caption band of the 1080x1920 frame a staged subject keeps out of (pixels from the top). */
-export const STAGE_SAFE = { top: 600, bottom: 1250, title: { y: 336, h: 236 } };
+/** Bands of the 1080x1920 frame (pixels from the top): a slim title on top, small captions near the middle; the subject uses everything between top and bottom. */
+export const STAGE_SAFE = { top: 360, bottom: 1640, title: { y: 200, h: 150 }, caption: { y: 900, h: 120 } };

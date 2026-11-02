@@ -297,6 +297,10 @@ B.tree = {
         }
       }
       k.cone("tip", [0.12 * c, 0.3], [0, H + 0.05, 0], leaf2, { facets: 5 });
+      // extra faceted layers: a wide dark skirt under the lowest tier and a light upper highlight tier
+      const r0 = 0.95 * c * (H / 2.6) * 0.8;
+      k.cone("skirt", [r0 * 1.12, 0.22], [0, trunkH * 0.7 + 0.08, 0], shade(leaf, -0.3), { facets: 8, rot: [0, 12, 0] });
+      k.cone("tier-light", [r0 * 0.5, H * 0.2], [0, H * 0.86, 0], shade(leaf, 0.2), { facets: 6, rot: [0, 30, 0] });
     } else if (p.kind === "palm") {
       let x = 0;
       let y = 0;
@@ -341,9 +345,9 @@ B.tree = {
       const cy = trunkH + (H - trunkH) * 0.5;
       const cr = (H - trunkH) * 0.5 * c * (p.kind === "oak" ? 1.25 : 1);
       if (p.kind === "lowpoly") {
-        for (let i = 0; i < 3; i++) {
-          const u = i / 2;
-          k.sph("stack", [cr * (1.15 - 0.4 * u), cr * (0.62 - 0.1 * u), cr * (1.15 - 0.4 * u)], [k.vary(-0.05, 0.05, "sx", i), trunkH + 0.2 + i * cr * 0.7, k.vary(-0.05, 0.05, "sz", i)], i === 1 ? leaf2 : shade(leaf, i * 0.1), { facets: 5, rot: [0, i * 36, 0] });
+        for (let i = 0; i < 5; i++) {
+          const u = i / 4;
+          k.sph("stack", [cr * (1.15 - 0.4 * u), cr * (0.62 - 0.1 * u), cr * (1.15 - 0.4 * u)], [k.vary(-0.05, 0.05, "sx", i), trunkH + 0.2 + i * cr * 0.42, k.vary(-0.05, 0.05, "sz", i)], i % 2 ? leaf2 : shade(leaf, i * 0.1), { facets: 5, rot: [0, i * 36, 0] });
         }
       } else {
         const blobs = (p.kind === "oak" ? 10 : 8) + p.density * 4;
@@ -356,6 +360,9 @@ B.tree = {
           if (i % 2 === 0) k.cone("leaf-tuft", [br * 0.4, br * 0.9], [Math.cos(rad(a)) * dist * 1.05, cy + e * cr * 0.8 + br * 0.7, Math.sin(rad(a)) * dist * 1.05], shade(leaf2, 0.08), { facets: 4, rot: [0, a, 0] });
           k.sph("leaf-blob", [br, br * 0.85, br], [Math.cos(rad(a)) * dist, cy + e * cr * 0.8, Math.sin(rad(a)) * dist], e > 0.3 ? leaf2 : e < -0.2 ? shade(leaf, -0.15) : leaf, { facets: 5, rot: [0, a, 0] });
         }
+        // extra faceted layers: a dark underside that shades the crown and a light cap on top
+        k.sph("crown-under", [cr * 1.02, cr * 0.5, cr * 1.02], [0, cy - cr * 0.55, 0], shade(leaf, -0.25), { facets: 7, rot: [0, 12, 0] });
+        k.sph("crown-cap", [cr * 0.62, cr * 0.42, cr * 0.62], [0, cy + cr * 0.72, 0], shade(leaf2, 0.12), { facets: 6, rot: [0, 40, 0] });
       }
     }
     return {};
@@ -417,10 +424,10 @@ B.fence = {
 
 B["grass-tufts"] = {about: "Scatter template of grass tufts (3-7 leaning blades). Use in stage.world with `params.count` and `params.area`; it becomes a `scatter` of instanced copies that follow the terrain.", scatterDefault: true,
   params: {
-    count: int(300, 1, 1000, "Number of tufts"),
+    count: int(360, 1, 1000, "Number of tufts (cheap: 3 blades + 1 group = 4 instanced parts per tuft)"),
     area: list([-8, -5, 8, 5], "Ground rectangle [x0, z0, x1, z1]"),
     avoid: list([], "Keep-out zones: [x0, z0, x1, z1] boxes or [x, z, r] discs"),
-    blades: int(5, 3, 7, "Blades per tuft"),
+    blades: int(3, 3, 7, "Blades per tuft (3 keeps a tuft cheap: more tufts fit the world budget)"),
     height: num(0.3, 0.1, 1, "Blade height"),
     color: color("Blade color"),
     color2: color("Lighter blade color"),
@@ -433,7 +440,7 @@ B["grass-tufts"] = {about: "Scatter template of grass tufts (3-7 leaning blades)
       const a = (i / p.blades) * 360 + k.vary(0, 40, "a", i);
       const h = p.height * k.vary(0.65, 1.25, "h", i);
       const tilt = k.vary(8, 24, "t", i);
-      k.cone("blade", [p.height * 0.18, h], [Math.cos(rad(a)) * 0.04, h / 2 - 0.01, Math.sin(rad(a)) * 0.04], i % 2 ? c1 : c2, { facets: 3, parent: root, rot: [Math.round(Math.sin(rad(a)) * tilt), 0, Math.round(-Math.cos(rad(a)) * tilt)] });
+      k.cone("blade", [p.height * 0.24, h], [Math.cos(rad(a)) * 0.04, h / 2 - 0.01, Math.sin(rad(a)) * 0.04], i % 2 ? c1 : c2, { facets: 3, parent: root, rot: [Math.round(Math.sin(rad(a)) * tilt), 0, Math.round(-Math.cos(rad(a)) * tilt)] });
     }
     return { scatter: { count: p.count, area: p.area, avoid: p.avoid, jitter: { scale: 0.45, rot: 180 } } };
   },
