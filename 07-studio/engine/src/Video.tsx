@@ -90,7 +90,7 @@ export const Video: React.FC<RenderProps> = ({ spec, timeline, captionPages, ass
   return (
     <AbsoluteFill style={{ backgroundColor: palette.bg[0] }}>
       {illustrated ? <IllustratedBackground spec={spec} /> : null}
-      {illustrated ? (
+      {illustrated && spec.template !== "data-atlas" ? (
         // Scenes only live between the HUD and the captions, so cuts never sweep over the chrome.
         <AbsoluteFill style={{ clipPath: `inset(${REGIONS.title.y - 34}px 0 ${height - (REGIONS.captions.y - 6)}px 0)` }}>
           <TransitionSeries>{items}</TransitionSeries>

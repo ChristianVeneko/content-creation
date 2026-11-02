@@ -64,7 +64,8 @@ export const DrawingSvg: React.FC<{
   uid: string;
   seed?: number;
   style?: React.CSSProperties;
-}> = ({ drawing, colors, skin, t: t0, enter, moments, width, height, uid, seed = 1, style }) => {
+  preserveAspectRatio?: string;
+}> = ({ drawing, colors, skin, t: t0, enter, moments, width, height, uid, seed = 1, style, preserveAspectRatio = "xMidYMid meet" }) => {
   const vb = parseViewBox(drawing.viewBox ?? "0 0 400 400");
   const layout = React.useMemo(() => drawingLayout(drawing.parts), [drawing.parts]);
   const t = skin.stepFps ? Math.floor(t0 * skin.stepFps) / skin.stepFps : t0;
@@ -204,7 +205,7 @@ export const DrawingSvg: React.FC<{
       viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
       width={width}
       height={height}
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio={preserveAspectRatio}
       style={{ overflow: "visible", filter: skin.shadow, ...style }}
     >
       <defs>

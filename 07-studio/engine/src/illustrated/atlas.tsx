@@ -20,8 +20,8 @@ import { inkColors, lookDrawingSkin } from "./drawing-skin";
 type El = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 const FRAME = { w: 1080, h: 1920 };
-/** The picture window: scenes are clipped to y 302..1262 of the frame (Video.tsx), so the backdrop fills exactly that band. */
-const WIN = { top: 302, h: 960 };
+/** Full-frame backdrop for the data-atlas format. */
+const WIN = { top: 0, h: 1920 };
 
 /** Neutral paper tones (computed neutrals, not palette roles): parchment stock and its ink. */
 const PARCHMENT = { top: "#EFE3C2", bottom: "#D8C595", ink: "#2A1F14", faint: "#6B5A40", stain: "120, 85, 40" };
@@ -46,7 +46,7 @@ export const Backdrop: React.FC<{ el: El; sceneSec: number; index: number; momen
   const colors = inkColors(ink);
   const skin = lookDrawingSkin(ink);
   return (
-    <div style={{ position: "absolute", left: 0, top: WIN.top, width: FRAME.w, height: WIN.h, overflow: "hidden", background: `linear-gradient(180deg, ${ink.bg2} 0%, ${ink.bg} 100%)`, WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 9%, #000 91%, transparent 100%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 9%, #000 91%, transparent 100%)" }}>
+    <div style={{ position: "absolute", left: 0, top: WIN.top, width: FRAME.w, height: WIN.h, overflow: "hidden", background: `linear-gradient(180deg, ${ink.bg2} 0%, ${ink.bg} 100%)` }}>
       {layers.map((l, i) => {
         const m = layerMotion(l.depth ?? "subject", mode, p, dir);
         return (
@@ -71,6 +71,7 @@ export const Backdrop: React.FC<{ el: El; sceneSec: number; index: number; momen
               height={WIN.h}
               uid={`bd${index}-${i}`}
               seed={index * 7 + i + 1}
+              preserveAspectRatio="xMidYMid slice"
             />
           </div>
         );

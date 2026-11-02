@@ -79,7 +79,7 @@ export const MAX_WORLD_EXPANDED = 160;
 export const WORLD_GROUNDS = ["look", "none", "plane", "disc", "grid", "mirror"];
 /** Camera shot presets: offsets added on top of the scene's camera move (see `shots`). */
 export const SHOT_PRESETS = {
-  wide: { zoom: 1.25, pitch: -3 },
+  wide: { zoom: 1.15, pitch: 1, shift: [0, -0.3, 0] },
   medium: { zoom: 1 },
   close: { zoom: 0.62, pitch: -2 },
   low: { pitch: -12, zoom: 0.9 },
@@ -89,7 +89,7 @@ export const SHOT_PRESETS = {
   right: { yaw: 32, zoom: 0.95 },
   // cutaway explainers: a pull-out that shows the whole cross-section, a shot over a character's shoulder, and a
   // push to the wall the camera dollies through (fade the wall with part `keys`)
-  reveal: { zoom: 1.7, pitch: 2 },
+  reveal: { zoom: 1.35, pitch: 1, shift: [0, -0.25, 0] },
   shoulder: { yaw: 26, pitch: -4, zoom: 0.55 },
   through: { zoom: 0.42, pitch: -5 },
 };

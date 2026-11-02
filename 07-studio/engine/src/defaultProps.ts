@@ -27,6 +27,8 @@ import checklistGlassExample from "../examples/checklist-glass.spec.json";
 import checklistGlassTemplate from "../templates/checklist-glass.json";
 import spotlightExample from "../examples/spotlight-narrative.spec.json";
 import spotlightTemplate from "../templates/spotlight-narrative.json";
+import dataAtlasExample from "../examples/data-atlas.spec.json";
+import dataAtlasTemplate from "../templates/data-atlas.json";
 import softGradientTemplate from "../templates/soft-gradient.json";
 import pixelDuskExample from "../examples/pixel-dusk.spec.json";
 import pixelNightExample from "../examples/pixel-night.spec.json";
@@ -88,6 +90,7 @@ const FORMAT_EXAMPLES: Record<string, [unknown, unknown]> = {
   "host-tutorial": [hostTutorialExample, hostTutorialTemplate],
   "checklist-glass": [checklistGlassExample, checklistGlassTemplate],
   "spotlight-narrative": [spotlightExample, spotlightTemplate],
+  "data-atlas": [dataAtlasExample, dataAtlasTemplate],
 };
 const PIXEL_EXAMPLES: Record<string, [unknown, unknown]> = {
   "pixel-dusk": [pixelDuskExample, pixelDuskTemplate],

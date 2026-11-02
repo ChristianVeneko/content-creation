@@ -224,7 +224,7 @@ export const LOOK3D = {
   // soft product camera at table height; the mascot rides in a screen corner
   "clay-mascot": { ortho: false, fov: 28, yaw: -14, pitch: 14, moves: ["dolly", "orbit", "glide", "push"], float: 0.05, spin: 0, wide: 1.1 },
   // cutaway explainer: a gentle three-quarter view of a cross-section that starts close on the character and pulls out
-  "cutaway-explainer": { ortho: false, fov: 30, yaw: -16, pitch: 10, moves: ["pullout", "orbit", "dolly", "glide", "pullout"], float: 0, spin: 0, wide: 1.55 },
+  "cutaway-explainer": { ortho: false, fov: 30, yaw: -16, pitch: 10, moves: ["pullout", "orbit", "dolly", "glide", "pullout"], float: 0, spin: 0, wide: 1.25 },
 };
 
 /**
@@ -372,7 +372,8 @@ export function frameContent(placed, look) {
   const w = max[0] - min[0];
   const d = max[2] - min[2];
   const h = max[1] - min[1];
-  const target = [(min[0] + max[0]) / 2, min[1] + h * 0.42, (min[2] + max[2]) / 2];
+  const targetY = min[1] + h * (look === "cutaway-explainer" ? 0.32 : 0.42);
+  const target = [(min[0] + max[0]) / 2, targetY, (min[2] + max[2]) / 2];
   const pitch = L.pitch * DEG;
   // projected extents: width across the frame, and height (object height + depth foreshortened by the pitch)
   // a minimum size keeps single objects from filling the frame (stat numbers and labels need room)
@@ -455,9 +456,9 @@ export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, 
     case "pullout": {
       // starts close on the subject and pulls out to show the whole cutaway, drifting a little sideways
       const p = ease(u);
-      zoom(mix(0.5, 1.12, p));
+      zoom(mix(0.5, 1.05, p));
       yaw += mix(-9, 7, p);
-      pitch = mix(L.pitch * 0.5, L.pitch * 1.25, p);
+      pitch = mix(L.pitch * 0.5, L.pitch * 1.15, p);
       break;
     }
     case "handheld": {
