@@ -42,6 +42,9 @@
         "soft-studio",
         "moody-night",
         "voxel-world",
+        "data-stage",
+        "monolith-story",
+        "clay-mascot",
         "pixel-dusk",
         "pixel-night",
         "pixel-arcade",
@@ -164,7 +167,10 @@
             "neon-grid",
             "soft-studio",
             "moody-night",
-            "voxel-world"
+            "voxel-world",
+            "data-stage",
+            "monolith-story",
+            "clay-mascot"
           ]
         },
         "captionStyle": {
@@ -9330,6 +9336,20 @@
                       "description": "Accent glow ring + pulse",
                       "type": "boolean"
                     },
+                    "stock": {
+                      "description": "true = this catalog kind (character, car, model) is wanted on purpose",
+                      "type": "boolean"
+                    },
+                    "corner": {
+                      "description": "custom only: pin the object to a screen corner (bl, br, tl, tr) as a persistent mascot; it follows the camera",
+                      "type": "string",
+                      "enum": [
+                        "bl",
+                        "br",
+                        "tl",
+                        "tr"
+                      ]
+                    },
                     "parts": {
                       "description": "custom: the model, built from primitive parts (front faces +z, base on y = 0)",
                       "minItems": 1,
@@ -9353,6 +9373,7 @@
                               "torus",
                               "capsule",
                               "plane",
+                              "sign",
                               "ring",
                               "tube",
                               "extrude",
@@ -9390,6 +9411,33 @@
                             "type": "number",
                             "minimum": 0,
                             "maximum": 0.5
+                          },
+                          "text": {
+                            "description": "sign: the text printed on the sign (pixel font)",
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 24
+                          },
+                          "textColor": {
+                            "description": "sign: text color (default: readable on the panel)",
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "accent",
+                                  "accent2",
+                                  "accent3",
+                                  "good",
+                                  "bad",
+                                  "muted",
+                                  "text"
+                                ]
+                              }
+                            ]
                           },
                           "pos": {
                             "description": "Center, relative to the parent part's center (or the object's base)",
@@ -10048,7 +10096,8 @@
                   "topdown",
                   "static",
                   "glide",
-                  "rise"
+                  "rise",
+                  "handheld"
                 ]
               },
               "focus": {
@@ -10088,7 +10137,7 @@
                 "type": "boolean"
               },
               "set": {
-                "description": "Environment set the camera is inside; auto = the look's default",
+                "description": "Stock environment set (needs stock: true on the scene); auto/none = no stock set. Build the world with `world` instead",
                 "type": "string",
                 "enum": [
                   "auto",
@@ -10194,7 +10243,7 @@
                 }
               },
               "fx": {
-                "description": "Effects. 2D scenes (illustrated kit, classic, reels): sparkles, confetti, dust, bubbles, leaves, stars, ink-splash, light-leak, grain, scribbles, burst, flash, zoom-punch, shake, glitch, chromatic, speed-lines. 3D scenes (max 6): particles, trail, pulse, shockwave, glow, sweep, hologram",
+                "description": "Effects. 2D scenes (illustrated kit, classic, reels): sparkles, confetti, dust, bubbles, leaves, stars, ink-splash, light-leak, grain, scribbles, burst, flash, zoom-punch, shake, glitch, chromatic, speed-lines. 3D scenes (max 6): particles, trail, pulse, shockwave, glow, sweep, hologram, spotlight",
                 "maxItems": 8,
                 "type": "array",
                 "items": {
@@ -10211,7 +10260,8 @@
                             "shockwave",
                             "glow",
                             "sweep",
-                            "hologram"
+                            "hologram",
+                            "spotlight"
                           ]
                         },
                         "kind": {
@@ -10292,6 +10342,54 @@
                           "type": "number",
                           "minimum": 0.2,
                           "maximum": 4
+                        },
+                        "pos": {
+                          "description": "spotlight: apex of the cone [x, y, z]",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "aim": {
+                          "description": "spotlight: world point the cone lights (when there is no `target`)",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
                         },
                         "burst": {
                           "description": "particles: one burst from the target at `at` instead of an ambient field",
@@ -10427,6 +10525,812 @@
                     }
                   ]
                 }
+              },
+              "world": {
+                "description": "The set built from scratch for this scene (ground, backdrop, parts, crowd)",
+                "type": "object",
+                "properties": {
+                  "concept": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 80,
+                    "description": "The world idea of THIS video in a few words (setting + silhouette language); never reuse a previous video's"
+                  },
+                  "ground": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "description": "look = the look's own floor (default), none = shadow catcher only, plane | disc | grid | mirror",
+                        "type": "string",
+                        "enum": [
+                          "look",
+                          "none",
+                          "plane",
+                          "disc",
+                          "grid",
+                          "mirror"
+                        ]
+                      },
+                      "color": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "accent",
+                              "accent2",
+                              "accent3",
+                              "good",
+                              "bad",
+                              "muted",
+                              "text"
+                            ]
+                          }
+                        ]
+                      },
+                      "size": {
+                        "description": "plane/grid/mirror: side length; disc: diameter",
+                        "type": "number",
+                        "minimum": 2,
+                        "maximum": 60
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "backdrop": {
+                    "description": "Flat backdrop color of the scene (default: the look's gradient)",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "accent",
+                          "accent2",
+                          "accent3",
+                          "good",
+                          "bad",
+                          "muted",
+                          "text"
+                        ]
+                      }
+                    ]
+                  },
+                  "parts": {
+                    "description": "Props, walls, signs and stage dressing built from primitive parts",
+                    "maxItems": 24,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "shape": {
+                          "type": "string",
+                          "enum": [
+                            "box",
+                            "sphere",
+                            "cylinder",
+                            "cone",
+                            "torus",
+                            "capsule",
+                            "plane",
+                            "sign",
+                            "ring",
+                            "tube",
+                            "extrude",
+                            "lathe",
+                            "group"
+                          ]
+                        },
+                        "size": {
+                          "description": "Dimensions in world units (<= 8), meaning per shape; torus arc in degrees",
+                          "maxItems": 3,
+                          "type": "array",
+                          "items": {
+                            "type": "number",
+                            "minimum": 0.005,
+                            "maximum": 360
+                          }
+                        },
+                        "points": {
+                          "description": "tube: [[x,y,z]...]; extrude: outline [[x,y]...]; lathe: profile [[r,y]...]",
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "minItems": 2,
+                            "maxItems": 3,
+                            "type": "array",
+                            "items": {
+                              "type": "number",
+                              "minimum": -6,
+                              "maximum": 6
+                            }
+                          }
+                        },
+                        "radius": {
+                          "description": "box: edge rounding; extrude: bevel",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 0.5
+                        },
+                        "text": {
+                          "description": "sign: the text printed on the sign (pixel font)",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 24
+                        },
+                        "textColor": {
+                          "description": "sign: text color (default: readable on the panel)",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "pos": {
+                          "description": "Center in world units (objects stand near the origin; negative z recedes)",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "rot": {
+                          "description": "Degrees [x, y, z]",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -360,
+                              "maximum": 360
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -360,
+                              "maximum": 360
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -360,
+                              "maximum": 360
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "scale": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 3,
+                              "maxItems": 3
+                            }
+                          ]
+                        },
+                        "pivot": {
+                          "description": "Rotation point relative to the part's center (e.g. the shoulder end of an arm)",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -3,
+                              "maximum": 3
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -3,
+                              "maximum": 3
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -3,
+                              "maximum": 3
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "parent": {
+                          "description": "Part id this part hangs from (moves with it)",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "role": {
+                          "description": "Color source when `color` is not set (default body)",
+                          "type": "string",
+                          "enum": [
+                            "body",
+                            "accent",
+                            "dark",
+                            "light",
+                            "metal",
+                            "screen",
+                            "glow"
+                          ]
+                        },
+                        "material": {
+                          "description": "auto (default) uses the look's material",
+                          "type": "string",
+                          "enum": [
+                            "auto",
+                            "matte",
+                            "plastic",
+                            "metal",
+                            "glass",
+                            "emissive",
+                            "toon",
+                            "clay"
+                          ]
+                        },
+                        "emissive": {
+                          "description": "Self-glow strength",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 4
+                        },
+                        "opacity": {
+                          "type": "number",
+                          "minimum": 0.05,
+                          "maximum": 1
+                        },
+                        "motion": {
+                          "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode",
+                          "maxItems": 6,
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode"
+                                  },
+                                  "at": {
+                                    "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",
+                                    "anyOf": [
+                                      {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 60
+                                      },
+                                      {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 40
+                                      }
+                                    ]
+                                  },
+                                  "until": {
+                                    "description": "End (default: the scene end)",
+                                    "anyOf": [
+                                      {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 60
+                                      },
+                                      {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 40
+                                      }
+                                    ]
+                                  },
+                                  "amp": {
+                                    "description": "Amplitude: world units, or degrees for wobble/wave/walk",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 720
+                                  },
+                                  "speed": {
+                                    "description": "Tempo multiplier (1 = default)",
+                                    "type": "number",
+                                    "minimum": 0.05,
+                                    "maximum": 8
+                                  },
+                                  "parts": {
+                                    "description": "walk/blink/assemble/explode on an object: the part ids",
+                                    "minItems": 1,
+                                    "maxItems": 12,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 40
+                                    }
+                                  },
+                                  "axis": {
+                                    "type": "string",
+                                    "enum": [
+                                      "x",
+                                      "y",
+                                      "z"
+                                    ]
+                                  },
+                                  "lift": {
+                                    "description": "wave: how far the limb is raised, degrees (default 130)",
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          }
+                        },
+                        "keys": {
+                          "description": "Keyframes [{at, pos, rot, scale, opacity, ease}]",
+                          "minItems": 1,
+                          "maxItems": 12,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "at": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                ],
+                                "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                              },
+                              "pos": {
+                                "description": "Offset from the rest position",
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -6,
+                                    "maximum": 6
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -6,
+                                    "maximum": 6
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -6,
+                                    "maximum": 6
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 3,
+                                "maxItems": 3
+                              },
+                              "rot": {
+                                "description": "Degrees added to the rest rotation [x, y, z]",
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -720,
+                                    "maximum": 720
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -720,
+                                    "maximum": 720
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -720,
+                                    "maximum": 720
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 3,
+                                "maxItems": 3
+                              },
+                              "scale": {
+                                "description": "Multiplier of the rest scale",
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0.01,
+                                    "maximum": 10
+                                  },
+                                  {
+                                    "type": "array",
+                                    "prefixItems": [
+                                      {
+                                        "type": "number",
+                                        "minimum": 0.01,
+                                        "maximum": 10
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": 0.01,
+                                        "maximum": 10
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": 0.01,
+                                        "maximum": 10
+                                      }
+                                    ],
+                                    "items": false,
+                                    "minItems": 3,
+                                    "maxItems": 3
+                                  }
+                                ]
+                              },
+                              "opacity": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1
+                              },
+                              "ease": {
+                                "description": "Easing of the segment that arrives at this key (default in-out)",
+                                "type": "string",
+                                "enum": [
+                                  "linear",
+                                  "in",
+                                  "out",
+                                  "in-out",
+                                  "back",
+                                  "elastic",
+                                  "bounce",
+                                  "step"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "at"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "repeat": {
+                          "description": "Copies of this part (and the parts hanging from it)",
+                          "type": "object",
+                          "properties": {
+                            "count": {
+                              "type": "integer",
+                              "minimum": 2,
+                              "maximum": 40,
+                              "description": "Number of copies (including the original)"
+                            },
+                            "step": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": -10,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -10,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -10,
+                                  "maximum": 10
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 3,
+                              "maxItems": 3,
+                              "description": "Offset between copies [x, y, z]; e.g. [0, 0, -1.2] makes a row receding into depth"
+                            },
+                            "scaleStep": {
+                              "description": "Scale multiplier applied cumulatively per copy (default 1)",
+                              "type": "number",
+                              "minimum": 0.5,
+                              "maximum": 1.5
+                            }
+                          },
+                          "required": [
+                            "count",
+                            "step"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "shape"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "crowd": {
+                    "description": "Instanced crowd silhouettes",
+                    "type": "object",
+                    "properties": {
+                      "count": {
+                        "type": "integer",
+                        "minimum": 8,
+                        "maximum": 160
+                      },
+                      "area": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number",
+                            "minimum": 2,
+                            "maximum": 40
+                          },
+                          {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 30
+                          }
+                        ],
+                        "items": false,
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "description": "Width and depth of the area the silhouettes fill"
+                      },
+                      "pos": {
+                        "description": "Center of the area (default [0, 0, -6])",
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number",
+                            "minimum": -30,
+                            "maximum": 30
+                          },
+                          {
+                            "type": "number",
+                            "minimum": -30,
+                            "maximum": 30
+                          },
+                          {
+                            "type": "number",
+                            "minimum": -30,
+                            "maximum": 30
+                          }
+                        ],
+                        "items": false,
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "height": {
+                        "description": "Silhouette height (default 1.1)",
+                        "type": "number",
+                        "minimum": 0.4,
+                        "maximum": 2.5
+                      },
+                      "color": {
+                        "description": "Silhouette color (default: near-black of the backdrop)",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "accent",
+                              "accent2",
+                              "accent3",
+                              "good",
+                              "bad",
+                              "muted",
+                              "text"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "count",
+                      "area"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "concept"
+                ],
+                "additionalProperties": false
+              },
+              "shots": {
+                "description": "2-4 camera shots over the scene (wide, medium, close, low, high, overhead, left, right); use instead of cameraKeys",
+                "minItems": 2,
+                "maxItems": 4,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "at": {
+                      "description": "When the shot starts (default: evenly spaced over the scene)",
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        }
+                      ]
+                    },
+                    "shot": {
+                      "type": "string",
+                      "enum": [
+                        "wide",
+                        "medium",
+                        "close",
+                        "low",
+                        "high",
+                        "overhead",
+                        "left",
+                        "right"
+                      ]
+                    },
+                    "focus": {
+                      "description": "Object id the shot aims at",
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "yaw": {
+                      "type": "number",
+                      "minimum": -180,
+                      "maximum": 180
+                    },
+                    "pitch": {
+                      "type": "number",
+                      "minimum": -60,
+                      "maximum": 60
+                    },
+                    "zoom": {
+                      "type": "number",
+                      "minimum": 0.3,
+                      "maximum": 3
+                    },
+                    "shift": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "ease": {
+                      "type": "string",
+                      "enum": [
+                        "linear",
+                        "in",
+                        "out",
+                        "in-out",
+                        "back",
+                        "elastic",
+                        "bounce",
+                        "step"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "shot"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "stock": {
+                "description": "true = this scene uses catalog content on purpose (stock kinds, models, sets) instead of agent-built custom parts / world",
+                "type": "boolean"
               },
               "reel": {
                 "description": "Reels scene (visual.type \"reel\", reels-* templates)",

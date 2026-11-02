@@ -24,7 +24,9 @@
             "label": "Tú",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true,
+        "set": "grid"
       }
     },
     {
@@ -55,7 +57,9 @@
             "from": "pc",
             "to": "srv"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "grid"
       }
     },
     {
@@ -78,7 +82,9 @@
             "kind": "chip",
             "size": 0.9
           }
-        ]
+        ],
+        "stock": true,
+        "set": "grid"
       }
     },
     {
@@ -105,7 +111,9 @@
             "anim": "no",
             "label": "120 ms"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "grid"
       }
     },
     {
@@ -127,7 +135,9 @@
             "kind": "globe",
             "label": "Servidor cerca"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "grid"
       }
     },
     {
@@ -148,7 +158,9 @@
             "label": "Victoria",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true,
+        "set": "grid"
       }
     }
   ]

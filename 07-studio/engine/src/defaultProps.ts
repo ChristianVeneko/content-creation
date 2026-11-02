@@ -39,6 +39,12 @@ import neonGridTemplate from "../templates/neon-grid.json";
 import softStudioTemplate from "../templates/soft-studio.json";
 import moodyNightTemplate from "../templates/moody-night.json";
 import voxelWorldTemplate from "../templates/voxel-world.json";
+import dataStageExample from "../examples/data-stage.spec.json";
+import dataStageTemplate from "../templates/data-stage.json";
+import monolithStoryExample from "../examples/monolith-story.spec.json";
+import monolithStoryTemplate from "../templates/monolith-story.json";
+import clayMascotExample from "../examples/clay-mascot.spec.json";
+import clayMascotTemplate from "../templates/clay-mascot.json";
 import { computeTimeline, paginateCaptions, syntheticCaptions } from "../lib/timeline.mjs";
 import { resolveSpec } from "../lib/spec.mjs";
 import { planIllustration } from "../lib/illustrated.mjs";
@@ -58,6 +64,9 @@ const THREE_EXAMPLES: Record<string, [unknown, unknown]> = {
   "soft-studio": [softStudioExample, softStudioTemplate],
   "moody-night": [moodyNightExample, moodyNightTemplate],
   "voxel-world": [voxelWorldExample, voxelWorldTemplate],
+  "data-stage": [dataStageExample, dataStageTemplate],
+  "monolith-story": [monolithStoryExample, monolithStoryTemplate],
+  "clay-mascot": [clayMascotExample, clayMascotTemplate],
 };
 
 // Format looks preview their own example spec (their elements need a plan).

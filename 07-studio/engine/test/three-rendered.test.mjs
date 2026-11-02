@@ -34,7 +34,7 @@ const ASSETS = fileURLToPath(new URL("../../../03-assets/3d/", import.meta.url))
 const lic = JSON.parse(read("../../../03-assets/3d/licenses.json"));
 const example = (id) => JSON.parse(read(`../examples/${id}.spec.json`));
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
-const mini = (template, visual) => ({ version: 1, title: "x", template, scenes: [{ id: "a", narration: "Hola mundo.", title: { main: "Hola" }, visual: { type: "scene3d", ...visual } }] });
+const mini = (template, visual) => ({ version: 1, title: "x", template, scenes: [{ id: "a", narration: "Hola mundo.", title: { main: "Hola" }, visual: { type: "scene3d", stock: true, ...visual } }] });
 
 test("the four new 3D formats are registered 3D-kit templates with category 3d, a camera and gallery metadata", () => {
   const ids = listTemplates().map((t) => t.id);
@@ -64,7 +64,7 @@ test("each new format has an example spec that validates, uses scene3d visuals o
 });
 
 test("every 3D look has a cheap render profile: tone mapping, one soft key shadow, fog, a default set; bloom only where it was", () => {
-  const BLOOM_BEFORE = ["neon-glass", "holo-studio"];
+  const BLOOM_BEFORE = ["neon-glass", "holo-studio", "data-stage"];
   for (const id of THREE_D_TEMPLATE_IDS) {
     const r = RENDER3D[id];
     assert.ok(r, `${id} has no render profile`);
@@ -78,13 +78,13 @@ test("every 3D look has a cheap render profile: tone mapping, one soft key shado
     assert.ok(r.hdri === null || lic.hdri.some((h) => h.id === r.hdri), `${id} hdri ${r.hdri} not in licenses.json`);
     assert.equal(LOOK_HDRI[id] ?? null, r.hdri, `${id}: LOOK_HDRI follows the render profile`);
   }
-  // the new formats: no HDRI, fog for depth, a set the camera is inside
+  // the rendered formats: no HDRI, fog for depth; no look stages a stock set by default (the agent builds the world)
   for (const id of NEW) {
     const r = RENDER3D[id];
     assert.equal(r.hdri, null, `${id}: no HDRI`);
     assert.ok(r.fog, `${id} needs fog`);
-    assert.notEqual(r.set, "none", `${id} needs a set`);
   }
+  for (const id of THREE_D_TEMPLATE_IDS) assert.equal(RENDER3D[id].set, "none", `${id}: no default stock set`);
 });
 
 test("every asset in 03-assets/3d/licenses.json exists on disk, is CC0 and credits its source and author", () => {

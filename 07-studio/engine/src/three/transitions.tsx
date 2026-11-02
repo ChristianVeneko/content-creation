@@ -134,6 +134,9 @@ const COMPONENTS: Record<Look3DId, React.FC<TransitionPresentationComponentProps
   "soft-studio": IrisPop,
   "moody-night": DipZoom,
   "voxel-world": BlockBuild,
+  "data-stage": LightStreak,
+  "monolith-story": DipZoom,
+  "clay-mascot": IrisPop,
 };
 
 /** The scene transition of a 3D look. */

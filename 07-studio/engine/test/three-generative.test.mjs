@@ -35,7 +35,7 @@ const mini = (objects, extra = {}, narration = "Hola mundo, esto es una prueba c
   version: 1,
   title: "x",
   template: "clay-diorama",
-  scenes: [{ id: "a", narration, title: { main: "Hola" }, visual: { type: "scene3d", objects, ...extra } }],
+  scenes: [{ id: "a", narration, title: { main: "Hola" }, visual: { type: "scene3d", stock: true, objects, ...extra } }],
 });
 const errorsOf = (spec) => {
   const r = validateSpec(spec);

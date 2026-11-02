@@ -10,42 +10,42 @@
       "id": "hook",
       "narration": "Escribes una dirección, presionas enter, y en medio segundo aparece la página. Esto es lo que pasa.",
       "title": { "kicker": "Escribes una URL y", "main": "pasa todo esto" },
-      "visual": { "type": "scene3d", "layout": "hero", "objects": [{ "kind": "laptop", "icon": "globe", "label": "Navegador" }] }
+      "visual": { "type": "scene3d", "stock": true, "layout": "hero", "objects": [{ "kind": "laptop", "icon": "globe", "label": "Navegador" }] }
     },
     {
       "id": "dns",
       "narration": "Primero el navegador pregunta al DNS cuál es la dirección IP del sitio.",
       "title": { "kicker": "Paso 1", "main": "pregunta al DNS" },
       "hud": { "fase": { "value": "DNS" }, "carga": { "value": 0.25 } },
-      "visual": { "type": "scene3d", "objects": [{ "kind": "laptop", "id": "pc", "label": "Tu PC" }, { "kind": "server", "id": "dns", "label": "DNS" }], "connect": [{ "from": "pc", "to": "dns", "label": "IP?" }] }
+      "visual": { "type": "scene3d", "stock": true, "objects": [{ "kind": "laptop", "id": "pc", "label": "Tu PC" }, { "kind": "server", "id": "dns", "label": "DNS" }], "connect": [{ "from": "pc", "to": "dns", "label": "IP?" }] }
     },
     {
       "id": "tcp",
       "narration": "Con la IP, abre una conexión segura con el servidor: el famoso candado.",
       "title": { "kicker": "Paso 2", "main": "conexión segura" },
       "hud": { "fase": { "value": "TLS" }, "carga": { "value": 0.45 } },
-      "visual": { "type": "scene3d", "layout": "flow", "objects": [{ "kind": "laptop", "label": "Navegador" }, { "kind": "lock", "label": "TLS" }, { "kind": "server", "label": "Servidor" }] }
+      "visual": { "type": "scene3d", "stock": true, "layout": "flow", "objects": [{ "kind": "laptop", "label": "Navegador" }, { "kind": "lock", "label": "TLS" }, { "kind": "server", "label": "Servidor" }] }
     },
     {
       "id": "backend",
       "narration": "El servidor recibe la petición, consulta la base de datos y arma la respuesta.",
       "title": { "kicker": "Paso 3", "main": "el backend trabaja" },
       "hud": { "fase": { "value": "API" }, "carga": { "value": 0.7 } },
-      "visual": { "type": "scene3d", "camera": "pan", "objects": [{ "kind": "server", "id": "api", "label": "API" }, { "kind": "gear", "id": "logic", "label": "Lógica" }, { "kind": "database", "id": "db", "label": "Base de datos" }], "connect": [{ "from": "api", "to": "logic" }, { "from": "logic", "to": "db" }] }
+      "visual": { "type": "scene3d", "stock": true, "camera": "pan", "objects": [{ "kind": "server", "id": "api", "label": "API" }, { "kind": "gear", "id": "logic", "label": "Lógica" }, { "kind": "database", "id": "db", "label": "Base de datos" }], "connect": [{ "from": "api", "to": "logic" }, { "from": "logic", "to": "db" }] }
     },
     {
       "id": "capas",
       "narration": "La respuesta baja por capas: datos, lógica y por último la interfaz que ves.",
       "title": { "kicker": "Todo en", "main": "tres capas" },
       "hud": { "fase": { "value": "HTML" }, "carga": { "value": 0.85 } },
-      "visual": { "type": "scene3d", "layout": "stack", "camera": "orbit", "objects": [{ "kind": "database", "label": "Datos", "size": 0.8 }, { "kind": "chip", "label": "Lógica" }, { "kind": "monitor", "icon": "layout", "label": "Interfaz", "size": 0.8 }] }
+      "visual": { "type": "scene3d", "stock": true, "layout": "stack", "camera": "orbit", "objects": [{ "kind": "database", "label": "Datos", "size": 0.8 }, { "kind": "chip", "label": "Lógica" }, { "kind": "monitor", "icon": "layout", "label": "Interfaz", "size": 0.8 }] }
     },
     {
       "id": "render",
       "narration": "Tu navegador pinta la página. Todo en unos 300 milisegundos.",
       "title": { "kicker": "Y listo", "main": "300 ms" },
       "hud": { "fase": { "value": "LISTO" }, "carga": { "value": 1 } },
-      "visual": { "type": "scene3d", "layout": "row", "objects": [{ "kind": "stat", "value": "300", "label": "milisegundos" }, { "kind": "check", "label": "Página lista" }] }
+      "visual": { "type": "scene3d", "stock": true, "layout": "row", "objects": [{ "kind": "stat", "value": "300", "label": "milisegundos" }, { "kind": "check", "label": "Página lista" }] }
     }
   ],
   "post": {

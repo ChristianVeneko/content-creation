@@ -192,10 +192,13 @@ formats. The hand-drawn and printed looks (whiteboard and the art styles) keep t
 | `pixel-night` | Pixel: navy/violet night, moonlight, neon signs, glow, popup chat windows, counters |
 | `pixel-arcade` | Pixel: saturated magenta/cyan/yellow CRT with scanlines, mystery blocks and pickups that burst |
 | `pixel-mono` | Pixel: strict 4-color handheld green, every layer quantized, dithered light |
-| `neon-grid` | 3D low-poly set: dark grid world with glowing grid floor, pillars and wall, blocky characters, glide camera |
-| `soft-studio` | 3D low-poly set: pastel objects on a wooden desk, warm window light, lamp, books, slow dolly |
-| `moody-night` | 3D low-poly set: highway at blue dusk, street lamps, cars with headlight glow, traffic into the fog |
-| `voxel-world` | 3D low-poly set: voxel island with trees and clouds over water, blocky characters, slow orbit |
+| `neon-grid` | 3D style (format `synthwave`): navy matte bodies, cyan rims, bloom, depth fog, glide camera; no scenery |
+| `soft-studio` | 3D style (format `soft-product`): pastel soft-matte look, warm key, wide soft shadow, slow dolly; no scenery |
+| `moody-night` | 3D style (format `night-cinematic`): dusk-blue fill, one warm key, fog, low cinematic and hand-held camera; no scenery |
+| `voxel-world` | 3D style (format `voxel`): flat-shaded sharp blocks, snap-in placement, low hero angle; no scenery |
+| `data-stage` | 3D format: dark arena, volumetric spotlights, instanced crowd, rows receding into depth, scales and tubes built from parts |
+| `monolith-story` | 3D format: one recurring monolith, a color-keyed backdrop per scene, pixel-font signs, push and orbit camera |
+| `clay-mascot` | 3D format: soft clay look, a persistent mascot pinned to a screen corner, pastel backdrop, soft shadows |
 | `captions-voice` | Voiceover + kinetic captions over gradients, photos or b-roll |
 | `kinetic-type` | Huge animated words, ghost outline type, no b-roll |
 | `countdown` | Hook with TOP N chip, big numbered items, payoff |
@@ -265,7 +268,7 @@ Dev loop: `node scripts/illustrated-stills.mjs <spec> <outDir> --at=0.5,0.97` re
 ## 3D templates
 
 The 3D templates (`clay-diorama`, `iso-toon`, `neon-glass`, `pedestal`, `paper-world`, `toy-blocks`, `holo-studio`,
-`neon-grid`, `soft-studio`, `moody-night`, `voxel-world`) render each scene as a real three.js scene through
+`neon-grid`, `soft-studio`, `moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot`) render each scene as a real three.js scene through
 [`@remotion/three`](https://www.remotion.dev/docs/three) (React Three Fiber 9, drei 10, three 0.186). Headline, captions,
 HUD, footer, SFX beats and the music bed are the illustrated kit's, so they stay 2D, sharp and in the safe zone.
 
@@ -278,8 +281,15 @@ exist; `chart` needs `values`, `stat` a `value`, `icon` an `icon`, `model` a lis
 | `objects[].kind` | Procedural: `cube`, `sphere`, `phone`, `laptop`, `monitor`, `server`, `database`, `cloud`, `document`, `folder`, `envelope`, `coin`, `chart`, `stat`, `lock`, `key`, `gear`, `globe`, `chip`, `battery`, `rocket`, `lightbulb`, `person`, `building`, `house`, `tree`, `pin`, `card`, `check`, `cross`, `icon` (extruded Phosphor icon), `model` (local CC0 GLB), `car` (CC0 low-poly car, `model` picks one of `CAR_MODELS`), `character` (CC0 blocky character, `model` `character-a/d/k`, `anim` idle/walk/sprint/yes/no/sit/pick-up) |
 | `objects[]` extras | `id`, `label` (2D tag locked to the object), `color` (hex or token), `icon`, `value`, `values` + `items` (chart), `model`, `anim`, `size`, `pos`, `at`, `highlight` |
 | `layout` | `auto` (by count), `row`, `grid`, `flow` (zigzag, auto arrows), `circle`, `stack` (layers), `hero` |
-| `camera` | `auto` (the look's rotation), `orbit`, `dolly`, `push`, `crane`, `pan`, `turntable`, `topdown`, `static`, `glide` (lateral truck), `rise` (pedestal up) |
-| `set` | The world the camera is inside: `auto` (the look's default), `none` (the look's own floor), `road`, `desk`, `room`, `grid`, `stage`, `city`, `voxel` (`src/three/sets.tsx`; set props are CC0 GLBs listed in `SET_MODELS`) |
+| `camera` | `auto` (the look's rotation), `orbit`, `dolly`, `push`, `crane`, `pan`, `turntable`, `topdown`, `static`, `glide` (lateral truck), `rise` (pedestal up), `handheld` (slow deterministic drift) |
+| `world` | The set the agent builds from scratch for the scene: `concept` (required, a few words), `ground` (`look`, `none`, `plane`, `disc`, `grid`, `mirror`), `backdrop` (flat color, blended toward the palette background), `parts` (custom parts, `pos` up to +-30, sizes up to 40, `repeat` copies, `sign` pixel-font signs; max 24, 160 after repeats) and `crowd` (instanced silhouettes). Renders in `src/three/world.tsx` |
+| `shots` | 2-4 camera shots (`wide`, `medium`, `close`, `low`, `high`, `overhead`, `left`, `right`, each with optional `at`, `focus`, `yaw`, `pitch`, `zoom`) expanded to camera keys; use instead of `cameraKeys` |
+| `objects[].corner` | Custom object pinned to a screen corner (`bl`, `br`, `tl`, `tr`) as a persistent mascot that follows the camera |
+| `set`, `stock` | Stock catalog scenery (`road`, `desk`, `room`, `grid`, `stage`, `city`, `voxel`; props are CC0 GLBs in `SET_MODELS`). No look has a default set (`auto` = `none`); a named set, or a `character`/`car`/`model` object, needs `stock: true` on the scene (or on the object) |
+
+3D templates supply only style (camera, light, materials, motion, fx). Models and worlds are built from scratch for each
+video: a scene must contain a `custom` object or a `world` with `parts` or a `crowd`, unless it sets `stock: true`; three or
+more scenes that all show the identical subject and world are rejected. Isometric (orthographic) is `iso-toon` only.
 
 How it works:
 

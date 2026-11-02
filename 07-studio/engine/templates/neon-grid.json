@@ -2,14 +2,15 @@
   "id": "neon-grid",
   "name": "Neon Grid 3D",
   "category": "3d",
-  "description": "Low-poly 3D in a dark-navy grid world: a glowing grid floor that fades into fog, dark pillars and a glowing-brick wall, blocky characters and objects lit by one cool key light with a single soft shadow. The camera glides slowly through the set. Gaming, tech and internet-culture explainers. No emoji.",
-  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with 1-3 objects: character (anim idle/walk/yes/no), monitor, phone, server, chip, lock, gear, cube. Short labels. No emoji.",
+  "format": "synthwave",
+  "description": "Synthwave 3D style: dark navy matte bodies with cyan rim edges, bloom on glowing parts, depth fog and a low camera that glides and rises. A style only: any grid floor, towers, sun or props are built by the agent from custom world parts for each video. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with a `world` (ground kind grid or mirror, backdrop, parts) and `custom` objects built from scratch for THIS video; use glowing parts (role glow, material emissive), fx glow/sweep/spotlight and camera `shots`. No emoji.",
   "best_for": [
-    "gaming explainers",
-    "internet culture",
-    "how online things work",
-    "tech myths",
-    "cybersecurity basics"
+    "tech and AI",
+    "synthwave and retro-futurism",
+    "gaming",
+    "crypto and data",
+    "night-time hooks"
   ],
   "preview": {
     "style": "three",

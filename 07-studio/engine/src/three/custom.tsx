@@ -1,7 +1,8 @@
 // Agent-authored models (`kind: "custom"`): a tree of primitive parts with the look's materials (or a forced finish),
 // per-part keyframes and procedural motion (lib/scene3d-motion.mjs). Every transform is a pure function of `t`
 // (seconds into the scene), so stills and renders are deterministic. Parts face +z (the default camera side).
-import React, { useLayoutEffect, useMemo } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { continueRender, delayRender, staticFile } from "remotion";
 import * as THREE from "three";
 import { Outlines } from "@react-three/drei";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
@@ -18,6 +19,8 @@ export type CustomPart = {
   size?: number[];
   points?: number[][];
   radius?: number;
+  text?: string;
+  textColor?: string;
   pos?: V3;
   rot?: V3;
   scale?: number | V3;
@@ -84,6 +87,7 @@ const makeGeometry = (p: CustomPart): THREE.BufferGeometry | null => {
     case "capsule":
       return new THREE.CapsuleGeometry(s[0] ?? 0.3, s[1] ?? 0.5, 8, 24);
     case "plane":
+    case "sign":
       return new THREE.PlaneGeometry(s[0] ?? 1, s[1] ?? 1);
     case "ring":
       return new THREE.RingGeometry(s[0] ?? 0.3, s[1] ?? 0.5, 56);
@@ -111,7 +115,7 @@ const makeGeometry = (p: CustomPart): THREE.BufferGeometry | null => {
 
 let toonRamp: THREE.DataTexture | null = null;
 const FINISH_OF: Record<string, Finish> = { body: "body", accent: "body", dark: "dark", light: "light", metal: "metal", screen: "screen", glow: "glow" };
-const DOUBLE = new Set(["plane", "ring"]);
+const DOUBLE = new Set(["plane", "ring", "sign"]);
 
 /** Material of a part: the look's own (auto) or a forced finish; `emissive` adds self-glow (flared by a pulse fx). */
 const PartMat: React.FC<{ p: CustomPart; color: string; pulse: number }> = ({ p, color, pulse }) => {
@@ -146,12 +150,88 @@ const PartMat: React.FC<{ p: CustomPart; color: string; pulse: number }> = ({ p,
   }
 };
 
+// ---------------- pixel-font signs ----------------
+
+const PIXEL_FACE = "Press Start 2P";
+let pixelFont: Promise<void> | null = null;
+/** Loads the bundled pixel face once for canvas drawing; rendering waits for it. */
+const loadPixelFont = (): Promise<void> => {
+  if (pixelFont) return pixelFont;
+  const handle = delayRender("Loading sign font");
+  pixelFont = new FontFace(PIXEL_FACE, `url('${staticFile("fonts/PressStart2P-Regular.ttf")}') format('truetype')`)
+    .load()
+    .then((face) => {
+      document.fonts.add(face);
+    })
+    .catch(() => undefined)
+    .then(() => continueRender(handle));
+  return pixelFont;
+};
+
+/** Black or white text, whichever reads better on `bg` (WCAG contrast). */
+export const readableInk = (bg: string): string => {
+  const c = new THREE.Color(bg);
+  const L = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+  return 1.05 / (L + 0.05) >= (L + 0.05) / 0.055 ? "#FFFFFF" : "#101010";
+};
+
+/** A flat sign: a panel with a border and `text` in the pixel font (unlit, nearest-filtered). */
+const SignMesh: React.FC<{ p: CustomPart; color: string; geo: THREE.BufferGeometry }> = ({ p, color, geo }) => {
+  const { palette, look } = useKit3D();
+  const [ready, setReady] = useState(typeof document === "undefined");
+  useEffect(() => {
+    if (ready) return;
+    loadPixelFont().then(() => setReady(true));
+  }, [ready]);
+  const [w, h] = [p.size?.[0] ?? 1.6, p.size?.[1] ?? 0.5];
+  const ink = p.textColor ? color3d(palette, look, p.textColor, "#FFFFFF") : readableInk(color);
+  const tex = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    const cw = 512;
+    const ch = Math.max(48, Math.round((cw * h) / w));
+    const cv = document.createElement("canvas");
+    cv.width = cw;
+    cv.height = ch;
+    const g = cv.getContext("2d");
+    if (!g) return null;
+    g.fillStyle = color;
+    g.fillRect(0, 0, cw, ch);
+    g.strokeStyle = ink;
+    g.lineWidth = Math.max(4, Math.round(ch * 0.06));
+    g.strokeRect(g.lineWidth / 2, g.lineWidth / 2, cw - g.lineWidth, ch - g.lineWidth);
+    const text = (p.text ?? "").toUpperCase();
+    let size = Math.round(ch * 0.4);
+    g.font = `${size}px '${PIXEL_FACE}', monospace`;
+    while (size > 8 && g.measureText(text).width > cw * 0.84) {
+      size -= 2;
+      g.font = `${size}px '${PIXEL_FACE}', monospace`;
+    }
+    g.fillStyle = ink;
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText(text, cw / 2, ch / 2 + size * 0.06);
+    const t = new THREE.CanvasTexture(cv);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.magFilter = THREE.NearestFilter;
+    t.minFilter = THREE.LinearFilter;
+    t.generateMipmaps = false;
+    return t;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, color, ink, p.text, w, h]);
+  return (
+    <mesh geometry={geo}>
+      <meshBasicMaterial color="#FFFFFF" map={tex} toneMapped={false} side={THREE.DoubleSide} />
+    </mesh>
+  );
+};
+
 const PartMesh: React.FC<{ p: CustomPart; color: string; pulse: number }> = ({ p, color, pulse }) => {
   const { look } = useKit3D();
   const key = JSON.stringify([p.shape, p.size, p.points, p.radius]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const geo = useMemo(() => makeGeometry(p), [key]);
   if (!geo) return null;
+  if (p.shape === "sign") return <SignMesh p={p} color={color} geo={geo} />;
   const emissive = p.material === "emissive" || p.role === "glow";
   return (
     <mesh geometry={geo} castShadow={look.shadows && !emissive} receiveShadow={look.shadows}>

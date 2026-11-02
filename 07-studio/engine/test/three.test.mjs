@@ -9,7 +9,7 @@ import { computeBeats } from "../lib/illustrated.mjs";
 import { CHROMIUM_OPTIONS } from "../lib/render.mjs";
 import { MODEL_IDS, OBJECT_KINDS, THREE_D_TEMPLATE_IDS, cameraAt, floatY, planThree, projectPoint, usesThreeKit } from "../lib/scene3d.mjs";
 
-const THREE = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world"];
+const THREE = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot"];
 const read = (rel) => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");
 const example = (id) => JSON.parse(read(`../examples/${id}.spec.json`));
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
@@ -18,7 +18,7 @@ const mini = (objects, extra = {}) => ({
   version: 1,
   title: "x",
   template: "clay-diorama",
-  scenes: [{ id: "a", narration: "Hola mundo.", title: { main: "Hola" }, visual: { type: "scene3d", objects, ...extra } }],
+  scenes: [{ id: "a", narration: "Hola mundo.", title: { main: "Hola" }, visual: { type: "scene3d", stock: true, objects, ...extra } }],
 });
 
 test("the template list orders illustrated looks, then the 3D looks, then the classic templates", () => {

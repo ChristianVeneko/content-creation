@@ -26,7 +26,8 @@
             "kind": "house",
             "label": "tu casa"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -48,7 +49,8 @@
             "kind": "gear",
             "label": "turbina"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -74,7 +76,8 @@
             "kind": "house",
             "label": "barrio"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -101,7 +104,8 @@
             "kind": "tree",
             "label": "parque"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -125,7 +129,8 @@
             "kind": "lightbulb",
             "label": "luz"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -144,7 +149,8 @@
             "value": "0,01 s",
             "label": "en cruzar el país"
           }
-        ]
+        ],
+        "stock": true
       }
     },
     {
@@ -170,7 +176,8 @@
           {
             "kind": "lightbulb"
           }
-        ]
+        ],
+        "stock": true
       }
     }
   ]

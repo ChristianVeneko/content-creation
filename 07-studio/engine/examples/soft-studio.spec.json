@@ -24,7 +24,9 @@
             "label": "Tu sueldo",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true,
+        "set": "desk"
       }
     },
     {
@@ -53,7 +55,9 @@
             "value": 2,
             "label": "20%"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "desk"
       }
     },
     {
@@ -82,7 +86,9 @@
             ],
             "size": 0.8
           }
-        ]
+        ],
+        "stock": true,
+        "set": "desk"
       }
     },
     {
@@ -106,7 +112,9 @@
             "kind": "card",
             "label": "Ahorro"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "desk"
       }
     },
     {
@@ -124,7 +132,9 @@
             "label": "Fuera de vista",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true,
+        "set": "desk"
       }
     },
     {
@@ -148,7 +158,9 @@
             "icon": "calendar-check",
             "label": "Plan"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "desk"
       }
     }
   ]

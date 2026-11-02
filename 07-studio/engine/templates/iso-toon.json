@@ -2,6 +2,7 @@
   "id": "iso-toon",
   "name": "Iso Toon 3D",
   "category": "3d",
+  "format": "isometric",
   "description": "Isometric toon 3D: toon-shaded blocks with crisp outlines on a navy grid, an orthographic camera at the true isometric angle that pans along the process, animated arrows carrying data packets between components, numbered labels pinned to each part. Clear, technical and calm. No emoji.",
   "prompt_hint": "Write 6-10 scenes (4-6 s each) that explain a system or process step by step. Every scene has title.kicker + title.main and visual.type \"scene3d\": use layout \"flow\" (auto-arrows) or ids + connect for pipelines (client -> api -> database), \"stack\" for layers, \"grid\" for parts of a whole. Label every object (1-3 words). Kinds: server, database, cloud, laptop, phone, monitor, chip, document, folder, lock, key, gear, building, chart, icon. Never use emoji.",
   "best_for": ["software architecture", "how the internet works", "processes and pipelines", "system design", "step-by-step tutorials"],

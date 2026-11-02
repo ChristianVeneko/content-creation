@@ -1,0 +1,60 @@
+{
+  "id": "clay-mascot",
+  "name": "Clay Mascot 3D",
+  "category": "3d",
+  "format": "mascot-checklist",
+  "description": "Soft clay 3D format with a persistent mascot: a custom character pinned to a screen corner that follows the camera, a pastel mesh-gradient backdrop, soft wide shadows and clay materials. The 3D layer for tips, rules and checklists (a 2D UI-card video can sit on top). A format, not a scene: the agent designs the mascot and the props from scratch for each video. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with the SAME custom mascot object (`corner` bl or br, a face with blink and wave motion) in every scene plus one custom prop or two that illustrate the tip, and a `world` (ground plane or disc, soft backdrop). Add a `stat` for a counter like 3 / 10. No emoji.",
+  "best_for": [
+    "tips and rules",
+    "checklists",
+    "how-to lists",
+    "friendly explainers",
+    "educational shorts"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#FFE9F3",
+      "#E6EDFF",
+      "#FF6FA8"
+    ],
+    "accent": "#FF6FA8",
+    "sample_text": "MASCOTA"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#FFE9F3",
+          "#E6EDFF"
+        ],
+        "text": "#2B2433",
+        "accent": "#FF6FA8",
+        "accent2": "#7C8CFF",
+        "accent3": "#35C9A8"
+      },
+      "font": "Poppins",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.04
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.95
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

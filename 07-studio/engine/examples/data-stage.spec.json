@@ -1,0 +1,884 @@
+{
+  "version": 1,
+  "title": "Cuánto pesa tu dinero",
+  "template": "data-stage",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Una moneda hoy. Mira lo que pasa cuando la dejas trabajar.",
+      "title": {
+        "kicker": "Una moneda hoy",
+        "main": "mira lo que pasa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "rise",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "x1",
+            "label": "tu moneda",
+            "at": 0.5
+          }
+        ],
+        "world": {
+          "concept": "night arena with gold coin rows",
+          "ground": {
+            "kind": "mirror",
+            "size": 50
+          },
+          "parts": [
+            {
+              "id": "rowL",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                -1.6,
+                0.09,
+                1
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 7,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              }
+            },
+            {
+              "id": "rowR",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                1.6,
+                0.09,
+                1
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 7,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              }
+            }
+          ],
+          "crowd": {
+            "count": 90,
+            "area": [
+              14,
+              5
+            ],
+            "pos": [
+              0,
+              0,
+              -9
+            ],
+            "height": 1.2
+          }
+        },
+        "fx": [
+          {
+            "type": "spotlight",
+            "color": "accent",
+            "aim": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "type": "spotlight",
+            "color": "accent2",
+            "aim": [
+              3,
+              0,
+              -4
+            ],
+            "pos": [
+              6,
+              10,
+              -4
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rows",
+      "narration": "Cada año se suman más. Primero una, luego dos, luego cuatro.",
+      "title": {
+        "kicker": "Cada año",
+        "main": "se suman más"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "static",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0
+          },
+          {
+            "shot": "low",
+            "at": 2
+          },
+          {
+            "shot": "close",
+            "at": 4,
+            "focus": "stack"
+          }
+        ],
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "stack",
+            "size": 1.2,
+            "parts": [
+              {
+                "id": "c1",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.08,
+                  0
+                ],
+                "material": "metal",
+                "color": "accent",
+                "keys": [
+                  {
+                    "at": 0.3,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 0.8,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c2",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.26,
+                  0
+                ],
+                "material": "metal",
+                "color": "accent",
+                "keys": [
+                  {
+                    "at": 1,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 1.5,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c3",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.44,
+                  0
+                ],
+                "material": "metal",
+                "color": "accent",
+                "keys": [
+                  {
+                    "at": 1.7,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 2.2,
+                    "scale": 1
+                  }
+                ]
+              },
+              {
+                "id": "c4",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.62,
+                  0
+                ],
+                "material": "metal",
+                "color": "accent",
+                "keys": [
+                  {
+                    "at": 2.4,
+                    "scale": 0.01
+                  },
+                  {
+                    "at": 2.9,
+                    "scale": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "night arena with gold coin rows",
+          "ground": {
+            "kind": "mirror",
+            "size": 50
+          },
+          "parts": [
+            {
+              "id": "rowL",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                -2.6,
+                0.09,
+                0
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 8,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              }
+            },
+            {
+              "id": "rowR",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                2.6,
+                0.09,
+                0
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 8,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              },
+              "scale": 1
+            }
+          ],
+          "crowd": {
+            "count": 90,
+            "area": [
+              14,
+              5
+            ],
+            "pos": [
+              0,
+              0,
+              -9
+            ],
+            "height": 1.2
+          }
+        },
+        "fx": [
+          {
+            "type": "spotlight",
+            "target": "stack",
+            "color": "accent"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scale",
+      "narration": "Y la balanza se inclina: tu dinero pesa más que el miedo a empezar.",
+      "title": {
+        "kicker": "La balanza",
+        "main": "se inclina"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "dolly",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "scale",
+            "size": 1.05,
+            "parts": [
+              {
+                "id": "post",
+                "shape": "cylinder",
+                "size": [
+                  0.09,
+                  0.14,
+                  1.9
+                ],
+                "pos": [
+                  0,
+                  0.95,
+                  0
+                ],
+                "role": "metal",
+                "material": "metal"
+              },
+              {
+                "id": "base",
+                "shape": "cylinder",
+                "size": [
+                  0.55,
+                  0.62,
+                  0.14
+                ],
+                "pos": [
+                  0,
+                  0.07,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "beam",
+                "shape": "box",
+                "size": [
+                  2.7,
+                  0.1,
+                  0.12
+                ],
+                "pos": [
+                  0,
+                  1.95,
+                  0
+                ],
+                "radius": 0.04,
+                "role": "metal",
+                "material": "metal",
+                "keys": [
+                  {
+                    "at": 0.3,
+                    "rot": [
+                      0,
+                      0,
+                      0
+                    ]
+                  },
+                  {
+                    "at": 2.2,
+                    "rot": [
+                      0,
+                      0,
+                      -13
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "pan-l",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.07
+                ],
+                "pos": [
+                  -1.3,
+                  -0.95,
+                  0
+                ],
+                "parent": "beam",
+                "role": "accent",
+                "material": "metal",
+                "keys": [
+                  {
+                    "at": 0.3,
+                    "rot": [
+                      0,
+                      0,
+                      0
+                    ]
+                  },
+                  {
+                    "at": 2.2,
+                    "rot": [
+                      0,
+                      0,
+                      13
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "pan-r",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.07
+                ],
+                "pos": [
+                  1.3,
+                  -0.95,
+                  0
+                ],
+                "parent": "beam",
+                "role": "accent",
+                "material": "metal",
+                "keys": [
+                  {
+                    "at": 0.3,
+                    "rot": [
+                      0,
+                      0,
+                      0
+                    ]
+                  },
+                  {
+                    "at": 2.2,
+                    "rot": [
+                      0,
+                      0,
+                      13
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "chain-l",
+                "shape": "cylinder",
+                "size": [
+                  0.014,
+                  0.014,
+                  0.95
+                ],
+                "pos": [
+                  -1.3,
+                  -0.48,
+                  0
+                ],
+                "parent": "beam",
+                "role": "metal"
+              },
+              {
+                "id": "chain-r",
+                "shape": "cylinder",
+                "size": [
+                  0.014,
+                  0.014,
+                  0.95
+                ],
+                "pos": [
+                  1.3,
+                  -0.48,
+                  0
+                ],
+                "parent": "beam",
+                "role": "metal"
+              },
+              {
+                "id": "coin-l",
+                "shape": "cylinder",
+                "size": [
+                  0.3,
+                  0.3,
+                  0.12
+                ],
+                "pos": [
+                  0,
+                  0.1,
+                  0
+                ],
+                "parent": "pan-l",
+                "color": "accent",
+                "material": "metal"
+              },
+              {
+                "id": "bag-r",
+                "shape": "sphere",
+                "size": [
+                  0.42,
+                  0.34,
+                  0.42
+                ],
+                "pos": [
+                  0,
+                  0.3,
+                  0
+                ],
+                "parent": "pan-r",
+                "color": "accent3",
+                "material": "matte"
+              }
+            ]
+          }
+        ],
+        "world": {
+          "concept": "night arena with gold coin rows",
+          "ground": {
+            "kind": "plane",
+            "size": 50
+          },
+          "parts": [],
+          "crowd": {
+            "count": 90,
+            "area": [
+              14,
+              5
+            ],
+            "pos": [
+              0,
+              0,
+              -9
+            ],
+            "height": 1.2
+          }
+        },
+        "fx": [
+          {
+            "type": "spotlight",
+            "target": "scale",
+            "color": "accent3",
+            "size": 1.3
+          },
+          {
+            "type": "particles",
+            "kind": "dust"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tube",
+      "narration": "Como un tubo que se llena, un poquito cada mes.",
+      "title": {
+        "kicker": "Como un tubo",
+        "main": "que se llena"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "orbit",
+        "objects": [
+          {
+            "kind": "custom",
+            "id": "tube",
+            "size": 1.1,
+            "parts": [
+              {
+                "id": "base",
+                "shape": "cylinder",
+                "size": [
+                  0.46,
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.08,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "glass",
+                "shape": "cylinder",
+                "size": [
+                  0.4,
+                  0.4,
+                  2
+                ],
+                "pos": [
+                  0,
+                  1.16,
+                  0
+                ],
+                "material": "glass",
+                "opacity": 0.55,
+                "color": "text"
+              },
+              {
+                "id": "fill",
+                "shape": "cylinder",
+                "size": [
+                  0.33,
+                  0.33,
+                  1.8
+                ],
+                "pos": [
+                  0,
+                  0.24,
+                  0
+                ],
+                "pivot": [
+                  0,
+                  0.9,
+                  0
+                ],
+                "color": "accent",
+                "material": "emissive",
+                "emissive": 0.6,
+                "keys": [
+                  {
+                    "at": 0.3,
+                    "scale": [
+                      1,
+                      0.04,
+                      1
+                    ]
+                  },
+                  {
+                    "at": 3,
+                    "scale": [
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "cap",
+                "shape": "cylinder",
+                "size": [
+                  0.44,
+                  0.44,
+                  0.14
+                ],
+                "pos": [
+                  0,
+                  2.22,
+                  0
+                ],
+                "role": "dark"
+              }
+            ]
+          },
+          {
+            "kind": "stat",
+            "value": "70%",
+            "label": "lleno",
+            "at": 2.4
+          }
+        ],
+        "layout": "row",
+        "world": {
+          "concept": "night arena with gold coin rows",
+          "ground": {
+            "kind": "disc"
+          },
+          "parts": [],
+          "crowd": {
+            "count": 90,
+            "area": [
+              14,
+              5
+            ],
+            "pos": [
+              0,
+              0,
+              -9
+            ],
+            "height": 1.2
+          }
+        },
+        "fx": [
+          {
+            "type": "spotlight",
+            "target": "tube",
+            "color": "accent2"
+          },
+          {
+            "type": "glow",
+            "target": "tube",
+            "color": "accent",
+            "at": 2.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "end",
+      "narration": "Empieza hoy con una moneda. El resto lo hace el tiempo.",
+      "title": {
+        "kicker": "Empieza hoy",
+        "main": "con una moneda"
+      },
+      "visual": {
+        "type": "scene3d",
+        "camera": "glide",
+        "objects": [
+          {
+            "kind": "stat",
+            "value": "x10",
+            "label": "en diez años",
+            "at": 0.6
+          }
+        ],
+        "world": {
+          "concept": "night arena with gold coin rows",
+          "ground": {
+            "kind": "mirror",
+            "size": 50
+          },
+          "parts": [
+            {
+              "id": "rowL",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                -2.2,
+                0.09,
+                1
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 9,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              },
+              "scale": 1.1
+            },
+            {
+              "id": "rowM",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                0,
+                0.09,
+                0
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 9,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              }
+            },
+            {
+              "id": "rowR",
+              "shape": "cylinder",
+              "size": [
+                0.6,
+                0.18
+              ],
+              "pos": [
+                2.2,
+                0.09,
+                1
+              ],
+              "material": "metal",
+              "color": "accent",
+              "repeat": {
+                "count": 9,
+                "step": [
+                  0,
+                  0,
+                  -1.6
+                ]
+              },
+              "scale": 1.1
+            }
+          ],
+          "crowd": {
+            "count": 120,
+            "area": [
+              14,
+              5
+            ],
+            "pos": [
+              0,
+              0,
+              -9
+            ],
+            "height": 1.2
+          }
+        },
+        "fx": [
+          {
+            "type": "spotlight",
+            "color": "accent",
+            "aim": [
+              0,
+              0,
+              -2
+            ]
+          },
+          {
+            "type": "spotlight",
+            "color": "accent2",
+            "aim": [
+              -4,
+              0,
+              -4
+            ],
+            "pos": [
+              -7,
+              10,
+              -3
+            ]
+          },
+          {
+            "type": "particles",
+            "kind": "confetti",
+            "burst": true,
+            "at": 1.2
+          }
+        ]
+      }
+    }
+  ]
+}

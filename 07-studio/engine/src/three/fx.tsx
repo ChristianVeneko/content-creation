@@ -9,7 +9,7 @@ import { radialTexture } from "./sets";
 import { color3d } from "./looks";
 
 type V3 = [number, number, number];
-export type Fx3D = { type: string; kind?: string; target?: string; color?: string; at?: number | string; until?: number | string; count?: number; size?: number; burst?: boolean };
+export type Fx3D = { type: string; kind?: string; target?: string; color?: string; at?: number | string; until?: number | string; count?: number; size?: number; burst?: boolean; pos?: V3; aim?: V3 };
 /** World anchor of a target at time t: its base position and height (null when hidden or missing). */
 export type TargetAt = (target: string, t: number) => { pos: V3; h: number } | null;
 
@@ -253,6 +253,48 @@ const Hologram: React.FC<{ pos: V3; h: number; t: number; w: number; size: numbe
   );
 };
 
+/**
+ * Volumetric spotlight: an open cone from `pos` down to the lit point, additive with a falloff toward the floor and
+ * soft edges (view-angle fade), a light pool on the ground and a point light that tints what stands in the beam.
+ */
+const Spotlight: React.FC<{ pos: V3; aim: V3; size: number; color: string; t: number; w: number; seed: number }> = ({ pos, aim, size, color, t, w, seed }) => {
+  const sway = Math.sin(t * 0.7 + seed * 1.9) * 0.55;
+  const a: V3 = [aim[0] + sway, aim[1], aim[2] + Math.cos(t * 0.5 + seed) * 0.3];
+  const apex = new THREE.Vector3(...pos);
+  const base = new THREE.Vector3(...a);
+  const dir = apex.clone().sub(base);
+  const H = Math.max(0.5, dir.length());
+  const R = H * 0.2 * size;
+  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+  const mid = apex.clone().add(base).multiplyScalar(0.5);
+  const mat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        toneMapped: false,
+        fog: false,
+        uniforms: { uColor: { value: new THREE.Color(color) }, uOp: { value: 0 }, uH: { value: 1 } },
+        vertexShader: "varying vec3 vN; varying vec3 vV; varying float vT; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); vT = position.y; gl_Position = projectionMatrix * mv; }",
+        fragmentShader: "uniform vec3 uColor; uniform float uOp; uniform float uH; varying vec3 vN; varying vec3 vV; varying float vT; void main(){ float edge = pow(abs(dot(normalize(vN), normalize(vV))), 1.6); float fall = clamp(vT / uH + 0.5, 0.0, 1.0); gl_FragColor = vec4(uColor, uOp * edge * (0.12 + 0.88 * fall)); }",
+      }),
+    [color],
+  );
+  mat.uniforms.uOp.value = 0.26 * w;
+  mat.uniforms.uH.value = H;
+  return (
+    <>
+      <mesh position={mid} quaternion={quat} material={mat} scale={[1, 1, 1]}>
+        <coneGeometry args={[R, H, 48, 1, true]} />
+      </mesh>
+      <Halo pos={[a[0], a[1] + 0.02, a[2]]} size={R * 2.4} color={color} opacity={0.38 * w} />
+      <pointLight position={[a[0], a[1] + H * 0.45, a[2]]} color={color} intensity={34 * size * w} distance={H * 1.6} decay={1.6} />
+    </>
+  );
+};
+
 /** Light sweep: a strong colored point light glides across the front of the scene. */
 const Sweep: React.FC<{ t: number; start: number; end: number; center: V3; color: string; size: number }> = ({ t, start, end, center, color, size }) => {
   const stop = end === Infinity ? start + 2.4 : end;
@@ -313,6 +355,11 @@ export const FxLayer: React.FC<{ fx: Fx3D[]; t: number; sec: (m: number | string
           case "hologram":
             if (!anchor) return null;
             return <Hologram key={key} pos={anchor.pos} h={anchor.h} t={t} w={windowW(t, start, end)} size={size} color={color} />;
+          case "spotlight": {
+            const aim = anchor ? anchor.pos : (f.aim ?? [center[0], 0, center[2]]);
+            const from = f.pos ?? ([aim[0], 10, aim[2] - 1.5] as V3);
+            return <Spotlight key={key} pos={from} aim={aim} size={size} color={color} t={t} w={windowW(t, start, end, 0.6)} seed={seed + i} />;
+          }
           case "sweep":
             return <Sweep key={key} t={t} start={start} end={end} center={center} color={color} size={size} />;
           default:

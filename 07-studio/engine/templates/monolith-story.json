@@ -1,0 +1,60 @@
+{
+  "id": "monolith-story",
+  "name": "Monolith Story 3D",
+  "category": "3d",
+  "format": "story-monolith",
+  "description": "Low-poly story 3D format: one recurring monolith or object persists across every scene while the backdrop changes color per scene (keyed to the palette roles), pixel-font signs stand in the world, and the camera pushes in, orbits and drifts. A format, not a scene: the agent designs the monolith, the signs and each scene's surroundings from scratch for each video. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with a `custom` hero object (the same monolith in every scene: copy its parts), a `world` whose `backdrop` is a different palette token each scene (accent, accent2, accent3, muted) and a few `sign` parts for pixel-font labels. Use camera push / orbit / handheld and `shots`. No emoji.",
+  "best_for": [
+    "mysteries and stories",
+    "lore and history",
+    "myths and legends",
+    "one-object storytelling",
+    "dark and strange topics"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#0B0F1A",
+      "#1F2A4A",
+      "#FF7A59"
+    ],
+    "accent": "#FF7A59",
+    "sample_text": "MONOLITO"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#0B0F1A",
+          "#1F2A4A"
+        ],
+        "text": "#FFFFFF",
+        "accent": "#FF7A59",
+        "accent2": "#3FB8AF",
+        "accent3": "#F2C14E"
+      },
+      "font": "Montserrat",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.04
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.95
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}
