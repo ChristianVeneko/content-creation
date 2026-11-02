@@ -2,6 +2,7 @@
 // The VideoSpec mirrors the engine contract in 07-studio/engine/spec.schema.json.
 
 import type { CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
+import type { DurationSec } from "./durations.ts";
 
 export type { CaptionColors, CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
 export type VoiceProvider = "elevenlabs" | "kokoro" | "none";
@@ -123,6 +124,8 @@ export interface TemplateInfo {
   style?: string;
   /** Gallery family (engine `category`). */
   category?: TemplateCategory | string;
+  /** Kebab slug naming the video format (engine `format`; defaults to the template id). */
+  format?: string;
   bestFor?: string[];
   /** The template's own palette (defaults.theme.palette), shown as "Original". */
   palette?: Palette;
@@ -207,7 +210,7 @@ export interface VoiceLibrary {
 
 export interface GenerateOptions {
   language: string;
-  durationSec: 15 | 30 | 45 | 60;
+  durationSec: DurationSec;
   tone: string;
   voiceProvider: VoiceProvider;
   voiceId?: string;

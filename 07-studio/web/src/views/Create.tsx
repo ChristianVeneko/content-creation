@@ -1,4 +1,4 @@
-// Create: a six-step onboarding wizard (idea, style, palette, voice and music, format, review) with a
+// Create: a six-step onboarding wizard (idea, format, palette, voice and music, length, review) with a
 // progress rail and a summary sidebar. Every step can be visited in any order, and once the idea, the
 // template and a provider are set the sidebar can generate straight away. A channel picked at the top
 // prefills its defaults and gives the script writer the channel context; an idea from the panel prefills
@@ -6,6 +6,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Channel, ChannelSummary, GenerateOptions, PalettePreset, ProviderId, ProviderInfo, TemplateInfo, ThemePreset } from "../../shared/types.ts";
 import { DEFAULT_MUSIC } from "../../shared/music.ts";
+import { DURATION_CHOICES, durationLabel } from "../../shared/durations.ts";
+import { FAMILIES, formatFamily } from "../lib/formats.ts";
 import { CAPTION_LABEL, CaptionPanel } from "../components/CaptionPanel.tsx";
 import { MusicPanel } from "../components/MusicPanel.tsx";
 import { VoicePicker } from "../components/VoicePicker.tsx";
@@ -101,7 +103,7 @@ function loadDraft(): Draft {
   }
 }
 
-const STEP_IDS = ["idea", "style", "palette", "sound", "format", "review"] as const;
+const STEP_IDS = ["idea", "format", "palette", "sound", "length", "review"] as const;
 const isEditable = (el: EventTarget | null) =>
   el instanceof HTMLElement && (el.isContentEditable || el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !["radio", "checkbox", "button", "color"].includes((el as HTMLInputElement).type)) || el.tagName === "SELECT");
 
@@ -216,7 +218,7 @@ export function Create(props: { channel?: string; idea?: string }) {
 
   const missing = useMemo(() => {
     if (!draft.prompt.trim()) return "Escribe la idea del video";
-    if (!draft.template) return "Elige una plantilla";
+    if (!draft.template) return "Elige un formato";
     if (!provider?.available) return "Elige un proveedor disponible";
     return null;
   }, [draft, provider]);
@@ -311,12 +313,12 @@ export function Create(props: { channel?: string; idea?: string }) {
         : `Biblioteca · ${themes?.find((t) => t.mood === music.mood)?.moodLabel ?? music.mood}`;
 
   const steps: RailStep[] = [
-    { id: "idea", label: "Idea", hint: draft.prompt.trim() ? "Lista" : "Qué quieres contar", done: Boolean(draft.prompt.trim()) },
-    { id: "style", label: "Estilo", hint: template?.name ?? "Plantilla", done: Boolean(template) },
-    { id: "palette", label: "Paleta", hint: palette.label, done: visited.has(2) },
-    { id: "sound", label: "Voz y música", hint: VOICE_LABEL[draft.options.voiceProvider], done: visited.has(3) },
-    { id: "format", label: "Formato", hint: `${draft.options.durationSec}s · ${PLATFORM_LABEL[draft.options.platform]}`, done: visited.has(4) },
-    { id: "review", label: "Revisar", hint: missing ? "Falta algo" : "Listo para generar", done: false },
+    { id: "idea", label: "Idea", hint: draft.prompt.trim() ? "Lista" : "Qué quieres contar", helper: "Cuenta de qué va el video, con tus palabras", done: Boolean(draft.prompt.trim()) },
+    { id: "format", label: "Formato", hint: template?.name ?? "Cómo se ve y se mueve", helper: "Elige cómo se ve y cómo se mueve", done: Boolean(template) },
+    { id: "palette", label: "Colores", hint: palette.label, helper: "Paleta con buen contraste para leer", done: visited.has(2) },
+    { id: "sound", label: "Voz y música", hint: VOICE_LABEL[draft.options.voiceProvider], helper: "Quién narra, qué suena y cómo se ven los subtítulos", done: visited.has(3) },
+    { id: "length", label: "Duración", hint: `${durationLabel(draft.options.durationSec)} · ${PLATFORM_LABEL[draft.options.platform]}`, helper: "Cuánto dura y para qué plataforma", done: visited.has(4) },
+    { id: "review", label: "Revisar", hint: missing ? "Falta algo" : "Listo para generar", helper: "Último vistazo antes de escribir el guion", done: false },
   ];
 
   const heading = (title: string, sub: string) => (
@@ -399,7 +401,7 @@ export function Create(props: { channel?: string; idea?: string }) {
       <section className="wizard-stage" aria-live="off">
         {step === 0 && (
           <div className="step step-idea">
-            {heading("¿Qué video quieres hoy?", "Cuéntalo como se lo contarías a alguien. Una temática prellena estilo, paleta, música y tono; luego cambias lo que quieras.")}
+            {heading("¿Qué video quieres hoy?", "Cuéntalo como se lo contarías a alguien. Una temática prellena formato, paleta, música y tono; luego cambias lo que quieras.")}
             <div className="prompt-wrap">
               <label htmlFor="prompt" className="visually-hidden">
                 Idea del video
@@ -419,6 +421,12 @@ export function Create(props: { channel?: string; idea?: string }) {
                 <kbd>⌘</kbd> <kbd>Enter</kbd> siguiente paso
               </span>
             </div>
+
+            {!returning && !draft.prompt.trim() && (
+              <p className="first-run-hint" role="note">
+                Primera vez: escribe la idea y sigue. Después eliges cómo se ve y se mueve (formato), los colores, la voz y la duración. Cada paso trae un valor por defecto y puedes generar desde cualquiera.
+              </p>
+            )}
 
             <fieldset className="field topic-field">
               <legend className="field-label">Temáticas</legend>
@@ -447,7 +455,7 @@ export function Create(props: { channel?: string; idea?: string }) {
                 <div className="topic-note" role="status">
                   <p>
                     <strong>{theme.label}</strong> prellenó
-                    {recommended[0] ? ` la plantilla ${templates?.find((x) => x.id === recommended[0])?.name ?? recommended[0]},` : ""} la paleta{" "}
+                    {recommended[0] ? ` el formato ${templates?.find((x) => x.id === recommended[0])?.name ?? recommended[0]},` : ""} la paleta{" "}
                     {palettes?.find((p) => p.id === theme.palette)?.name ?? theme.palette}, música {theme.moodLabel ?? theme.mood} y tono {theme.tone.toLowerCase()}.
                   </p>
                   {draft.prompt.trim() !== theme.examplePrompt && (
@@ -474,16 +482,20 @@ export function Create(props: { channel?: string; idea?: string }) {
 
         {step === 1 && (
           <div className="step step-style">
-            {heading("Elige el estilo", "Pasa el cursor o el foco por una plantilla para verla en movimiento. Todas son verticales 9:16.")}
+            {heading("¿Cómo se ve y cómo se mueve?", "Elige el formato del video: cámara, ritmo y forma de dibujar. Pasa el cursor o el foco por uno para verlo en movimiento. Todos son verticales 9:16.")}
             {templatesError ? (
               <div className="notice notice-error" role="alert">
-                <strong>No pude cargar las plantillas.</strong> {templatesError}
+                <strong>No pude cargar los formatos.</strong> {templatesError}
               </div>
             ) : !templates ? (
               <div className="gallery-grid" aria-busy="true">
                 {Array.from({ length: 8 }, (_, i) => (
                   <span key={i} className="tcard-skeleton" />
                 ))}
+              </div>
+            ) : templates.length === 0 ? (
+              <div className="notice" role="status">
+                Todavía no hay formatos disponibles. Revisa que el motor de video esté instalado y vuelve a abrir este paso.
               </div>
             ) : (
               <TemplateGallery
@@ -497,8 +509,16 @@ export function Create(props: { channel?: string; idea?: string }) {
             )}
             {template && (
               <div className="style-detail">
-                <p className="style-detail-name">{template.name}</p>
+                <p className="style-detail-name">
+                  {template.name}
+                  <span className="muted"> · {FAMILIES.find((f) => f.id === formatFamily(template))?.label}</span>
+                </p>
                 <p className="muted">{template.description}</p>
+                {formatFamily(template) === "3d" && (
+                  <p className="style-note-3d">
+                    Los formatos 3D solo fijan el estilo (cámara, luz, materiales y movimiento). El agente construye los modelos desde cero y prueba varias tomas de cámara por escena.
+                  </p>
+                )}
                 {template.bestFor && template.bestFor.length > 0 && (
                   <ul className="tags" aria-label="Ideal para">
                     {template.bestFor.slice(0, 5).map((b) => (
@@ -513,14 +533,14 @@ export function Create(props: { channel?: string; idea?: string }) {
 
         {step === 2 && (
           <div className="step step-palette">
-            {heading("Paleta de color", "Sirve para cualquier plantilla. La original es la que trae el estilo; el resto la reemplaza.")}
+            {heading("Colores con buen contraste", "Sirve para cualquier formato. La original es la del formato; el resto la reemplaza. Avisamos si el texto o el acento no se leen bien (mínimo 4,5:1).")}
             <PalettePicker template={template} presets={palettes} presetsError={palettesError} choice={draft.paletteChoice} onChange={(c) => setDraft((d) => ({ ...d, paletteChoice: c }))} />
           </div>
         )}
 
         {step === 3 && (
           <div className="step step-sound">
-            {heading("Voz y música", "La voz narra el guion; la música va por debajo y baja sola cuando se habla.")}
+            {heading("Voz, música y subtítulos", "La voz narra el guion; la música va por debajo y baja sola cuando se habla. Los subtítulos toman los colores de la paleta salvo que elijas otros.")}
             <div className="sound-grid">
               <div className="panel">
                 <Segmented
@@ -561,31 +581,6 @@ export function Create(props: { channel?: string; idea?: string }) {
                 <MusicPanel value={music} onChange={(m) => setOpt("music", m)} disabled={busy} />
               </div>
             </div>
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="step step-format">
-            {heading("Formato y subtítulos", "Los primeros 3 segundos deciden si alguien se queda. Los subtítulos toman los colores de la paleta salvo que elijas otros.")}
-            <div className="panel format-panel">
-              <Segmented
-                label="Duración"
-                value={draft.options.durationSec}
-                options={[15, 30, 45, 60].map((n) => ({ value: n as GenerateOptions["durationSec"], label: `${n}s` }))}
-                onChange={(v) => setOpt("durationSec", v)}
-              />
-              <Segmented
-                label="Plataforma"
-                value={draft.options.platform}
-                options={[
-                  { value: "all", label: "Todas" },
-                  { value: "tiktok", label: "TikTok" },
-                  { value: "instagram", label: "Reels" },
-                  { value: "youtube", label: "Shorts" },
-                ]}
-                onChange={(v) => setOpt("platform", v)}
-              />
-            </div>
             <div className="panel">
               <p className="field-label">Subtítulos</p>
               <CaptionPanel
@@ -603,6 +598,39 @@ export function Create(props: { channel?: string; idea?: string }) {
                 }
               />
             </div>
+
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="step step-format">
+            {heading("Duración y plataforma", "Los primeros 3 segundos deciden si alguien se queda. Los videos largos llevan más escenas, no escenas más largas.")}
+            <div className="panel format-panel">
+              <Segmented
+                label="Duración"
+                value={draft.options.durationSec}
+                options={DURATION_CHOICES.map((n) => ({ value: n, label: durationLabel(n) }))}
+                onChange={(v) => setOpt("durationSec", v)}
+              />
+              <Segmented
+                label="Plataforma"
+                value={draft.options.platform}
+                options={[
+                  { value: "all", label: "Todas" },
+                  { value: "tiktok", label: "TikTok" },
+                  { value: "instagram", label: "Reels" },
+                  { value: "youtube", label: "Shorts" },
+                ]}
+                onChange={(v) => setOpt("platform", v)}
+              />
+              <p className="length-note">
+                {draft.options.durationSec <= 45
+                  ? "Corto: va directo al punto y se repite bien."
+                  : draft.options.durationSec <= 90
+                    ? "Medio: cabe una historia con ejemplos."
+                    : "Largo: más escenas con un giro cada pocos segundos para sostener la atención. Reels y Shorts aceptan hasta 3 minutos."}
+              </p>
+            </div>
           </div>
         )}
 
@@ -614,11 +642,12 @@ export function Create(props: { channel?: string; idea?: string }) {
                 { k: "Canal", v: channel?.name ?? "Sin canal", go: 0 },
                 { k: "Idea", v: draft.prompt.trim() || "Sin escribir", go: 0, warn: !draft.prompt.trim() },
                 { k: "Temática", v: theme?.label ?? "Ninguna", go: 0 },
-                { k: "Estilo", v: template ? `${template.name}${template.category ? ` · ${CATEGORY_LABEL[template.category] ?? template.category}` : ""}` : "Sin elegir", go: 1, warn: !template },
+                { k: "Formato", v: template ? `${template.name}${template.category ? ` · ${CATEGORY_LABEL[template.category] ?? template.category}` : ""}` : "Sin elegir", go: 1, warn: !template },
                 { k: "Paleta", v: palette.label, go: 2, palette: palette.preview },
                 { k: "Voz", v: `${VOICE_LABEL[draft.options.voiceProvider]}${draft.options.voiceId ? ` · ${draft.options.voiceId}` : draft.options.voiceProvider === "elevenlabs" ? " · automática en tendencia" : ""} · ${LANGUAGE_LABEL[draft.options.language] ?? draft.options.language}`, go: 3 },
                 { k: "Música", v: musicLabel, go: 3 },
-                { k: "Formato", v: `${draft.options.durationSec}s · ${PLATFORM_LABEL[draft.options.platform]} · subtítulos ${captionSummary(draft.options, draft.template)}${draft.options.tone ? ` · tono ${draft.options.tone.toLowerCase()}` : ""}`, go: 4 },
+                { k: "Subtítulos", v: captionSummary(draft.options, draft.template), go: 3 },
+                { k: "Duración", v: `${durationLabel(draft.options.durationSec)} · ${PLATFORM_LABEL[draft.options.platform]}${draft.options.tone ? ` · tono ${draft.options.tone.toLowerCase()}` : ""}`, go: 4 },
               ].map((r) => (
                 <div key={r.k} className="review-row" data-warn={r.warn || undefined}>
                   <dt>{r.k}</dt>
@@ -700,7 +729,7 @@ export function Create(props: { channel?: string; idea?: string }) {
       <aside className="summary" aria-label="Resumen del video">
         <div className="summary-preview">
           <span className="summary-frame" style={paletteVars(palette.preview)}>
-            {template ? <TemplateThumb template={template} active={!busy} /> : <span className="summary-empty">Sin plantilla</span>}
+            {template ? <TemplateThumb template={template} active={!busy} /> : <span className="summary-empty">Sin formato</span>}
           </span>
           <div className="summary-head">
             <p className="summary-title">{template?.name ?? "Tu video"}</p>
@@ -716,10 +745,11 @@ export function Create(props: { channel?: string; idea?: string }) {
             { k: "Canal", v: channel?.name ?? "Sin canal", go: 0 },
             { k: "Idea", v: draft.prompt.trim() || "Sin escribir", go: 0 },
             { k: "Temática", v: theme?.label ?? "Ninguna", go: 0 },
+            { k: "Formato", v: template?.name ?? "Sin elegir", go: 1 },
             { k: "Paleta", v: palette.label, go: 2 },
             { k: "Voz", v: VOICE_LABEL[draft.options.voiceProvider], go: 3 },
             { k: "Música", v: musicLabel, go: 3 },
-            { k: "Formato", v: `${draft.options.durationSec}s · ${PLATFORM_LABEL[draft.options.platform]}`, go: 4 },
+            { k: "Duración", v: `${durationLabel(draft.options.durationSec)} · ${PLATFORM_LABEL[draft.options.platform]}`, go: 4 },
           ].map((r) => (
             <li key={r.k}>
               <button type="button" className="summary-row" onClick={() => go(r.go)}>

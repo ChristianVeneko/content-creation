@@ -1,6 +1,7 @@
 // Channel form sections, shared by the 3-step channel wizard and the channel context editor.
 import { useId } from "react";
 import { CHANNEL_PLATFORMS, type ChannelDefaults, type GenerateOptions, type VoiceProvider } from "../../shared/types.ts";
+import { DURATION_CHOICES, durationLabel } from "../../shared/durations.ts";
 import { LANGUAGES, PLATFORM_LABEL, VOICE_TEMPLATE, type ChannelDraft, type ChannelRefs } from "../lib/channels.ts";
 import { templatePalette } from "../lib/palette.ts";
 import { CaptionPanel } from "./CaptionPanel.tsx";
@@ -174,7 +175,7 @@ export function ChannelFields(props: {
           <Segmented<GenerateOptions["durationSec"]>
             label="Duración habitual"
             value={draft.defaults.durationSec ?? 30}
-            options={[15, 30, 45, 60].map((n) => ({ value: n as GenerateOptions["durationSec"], label: `${n}s` }))}
+            options={DURATION_CHOICES.map((n) => ({ value: n as GenerateOptions["durationSec"], label: durationLabel(n) }))}
             onChange={(v) => setDef("durationSec", v)}
           />
         </div>

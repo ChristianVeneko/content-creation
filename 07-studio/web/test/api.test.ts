@@ -23,7 +23,8 @@ test("health and templates", async () => {
   assert.equal(res.status, 200);
   const { templates } = (await res.json()) as Json;
   assert.equal(templates.length, 5);
-  assert.deepEqual(Object.keys(templates[0]).sort(), ["accent", "description", "emoji", "gradient", "id", "name", "promptHint", "sampleText"]);
+  assert.deepEqual(Object.keys(templates[0]).sort(), ["accent", "description", "emoji", "format", "gradient", "id", "name", "promptHint", "sampleText"]);
+  assert.equal(templates[0].format, templates[0].id, "format defaults to the template id");
 });
 
 test("spec request validation errors are 400", async () => {

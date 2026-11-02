@@ -43,3 +43,32 @@ export { contrastRatio };
 export const minTextContrast = (p: Palette) => Math.min(...p.bg.map((bg) => contrastRatio(p.text, bg)));
 
 export const isHexColor = (v: string) => /^#[0-9a-f]{6}$/i.test(v);
+
+/** Minimum contrast the wizard asks for: WCAG AA for normal text. */
+export const MIN_CONTRAST = 4.5;
+
+/** Lowest contrast of a foreground color across the background stops, and the stop that causes it. */
+export function worstContrast(fg: string, bgs: string[]): { ratio: number; against: string } {
+  let worst = { ratio: Infinity, against: bgs[0] };
+  for (const bg of bgs) {
+    const ratio = contrastRatio(fg, bg);
+    if (ratio < worst.ratio) worst = { ratio, against: bg };
+  }
+  return worst;
+}
+
+export interface ContrastBadge {
+  id: "text" | "accent";
+  label: string;
+  ratio: number;
+  ok: boolean;
+}
+
+/** Contrast badges for the palette step: text and accent against the worst background stop; ok from 4.5. */
+export function contrastBadges(p: Palette): ContrastBadge[] {
+  const mk = (id: ContrastBadge["id"], name: string, fg: string): ContrastBadge => {
+    const { ratio } = worstContrast(fg, p.bg);
+    return { id, label: `${name} ${ratio.toFixed(1)}:1`, ratio, ok: ratio >= MIN_CONTRAST };
+  };
+  return [mk("text", "Texto", p.text), mk("accent", "Acento", p.accent)];
+}

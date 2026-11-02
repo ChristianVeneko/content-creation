@@ -221,6 +221,7 @@ export function normalizeTemplates(raw: unknown): TemplateInfo[] {
         style: typeof preview.style === "string" ? preview.style : undefined,
         promptHint: typeof t.prompt_hint === "string" ? t.prompt_hint : undefined,
         category: typeof t.category === "string" ? t.category : undefined,
+        format: typeof t.format === "string" ? t.format : id,
         bestFor: Array.isArray(t.best_for) ? t.best_for.map(String) : undefined,
         palette: asPalette(defaultsTheme(t).palette),
         font: typeof defaultsTheme(t).font === "string" ? (defaultsTheme(t).font as string) : undefined,

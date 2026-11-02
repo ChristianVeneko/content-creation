@@ -9,10 +9,10 @@ import {
   type ChannelDefaults,
   type ChannelDetail,
   type ChannelPlatform,
-  type GenerateOptions,
   type VoiceProvider,
 } from "../shared/types.ts";
 import { isCaptionStyle, cleanCaptionSettings } from "../shared/captions.ts";
+import { isDurationSec } from "../shared/durations.ts";
 import { isValidJobId, slugify } from "./jobs.ts";
 
 export class ChannelError extends Error {
@@ -40,7 +40,6 @@ export function isValidChannelSlug(slug: unknown): slug is string {
 }
 
 const VOICE_PROVIDERS: VoiceProvider[] = ["kokoro", "elevenlabs", "none"];
-const DURATIONS: GenerateOptions["durationSec"][] = [15, 30, 45, 60];
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 const MAX_VOICE = 50_000;
 
@@ -49,7 +48,7 @@ const str = (v: unknown, max = 400): string | undefined => (typeof v === "string
 const strList = (v: unknown, max = 12): string[] =>
   Array.isArray(v) ? v.flatMap((x) => (typeof x === "string" && x.trim() ? [x.trim().slice(0, 200)] : [])).slice(0, max) : [];
 
-function sanitizeDefaults(v: unknown): ChannelDefaults {
+export function sanitizeDefaults(v: unknown): ChannelDefaults {
   if (!isObj(v)) return {};
   const d: ChannelDefaults = {};
   if (str(v.template, 80)) d.template = str(v.template, 80);
@@ -62,7 +61,7 @@ function sanitizeDefaults(v: unknown): ChannelDefaults {
   const captions = cleanCaptionSettings(v.captions);
   if (captions) d.captions = captions;
   if (str(v.musicMood, 80)) d.musicMood = str(v.musicMood, 80);
-  if (DURATIONS.includes(v.durationSec as GenerateOptions["durationSec"])) d.durationSec = v.durationSec as GenerateOptions["durationSec"];
+  if (isDurationSec(v.durationSec)) d.durationSec = v.durationSec;
   if (str(v.tone, 400)) d.tone = str(v.tone, 400);
   return d;
 }

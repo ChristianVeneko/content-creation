@@ -3,6 +3,8 @@ export interface RailStep {
   id: string;
   label: string;
   hint: string;
+  /** One line saying what to do in this step. */
+  helper?: string;
   done: boolean;
 }
 
@@ -12,6 +14,7 @@ export function StepRail(props: { steps: RailStep[]; current: number; onGo: (i: 
     <nav className="rail" aria-label="Pasos">
       <p className="rail-compact" aria-hidden="true">
         Paso {props.current + 1} de {props.steps.length} · {props.steps[props.current].label}
+        {props.steps[props.current].helper ? ` — ${props.steps[props.current].helper}` : ""}
       </p>
       <span className="rail-progress" aria-hidden="true">
         <span style={{ transform: `scaleX(${pct / 100})` }} />
@@ -23,6 +26,7 @@ export function StepRail(props: { steps: RailStep[]; current: number; onGo: (i: 
               type="button"
               className="rail-step"
               aria-current={i === props.current ? "step" : undefined}
+              title={s.helper}
               data-done={s.done && i !== props.current}
               onClick={() => props.onGo(i)}
             >

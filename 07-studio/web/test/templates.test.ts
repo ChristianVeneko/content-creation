@@ -15,3 +15,9 @@ test("templates without a preview style keep style undefined (old emoji cards un
   assert.equal(t.style, undefined);
   assert.equal(t.emoji, "🔢");
 });
+
+test("normalizeTemplates exposes the engine format slug and falls back to the id", () => {
+  const [a, b] = normalizeTemplates([{ id: "x", format: "host-tutorial" }, { id: "y" }]);
+  assert.equal(a.format, "host-tutorial");
+  assert.equal(b.format, "y");
+});
