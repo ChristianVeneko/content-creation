@@ -216,6 +216,1942 @@
         }
       }
     },
+    "stage": {
+      "description": "3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus",
+      "type": "object",
+      "properties": {
+        "concept": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80,
+          "description": "The world idea of THIS video in a few words"
+        },
+        "world": {
+          "description": "Static scenery built once (ground, backdrop, props, scatter, crowd)",
+          "type": "object",
+          "properties": {
+            "concept": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 80
+            },
+            "ground": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "description": "look = the look's own floor (default), none = shadow catcher only, plane | disc | grid | mirror",
+                  "type": "string",
+                  "enum": [
+                    "look",
+                    "none",
+                    "plane",
+                    "disc",
+                    "grid",
+                    "mirror"
+                  ]
+                },
+                "color": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "accent",
+                        "accent2",
+                        "accent3",
+                        "good",
+                        "bad",
+                        "muted",
+                        "text"
+                      ]
+                    }
+                  ]
+                },
+                "size": {
+                  "description": "plane/grid/mirror: side length; disc: diameter",
+                  "type": "number",
+                  "minimum": 2,
+                  "maximum": 60
+                }
+              },
+              "additionalProperties": false
+            },
+            "backdrop": {
+              "description": "Flat backdrop color of the scene (default: the look's gradient)",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "accent",
+                    "accent2",
+                    "accent3",
+                    "good",
+                    "bad",
+                    "muted",
+                    "text"
+                  ]
+                }
+              ]
+            },
+            "parts": {
+              "description": "Props, walls, signs and stage dressing built from primitive parts",
+              "maxItems": 120,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "shape": {
+                    "type": "string",
+                    "enum": [
+                      "box",
+                      "sphere",
+                      "cylinder",
+                      "cone",
+                      "torus",
+                      "capsule",
+                      "plane",
+                      "sign",
+                      "ring",
+                      "tube",
+                      "extrude",
+                      "lathe",
+                      "group"
+                    ]
+                  },
+                  "size": {
+                    "description": "Dimensions in world units (<= 8), meaning per shape; torus arc in degrees",
+                    "maxItems": 3,
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": 0.005,
+                      "maximum": 360
+                    }
+                  },
+                  "points": {
+                    "description": "tube: [[x,y,z]...]; extrude: outline [[x,y]...]; lathe: profile [[r,y]...]",
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "minItems": 2,
+                      "maxItems": 3,
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "minimum": -6,
+                        "maximum": 6
+                      }
+                    }
+                  },
+                  "radius": {
+                    "description": "box: edge rounding; extrude: bevel",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 0.5
+                  },
+                  "text": {
+                    "description": "sign: the text printed on the sign (pixel font)",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 24
+                  },
+                  "textColor": {
+                    "description": "sign: text color (default: readable on the panel)",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "accent",
+                          "accent2",
+                          "accent3",
+                          "good",
+                          "bad",
+                          "muted",
+                          "text"
+                        ]
+                      }
+                    ]
+                  },
+                  "pos": {
+                    "description": "Center in world units (objects stand near the origin; negative z recedes)",
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "rot": {
+                    "description": "Degrees [x, y, z]",
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -360,
+                        "maximum": 360
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -360,
+                        "maximum": 360
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -360,
+                        "maximum": 360
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "scale": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0.01,
+                        "maximum": 10
+                      },
+                      {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number",
+                            "minimum": 0.01,
+                            "maximum": 10
+                          },
+                          {
+                            "type": "number",
+                            "minimum": 0.01,
+                            "maximum": 10
+                          },
+                          {
+                            "type": "number",
+                            "minimum": 0.01,
+                            "maximum": 10
+                          }
+                        ],
+                        "items": false,
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    ]
+                  },
+                  "pivot": {
+                    "description": "Rotation point relative to the part's center (e.g. the shoulder end of an arm)",
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -3,
+                        "maximum": 3
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -3,
+                        "maximum": 3
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -3,
+                        "maximum": 3
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "parent": {
+                    "description": "Part id this part hangs from (moves with it)",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "accent",
+                          "accent2",
+                          "accent3",
+                          "good",
+                          "bad",
+                          "muted",
+                          "text"
+                        ]
+                      }
+                    ]
+                  },
+                  "role": {
+                    "description": "Color source when `color` is not set (default body)",
+                    "type": "string",
+                    "enum": [
+                      "body",
+                      "accent",
+                      "dark",
+                      "light",
+                      "metal",
+                      "screen",
+                      "glow"
+                    ]
+                  },
+                  "material": {
+                    "description": "auto (default) uses the look's material",
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "matte",
+                      "plastic",
+                      "metal",
+                      "glass",
+                      "emissive",
+                      "toon",
+                      "clay"
+                    ]
+                  },
+                  "emissive": {
+                    "description": "Self-glow strength",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 4
+                  },
+                  "opacity": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 1
+                  },
+                  "motion": {
+                    "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert",
+                    "maxItems": 6,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert"
+                            },
+                            "at": {
+                              "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 60
+                                },
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 40
+                                }
+                              ]
+                            },
+                            "until": {
+                              "description": "End (default: the scene end)",
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 60
+                                },
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 40
+                                }
+                              ]
+                            },
+                            "amp": {
+                              "description": "Amplitude: world units, or degrees for wobble/wave/walk",
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 720
+                            },
+                            "speed": {
+                              "description": "Tempo multiplier (1 = default)",
+                              "type": "number",
+                              "minimum": 0.05,
+                              "maximum": 8
+                            },
+                            "parts": {
+                              "description": "walk/blink/assemble/explode on an object: the part ids",
+                              "minItems": 1,
+                              "maxItems": 12,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 40
+                              }
+                            },
+                            "axis": {
+                              "type": "string",
+                              "enum": [
+                                "x",
+                                "y",
+                                "z"
+                              ]
+                            },
+                            "lift": {
+                              "description": "wave: how far the limb is raised, degrees (default 130)",
+                              "type": "number",
+                              "minimum": -180,
+                              "maximum": 180
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  },
+                  "keys": {
+                    "description": "Keyframes [{at, pos, rot, scale, opacity, ease}]",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ],
+                          "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                        },
+                        "pos": {
+                          "description": "Offset from the rest position",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -6,
+                              "maximum": 6
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -6,
+                              "maximum": 6
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -6,
+                              "maximum": 6
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "rot": {
+                          "description": "Degrees added to the rest rotation [x, y, z]",
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "scale": {
+                          "description": "Multiplier of the rest scale",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 3,
+                              "maxItems": 3
+                            }
+                          ]
+                        },
+                        "opacity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "ease": {
+                          "description": "Easing of the segment that arrives at this key (default in-out)",
+                          "type": "string",
+                          "enum": [
+                            "linear",
+                            "in",
+                            "out",
+                            "in-out",
+                            "back",
+                            "elastic",
+                            "bounce",
+                            "step"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "at"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "repeat": {
+                    "description": "Copies of this part (and the parts hanging from it)",
+                    "type": "object",
+                    "properties": {
+                      "count": {
+                        "type": "integer",
+                        "minimum": 2,
+                        "maximum": 40,
+                        "description": "Number of copies (including the original)"
+                      },
+                      "step": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number",
+                            "minimum": -10,
+                            "maximum": 10
+                          },
+                          {
+                            "type": "number",
+                            "minimum": -10,
+                            "maximum": 10
+                          },
+                          {
+                            "type": "number",
+                            "minimum": -10,
+                            "maximum": 10
+                          }
+                        ],
+                        "items": false,
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "description": "Offset between copies [x, y, z]; e.g. [0, 0, -1.2] makes a row receding into depth"
+                      },
+                      "scaleStep": {
+                        "description": "Scale multiplier applied cumulatively per copy (default 1)",
+                        "type": "number",
+                        "minimum": 0.5,
+                        "maximum": 1.5
+                      }
+                    },
+                    "required": [
+                      "count",
+                      "step"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "shape"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "crowd": {
+              "description": "Instanced crowd silhouettes",
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 8,
+                  "maximum": 160
+                },
+                "area": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": 2,
+                      "maximum": 40
+                    },
+                    {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 30
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "description": "Width and depth of the area the silhouettes fill"
+                },
+                "pos": {
+                  "description": "Center of the area (default [0, 0, -6])",
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": -30,
+                      "maximum": 30
+                    },
+                    {
+                      "type": "number",
+                      "minimum": -30,
+                      "maximum": 30
+                    },
+                    {
+                      "type": "number",
+                      "minimum": -30,
+                      "maximum": 30
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "height": {
+                  "description": "Silhouette height (default 1.1)",
+                  "type": "number",
+                  "minimum": 0.4,
+                  "maximum": 2.5
+                },
+                "color": {
+                  "description": "Silhouette color (default: near-black of the backdrop)",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "accent",
+                        "accent2",
+                        "accent3",
+                        "good",
+                        "bad",
+                        "muted",
+                        "text"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "count",
+                "area"
+              ],
+              "additionalProperties": false
+            },
+            "scatter": {
+              "description": "Deterministic scattered copies of template parts (grass, flowers, stones, trees)",
+              "maxItems": 12,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "part": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40,
+                    "description": "Id of the template part in `world.parts` (and the parts hanging from it); the template itself is not drawn, only its copies"
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000,
+                    "description": "Number of copies"
+                  },
+                  "area": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "description": "Ground rectangle [x0, z0, x1, z1] the copies fall in"
+                  },
+                  "seed": {
+                    "description": "Same seed = same layout (default 0)",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "jitter": {
+                    "type": "object",
+                    "properties": {
+                      "scale": {
+                        "description": "Random scale +/- (0.3 = 70%..130%)",
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 0.9
+                      },
+                      "rot": {
+                        "description": "Random yaw +/- degrees (default 360 = any)",
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 360
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "avoid": {
+                    "description": "Keep-out zones: [x0, z0, x1, z1] boxes or [x, z, r] discs",
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "minItems": 3,
+                      "maxItems": 4,
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "minimum": -30,
+                        "maximum": 30
+                      }
+                    }
+                  },
+                  "y": {
+                    "description": "Ground height added to the template's own y (default 0; on a stage with terrain the copies follow the terrain)",
+                    "type": "number",
+                    "minimum": -5,
+                    "maximum": 5
+                  }
+                },
+                "required": [
+                  "part",
+                  "count",
+                  "area"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "actors": {
+          "description": "Models that persist across scenes and are animated by beats",
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "label": {
+                "description": "2D tag that tracks the actor",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 28
+              },
+              "color": {
+                "description": "Body color (default: the palette accents)",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "accent",
+                      "accent2",
+                      "accent3",
+                      "good",
+                      "bad",
+                      "muted",
+                      "text"
+                    ]
+                  }
+                ]
+              },
+              "size": {
+                "description": "Scale multiplier (default 1)",
+                "type": "number",
+                "minimum": 0.2,
+                "maximum": 4
+              },
+              "pos": {
+                "description": "World position [x, y, z] (default the origin; the ground is y = 0)",
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 30
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 30
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 30
+                  }
+                ],
+                "items": false,
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "rot": {
+                "description": "Rotation in degrees [x, y, z]",
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -360,
+                    "maximum": 360
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -360,
+                    "maximum": 360
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -360,
+                    "maximum": 360
+                  }
+                ],
+                "items": false,
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "at": {
+                "description": "Seconds from the start of the video when it appears (default: visible from the start)",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "buoyant": {
+                "description": "Rocks gently, but only while a beat has lifted it off its rest position (floating)",
+                "type": "object",
+                "properties": {
+                  "amp": {
+                    "description": "Rock in degrees (default 3)",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 15
+                  },
+                  "speed": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 4
+                  }
+                },
+                "additionalProperties": false
+              },
+              "highlight": {
+                "type": "boolean"
+              },
+              "parts": {
+                "description": "custom: the model, built from primitive parts (front faces +z, base on y = 0)",
+                "minItems": 1,
+                "maxItems": 160,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "shape": {
+                      "type": "string",
+                      "enum": [
+                        "box",
+                        "sphere",
+                        "cylinder",
+                        "cone",
+                        "torus",
+                        "capsule",
+                        "plane",
+                        "sign",
+                        "ring",
+                        "tube",
+                        "extrude",
+                        "lathe",
+                        "group"
+                      ]
+                    },
+                    "size": {
+                      "description": "Dimensions in world units (<= 8), meaning per shape; torus arc in degrees",
+                      "maxItems": 3,
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "minimum": 0.005,
+                        "maximum": 360
+                      }
+                    },
+                    "points": {
+                      "description": "tube: [[x,y,z]...]; extrude: outline [[x,y]...]; lathe: profile [[r,y]...]",
+                      "maxItems": 64,
+                      "type": "array",
+                      "items": {
+                        "minItems": 2,
+                        "maxItems": 3,
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -6,
+                          "maximum": 6
+                        }
+                      }
+                    },
+                    "radius": {
+                      "description": "box: edge rounding; extrude: bevel",
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 0.5
+                    },
+                    "text": {
+                      "description": "sign: the text printed on the sign (pixel font)",
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 24
+                    },
+                    "textColor": {
+                      "description": "sign: text color (default: readable on the panel)",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "accent",
+                            "accent2",
+                            "accent3",
+                            "good",
+                            "bad",
+                            "muted",
+                            "text"
+                          ]
+                        }
+                      ]
+                    },
+                    "pos": {
+                      "description": "Center, relative to the parent part's center (or the object's base)",
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "rot": {
+                      "description": "Degrees [x, y, z]",
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -360,
+                          "maximum": 360
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -360,
+                          "maximum": 360
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -360,
+                          "maximum": 360
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "scale": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 10
+                        },
+                        {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      ]
+                    },
+                    "pivot": {
+                      "description": "Rotation point relative to the part's center (e.g. the shoulder end of an arm)",
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -3,
+                          "maximum": 3
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -3,
+                          "maximum": 3
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -3,
+                          "maximum": 3
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "parent": {
+                      "description": "Part id this part hangs from (moves with it)",
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "color": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "accent",
+                            "accent2",
+                            "accent3",
+                            "good",
+                            "bad",
+                            "muted",
+                            "text"
+                          ]
+                        }
+                      ]
+                    },
+                    "role": {
+                      "description": "Color source when `color` is not set (default body)",
+                      "type": "string",
+                      "enum": [
+                        "body",
+                        "accent",
+                        "dark",
+                        "light",
+                        "metal",
+                        "screen",
+                        "glow"
+                      ]
+                    },
+                    "material": {
+                      "description": "auto (default) uses the look's material",
+                      "type": "string",
+                      "enum": [
+                        "auto",
+                        "matte",
+                        "plastic",
+                        "metal",
+                        "glass",
+                        "emissive",
+                        "toon",
+                        "clay"
+                      ]
+                    },
+                    "emissive": {
+                      "description": "Self-glow strength",
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 4
+                    },
+                    "opacity": {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 1
+                    },
+                    "motion": {
+                      "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert",
+                      "maxItems": 6,
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert"
+                              },
+                              "at": {
+                                "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                ]
+                              },
+                              "until": {
+                                "description": "End (default: the scene end)",
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                ]
+                              },
+                              "amp": {
+                                "description": "Amplitude: world units, or degrees for wobble/wave/walk",
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 720
+                              },
+                              "speed": {
+                                "description": "Tempo multiplier (1 = default)",
+                                "type": "number",
+                                "minimum": 0.05,
+                                "maximum": 8
+                              },
+                              "parts": {
+                                "description": "walk/blink/assemble/explode on an object: the part ids",
+                                "minItems": 1,
+                                "maxItems": 12,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 40
+                                }
+                              },
+                              "axis": {
+                                "type": "string",
+                                "enum": [
+                                  "x",
+                                  "y",
+                                  "z"
+                                ]
+                              },
+                              "lift": {
+                                "description": "wave: how far the limb is raised, degrees (default 130)",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "keys": {
+                      "description": "Keyframes [{at, pos, rot, scale, opacity, ease}]",
+                      "minItems": 1,
+                      "maxItems": 12,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "at": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 60
+                              },
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 40
+                              }
+                            ],
+                            "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                          },
+                          "pos": {
+                            "description": "Offset from the rest position",
+                            "type": "array",
+                            "prefixItems": [
+                              {
+                                "type": "number",
+                                "minimum": -6,
+                                "maximum": 6
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -6,
+                                "maximum": 6
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -6,
+                                "maximum": 6
+                              }
+                            ],
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3
+                          },
+                          "rot": {
+                            "description": "Degrees added to the rest rotation [x, y, z]",
+                            "type": "array",
+                            "prefixItems": [
+                              {
+                                "type": "number",
+                                "minimum": -720,
+                                "maximum": 720
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -720,
+                                "maximum": 720
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -720,
+                                "maximum": 720
+                              }
+                            ],
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3
+                          },
+                          "scale": {
+                            "description": "Multiplier of the rest scale",
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0.01,
+                                "maximum": 10
+                              },
+                              {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0.01,
+                                    "maximum": 10
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": 0.01,
+                                    "maximum": 10
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": 0.01,
+                                    "maximum": 10
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 3,
+                                "maxItems": 3
+                              }
+                            ]
+                          },
+                          "opacity": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "ease": {
+                            "description": "Easing of the segment that arrives at this key (default in-out)",
+                            "type": "string",
+                            "enum": [
+                              "linear",
+                              "in",
+                              "out",
+                              "in-out",
+                              "back",
+                              "elastic",
+                              "bounce",
+                              "step"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "at"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "shape"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "motion": {
+                "description": "Procedural motion: preset names or {type, at, until, amp, speed, parts}. Presets: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert",
+                "maxItems": 6,
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Preset: bob, float, spin, wobble, breathe, wave, walk, blink, look-at-camera, hop, orbit, pop-in, assemble, explode, dig, pour, fill, drain, collapse, buoyancy, insert"
+                        },
+                        "at": {
+                          "description": "Start (default: the scene start; pop-in/assemble: the object's entrance)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "until": {
+                          "description": "End (default: the scene end)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "amp": {
+                          "description": "Amplitude: world units, or degrees for wobble/wave/walk",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 720
+                        },
+                        "speed": {
+                          "description": "Tempo multiplier (1 = default)",
+                          "type": "number",
+                          "minimum": 0.05,
+                          "maximum": 8
+                        },
+                        "parts": {
+                          "description": "walk/blink/assemble/explode on an object: the part ids",
+                          "minItems": 1,
+                          "maxItems": 12,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 40
+                          }
+                        },
+                        "axis": {
+                          "type": "string",
+                          "enum": [
+                            "x",
+                            "y",
+                            "z"
+                          ]
+                        },
+                        "lift": {
+                          "description": "wave: how far the limb is raised, degrees (default 130)",
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "keys": {
+                "description": "Keyframes [{at, pos, rot, scale, opacity, ease}]",
+                "minItems": 1,
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "at": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        }
+                      ],
+                      "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                    },
+                    "pos": {
+                      "description": "Offset from the rest position",
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -6,
+                          "maximum": 6
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -6,
+                          "maximum": 6
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -6,
+                          "maximum": 6
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "rot": {
+                      "description": "Degrees added to the rest rotation [x, y, z]",
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -720,
+                          "maximum": 720
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -720,
+                          "maximum": 720
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -720,
+                          "maximum": 720
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "scale": {
+                      "description": "Multiplier of the rest scale",
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 10
+                        },
+                        {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      ]
+                    },
+                    "opacity": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "ease": {
+                      "description": "Easing of the segment that arrives at this key (default in-out)",
+                      "type": "string",
+                      "enum": [
+                        "linear",
+                        "in",
+                        "out",
+                        "in-out",
+                        "back",
+                        "elastic",
+                        "bounce",
+                        "step"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "at"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "terrain": {
+          "description": "A low-poly heightfield with a cutaway face; carve beats dig, raise or collapse it",
+          "type": "object",
+          "properties": {
+            "size": {
+              "description": "Width (x) and depth (z) of the ground block in world units (default [14, 10]); the camera side is +z",
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": 4,
+                  "maximum": 60
+                },
+                {
+                  "type": "number",
+                  "minimum": 4,
+                  "maximum": 60
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "pos": {
+              "description": "Center [x, z] (default [0, 0])",
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -30,
+                  "maximum": 30
+                },
+                {
+                  "type": "number",
+                  "minimum": -30,
+                  "maximum": 30
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "grid": {
+              "description": "Vertices per side, 24..64 (default 40)",
+              "type": "integer",
+              "minimum": 24,
+              "maximum": 64
+            },
+            "depth": {
+              "description": "Thickness of the cutaway block below the ground (default 3)",
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 8
+            },
+            "top": {
+              "description": "Grass color of the surface",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "accent",
+                    "accent2",
+                    "accent3",
+                    "good",
+                    "bad",
+                    "muted",
+                    "text"
+                  ]
+                }
+              ]
+            },
+            "strata": {
+              "description": "Layers from the surface down (default: topsoil, subsoil, clay, rock from the palette)",
+              "minItems": 1,
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "to": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 8,
+                    "description": "Depth below the surface where this layer ends"
+                  },
+                  "color": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "accent",
+                          "accent2",
+                          "accent3",
+                          "good",
+                          "bad",
+                          "muted",
+                          "text"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "to",
+                  "color"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "bumps": {
+              "description": "Gentle surface relief amplitude (default 0.04)",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            },
+            "seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "stones": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 120
+                },
+                "seed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000
+                },
+                "size": {
+                  "description": "Min and max stone size",
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 1
+                    },
+                    {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 1
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "buried": {
+                  "description": "true (default): stones embedded in the cutaway face (they vanish when dug out); false: on the surface",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "count"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "liquids": {
+          "description": "Water / concrete volumes whose `level` beats tween",
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "kind": {
+                "description": "pit (default): fills a hole in the terrain; box: a free tank with visible walls",
+                "type": "string",
+                "enum": [
+                  "pit",
+                  "box"
+                ]
+              },
+              "area": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 40
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 40
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 40
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 40
+                  }
+                ],
+                "items": false,
+                "minItems": 4,
+                "maxItems": 4,
+                "description": "[x0, z0, x1, z1] footprint"
+              },
+              "floor": {
+                "description": "World y of the bottom (default -1)",
+                "type": "number",
+                "minimum": -10,
+                "maximum": 10
+              },
+              "top": {
+                "description": "World y of the surface at level 1 (default -0.12)",
+                "type": "number",
+                "minimum": -10,
+                "maximum": 10
+              },
+              "color": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "accent",
+                      "accent2",
+                      "accent3",
+                      "good",
+                      "bad",
+                      "muted",
+                      "text"
+                    ]
+                  }
+                ]
+              },
+              "opacity": {
+                "description": "Default 0.7",
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 1
+              },
+              "level": {
+                "description": "Fill at the start, 0..1 (default 0)",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "wave": {
+                "description": "Surface wave strength (default 0.5)",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "id",
+              "area"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "concept"
+      ],
+      "additionalProperties": false
+    },
     "voice": {
       "type": "object",
       "properties": {
@@ -14292,7 +16228,7 @@
                     "parts": {
                       "description": "custom: the model, built from primitive parts (front faces +z, base on y = 0)",
                       "minItems": 1,
-                      "maxItems": 40,
+                      "maxItems": 160,
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -15572,7 +17508,7 @@
                   },
                   "parts": {
                     "description": "Props, walls, signs and stage dressing built from primitive parts",
-                    "maxItems": 24,
+                    "maxItems": 120,
                     "type": "array",
                     "items": {
                       "type": "object",
@@ -16190,6 +18126,108 @@
                       "area"
                     ],
                     "additionalProperties": false
+                  },
+                  "scatter": {
+                    "description": "Deterministic scattered copies of template parts (grass, flowers, stones, trees)",
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "part": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40,
+                          "description": "Id of the template part in `world.parts` (and the parts hanging from it); the template itself is not drawn, only its copies"
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1000,
+                          "description": "Number of copies"
+                        },
+                        "area": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "description": "Ground rectangle [x0, z0, x1, z1] the copies fall in"
+                        },
+                        "seed": {
+                          "description": "Same seed = same layout (default 0)",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        },
+                        "jitter": {
+                          "type": "object",
+                          "properties": {
+                            "scale": {
+                              "description": "Random scale +/- (0.3 = 70%..130%)",
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 0.9
+                            },
+                            "rot": {
+                              "description": "Random yaw +/- degrees (default 360 = any)",
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 360
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "avoid": {
+                          "description": "Keep-out zones: [x0, z0, x1, z1] boxes or [x, z, r] discs",
+                          "maxItems": 12,
+                          "type": "array",
+                          "items": {
+                            "minItems": 3,
+                            "maxItems": 4,
+                            "type": "array",
+                            "items": {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          }
+                        },
+                        "y": {
+                          "description": "Ground height added to the template's own y (default 0; on a stage with terrain the copies follow the terrain)",
+                          "type": "number",
+                          "minimum": -5,
+                          "maximum": 5
+                        }
+                      },
+                      "required": [
+                        "part",
+                        "count",
+                        "area"
+                      ],
+                      "additionalProperties": false
+                    }
                   }
                 },
                 "required": [
@@ -16198,8 +18236,8 @@
                 "additionalProperties": false
               },
               "shots": {
-                "description": "2-4 camera shots over the scene (wide, medium, close, low, high, overhead, left, right, reveal, shoulder, through); use instead of cameraKeys",
-                "minItems": 2,
+                "description": "1-4 camera shots over the scene (2-4 without a stage) (wide, medium, close, low, high, overhead, left, right, reveal, shoulder, through, zoom-to, dive); use instead of cameraKeys",
+                "minItems": 1,
                 "maxItems": 4,
                 "type": "array",
                 "items": {
@@ -16233,14 +18271,20 @@
                         "right",
                         "reveal",
                         "shoulder",
-                        "through"
+                        "through",
+                        "zoom-to",
+                        "dive"
                       ]
                     },
                     "focus": {
-                      "description": "Object id the shot aims at",
+                      "description": "Object id the shot aims at (with a stage: an actor id, \"actor/part\", a liquid id, \"terrain\" or \"terrain:<carve id>\")",
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 40
+                    },
+                    "cut": {
+                      "description": "stage: hard cut to this shot instead of an eased move",
+                      "type": "boolean"
                     },
                     "yaw": {
                       "type": "number",
@@ -16708,6 +18752,421 @@
                       "additionalProperties": false
                     }
                   ]
+                }
+              },
+              "beats": {
+                "description": "stage only: timed state changes of this scene's stage (actors, parts, liquids, terrain, camera)",
+                "maxItems": 80,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "at": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        }
+                      ],
+                      "description": "When it starts: seconds into this scene, or a narration word (same syntax as every `at`)"
+                    },
+                    "target": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 81,
+                      "description": "\"<actorId>\", \"<actorId>/<partId>\", \"<liquidId>\", \"terrain\" or \"camera\""
+                    },
+                    "dur": {
+                      "description": "Tween length in seconds (default 0.6; 0 = instant)",
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 30
+                    },
+                    "ease": {
+                      "description": "Easing of the tween (default in-out)",
+                      "type": "string",
+                      "enum": [
+                        "linear",
+                        "in",
+                        "out",
+                        "in-out",
+                        "back",
+                        "elastic",
+                        "bounce",
+                        "step"
+                      ]
+                    },
+                    "set": {
+                      "description": "Jump to this state at `at`",
+                      "type": "object",
+                      "properties": {
+                        "pos": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "rot": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "scale": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 3,
+                              "maxItems": 3
+                            }
+                          ]
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "opacity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "visible": {
+                          "type": "boolean"
+                        },
+                        "level": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "emissive": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 4
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "to": {
+                      "description": "Tween from the current state to this one over `dur`",
+                      "type": "object",
+                      "properties": {
+                        "pos": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -30,
+                              "maximum": 30
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "rot": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -720,
+                              "maximum": 720
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "scale": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 10
+                            },
+                            {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": 0.01,
+                                  "maximum": 10
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 3,
+                              "maxItems": 3
+                            }
+                          ]
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "opacity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "visible": {
+                          "type": "boolean"
+                        },
+                        "level": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "emissive": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 4
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "carve": {
+                      "description": "terrain only: dig a hole, raise a mound or collapse a wall over `dur`",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "description": "Name of the carved place; shots can aim at it with focus \"terrain:<id>\"",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "region": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "box": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "number",
+                                      "minimum": -40,
+                                      "maximum": 40
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -40,
+                                      "maximum": 40
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -40,
+                                      "maximum": 40
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -40,
+                                      "maximum": 40
+                                    }
+                                  ],
+                                  "items": false,
+                                  "minItems": 4,
+                                  "maxItems": 4,
+                                  "description": "[x0, z0, x1, z1]"
+                                }
+                              },
+                              "required": [
+                                "box"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "disc": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "number",
+                                      "minimum": -40,
+                                      "maximum": 40
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -40,
+                                      "maximum": 40
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": 0.05,
+                                      "maximum": 40
+                                    }
+                                  ],
+                                  "items": false,
+                                  "minItems": 3,
+                                  "maxItems": 3,
+                                  "description": "[x, z, radius]"
+                                }
+                              },
+                              "required": [
+                                "disc"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ],
+                          "description": "{ box: [x0, z0, x1, z1] } or { disc: [x, z, r] } on the ground plane (a region reaching the front edge shows in the cutaway face)"
+                        },
+                        "depth": {
+                          "description": "dig: how deep, raise: how high (world units, default 1)",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 6
+                        },
+                        "mode": {
+                          "description": "dig (default) lowers the ground, raise heaps a mound, collapse relaxes the heights so walls slump",
+                          "type": "string",
+                          "enum": [
+                            "dig",
+                            "raise",
+                            "collapse"
+                          ]
+                        },
+                        "bank": {
+                          "description": "Width of the sloped edge around the region (default 0.35)",
+                          "type": "number",
+                          "minimum": 0.05,
+                          "maximum": 3
+                        }
+                      },
+                      "required": [
+                        "region"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "at",
+                    "target"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "reel": {

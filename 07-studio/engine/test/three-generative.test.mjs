@@ -81,7 +81,7 @@ test("custom parts are rejected with clear messages: shape, parent cycle, unknow
   hasError(errorsOf(withParts([{ id: "a", shape: "tube" }])), "scenes.0.visual.objects.0.parts.0.points", /tube parts need `points`/);
   hasError(errorsOf(withParts([{ id: "a", shape: "extrude", points: [[0, 0], [1, 0]] }])), "scenes.0.visual.objects.0.parts.0.points", /at least 3/);
   hasError(errorsOf(withParts([{ id: "a", shape: "box", size: [1, 2] }])), "scenes.0.visual.objects.0.parts.0.size", /box `size`/);
-  hasError(errorsOf(withParts(Array.from({ length: 41 }, (_, i) => ({ id: `p${i}`, shape: "box" })))), "scenes.0.visual.objects.0.parts", /40/);
+  hasError(errorsOf(withParts(Array.from({ length: 161 }, (_, i) => ({ id: `p${i}`, shape: "box" })))), "scenes.0.visual.objects.0.parts", /160/);
   hasError(errorsOf(mini([{ kind: "custom", id: "m" }])), "scenes.0.visual.objects.0.parts", /custom objects need `parts`/);
   hasError(errorsOf(withParts([{ id: "a", shape: "box", colour: "red" }])), "scenes.0.visual.objects.0.parts.0", /colour/);
 });

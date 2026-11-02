@@ -5,6 +5,7 @@ import { adaptPalette } from "./palette-adapt.mjs";
 import { MOODS, MUSIC_PROVIDERS } from "./music-moods.mjs";
 import { elementsSchema, hasEmoji, hudItemSchema, hudOverrideSchema, lookSchema, sceneTitleSchema } from "./illustration-schema.mjs";
 import { ART_LOOKS, FORMAT_2D_LOOKS, usesIllustratedKit } from "./illustrated.mjs";
+import { stageSchema, refineStageSpec } from "./scene3d-stage.mjs";
 import { THREE_D_TEMPLATE_IDS, refineScene3d, refineThreeNovelty, scene3dFields, usesThreeKit } from "./scene3d.mjs";
 import { REELS_TEMPLATE_IDS } from "./reels.mjs";
 import { PIXEL_TEMPLATE_IDS, pixelSceneSchema, refinePixel, refinePixelSpec, usesPixelKit } from "./pixel.mjs";
@@ -191,6 +192,7 @@ export const videoSpecSchema = z
         renderer: z.enum(RENDERERS, { error: (iss) => `unknown renderer${iss.input === undefined ? "" : ` "${iss.input}"`}; allowed renderers: ${RENDERERS.join(", ")}` }).optional().describe("Render engine: remotion (default) or blender (3D templates only: Eevee frames, slower, cinematic)"),
       })
       .optional(),
+    stage: stageSchema.optional().describe("3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus"),
     voice: z
       .object({
         provider: z.enum(VOICE_PROVIDERS),
@@ -308,6 +310,7 @@ export const videoSpecSchema = z
       return;
     }
     const three = usesThreeKit(spec.template);
+    if (!three && spec.stage) ctx.addIssue({ code: "custom", path: ["stage"], message: `\`stage\` needs a 3D template: ${THREE_D_TEMPLATE_IDS.join(", ")}` });
     if (!three) {
       spec.scenes.forEach((s, i) => {
         if (s.visual?.type === "scene3d") ctx.addIssue({ code: "custom", path: ["scenes", i, "visual", "type"], message: `visual.type "scene3d" needs a 3D template: ${THREE_D_TEMPLATE_IDS.join(", ")}` });
@@ -320,7 +323,9 @@ export const videoSpecSchema = z
         for (const where of findEmoji(visible)) ctx.addIssue({ code: "custom", path: ["scenes", i, ...where], message: "emoji are not allowed in 3D templates; use a 3D object (kind icon, check, cross...) instead" });
       });
       for (const where of findEmoji(spec.hud)) ctx.addIssue({ code: "custom", path: ["hud", ...where], message: "emoji are not allowed in 3D templates" });
-      refineThreeNovelty(spec.scenes, ctx);
+      for (const where of findEmoji({ labels: (spec.stage?.actors ?? []).map((a) => a.label), signs: (spec.stage?.world?.parts ?? []).map((p) => p.text) })) ctx.addIssue({ code: "custom", path: ["stage", ...where], message: "emoji are not allowed in 3D templates" });
+      refineStageSpec(spec, ctx);
+      if (!spec.stage) refineThreeNovelty(spec.scenes, ctx);
       return;
     }
     if (!usesIllustratedKit(spec.template)) return;

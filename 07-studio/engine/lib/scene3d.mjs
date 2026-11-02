@@ -9,7 +9,8 @@ import { z } from "zod";
 import { COLOR_TOKENS } from "./illustration-schema.mjs";
 import { mix as mixColor, readableOn, readableWord } from "./captions.mjs";
 import { contrastRatio } from "./palettes.mjs";
-import { customExtent, customHeight, expandWorldParts, partsSignature, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords, shotsToKeys } from "./scene3d-motion.mjs";
+import { stageSceneFields, resolveTarget, resolveFocus, buildTracks, terrainDefaults, liquidDefaults, strataOf, titleBacking, STAGE_SAFE, stageState } from "./scene3d-stage.mjs";
+import { customExtent, customHeight, expandWorld, partCenters,  partsSignature, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords, shotsToKeys } from "./scene3d-motion.mjs";
 
 /** Templates rendered with the 3D kit. Their look id equals the template id. */
 export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot", "cutaway-explainer", "engineering-explainer"];
@@ -141,13 +142,14 @@ export const scene3dFields = {
   explode: z.boolean().optional().describe("Objects fly out from the center (exploded view)"),
   set: z.enum(SETS_3D, { error: (iss) => `unknown set${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SETS_3D.join(", ")}` }).optional().describe("Stock environment set (needs stock: true on the scene); auto/none = no stock set. Build the world with `world` instead"),
   ...generativeSceneFields,
+  ...stageSceneFields,
 };
 
 /** Kind-specific checks for a `scene3d` visual (paths relative to the visual). */
 export function refineScene3d(v, ctx) {
   if (v.type !== "scene3d") return;
   const objs = v.objects ?? [];
-  if (!objs.length) ctx.addIssue({ code: "custom", path: ["objects"], message: 'visual.type "scene3d" requires at least one object in visual.objects' });
+  // an empty scene belongs to a stage (spec-level check, lib/scene3d-stage.mjs refineStageSpec); without one it needs an object
   const ids = new Set(objs.map((o) => o.id).filter(Boolean));
   // 3D is built from scratch: a custom object or a custom world, unless the scene opts into catalog content
   const world = v.world;
@@ -183,10 +185,10 @@ export function refineScene3d(v, ctx) {
     if (seen.has(o.id)) ctx.addIssue({ code: "custom", path: ["objects", k, "id"], message: `duplicate object id "${o.id}"` });
     seen.add(o.id);
   });
-  (v.connect ?? []).forEach((c, k) => {
+  if (objs.length) (v.connect ?? []).forEach((c, k) => {
     for (const end of ["from", "to"]) if (!ids.has(c[end])) ctx.addIssue({ code: "custom", path: ["connect", k, end], message: `no object with id "${c[end]}" in this scene` });
   });
-  if (v.focus && !ids.has(v.focus)) ctx.addIssue({ code: "custom", path: ["focus"], message: `no object with id "${v.focus}" in this scene` });
+  if (v.focus && objs.length && !ids.has(v.focus)) ctx.addIssue({ code: "custom", path: ["focus"], message: `no object with id "${v.focus}" in this scene` });
   refineGenerative(v, ctx);
 }
 
@@ -369,7 +371,7 @@ export const resolveMove = (move, look, index) => (!move || move === "auto" ? LO
  * Camera framing for a set of placed objects: target (center of the content), the distance (perspective) or the
  * visible height in world units (orthographic) so the content fits the stage band of the 1080x1920 frame.
  */
-export function frameContent(placed, look) {
+export function frameContent(placed, look, opts = {}) {
   const L = LOOK3D[look];
   const { min, max } = boundsOf(placed);
   const w = max[0] - min[0];
@@ -390,7 +392,7 @@ export function frameContent(placed, look) {
     return { target, dist: 30, viewH };
   }
   const t = Math.tan((L.fov / 2) * DEG);
-  const dist = Math.max(W / (0.8 * 2 * t * aspect), H / (0.42 * 2 * t), 6) * wide;
+  const dist = Math.max(W / (0.8 * 2 * t * aspect), H / ((opts.fill ?? 0.42) * 2 * t), 6) * wide;
   return { target, dist, viewH: 0 };
 }
 
@@ -401,7 +403,7 @@ export function frameContent(placed, look) {
  *   keys: resolved camera keyframes (plan.cameraKeys) layered on top of the move
  * @returns {{ortho: boolean, fov: number, viewH: number, position: number[], target: number[]}}
  */
-export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, keys = null }) {
+export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, keys = null, extra = null }) {
   const L = LOOK3D[look];
   const u = clamp01(t / Math.max(0.5, sceneSec));
   let yaw = L.yaw;
@@ -484,6 +486,13 @@ export function cameraAt({ t, sceneSec, look, move, frame: fr, focusPos = null, 
     zoom(ch("zoom") ?? 1);
     const sh = ch("shift");
     if (sh) target = target.map((c, a) => c + sh[a]);
+  }
+  if (extra) {
+    // stage camera beats: offsets on top of the shots
+    yaw += extra.yaw ?? 0;
+    pitch += extra.pitch ?? 0;
+    zoom(extra.zoom ?? 1);
+    if (extra.shift) target = target.map((c, a) => c + extra.shift[a]);
   }
   if (focusPos) {
     const f = ease(clamp01((u - 0.3) / 0.45));
@@ -625,7 +634,7 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
   const overlay = planOverlay(v.overlay, moments);
   return {
     kind: "scene3d",
-    world: w ? { concept: w.concept, ground: w.ground ?? null, backdrop: w.backdrop ?? null, parts: expandWorldParts(w.parts ?? []), crowd: w.crowd ?? null } : null,
+    world: w ? { concept: w.concept, ground: w.ground ?? null, backdrop: w.backdrop ?? null, parts: expandWorld(w), crowd: w.crowd ?? null } : null,
     set: setOf(v, look),
     layout: layoutOf(v),
     move: resolveMove(v.camera, look, index),
@@ -642,11 +651,151 @@ export function planScene3d(v, sceneSec, { look = "clay-diorama", index = 0, mom
   };
 }
 
+
+// ---------------- persistent stage ----------------
+
+/**
+ * The scene plans of a spec with a `stage` (lib/scene3d-stage.mjs): ONE shared stage plan (world, actors, terrain, liquids,
+ * tracks of every beat in global seconds, the continuous camera path) plus each scene's `t0` (its start, global seconds),
+ * overlay and local moments. State and camera are pure functions of global time, so a scene starts exactly where the previous
+ * one ended and nothing is rebuilt per scene.
+ */
+export function planStageScenes(spec, timeline, captions = null) {
+  const fps = spec.format.fps;
+  const look = look3dOf(spec);
+  const stage = spec.stage;
+  const words = sceneWords(spec, timeline, captions);
+  const totalSec = round(timeline.totalFrames / fps);
+  const scenes = spec.scenes.map((s, i) => {
+    const sc = timeline.scenes[i];
+    const last = i === timeline.scenes.length - 1;
+    const sec = (sc.durationInFrames - (last ? 0 : timeline.transitionFrames)) / fps;
+    const v = s.visual?.type === "scene3d" ? s.visual : { type: "scene3d", objects: [] };
+    const { moments, warnings } = resolveMoments(v, words[i], sc.durationInFrames, fps);
+    return { v, sec, t0: round(sc.from / fps), moments, warnings };
+  });
+  // actors: the existing layout helper places them (explicit positions; the stack layout never rescales)
+  const actors = stage.actors ?? [];
+  const placed = layoutObjects({ layout: "stack", objects: actors.map((a) => ({ kind: "custom", id: a.id, parts: a.parts, size: a.size, pos: a.pos ?? [0, 0, 0] })) }).map((p, k) => ({ ...p, enter: actors[k].at ?? 0, items: [] }));
+  const terrain = stage.terrain ? terrainDefaults(stage.terrain) : null;
+  // beats -> global, resolved targets
+  const beats = [];
+  const carves = [];
+  scenes.forEach((sc) => {
+    for (const b of sc.v.beats ?? []) {
+      const target = resolveTarget(b.target, stage);
+      if (target.error) continue;
+      const t = round(momentSec(b.at, sc.moments) + sc.t0);
+      if (b.carve) carves.push({ t, dur: b.dur ?? 1.2, ease: b.ease, id: b.carve.id, region: b.carve.region, depth: b.carve.depth, mode: b.carve.mode, bank: b.carve.bank });
+      else beats.push({ t, dur: b.dur ?? 0.6, ease: b.ease, kind: b.set ? "set" : "to", target, state: b.set ?? b.to });
+    }
+  });
+  const liquids = (stage.liquids ?? []).map(liquidDefaults);
+  const tracks = buildTracks(beats, { liquids });
+  const palette = spec.theme?.palette ?? { bg: ["#0F0C29"], text: "#FFFFFF", accent: "#FFD60A" };
+  // framing: actors + the ground block, filling the stage band (not the title and caption bands)
+  const items = [...placed];
+  if (terrain) items.push({ pos: [terrain.pos[0], -terrain.depth * 0.5, terrain.pos[1]], scale: 1, h: terrain.depth * 0.5 + 0.2, half: Math.max(terrain.size[0], terrain.size[1] * 0.8) / 2 });
+  if (!items.length) items.push({ pos: [0, 0, 0], scale: 1, h: 2, half: 3 });
+  const frame = frameContent(items, look, { fill: 0.34 });
+  const front = terrain ? terrain.pos[1] + terrain.size[1] / 2 : 0;
+  const carveById = new Map(carves.filter((c) => c.id).map((c) => [c.id, c]));
+  /** World point a focus reference looks at, at global second g. */
+  const focusPoint = (ref, g, dive = false) => {
+    const r = resolveFocus(ref, stage, new Set(carveById.keys()));
+    if (r.error) return null;
+    const st = stageState({ tracks, actors, liquids }, g);
+    if (r.kind === "terrain") {
+      const c = r.carve ? carveById.get(r.carve) : null;
+      if (c) {
+        const [cx, cz] = c.region.box ? [(c.region.box[0] + c.region.box[2]) / 2, (c.region.box[1] + c.region.box[3]) / 2] : [c.region.disc[0], c.region.disc[1]];
+        return dive ? [cx, -Math.min(terrain.depth, c.depth ?? 1) * 0.5, front - 0.3] : [cx, -Math.min(terrain.depth, c.depth ?? 1) * 0.4, cz];
+      }
+      return [terrain.pos[0], -terrain.depth * 0.3, dive ? front - 0.3 : terrain.pos[1]];
+    }
+    if (r.kind === "liquid") {
+      const l = liquids.find((x) => x.id === r.liquid);
+      const [x0, z0, x1, z1] = l.area;
+      return [(x0 + x1) / 2, l.floor + (l.top - l.floor) * (st.liquids[l.id]?.level ?? 0), (z0 + z1) / 2];
+    }
+    const k = actors.findIndex((a) => a.id === r.actor);
+    const pl = placed[k];
+    const off = st.actors[r.actor]?.pos ?? [0, 0, 0];
+    if (r.kind === "part") {
+      const parts = actors[k].parts;
+      const c = partCenters(parts)[parts.findIndex((p) => p.id === r.part)];
+      return [0, 1, 2].map((a) => pl.pos[a] + off[a] + c[a] * pl.scale);
+    }
+    return [pl.pos[0] + off[0], pl.pos[1] + off[1] + pl.h * 0.5, pl.pos[2] + off[2]];
+  };
+  const cameraKeys = [];
+  scenes.forEach((sc) => {
+    const sec = (m) => momentSec(m, sc.moments);
+    let raw = sc.v.shots ? shotsToKeys(sc.v.shots, sc.sec, sec) : (sc.v.cameraKeys ?? []);
+    if (!sc.v.shots && !sc.v.cameraKeys && sc.v.focus) raw = shotsToKeys([{ shot: "zoom-to", focus: sc.v.focus, at: 0 }], sc.sec, sec);
+    raw.forEach((k, ki) => {
+      const g = round(momentSec(k.at, sc.moments) + sc.t0);
+      const shot = sc.v.shots?.[ki];
+      const dive = shot?.shot === "dive";
+      const out = { t: g, ease: shot?.cut ? "step" : k.ease };
+      if (k.yaw !== undefined) out.yaw = k.yaw;
+      if (k.pitch !== undefined) out.pitch = k.pitch;
+      if (k.zoom !== undefined) out.zoom = k.zoom;
+      if (dive && !shot.yaw && !shot.pitch) {
+        // level the camera with the cutaway face: cancel the look's yaw, drop to a shallow downward angle
+        out.yaw = -LOOK3D[look].yaw;
+        out.pitch = 4 - LOOK3D[look].pitch;
+      }
+      const f = k.focus ? focusPoint(k.focus, g, dive) : null;
+      const shift = k.shift ?? [0, 0, 0];
+      if (f) out.shift = [0, 1, 2].map((a) => r3(f[a] - frame.target[a] + shift[a]));
+      else if (k.shift) out.shift = k.shift;
+      cameraKeys.push(out);
+    });
+  });
+  cameraKeys.sort((a, b) => a.t - b.t);
+  if (!cameraKeys.length || cameraKeys[0].t > 0) cameraKeys.unshift({ t: 0, yaw: 0, pitch: 0, zoom: 1, shift: [0, 0, 0] });
+  const w = stage.world;
+  const shared = {
+    concept: stage.concept,
+    world: w ? { concept: w.concept ?? stage.concept, ground: w.ground ?? null, backdrop: w.backdrop ?? null, parts: expandWorld(w), crowd: w.crowd ?? null } : null,
+    actors: actors.map((a, k) => ({ id: a.id, label: a.label ?? null, color: a.color ?? null, size: a.size ?? 1, rot: a.rot ?? [0, 0, 0], at: a.at ?? 0, buoyant: a.buoyant ?? null, highlight: Boolean(a.highlight), parts: a.parts, motion: a.motion ?? [], keys: a.keys ?? [], placed: placed[k] })),
+    terrain: terrain ? { ...terrain, carves: carves.sort((a, b) => a.t - b.t), strata: strataOf(terrain) } : null,
+    liquids,
+    tracks,
+    totalSec,
+    safe: STAGE_SAFE,
+    title: titleBacking(palette),
+  };
+  return scenes.map((sc, i) => {
+    const overlay = planOverlay(sc.v.overlay, sc.moments);
+    return {
+      kind: "scene3d",
+      stage: shared,
+      t0: sc.t0,
+      set: "none",
+      layout: "stack",
+      move: "static",
+      frame,
+      focus: null,
+      explode: false,
+      objects: placed,
+      connections: [],
+      elements: overlay.map((o) => ({ el: { type: "icon", kind: `overlay-${o.type}` }, box: null, enter: o.at, items: [] })),
+      moments: sc.moments,
+      cameraKeys,
+      ...(overlay.length ? { overlay } : {}),
+      warnings: i === 0 ? ["stage: terrain, liquids and beats are rendered by the Remotion renderer only (the Blender renderer ignores them)", ...sc.warnings] : sc.warnings,
+    };
+  });
+}
+
 /**
  * Plan every scene of a 3D-template spec. Scenes without a scene3d visual get an empty stage plan. `captions` (the
  * build's word captions) time the word moments; without them the narration is text-timed.
  */
 export function planThree(spec, timeline, captions = null) {
+  if (spec.stage) return planStageScenes(spec, timeline, captions);
   const fps = spec.format.fps;
   const look = look3dOf(spec);
   const words = sceneWords(spec, timeline, captions);

@@ -79,10 +79,13 @@ export const FX_ABOUT = {
 };
 export const FX_TYPES = Object.keys(FX_ABOUT);
 const TARGET_NEEDED = ["trail", "pulse", "glow", "hologram"];
-export const MAX_PARTS = 40;
-/** Parts of a custom `world` (ground dressing, backdrops, props, signs) and the cap after `repeat` expansion. */
-export const MAX_WORLD_PARTS = 24;
-export const MAX_WORLD_EXPANDED = 160;
+/** Parts of one custom object (a model; stage actors use the same cap). */
+export const MAX_PARTS = 160;
+/** Parts of a custom `world` (ground dressing, backdrops, props, signs), and the cap after `repeat` and `scatter` expansion (rendered instanced). */
+export const MAX_WORLD_PARTS = 120;
+export const MAX_WORLD_EXPANDED = 1500;
+/** Worlds up to this many expanded parts keep the classic one-mesh-per-part rendering; repeat copies of bigger worlds are instanced. */
+export const WORLD_INSTANCE_FROM = 160;
 export const WORLD_GROUNDS = ["look", "none", "plane", "disc", "grid", "mirror"];
 /** Camera shot presets: offsets added on top of the scene's camera move (see `shots`). */
 export const SHOT_PRESETS = {
@@ -99,6 +102,10 @@ export const SHOT_PRESETS = {
   reveal: { zoom: 1.35, pitch: 1, shift: [0, -0.25, 0] },
   shoulder: { yaw: 26, pitch: -4, zoom: 0.55 },
   through: { zoom: 0.42, pitch: -5 },
+  // process explainers (stage): a smooth punch-in on `focus`, and a dive toward the cutaway face (a stage plan levels the
+  // camera to the face; without a stage it is a close, slightly lowered shot)
+  "zoom-to": { zoom: 0.55, pitch: -2 },
+  dive: { zoom: 0.42, pitch: -8 },
 };
 export const SHOT_NAMES = Object.keys(SHOT_PRESETS);
 
@@ -228,6 +235,19 @@ export const worldPartSchema = partSchema.extend({
   repeat: repeatSchema.optional().describe("Copies of this part (and the parts hanging from it)"),
 });
 
+/** `scatter`: deterministic copies of a template part spread over an area (grass, flowers, stones, trees), rendered instanced. */
+export const scatterSchema = z
+  .object({
+    part: z.string().min(1).max(40).describe("Id of the template part in `world.parts` (and the parts hanging from it); the template itself is not drawn, only its copies"),
+    count: z.number().int().min(1).max(1000).describe("Number of copies"),
+    area: z.tuple([n(-30, 30), n(-30, 30), n(-30, 30), n(-30, 30)]).describe("Ground rectangle [x0, z0, x1, z1] the copies fall in"),
+    seed: z.number().int().min(0).max(1000000).optional().describe("Same seed = same layout (default 0)"),
+    jitter: z.object({ scale: n(0, 0.9).optional().describe("Random scale +/- (0.3 = 70%..130%)"), rot: n(0, 360).optional().describe("Random yaw +/- degrees (default 360 = any)") }).strict().optional(),
+    avoid: z.array(z.array(n(-30, 30)).min(3).max(4)).max(12).optional().describe("Keep-out zones: [x0, z0, x1, z1] boxes or [x, z, r] discs"),
+    y: n(-5, 5).optional().describe("Ground height added to the template's own y (default 0; on a stage with terrain the copies follow the terrain)"),
+  })
+  .strict();
+
 const groundSchema = z
   .object({
     kind: z.enum(WORLD_GROUNDS).optional().describe("look = the look's own floor (default), none = shadow catcher only, plane | disc | grid | mirror"),
@@ -254,6 +274,7 @@ export const worldSchema = z
     backdrop: color.optional().describe("Flat backdrop color of the scene (default: the look's gradient)"),
     parts: z.array(worldPartSchema).max(MAX_WORLD_PARTS, `at most ${MAX_WORLD_PARTS} world parts (repeat copies are expanded)`).optional().describe("Props, walls, signs and stage dressing built from primitive parts"),
     crowd: crowdSchema.optional().describe("Instanced crowd silhouettes"),
+    scatter: z.array(scatterSchema).max(12).optional().describe("Deterministic scattered copies of template parts (grass, flowers, stones, trees)"),
   })
   .strict();
 
@@ -261,7 +282,8 @@ const shotSchema = z
   .object({
     at: momentSchema.optional().describe("When the shot starts (default: evenly spaced over the scene)"),
     shot: z.enum(SHOT_NAMES, { error: (iss) => `unknown shot${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SHOT_NAMES.join(", ")}` }),
-    focus: z.string().min(1).max(40).optional().describe("Object id the shot aims at"),
+    focus: z.string().min(1).max(40).optional().describe("Object id the shot aims at (with a stage: an actor id, \"actor/part\", a liquid id, \"terrain\" or \"terrain:<carve id>\")"),
+    cut: z.boolean().optional().describe("stage: hard cut to this shot instead of an eased move"),
     yaw: n(-180, 180).optional(),
     pitch: n(-60, 60).optional(),
     zoom: n(0.3, 3).optional(),
@@ -361,7 +383,7 @@ export const generativeSceneFields = {
   cameraKeys: z.array(cameraKeySchema).min(1).max(8).optional().describe("Camera keyframes on top of `camera` (use camera: static for keys only)"),
   fx: z.array(fx3dSchema).max(6).optional().describe(`Visual effects: ${FX_TYPES.join(", ")}`),
   world: worldSchema.optional().describe("The set built from scratch for this scene (ground, backdrop, parts, crowd)"),
-  shots: z.array(shotSchema).min(2).max(4).optional().describe(`2-4 camera shots over the scene (${SHOT_NAMES.join(", ")}); use instead of cameraKeys`),
+  shots: z.array(shotSchema).min(1).max(4).optional().describe(`1-4 camera shots over the scene (2-4 without a stage) (${SHOT_NAMES.join(", ")}); use instead of cameraKeys`),
   stock: z.boolean().optional().describe("true = this scene uses catalog content on purpose (stock kinds, models, sets) instead of agent-built custom parts / world"),
   overlay: z.array(overlaySchema).max(4).optional().describe(`Diegetic explainer UI over the stage (${OVERLAY_TYPES.join(", ")}); one flow, one concept and one card (limit or versus) per scene`),
 };
@@ -441,7 +463,7 @@ export function refineGenerative(v, ctx) {
     const base = ["objects", k];
     at([...base, "at"], o.at);
     const parts = o.parts ?? [];
-    if (o.kind === "custom" && !parts.length) add([...base, "parts"], "custom objects need `parts` (1-40 primitive parts)");
+    if (o.kind === "custom" && !parts.length) add([...base, "parts"], `custom objects need \`parts\` (1-${MAX_PARTS} primitive parts)`);
     if (o.kind !== "custom" && parts.length) add([...base, "parts"], "`parts` belongs to kind custom");
     const ids = checkParts(parts, [...base, "parts"], 8);
     checkMotion(o.motion, [...base, "motion"], { partIds: o.kind === "custom" ? ids : null, isPart: false });
@@ -461,18 +483,19 @@ export function refineGenerative(v, ctx) {
     if (f.target) {
       const [oid, pid] = f.target.split("/");
       const o = byId.get(oid);
-      if (!o) add([...base, "target"], `no object with id "${oid}" in this scene`);
+      // a scene without objects belongs to a stage: the spec-level check resolves its targets against the stage
+      if (!o) objs.length && add([...base, "target"], `no object with id "${oid}" in this scene`);
       else if (pid !== undefined && !(o.parts ?? []).some((p) => p.id === pid)) add([...base, "target"], `no part "${pid}" in object "${oid}"`);
     }
   });
   (v.cameraKeys ?? []).forEach((k, i) => {
     at(["cameraKeys", i, "at"], k.at);
-    if (k.focus && !byId.has(k.focus)) add(["cameraKeys", i, "focus"], `no object with id "${k.focus}" in this scene`);
+    if (k.focus && objs.length && !byId.has(k.focus)) add(["cameraKeys", i, "focus"], `no object with id "${k.focus}" in this scene`);
   });
   if (v.shots && v.cameraKeys) add(["shots"], "use either `shots` or `cameraKeys`, not both");
   (v.shots ?? []).forEach((k, i) => {
     at(["shots", i, "at"], k.at);
-    if (k.focus && !byId.has(k.focus)) add(["shots", i, "focus"], `no object with id "${k.focus}" in this scene`);
+    if (k.focus && objs.length && !byId.has(k.focus)) add(["shots", i, "focus"], `no object with id "${k.focus}" in this scene`);
   });
   const overlay = v.overlay ?? [];
   const slot = (o) => (o.type === "limit" || o.type === "versus" ? "card" : o.type);
@@ -501,7 +524,12 @@ export function refineGenerative(v, ctx) {
     wp.forEach((p, i) => {
       if (p.repeat && (p.parent !== undefined)) add(["world", "parts", i, "repeat"], "`repeat` goes on a root part (no `parent`); its children are copied with it");
     });
-    if (ids.size === wp.length && expandWorldParts(wp).length > MAX_WORLD_EXPANDED) add(["world", "parts"], `the world expands to more than ${MAX_WORLD_EXPANDED} parts after \`repeat\`; lower the counts`);
+    (v.world.scatter ?? []).forEach((sc, i) => {
+      const tpl = wp.find((p) => p.id === sc.part);
+      if (!tpl) add(["world", "scatter", i, "part"], `no part with id "${sc.part}" in world.parts (the template of the scatter)`);
+      else if (tpl.parent !== undefined || tpl.repeat) add(["world", "scatter", i, "part"], "a scatter template is a root part without `repeat`");
+    });
+    if (ids.size === wp.length && expandWorld(v.world).length > MAX_WORLD_EXPANDED) add(["world", "parts"], `the world expands to more than ${MAX_WORLD_EXPANDED} parts after \`repeat\` and \`scatter\`; lower the counts`);
     if (!wp.length && !v.world.crowd && !v.world.ground && !v.world.backdrop) add(["world"], "an empty world: add `parts`, `crowd`, `ground` or `backdrop`");
   }
 }
@@ -818,6 +846,86 @@ export function expandWorldParts(parts) {
   return out;
 }
 
+/** Ids of `id` and every part hanging from it (document order). */
+export function subtreeIds(parts, id) {
+  const out = [];
+  const walk = (i) => {
+    out.push(i);
+    for (const q of parts) if (q.parent === i && !out.includes(q.id)) walk(q.id);
+  };
+  if (parts.some((p) => p.id === id)) walk(id);
+  return out;
+}
+
+const inZone = (x, z, zones) =>
+  (zones ?? []).some((a) => (a.length === 4 ? x >= Math.min(a[0], a[2]) && x <= Math.max(a[0], a[2]) && z >= Math.min(a[1], a[3]) && z <= Math.max(a[1], a[3]) : Math.hypot(x - a[0], z - a[1]) <= a[2]));
+
+/**
+ * Copies of every `scatter` template: positions come from a seeded hash (same seed = same layout, no Math.random); copies
+ * that land in an `avoid` zone are re-rolled up to 8 times and dropped after that. Copy ids carry `@<scatter>.<k>`;
+ * every copy is flagged `inst` (the renderer draws them instanced). Pure.
+ */
+export function expandScatter(parts, scatter) {
+  const out = [];
+  const r3 = (x) => Math.round(x * 1000) / 1000;
+  (scatter ?? []).forEach((sc, si) => {
+    const root = parts.find((p) => p.id === sc.part);
+    if (!root) return;
+    const sub = subtreeIds(parts, root.id).map((id) => parts.find((p) => p.id === id));
+    const [x0, z0, x1, z1] = sc.area;
+    const seed = sc.seed ?? 0;
+    const jr = sc.jitter?.rot ?? 360;
+    const js = sc.jitter?.scale ?? 0;
+    for (let k = 0; k < sc.count; k++) {
+      let x = 0;
+      let z = 0;
+      let ok = false;
+      for (let a = 0; a < 8 && !ok; a++) {
+        x = x0 + (x1 - x0) * hash01(seed, si, k, a, "x");
+        z = z0 + (z1 - z0) * hash01(seed, si, k, a, "z");
+        ok = !inZone(x, z, sc.avoid);
+      }
+      if (!ok) continue;
+      const yaw = (hash01(seed, si, k, "r") * 2 - 1) * jr;
+      const sk = 1 + (hash01(seed, si, k, "s") * 2 - 1) * js;
+      const suffix = `@${si}.${k}`;
+      for (const q of sub) {
+        const c = { ...q, id: q.id + suffix, inst: true };
+        delete c.repeat;
+        if (q.id === root.id) {
+          delete c.parent;
+          const rp = q.pos ?? [0, 0, 0];
+          c.pos = [r3(x), r3((sc.y ?? 0) + rp[1]), r3(z)];
+          const rr = q.rot ?? [0, 0, 0];
+          c.rot = [rr[0], r3(rr[1] + yaw), rr[2]];
+          const rs = Array.isArray(q.scale) ? q.scale : [q.scale ?? 1, q.scale ?? 1, q.scale ?? 1];
+          c.scale = rs.map((v) => r3(v * sk));
+        } else c.parent = q.parent + suffix;
+        out.push(c);
+      }
+    }
+  });
+  return out;
+}
+
+/** Template part ids of a world's `scatter` (the templates and their children are not drawn themselves). */
+export const scatterTemplateIds = (world) => new Set((world?.scatter ?? []).flatMap((sc) => subtreeIds(world.parts ?? [], sc.part)));
+
+/**
+ * The parts a world draws: `expandWorldParts` for the plain parts (scatter templates left out) plus the scatter copies.
+ * Without scatter and up to WORLD_INSTANCE_FROM parts this is exactly `expandWorldParts(world.parts)` (classic plans keep their
+ * bytes); beyond it, repeat copies are flagged `inst` for instanced rendering.
+ */
+export function expandWorld(world) {
+  const parts = world?.parts ?? [];
+  const tpl = scatterTemplateIds(world);
+  const base = expandWorldParts(tpl.size ? parts.filter((p) => !tpl.has(p.id)) : parts);
+  const inst = expandScatter(parts, world?.scatter);
+  const all = [...base, ...inst];
+  if (all.length <= WORLD_INSTANCE_FROM) return all;
+  return all.map((p) => (p.id.includes("#") && !p.inst ? { ...p, inst: true } : p));
+}
+
 /** A stable signature of an agent-built subject or world: shapes, sizes and colors (used by the novelty guard). */
 export const partsSignature = (parts) => JSON.stringify((parts ?? []).map((p) => [p.shape, p.size, p.color, p.pos]));
 
@@ -977,6 +1085,7 @@ export function momentStrings(v) {
   }
   for (const k of v?.cameraKeys ?? []) add(k.at);
   for (const k of v?.shots ?? []) add(k.at);
+  for (const b of v?.beats ?? []) add(b.at);
   for (const p of v?.world?.parts ?? []) node(p);
   return [...out];
 }

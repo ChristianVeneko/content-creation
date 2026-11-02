@@ -109,9 +109,9 @@ test("world schema: accepts concept, ground, backdrop, parts (wide pos, repeat),
   assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: [{ id: "a", shape: "box" }, { id: "a", shape: "box" }] } }), "scenes.0.visual.world.parts.1.id", /duplicate/));
   assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: [{ id: "s", shape: "sign", size: [1, 1] }] } }), "scenes.0.visual.world.parts.0.text", /text/));
   assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: [{ id: "b", shape: "box", size: [60, 1, 1] }] } }), "scenes.0.visual.world.parts.0.size.0", /at most 40/));
-  assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: [{ id: "r", shape: "box", repeat: { count: 40, step: [0, 0, -1] } }, { id: "q", shape: "box", repeat: { count: 40, step: [1, 0, 0] } }, { id: "z", shape: "box", repeat: { count: 40, step: [0, 1, 0] } }, { id: "w", shape: "box", repeat: { count: 40, step: [0, 0, 1] } }, { id: "v", shape: "box", repeat: { count: 40, step: [2, 0, 0] } }] } }), "scenes.0.visual.world.parts", /more than 160/));
+  assert.ok(has(spec({ objects: [BLOCK], world: { ...WORLD, parts: Array.from({ length: 40 }, (_, i) => ({ id: `r${i}`, shape: "box", repeat: { count: 40, step: [0, 0, -1] } })) } }), "scenes.0.visual.world.parts", /more than 1500/));
   assert.ok(errs(spec({ objects: [BLOCK], world: { ...WORLD, ground: { kind: "lava" } } })).length > 0, "unknown ground kind");
-  assert.ok(errs(spec({ objects: [BLOCK], world: { ...WORLD, parts: Array.from({ length: 25 }, (_, i) => ({ id: `p${i}`, shape: "box" })) } })).length > 0, "at most 24 world parts");
+  assert.ok(errs(spec({ objects: [BLOCK], world: { ...WORLD, parts: Array.from({ length: 121 }, (_, i) => ({ id: `p${i}`, shape: "box" })) } })).length > 0, "at most 120 world parts");
   assert.ok(has(spec({ objects: [BLOCK], world: { concept: "empty" } }), "scenes.0.visual.world", /empty world/));
 });
 
