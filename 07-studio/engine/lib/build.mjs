@@ -19,6 +19,8 @@ import { buildBed, loadKit } from "./audio-bed.mjs";
 import { musicDuckedLevelDb, musicLevelDb, resolveMusic } from "./music.mjs";
 import { computeReelsTimeline, reelsTtsText, usesReelsKit } from "./reels.mjs";
 import { prepareReels, renderReelsCover } from "./reels-build.mjs";
+import { chooseRenderer } from "./blender-options.mjs";
+import { renderBlenderVideo } from "./blender.mjs";
 
 export class StepError extends Error {
   constructor(step, message) {
@@ -69,9 +71,10 @@ export function postMarkdown(spec) {
 
 /**
  * Build a video from a spec file.
- * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean}} opts
+ * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean, renderer?: "remotion" | "blender"}} opts
+ *   renderer: overrides `theme.renderer` (the CLI's --renderer); blender is for the 3D templates
  */
-export async function build({ specPath, outDir, log, keepWork = false }) {
+export async function build({ specPath, outDir, log, keepWork = false, renderer: rendererOverride }) {
   let step = "validate";
   const fail = (message) => {
     throw new StepError(step, message);
@@ -88,6 +91,9 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     const v = validateSpec(raw);
     if (!v.ok) fail(`Invalid spec: ${v.errors.map((e) => `${e.path}: ${e.message}`).join("; ")}`);
     const spec = resolveSpec(v.spec, getTemplate(v.spec.template));
+    const choice = chooseRenderer(spec, rendererOverride);
+    if (choice.error) fail(`Invalid renderer: ${choice.error}`);
+    if (rendererOverride) spec.theme = { ...spec.theme, renderer: rendererOverride };
     const specDir = dirname(resolve(specPath));
     outDir = resolve(outDir);
     const work = join(outDir, ".work");
@@ -306,29 +312,56 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     step = "render";
     mkdirSync(outDir, { recursive: true });
     const inputProps = { spec, timeline, captionPages, assets: { narration, music, visuals, bed, avatar, three }, illustration, icons, reels };
-    log(step, "running", "Bundling Remotion project", 0.46);
-    const serveUrl = await bundleProject({ publicDir: pub, outDir: join(work, "bundle"), onProgress: (p) => log(step, "running", `Bundling ${Math.round(p * 100)}%`, 0.46 + 0.04 * p) });
-    const videoTmp = join(work, "video.mp4");
-    let last = -1;
-    const composition = await renderVideo({
-      serveUrl,
-      compositionId: spec.template,
-      inputProps,
-      output: videoTmp,
-      onProgress: (p) => {
-        const pct = Math.floor(p * 20);
-        if (pct !== last) {
-          last = pct;
-          log(step, "running", `Rendering ${Math.round(p * 100)}%`, 0.5 + 0.42 * p);
-        }
-      },
-    });
     const videoPath = join(outDir, "video.mp4");
-    // With a mixed bed (voice + SFX + music) re-normalize the final audio to -14 LUFS; otherwise copy as before.
-    const audioArgs = bed ? ["-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "320k"] : ["-c", "copy"];
-    await run("ffmpeg", ["-y", "-v", "error", "-i", videoTmp, ...audioArgs, "-movflags", "+faststart", join(work, "video.faststart.mp4")]);
-    renameSync(join(work, "video.faststart.mp4"), videoPath);
-    log(step, "done", `Rendered ${totalSec.toFixed(1)}s · ${spec.format.width}x${spec.format.height}@${fps}`, 0.92);
+    let serveUrl = null;
+    let composition = null;
+    let blenderDone = false;
+    if (choice.renderer === "blender") {
+      // Eevee frames from Blender + ffmpeg (captions, headlines and labels as an ASS layer); any Blender problem falls back to Remotion
+      try {
+        log(step, "running", "Rendering with Blender (Eevee)", 0.46);
+        const r = await renderBlenderVideo({
+          spec,
+          timeline,
+          plans: illustration,
+          captionPages,
+          models: three?.models ?? {},
+          pubDir: pub,
+          work,
+          audio: { narration: narration ? join(pub, narration) : null, bed: bed ? join(pub, bed) : null, music: music && !isRemote(music) ? join(pub, music) : null, musicVolume: spec.music.volume },
+          out: videoPath,
+          log: (msg, p) => log(step, "running", msg, 0.46 + 0.46 * Math.min(1, p)),
+        });
+        log(step, "done", `Blender rendered ${r.frames} frames in ${r.seconds.toFixed(0)}s (${r.perFrame.toFixed(2)} s/frame)${r.captionsBurned ? "" : "; no 2D layer"}`, 0.92);
+        blenderDone = true;
+      } catch (e) {
+        log(step, "running", `Blender renderer failed (${String(e.message).slice(0, 300)}); falling back to the Remotion renderer for this video`, 0.46);
+      }
+    }
+    if (!blenderDone) {
+      log(step, "running", "Bundling Remotion project", 0.46);
+      serveUrl = await bundleProject({ publicDir: pub, outDir: join(work, "bundle"), onProgress: (p) => log(step, "running", `Bundling ${Math.round(p * 100)}%`, 0.46 + 0.04 * p) });
+      const videoTmp = join(work, "video.mp4");
+      let last = -1;
+      composition = await renderVideo({
+        serveUrl,
+        compositionId: spec.template,
+        inputProps,
+        output: videoTmp,
+        onProgress: (p) => {
+          const pct = Math.floor(p * 20);
+          if (pct !== last) {
+            last = pct;
+            log(step, "running", `Rendering ${Math.round(p * 100)}%`, 0.5 + 0.42 * p);
+          }
+        },
+      });
+      // With a mixed bed (voice + SFX + music) re-normalize the final audio to -14 LUFS; otherwise copy as before.
+      const audioArgs = bed ? ["-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "320k"] : ["-c", "copy"];
+      await run("ffmpeg", ["-y", "-v", "error", "-i", videoTmp, ...audioArgs, "-movflags", "+faststart", join(work, "video.faststart.mp4")]);
+      renameSync(join(work, "video.faststart.mp4"), videoPath);
+      log(step, "done", `Rendered ${totalSec.toFixed(1)}s · ${spec.format.width}x${spec.format.height}@${fps}`, 0.92);
+    }
 
     // ---------- cover ----------
     step = "cover";
@@ -336,7 +369,8 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     const coverFrame = Math.max(0, Math.min(timeline.totalFrames - 1, s0.from + s0.durationInFrames - timeline.transitionFrames - 6));
     const coverPath = join(outDir, "cover.jpg");
     // reels: a designed cover (spec.reels.cover) plus cover-check.png with the 3:4 profile-grid crop
-    if (reelsKit) await renderReelsCover({ serveUrl, inputProps, outDir });
+    if (blenderDone) await run("ffmpeg", ["-y", "-v", "error", "-ss", (coverFrame / fps).toFixed(3), "-i", videoPath, "-frames:v", "1", "-q:v", "2", coverPath]);
+    else if (reelsKit) await renderReelsCover({ serveUrl, inputProps, outDir });
     else await renderCover({ serveUrl, composition, inputProps, frame: coverFrame, output: coverPath });
     writeFileSync(join(outDir, "post.md"), postMarkdown(spec));
     const { post, ...rest } = spec;

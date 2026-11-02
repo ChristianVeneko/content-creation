@@ -203,6 +203,14 @@
             "minimal",
             "pixel"
           ]
+        },
+        "renderer": {
+          "description": "Render engine: remotion (default) or blender (3D templates only: Eevee frames, slower, cinematic)",
+          "type": "string",
+          "enum": [
+            "remotion",
+            "blender"
+          ]
         }
       }
     },

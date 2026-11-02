@@ -20,7 +20,7 @@ case "${1:-help}" in
     if [ "$(uname -s)" = Darwin ] && [ "$(uname -m)" = arm64 ]; then pkgs+=(mlx-whisper mlx-audio); fi
     uv pip install --python .venv/bin/python "${pkgs[@]}" ;;
   hyperframes)
-    npx hyperframes init hyperframes-studio ;;
+    npx --yes hyperframes init hyperframes-studio ;;
   mcp)
     # Extra MCP servers for Claude Code in this project (ElevenLabs is already in .mcp.json).
     : "${FAL_KEY:?set FAL_KEY in .env}"

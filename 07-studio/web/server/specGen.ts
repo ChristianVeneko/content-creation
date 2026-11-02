@@ -72,6 +72,9 @@ export function applyOptions(raw: unknown, templateId: string, o: GenerateOption
   spec.theme = { ...(spec.theme ?? ({} as VideoSpec["theme"])), captionStyle: captions?.style ?? o.captionStyle };
   if (captions) spec.captions = { ...(isObject(spec.captions) ? spec.captions : {}), ...captions };
   if (o.reelsSubtitles) spec.reels = { ...(isObject(spec.reels) ? spec.reels : {}), subtitles: o.reelsSubtitles };
+  // the render engine is a user setting (3D formats only), never the model's choice
+  delete spec.theme.renderer;
+  if (o.renderer === "blender") spec.theme.renderer = "blender";
   const palette = asPalette(o.palette);
   if (palette) spec.theme.palette = palette;
   const modelVoiceProvider = spec.voice?.provider;

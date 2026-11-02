@@ -13,6 +13,7 @@ import type { StudioConfig } from "./config.ts";
 import { Engine, asPalette, type EngineMusicTrack, type EngineVoice } from "./engine.ts";
 import { ChannelError, ChannelStore, isValidChannelSlug } from "./channels.ts";
 import { captionSettingsIssue, isCaptionStyle, isReelsSubtitleMode } from "../shared/captions.ts";
+import { RENDERERS, is3dTemplate, isRenderer } from "../shared/renderers.ts";
 import { buildChannelContext, channelOptionDefaults } from "./channelContext.ts";
 import { JobStore, isValidJobId, type JobEvent, type JobMeta } from "./jobs.ts";
 import { log, log as studioLog } from "./logger.ts";
@@ -440,6 +441,9 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
     if (body.options?.captionStyle !== undefined && !isCaptionStyle(body.options.captionStyle)) {
       return c.json({ error: `Estilo de subtítulos desconocido: ${String(body.options.captionStyle)}.` }, 400);
     }
+    if (body.options?.renderer !== undefined && !isRenderer(body.options.renderer)) {
+      return c.json({ error: `Motor de render inválido: usa ${RENDERERS.join(" o ")}.` }, 400);
+    }
     const captionIssue = captionSettingsIssue(body.options?.captions);
     if (captionIssue) return c.json({ error: captionIssue }, 400);
     if (body.options?.reelsSubtitles !== undefined && !isReelsSubtitleMode(body.options.reelsSubtitles)) {
@@ -481,7 +485,8 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
         system: (await systemPromptFor(templateId, config, { creative: body.provider === "claudeCode" })).text,
         user: buildUserPrompt(body.prompt, template, templateId, options, channel ? buildChannelContext(channel, channel.voice) : undefined),
         templateId,
-        options,
+        // the render engine only exists for 3D formats (the engine rejects it elsewhere)
+        options: is3dTemplate(template) ? options : { ...options, renderer: undefined },
         validate: validateSpec,
       });
       const title = spec.title ?? body.prompt.slice(0, 60);

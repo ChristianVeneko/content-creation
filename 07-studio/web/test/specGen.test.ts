@@ -99,3 +99,13 @@ test("applyOptions drops a model voiceId that belongs to a different voice provi
   const same = applyOptions({ ...structuredClone(goodSpec), voice: { provider: "kokoro", voiceId: "em_alex" } }, "countdown", { ...options, voiceProvider: "kokoro", voiceId: undefined });
   assert.equal(same.voice.voiceId, "em_alex");
 });
+
+test("applyOptions writes Blender as the user's render engine and never keeps one the model chose", () => {
+  const blender = applyOptions(structuredClone(goodSpec), "moody-night", { ...options, renderer: "blender" });
+  assert.equal(blender.theme.renderer, "blender");
+  const modelPick = { ...structuredClone(goodSpec), theme: { renderer: "blender" } };
+  const none = applyOptions(modelPick, "moody-night", options);
+  assert.equal("renderer" in none.theme, false);
+  const remotion = applyOptions(structuredClone(goodSpec), "moody-night", { ...options, renderer: "remotion" });
+  assert.equal("renderer" in remotion.theme, false, "remotion is the default and stays omitted");
+});

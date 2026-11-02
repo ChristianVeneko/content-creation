@@ -46,6 +46,8 @@ export interface VideoSpec {
     palette: Palette;
     font: string;
     captionStyle: CaptionStyle;
+    /** Render engine (3D formats can choose "blender"); omitted = Remotion. A user setting, never the model's. */
+    renderer?: Renderer;
   };
   voice: { provider: VoiceProvider; voiceId?: string; speed?: number };
   music?: MusicSpec;
@@ -208,6 +210,9 @@ export interface VoiceLibrary {
   voices: VoiceOption[];
 }
 
+/** Render engine of a video (spec.theme.renderer): "remotion" (default) or "blender" (3D formats only). */
+export type Renderer = "remotion" | "blender";
+
 export interface GenerateOptions {
   language: string;
   durationSec: DurationSec;
@@ -223,6 +228,8 @@ export interface GenerateOptions {
   captions?: CaptionSettings;
   /** Subtitle mode of the reels-* templates (spec.reels.subtitles). */
   reelsSubtitles?: ReelsSubtitleMode;
+  /** Render engine (3D formats only; written to spec.theme.renderer, never chosen by the model). */
+  renderer?: Renderer;
 }
 
 export interface GenerateRequest {
