@@ -32,6 +32,8 @@ const transitionFor = (spec: RenderProps["spec"], i: number, plan?: unknown): An
   // Illustrated-kit templates with their own look bring their own transition (eraser, glitch cut, zoom, CRT, whip pan).
   const own = usesIllustratedKit(spec.template) ? lookTransition(lookOf(spec) as LookId, i, spec.theme.palette.bg) : null;
   if (own) return own;
+  // A persistent 3D stage is one continuous world: scenes only dissolve into each other, never wipe or iris over it.
+  if (usesThreeKit(spec.template) && (spec as { stage?: unknown }).stage) return fade() as AnyPresentation;
   // 3D looks: iris pop, isometric pan, neon light streak, cinematic dip.
   if (usesThreeKit(spec.template)) return threeTransition(look3dOf(spec) as Look3DId, i, spec.theme.palette.accent);
   const template: TemplateId = spec.template;
