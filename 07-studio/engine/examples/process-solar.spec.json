@@ -1,0 +1,5942 @@
+{
+  "version": 1,
+  "title": "Cómo funciona un panel solar",
+  "template": "process-explainer",
+  "language": "es",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "a sunny field with solar panels, a battery, an inverter, a house and a pole",
+    "world": {
+      "concept": "bright countryside with a grass field and a few trees",
+      "backdrop": "#CFE6F7",
+      "parts": [
+        {
+          "build": "grass-tufts",
+          "id": "grass",
+          "params": {
+            "count": 200,
+            "area": [
+              -13,
+              -8,
+              13,
+              7
+            ],
+            "avoid": [
+              [
+                -7,
+                -2,
+                8.5,
+                5
+              ]
+            ],
+            "color": "#6DB552"
+          },
+          "seed": 4
+        },
+        {
+          "build": "flowers",
+          "id": "flowers",
+          "params": {
+            "count": 24,
+            "area": [
+              -13,
+              -8,
+              13,
+              7
+            ],
+            "avoid": [
+              [
+                -7,
+                -2,
+                8.5,
+                5
+              ]
+            ]
+          },
+          "seed": 5
+        },
+        {
+          "build": "tree",
+          "id": "trees",
+          "params": {
+            "kind": "lowpoly",
+            "height": 3.0,
+            "density": 1
+          },
+          "seed": 6,
+          "scatter": {
+            "count": 7,
+            "area": [
+              -11,
+              -9,
+              11,
+              -5
+            ],
+            "avoid": [
+              [
+                -9,
+                -9,
+                -2,
+                -5
+              ]
+            ]
+          }
+        },
+        {
+          "build": "rocks",
+          "id": "rocks",
+          "params": {
+            "count": 2
+          },
+          "seed": 2,
+          "scatter": {
+            "count": 5,
+            "area": [
+              -13,
+              4,
+              13,
+              7
+            ]
+          }
+        }
+      ]
+    },
+    "terrain": {
+      "size": [
+        30,
+        16
+      ],
+      "pos": [
+        0,
+        -1
+      ],
+      "grid": 48,
+      "depth": 3.6,
+      "bumps": 0.03,
+      "seed": 2,
+      "strata": [
+        {
+          "to": 0.4,
+          "color": "#6B4A2E"
+        },
+        {
+          "to": 1.5,
+          "color": "#B87A3F"
+        },
+        {
+          "to": 2.7,
+          "color": "#C9924F"
+        },
+        {
+          "to": 3.6,
+          "color": "#8A6A52"
+        }
+      ],
+      "stones": {
+        "count": 34,
+        "seed": 3,
+        "size": [
+          0.12,
+          0.45
+        ]
+      }
+    },
+    "actors": [
+      {
+        "build": "sun",
+        "id": "sun",
+        "noFrame": true,
+        "label": "SOL",
+        "pos": [
+          -6.5,
+          0.2,
+          -6.5
+        ],
+        "size": 1.0,
+        "params": {
+          "radius": 0.95
+        },
+        "seed": 1
+      },
+      {
+        "build": "sun",
+        "id": "moon",
+        "noFrame": true,
+        "pos": [
+          -3.2,
+          8.2,
+          -6.5
+        ],
+        "size": 0.9,
+        "params": {
+          "kind": "moon",
+          "radius": 0.8
+        },
+        "seed": 2
+      },
+      {
+        "build": "solar-panel",
+        "id": "panel",
+        "label": "PANEL",
+        "pos": [
+          -5.1,
+          0,
+          0.2
+        ],
+        "rot": [
+          0,
+          12,
+          0
+        ],
+        "size": 1.05,
+        "params": {
+          "cols": 6,
+          "rows": 4,
+          "width": 3.4,
+          "tilt": 36,
+          "inverter": false
+        },
+        "seed": 3
+      },
+      {
+        "build": "solar-panel",
+        "id": "panel-b",
+        "pos": [
+          -2.6,
+          0,
+          -0.5
+        ],
+        "rot": [
+          0,
+          12,
+          0
+        ],
+        "size": 0.95,
+        "params": {
+          "cols": 6,
+          "rows": 4,
+          "width": 3.0,
+          "tilt": 36,
+          "inverter": false
+        },
+        "seed": 3
+      },
+      {
+        "build": "pv-cell",
+        "id": "cell",
+        "label": "CELDA",
+        "pos": [
+          -4.6,
+          4.3,
+          1.6
+        ],
+        "size": 1.25,
+        "params": {
+          "width": 3.6,
+          "carriers": 5
+        },
+        "seed": 1
+      },
+      {
+        "build": "machine-box",
+        "id": "controller",
+        "label": "CONTROLADOR",
+        "pos": [
+          -1.5,
+          0,
+          3.4
+        ],
+        "size": 0.5,
+        "params": {
+          "width": 1.9,
+          "height": 1.5,
+          "depth": 1.1,
+          "lights": 3,
+          "body": "#4C6A92",
+          "panel": "#E7ECF4"
+        },
+        "seed": 4
+      },
+      {
+        "build": "battery",
+        "id": "battery",
+        "label": "BATERIA",
+        "pos": [
+          0.6,
+          0,
+          3.4
+        ],
+        "size": 0.75,
+        "params": {
+          "cells": 3,
+          "segments": 8,
+          "charge": 1
+        },
+        "seed": 2
+      },
+      {
+        "build": "machine-box",
+        "id": "inverter",
+        "label": "INVERSOR",
+        "pos": [
+          2.9,
+          0,
+          3.4
+        ],
+        "size": 0.5,
+        "params": {
+          "width": 1.9,
+          "height": 1.5,
+          "depth": 1.1,
+          "lights": 3,
+          "body": "#E8743B",
+          "panel": "#F4F1EA"
+        },
+        "seed": 7
+      },
+      {
+        "build": "house",
+        "id": "house",
+        "label": "CASA",
+        "pos": [
+          5.4,
+          0,
+          -1.2
+        ],
+        "size": 0.95,
+        "params": {
+          "floors": 2,
+          "width": 4.2,
+          "style": "modern",
+          "roof": "gable",
+          "windows": 3
+        },
+        "seed": 5
+      },
+      {
+        "build": "power-pole",
+        "id": "pole",
+        "label": "RED",
+        "pos": [
+          9.2,
+          0,
+          1.4
+        ],
+        "size": 1.0,
+        "params": {
+          "height": 3.8
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "c1",
+        "pos": [
+          -3.033,
+          0,
+          2.5
+        ],
+        "params": {
+          "points": [
+            [
+              -1.167,
+              0.1,
+              -0.9
+            ],
+            [
+              0.033,
+              0.1,
+              0.1
+            ],
+            [
+              1.133,
+              0.1,
+              0.8
+            ]
+          ],
+          "radius": 0.06,
+          "cable": "#F59E0B",
+          "dots": 0
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "c2",
+        "pos": [
+          -0.55,
+          0,
+          3.4
+        ],
+        "params": {
+          "points": [
+            [
+              -0.55,
+              0.1,
+              0.0
+            ],
+            [
+              0.55,
+              0.1,
+              0.0
+            ]
+          ],
+          "radius": 0.06,
+          "cable": "#F59E0B",
+          "dots": 0
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "c3",
+        "pos": [
+          1.75,
+          0,
+          3.4
+        ],
+        "params": {
+          "points": [
+            [
+              -0.55,
+              0.1,
+              0.0
+            ],
+            [
+              0.55,
+              0.1,
+              0.0
+            ]
+          ],
+          "radius": 0.06,
+          "cable": "#F59E0B",
+          "dots": 0
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "c4",
+        "pos": [
+          4.533,
+          0,
+          1.9
+        ],
+        "params": {
+          "points": [
+            [
+              -1.033,
+              0.1,
+              1.4
+            ],
+            [
+              0.267,
+              0.1,
+              0.1
+            ],
+            [
+              0.767,
+              0.1,
+              -1.5
+            ]
+          ],
+          "radius": 0.06,
+          "cable": "#3B82F6",
+          "dots": 0
+        },
+        "seed": 1
+      },
+      {
+        "build": "data-cable",
+        "id": "c5",
+        "pos": [
+          8.1,
+          0,
+          0.5
+        ],
+        "params": {
+          "points": [
+            [
+              -1.0,
+              0.1,
+              -0.8
+            ],
+            [
+              0.1,
+              0.1,
+              0.1
+            ],
+            [
+              0.9,
+              0.1,
+              0.7
+            ]
+          ],
+          "radius": 0.06,
+          "cable": "#3B82F6",
+          "dots": 0
+        },
+        "seed": 1
+      },
+      {
+        "build": "person",
+        "id": "tech",
+        "pos": [
+          -0.9,
+          0,
+          5.0
+        ],
+        "size": 0.62,
+        "params": {
+          "hat": "hard-hat",
+          "vest": true,
+          "tool": "clipboard"
+        },
+        "seed": 3
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-a",
+        "noFrame": true,
+        "pos": [
+          -6.2,
+          6.0,
+          -0.2
+        ],
+        "size": 1.0,
+        "params": {
+          "size": 1.6
+        },
+        "seed": 1
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-b",
+        "noFrame": true,
+        "pos": [
+          -3.4,
+          5.0,
+          0.4
+        ],
+        "size": 1.0,
+        "params": {
+          "size": 1.3
+        },
+        "seed": 4
+      },
+      {
+        "build": "wind-turbine",
+        "id": "turbine",
+        "noFrame": true,
+        "label": "EOLICA",
+        "pos": [
+          3.2,
+          0,
+          -5.6
+        ],
+        "size": 0.85,
+        "params": {
+          "height": 3.6,
+          "blade": 1.5
+        },
+        "seed": 1
+      },
+      {
+        "build": "chart-3d",
+        "id": "chart",
+        "noFrame": true,
+        "label": "AHORRO",
+        "pos": [
+          0.8,
+          0,
+          5.2
+        ],
+        "size": 0.8,
+        "params": {
+          "values": [
+            0.12,
+            0.28,
+            0.45,
+            0.62,
+            0.8,
+            0.95
+          ],
+          "height": 2.2
+        },
+        "seed": 1
+      },
+      {
+        "build": "night-veil",
+        "id": "night",
+        "noFrame": true,
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "size": 2,
+        "params": {
+          "strength": 0.6
+        },
+        "seed": 1
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "narration": "¿Cómo convierte un panel solar la luz del sol en electricidad? Vamos paso a paso.",
+      "title": {
+        "kicker": "Energía solar",
+        "main": "Cómo funciona un panel solar"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55,
+            "shift": [
+              0,
+              3.2,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 3.0,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "cell",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "moon",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "night",
+            "dur": 0,
+            "set": {
+              "visible": false,
+              "opacity": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "cloud-a",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "cloud-b",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "turbine",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "chart",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "sun",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-1",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-2",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-3",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-4",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-5",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-6",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "battery/seg-7",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.02,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-1",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-2",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-3",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-4",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-5",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-6",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-7",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "house/win-glass-8",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-1",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-2",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-3",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-4",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-5",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-6",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-7",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-8",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-9",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-10",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-11",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-12",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-13",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-14",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-15",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-16",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-17",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-18",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-19",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-20",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-21",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-22",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "panel/cell-23",
+            "dur": 0,
+            "set": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "sun",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "sun",
+            "dur": 3.4,
+            "ease": "out",
+            "to": {
+              "pos": [
+                3.3,
+                7.2,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Luz en electricidad",
+            "at": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "sol",
+      "narration": "Todo empieza con el sol, una estrella que nos manda luz cada día.",
+      "title": {
+        "kicker": "Paso 1",
+        "main": "El sol"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "sun",
+            "at": 0.0,
+            "frame": "medium",
+            "shift": [
+              0,
+              0.5,
+              0
+            ]
+          },
+          {
+            "shot": "wide",
+            "at": 2.42,
+            "frame": "wide",
+            "zoom": 1.55,
+            "shift": [
+              0,
+              3.2,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.19,
+            "target": "sun/rays",
+            "dur": 3.91,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                0,
+                180
+              ]
+            }
+          },
+          {
+            "at": 0.19,
+            "target": "sun",
+            "dur": 1.49,
+            "ease": "in-out",
+            "to": {
+              "scale": [
+                1.15,
+                1.15,
+                1.15
+              ]
+            }
+          },
+          {
+            "at": 1.68,
+            "target": "sun",
+            "dur": 1.49,
+            "ease": "in-out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.19
+          }
+        ]
+      }
+    },
+    {
+      "id": "fotones",
+      "narration": "Esa luz viaja en paquetes diminutos de energía llamados fotones.",
+      "title": {
+        "kicker": "Paso 2",
+        "main": "Los fotones"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55,
+            "shift": [
+              0,
+              3.2,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 1.85,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.12,
+            "target": "sun/rays",
+            "dur": 3.08,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                0,
+                360
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Fotones",
+            "at": 0.37
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.25,
+            "until": 3.3,
+            "count": 14,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "choque",
+      "narration": "Los fotones chocan contra el panel, hecho de celdas de silicio.",
+      "title": {
+        "kicker": "Paso 3",
+        "main": "El panel recibe la luz"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 0.0,
+            "frame": "medium"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 2.72,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.97,
+            "target": "panel/cell",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.01,
+            "target": "panel/cell-1",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.05,
+            "target": "panel/cell-2",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.09,
+            "target": "panel/cell-3",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.13,
+            "target": "panel/cell-4",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.17,
+            "target": "panel/cell-5",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.21,
+            "target": "panel/cell-6",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.24,
+            "target": "panel/cell-7",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.28,
+            "target": "panel/cell-8",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.32,
+            "target": "panel/cell-9",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.36,
+            "target": "panel/cell-10",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "panel/cell-11",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.44,
+            "target": "panel/cell-12",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.48,
+            "target": "panel/cell-13",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.52,
+            "target": "panel/cell-14",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.56,
+            "target": "panel/cell-15",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.59,
+            "target": "panel/cell-16",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.63,
+            "target": "panel/cell-17",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.67,
+            "target": "panel/cell-18",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.71,
+            "target": "panel/cell-19",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.75,
+            "target": "panel/cell-20",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.79,
+            "target": "panel/cell-21",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.83,
+            "target": "panel/cell-22",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.87,
+            "target": "panel/cell-23",
+            "dur": 0.39,
+            "to": {
+              "emissive": 0.7
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.19
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.0,
+            "until": 3.6,
+            "count": 12,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "celdas",
+      "narration": "Un panel tiene decenas de celdas, y cada una genera un poco de electricidad.",
+      "title": {
+        "kicker": "Paso 4",
+        "main": "Muchas celdas"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 0.0,
+            "frame": "close"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 3.5,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.1,
+            "target": "panel/cell",
+            "dur": 0.3,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 0.1,
+            "target": "panel/cell-1",
+            "dur": 0.3,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 0.1,
+            "target": "panel/cell-2",
+            "dur": 0.3,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "panel/cell",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 0.72,
+            "target": "panel/cell-1",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 0.84,
+            "target": "panel/cell-2",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 0.96,
+            "target": "panel/cell-3",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.08,
+            "target": "panel/cell-4",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "panel/cell-5",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.32,
+            "target": "panel/cell-6",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.44,
+            "target": "panel/cell-7",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.56,
+            "target": "panel/cell-8",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.68,
+            "target": "panel/cell-9",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "panel/cell-10",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 1.92,
+            "target": "panel/cell-11",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.04,
+            "target": "panel/cell-12",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.16,
+            "target": "panel/cell-13",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.28,
+            "target": "panel/cell-14",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.4,
+            "target": "panel/cell-15",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.52,
+            "target": "panel/cell-16",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.64,
+            "target": "panel/cell-17",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.76,
+            "target": "panel/cell-18",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2.88,
+            "target": "panel/cell-19",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 3.0,
+            "target": "panel/cell-20",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 3.12,
+            "target": "panel/cell-21",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 3.24,
+            "target": "panel/cell-22",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 3.36,
+            "target": "panel/cell-23",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.3
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.2
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.0,
+            "until": 4.5,
+            "count": 10,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "zoom-celda",
+      "narration": "Hagamos zoom: dentro de cada celda hay capas muy delgadas de silicio.",
+      "title": {
+        "kicker": "Paso 5",
+        "main": "Dentro de la celda"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 0.0,
+            "frame": "medium"
+          },
+          {
+            "shot": "dive",
+            "focus": "cell",
+            "at": 1.6,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.8,
+            "target": "cell",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "scale": [
+                0.2,
+                0.2,
+                0.2
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "cell",
+            "dur": 0.7,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "cell",
+            "dur": 1.0,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                -0.7,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "La celda",
+            "at": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "capas",
+      "narration": "Arriba va el silicio tipo N, con electrones de sobra, y abajo el tipo P.",
+      "title": {
+        "kicker": "Paso 6",
+        "main": "Dos capas de silicio"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cell",
+            "at": 0.0,
+            "frame": "close",
+            "shift": [
+              0,
+              0.3,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.8,
+            "target": "cell/n-layer",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.6
+            }
+          },
+          {
+            "at": 2.8,
+            "target": "cell/n-layer",
+            "dur": 0.5,
+            "to": {
+              "emissive": 0.0
+            }
+          },
+          {
+            "at": 3.0,
+            "target": "cell/p-layer",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.6
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "cell/electrons",
+            "dur": 0.6,
+            "to": {
+              "scale": [
+                1.25,
+                1.25,
+                1.25
+              ]
+            }
+          },
+          {
+            "at": 3.0,
+            "target": "cell/holes",
+            "dur": 0.6,
+            "to": {
+              "scale": [
+                1.25,
+                1.25,
+                1.25
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Silicio N y P",
+            "at": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "union",
+      "narration": "Entre las dos capas queda la unión, un campo eléctrico que empuja los electrones.",
+      "title": {
+        "kicker": "Paso 7",
+        "main": "La unión"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cell",
+            "at": 0.0,
+            "frame": "close",
+            "shift": [
+              0,
+              0.1,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.6,
+            "target": "cell/junction",
+            "dur": 0.8,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "cell/junction",
+            "dur": 0.8,
+            "to": {
+              "emissive": 1.0
+            }
+          },
+          {
+            "at": 3.4,
+            "target": "cell/junction",
+            "dur": 0.8,
+            "to": {
+              "emissive": 2.2
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Campo eléctrico",
+            "at": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "arranque",
+      "narration": "Cuando un fotón golpea la celda, arranca un electrón y lo lanza hacia arriba.",
+      "title": {
+        "kicker": "Paso 8",
+        "main": "El fotón arranca un electrón"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cell",
+            "at": 0.0,
+            "frame": "close",
+            "shift": [
+              0,
+              0.1,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 1.2,
+            "target": "cell/electrons",
+            "dur": 2.2,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0.7,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "cell/holes",
+            "dur": 2.2,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                -0.5,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "cell/glass",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.5
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Electrones libres",
+            "at": 0.3
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -5.8,
+                7.0,
+                3.2
+              ],
+              [
+                -4.6,
+                4.7,
+                2.3
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.1,
+            "until": 1.6,
+            "count": 4,
+            "size": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "camino",
+      "narration": "Los electrones no pueden volver por la unión, así que escapan por el cable.",
+      "title": {
+        "kicker": "Paso 9",
+        "main": "Buscan otro camino"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "cell",
+            "at": 0.0,
+            "frame": "close",
+            "shift": [
+              0,
+              0.1,
+              0
+            ]
+          },
+          {
+            "shot": "wide",
+            "at": 3.2,
+            "frame": "wide",
+            "zoom": 1.55
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "cell/electrons",
+            "dur": 1.4,
+            "ease": "in-out",
+            "to": {
+              "pos": [
+                1.4,
+                0.7,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "cell",
+            "dur": 0.6,
+            "to": {
+              "scale": [
+                0.2,
+                0.2,
+                0.2
+              ]
+            }
+          },
+          {
+            "at": 3.2,
+            "target": "cell",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.2
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -4.2,
+                0.4,
+                1.6
+              ],
+              [
+                -3.0,
+                0.4,
+                2.6
+              ],
+              [
+                -1.9,
+                0.5,
+                3.3
+              ]
+            ],
+            "color": "#47D4FF",
+            "at": 2.4,
+            "until": 4.5,
+            "count": 6,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "continua",
+      "narration": "Ese flujo ordenado de electrones es la corriente eléctrica, llamada corriente continua.",
+      "title": {
+        "kicker": "Paso 10",
+        "main": "Corriente continua"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 3.0,
+            "frame": "medium"
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 1.0,
+                "values": {
+                  "pan": "DC"
+                }
+              },
+              {
+                "at": 3.0,
+                "values": {
+                  "pan": "DC"
+                }
+              }
+            ]
+          },
+          {
+            "type": "concept",
+            "text": "Corriente continua (DC)",
+            "at": 0.8
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -4.2,
+                0.4,
+                1.6
+              ],
+              [
+                -3.0,
+                0.4,
+                2.6
+              ],
+              [
+                -1.9,
+                0.5,
+                3.3
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 3.9,
+            "count": 7,
+            "size": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "controlador",
+      "narration": "La corriente llega al controlador de carga, que cuida la batería.",
+      "title": {
+        "kicker": "Paso 11",
+        "main": "El controlador de carga"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "controller",
+            "at": 0.0,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 1.2,
+            "target": "controller/led",
+            "dur": 0.3,
+            "to": {
+              "emissive": 2.0
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "controller/led-1",
+            "dur": 0.3,
+            "to": {
+              "emissive": 2.0
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "controller/led-2",
+            "dur": 0.3,
+            "to": {
+              "emissive": 2.0
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "controller",
+            "dur": 0.4,
+            "to": {
+              "scale": [
+                1.2,
+                1.2,
+                1.2
+              ]
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "controller",
+            "dur": 0.4,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "ctl",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 0.2,
+                "active": "ctl",
+                "values": {
+                  "ctl": "DC"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -4.2,
+                0.4,
+                1.6
+              ],
+              [
+                -3.0,
+                0.4,
+                2.6
+              ],
+              [
+                -1.9,
+                0.5,
+                3.3
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 3.0,
+            "count": 5,
+            "size": 1.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                -1.1,
+                0.5,
+                3.4
+              ],
+              [
+                0.0,
+                0.5,
+                3.4
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 2.6,
+            "until": 3.6,
+            "count": 4,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "limite",
+      "narration": "El controlador evita que la batería se sobrecargue en un día muy soleado.",
+      "title": {
+        "kicker": "Paso 12",
+        "main": "Evita la sobrecarga"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "controller",
+            "at": 0.0,
+            "frame": "medium",
+            "shift": [
+              1.0,
+              0,
+              0
+            ]
+          }
+        ],
+        "overlay": [
+          {
+            "type": "limit",
+            "label": "Carga batería",
+            "limit": 0.9,
+            "limitLabel": "Máximo seguro",
+            "value": 0.55,
+            "steps": [
+              {
+                "at": 0.91,
+                "value": 0.85
+              },
+              {
+                "at": 2.37,
+                "value": 1.0
+              },
+              {
+                "at": 3.64,
+                "value": 0.88
+              }
+            ],
+            "note": "Controlador corta",
+            "at": 0.36
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -1.1,
+                0.5,
+                3.4
+              ],
+              [
+                0.0,
+                0.5,
+                3.4
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 2.73,
+            "count": 4,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "bateria",
+      "narration": "La batería guarda la energía sobrante: su nivel sube segmento a segmento.",
+      "title": {
+        "kicker": "Paso 13",
+        "main": "La batería se llena"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "at": 0.0,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.59,
+            "target": "battery/seg",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.97,
+            "target": "battery/seg-1",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.35,
+            "target": "battery/seg-2",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.73,
+            "target": "battery/seg-3",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.11,
+            "target": "battery/seg-4",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.49,
+            "target": "battery/seg-5",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.87,
+            "target": "battery/seg-6",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.25,
+            "target": "battery/seg-7",
+            "dur": 0.34,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.59,
+            "target": "battery/bolt",
+            "dur": 0.25,
+            "to": {
+              "emissive": 1.5
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "bat",
+            "at": 0.17,
+            "steps": [
+              {
+                "at": 0.25,
+                "values": {
+                  "bat": "20%"
+                }
+              },
+              {
+                "at": 1.86,
+                "values": {
+                  "bat": "60%"
+                }
+              },
+              {
+                "at": 3.38,
+                "values": {
+                  "bat": "100%"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -1.1,
+                0.5,
+                3.4
+              ],
+              [
+                0.0,
+                0.5,
+                3.4
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 3.9,
+            "count": 5,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "alterna",
+      "narration": "Pero tu casa usa corriente alterna, y la batería entrega corriente continua.",
+      "title": {
+        "kicker": "Paso 14",
+        "main": "Continua no sirve en casa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "inverter",
+            "at": 2.4,
+            "frame": "medium"
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "inv",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 0.3,
+                "values": {
+                  "bat": "DC"
+                }
+              },
+              {
+                "at": 2.6,
+                "values": {
+                  "inv": "?"
+                }
+              }
+            ]
+          },
+          {
+            "type": "concept",
+            "text": "DC contra AC",
+            "at": 0.8
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                1.2,
+                0.5,
+                3.4
+              ],
+              [
+                2.3,
+                0.5,
+                3.4
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 3.9,
+            "count": 4,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "inversor",
+      "narration": "El inversor la convierte, cambiando su sentido cien veces por segundo.",
+      "title": {
+        "kicker": "Paso 15",
+        "main": "El inversor"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "inverter",
+            "at": 0.0,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.6,
+            "target": "inverter/led",
+            "dur": 0.3,
+            "to": {
+              "emissive": 2.0
+            }
+          },
+          {
+            "at": 0.9,
+            "target": "inverter/led-1",
+            "dur": 0.3,
+            "to": {
+              "emissive": 2.0
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "inverter/led-2",
+            "dur": 0.3,
+            "to": {
+              "emissive": 2.0
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "inverter",
+            "dur": 0.4,
+            "to": {
+              "scale": [
+                1.25,
+                1.25,
+                1.25
+              ]
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "inverter",
+            "dur": 0.4,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "inv",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 0.3,
+                "values": {
+                  "inv": "DC"
+                }
+              },
+              {
+                "at": 2.4,
+                "values": {
+                  "inv": "AC"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                1.2,
+                0.5,
+                3.4
+              ],
+              [
+                2.3,
+                0.5,
+                3.4
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 2.6,
+            "count": 4,
+            "size": 1.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                3.5,
+                0.45,
+                3.3
+              ],
+              [
+                4.8,
+                0.4,
+                2.0
+              ],
+              [
+                5.3,
+                0.4,
+                0.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 2.6,
+            "until": 3.6,
+            "count": 6,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "casa",
+      "narration": "Así la electricidad llega por el cable a la casa, lista para usar.",
+      "title": {
+        "kicker": "Paso 16",
+        "main": "Llega a la casa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "house",
+            "at": 1.5,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 1.8,
+            "target": "house/win-glass",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "house/win-glass-1",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "house/win-glass-2",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 2.4,
+            "target": "house/win-glass-3",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "house/win-glass-4",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 2.8,
+            "target": "house/win-glass-5",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 3.0,
+            "target": "house/win-glass-6",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 3.2,
+            "target": "house/win-glass-7",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 3.4,
+            "target": "house/win-glass-8",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.2
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "home",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 0.3,
+                "values": {
+                  "home": "AC"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                3.5,
+                0.45,
+                3.3
+              ],
+              [
+                4.8,
+                0.4,
+                2.0
+              ],
+              [
+                5.3,
+                0.4,
+                0.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 0.0,
+            "until": 4.2,
+            "count": 6,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "consumo",
+      "narration": "Se encienden las luces y los aparatos, sin gastar combustible.",
+      "title": {
+        "kicker": "Paso 17",
+        "main": "Consumo de la casa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "house",
+            "at": 0.0,
+            "frame": "close",
+            "shift": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        ],
+        "overlay": [
+          {
+            "type": "limit",
+            "label": "Consumo",
+            "limit": 0.8,
+            "limitLabel": "Producción",
+            "value": 0.2,
+            "steps": [
+              {
+                "at": 0.73,
+                "value": 0.45
+              },
+              {
+                "at": 1.65,
+                "value": 0.6
+              },
+              {
+                "at": 2.74,
+                "value": 0.7
+              }
+            ],
+            "at": 0.27
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                3.5,
+                0.45,
+                3.3
+              ],
+              [
+                4.8,
+                0.4,
+                2.0
+              ],
+              [
+                5.3,
+                0.4,
+                0.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 0.0,
+            "until": 3.3,
+            "count": 5,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "tarde",
+      "narration": "Cuando llega la tarde, el sol baja y el panel produce menos.",
+      "title": {
+        "kicker": "Paso 18",
+        "main": "Atardece"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 2.38,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.16,
+            "target": "sun",
+            "dur": 3.64,
+            "ease": "in",
+            "to": {
+              "pos": [
+                0,
+                0.6,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.32,
+            "target": "night",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "opacity": 0
+            }
+          },
+          {
+            "at": 0.95,
+            "target": "night",
+            "dur": 2.69,
+            "ease": "in-out",
+            "to": {
+              "opacity": 0.85
+            }
+          },
+          {
+            "at": 0.47,
+            "target": "panel/cell",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.57,
+            "target": "panel/cell-1",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.66,
+            "target": "panel/cell-2",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.76,
+            "target": "panel/cell-3",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.85,
+            "target": "panel/cell-4",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.95,
+            "target": "panel/cell-5",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.04,
+            "target": "panel/cell-6",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.14,
+            "target": "panel/cell-7",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.23,
+            "target": "panel/cell-8",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.33,
+            "target": "panel/cell-9",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.42,
+            "target": "panel/cell-10",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.52,
+            "target": "panel/cell-11",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.61,
+            "target": "panel/cell-12",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.71,
+            "target": "panel/cell-13",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "panel/cell-14",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "panel/cell-15",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.99,
+            "target": "panel/cell-16",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.09,
+            "target": "panel/cell-17",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.19,
+            "target": "panel/cell-18",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.28,
+            "target": "panel/cell-19",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.38,
+            "target": "panel/cell-20",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.47,
+            "target": "panel/cell-21",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.56,
+            "target": "panel/cell-22",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.66,
+            "target": "panel/cell-23",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.16
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.0,
+            "until": 1.9,
+            "count": 6,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "noche",
+      "narration": "De noche, la casa sigue encendida con la energía guardada en la batería.",
+      "title": {
+        "kicker": "Paso 19",
+        "main": "De noche, la batería"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "house",
+            "at": 1.78,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "moon",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "pos": [
+                0,
+                -4,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.18,
+            "target": "moon",
+            "dur": 1.34,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "sun",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.53,
+            "target": "battery/seg-7",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.98,
+            "target": "battery/seg-6",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.43,
+            "target": "battery/seg-5",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.87,
+            "target": "battery/seg-4",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.32,
+            "target": "battery/seg-3",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.76,
+            "target": "battery/seg-2",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.21,
+            "target": "battery/seg-1",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.65,
+            "target": "battery/seg",
+            "dur": 0.45,
+            "to": {
+              "scale": [
+                1,
+                0.35,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.27,
+            "target": "house/win-glass",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.36,
+            "target": "house/win-glass-1",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.45,
+            "target": "house/win-glass-2",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.53,
+            "target": "house/win-glass-3",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.62,
+            "target": "house/win-glass-4",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.71,
+            "target": "house/win-glass-5",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "house/win-glass-6",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.89,
+            "target": "house/win-glass-7",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          },
+          {
+            "at": 0.98,
+            "target": "house/win-glass-8",
+            "dur": 0.45,
+            "to": {
+              "emissive": 1.8
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "bat",
+            "at": 0.18,
+            "steps": [
+              {
+                "at": 0.27,
+                "values": {
+                  "bat": "100%"
+                }
+              },
+              {
+                "at": 1.78,
+                "values": {
+                  "bat": "60%"
+                }
+              },
+              {
+                "at": 3.57,
+                "values": {
+                  "bat": "30%"
+                }
+              }
+            ]
+          },
+          {
+            "type": "concept",
+            "text": "Energía guardada",
+            "at": 0.71
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                1.2,
+                0.5,
+                3.4
+              ],
+              [
+                2.3,
+                0.5,
+                3.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 0.0,
+            "until": 4.2,
+            "count": 4,
+            "size": 1.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                3.5,
+                0.45,
+                3.3
+              ],
+              [
+                4.8,
+                0.4,
+                2.0
+              ],
+              [
+                5.3,
+                0.4,
+                0.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 0.0,
+            "until": 4.2,
+            "count": 6,
+            "size": 1.4
+          },
+          {
+            "type": "particles",
+            "kind": "stars",
+            "count": 60,
+            "at": 0.36,
+            "until": 4.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "amanecer",
+      "narration": "Al amanecer sale el sol otra vez y la batería se recarga.",
+      "title": {
+        "kicker": "Paso 20",
+        "main": "Amanece"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "at": 2.07,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "sun",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.14,
+            "target": "sun",
+            "dur": 2.49,
+            "ease": "out",
+            "to": {
+              "pos": [
+                3.3,
+                7.2,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.14,
+            "target": "night",
+            "dur": 1.93,
+            "ease": "in-out",
+            "to": {
+              "opacity": 0
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "night",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.41,
+            "target": "moon",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.07,
+            "target": "battery/seg",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.28,
+            "target": "battery/seg-1",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.49,
+            "target": "battery/seg-2",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.69,
+            "target": "battery/seg-3",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.9,
+            "target": "battery/seg-4",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.11,
+            "target": "battery/seg-5",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.32,
+            "target": "battery/seg-6",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.52,
+            "target": "battery/seg-7",
+            "dur": 0.28,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-1",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-2",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-3",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-4",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-5",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-6",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-7",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.21,
+            "target": "house/win-glass-8",
+            "dur": 1.04,
+            "to": {
+              "emissive": 0
+            }
+          },
+          {
+            "at": 1.38,
+            "target": "panel/cell",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.41,
+            "target": "panel/cell-1",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.44,
+            "target": "panel/cell-2",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.46,
+            "target": "panel/cell-3",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.49,
+            "target": "panel/cell-4",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.52,
+            "target": "panel/cell-5",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.55,
+            "target": "panel/cell-6",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.58,
+            "target": "panel/cell-7",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "panel/cell-8",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.63,
+            "target": "panel/cell-9",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.66,
+            "target": "panel/cell-10",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.69,
+            "target": "panel/cell-11",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.71,
+            "target": "panel/cell-12",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.74,
+            "target": "panel/cell-13",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.77,
+            "target": "panel/cell-14",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "panel/cell-15",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.82,
+            "target": "panel/cell-16",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.85,
+            "target": "panel/cell-17",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.88,
+            "target": "panel/cell-18",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.91,
+            "target": "panel/cell-19",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.93,
+            "target": "panel/cell-20",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.96,
+            "target": "panel/cell-21",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.99,
+            "target": "panel/cell-22",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 2.02,
+            "target": "panel/cell-23",
+            "dur": 0.28,
+            "to": {
+              "emissive": 0.7
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.14,
+            "steps": [
+              {
+                "at": 1.38,
+                "active": "pan"
+              },
+              {
+                "at": 2.49,
+                "active": "bat",
+                "values": {
+                  "bat": "100%"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 1.8,
+            "until": 3.9,
+            "count": 12,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "nublado",
+      "narration": "En un día nublado, las nubes bloquean fotones y la producción baja.",
+      "title": {
+        "kicker": "Paso 21",
+        "main": "Un día nublado"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 3.0,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "cloud-a",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "pos": [
+                -9,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "cloud-b",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "pos": [
+                -9,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "cloud-a",
+            "dur": 2.4,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "cloud-b",
+            "dur": 2.4,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.0,
+            "target": "panel/cell",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.04,
+            "target": "panel/cell-1",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.08,
+            "target": "panel/cell-2",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.12,
+            "target": "panel/cell-3",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.16,
+            "target": "panel/cell-4",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "panel/cell-5",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.24,
+            "target": "panel/cell-6",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.28,
+            "target": "panel/cell-7",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.32,
+            "target": "panel/cell-8",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.36,
+            "target": "panel/cell-9",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.4,
+            "target": "panel/cell-10",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.44,
+            "target": "panel/cell-11",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.48,
+            "target": "panel/cell-12",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.52,
+            "target": "panel/cell-13",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.56,
+            "target": "panel/cell-14",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "panel/cell-15",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.64,
+            "target": "panel/cell-16",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.68,
+            "target": "panel/cell-17",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.72,
+            "target": "panel/cell-18",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.76,
+            "target": "panel/cell-19",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.8,
+            "target": "panel/cell-20",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.84,
+            "target": "panel/cell-21",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.88,
+            "target": "panel/cell-22",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 2.92,
+            "target": "panel/cell-23",
+            "dur": 0.4,
+            "to": {
+              "emissive": 0.2
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 2.6,
+                "values": {
+                  "pan": "35%"
+                }
+              }
+            ]
+          },
+          {
+            "type": "limit",
+            "label": "Producción",
+            "limit": 0.9,
+            "limitLabel": "Día soleado",
+            "value": 0.9,
+            "steps": [
+              {
+                "at": 2.4,
+                "value": 0.35
+              }
+            ],
+            "at": 1.0
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.0,
+            "until": 3.9,
+            "count": 4,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "difusa",
+      "narration": "Aun así el panel produce algo, porque la luz difusa también llega.",
+      "title": {
+        "kicker": "Paso 22",
+        "main": "La luz difusa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "panel",
+            "at": 0.0,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "cloud-a",
+            "dur": 3.8,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                1.2,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "cloud-b",
+            "dur": 3.8,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                1.2,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Luz difusa",
+            "at": 0.38
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -4.2,
+                0.4,
+                1.6
+              ],
+              [
+                -3.0,
+                0.4,
+                2.6
+              ],
+              [
+                -1.9,
+                0.5,
+                3.3
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 3.9,
+            "count": 4,
+            "size": 1.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.0,
+            "until": 3.9,
+            "count": 5,
+            "size": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "red",
+      "narration": "Si produces más de lo que gastas, el excedente va a la red eléctrica.",
+      "title": {
+        "kicker": "Paso 23",
+        "main": "Exporta a la red"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "pole",
+            "at": 2.4,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "cloud-a",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.0,
+            "target": "cloud-b",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.8,
+            "target": "pole/wire",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 3.0,
+            "target": "pole/wire-1",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 3.2,
+            "target": "pole/wire-2",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.5
+            }
+          },
+          {
+            "at": 3.4,
+            "target": "pole/wire-3",
+            "dur": 0.5,
+            "to": {
+              "emissive": 1.5
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Excedente a la red",
+            "at": 0.6
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                3.5,
+                0.45,
+                3.3
+              ],
+              [
+                4.8,
+                0.4,
+                2.0
+              ],
+              [
+                5.3,
+                0.4,
+                0.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 0.0,
+            "until": 3.0,
+            "count": 5,
+            "size": 1.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                7.1,
+                0.3,
+                -0.3
+              ],
+              [
+                8.2,
+                0.3,
+                0.6
+              ],
+              [
+                9.0,
+                0.3,
+                1.2
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 2.6,
+            "until": 4.5,
+            "count": 6,
+            "size": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "vecinos",
+      "narration": "Allí lo usan tus vecinos, y la compañía te lo descuenta de la factura.",
+      "title": {
+        "kicker": "Paso 24",
+        "main": "Tus vecinos lo usan"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "pole",
+            "at": 0.0,
+            "frame": "medium"
+          },
+          {
+            "shot": "wide",
+            "at": 3.0,
+            "frame": "wide",
+            "zoom": 1.55
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.2,
+            "target": "pole/wire",
+            "dur": 0.2,
+            "to": {
+              "emissive": 1.5
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "home",
+            "at": 0.2,
+            "steps": [
+              {
+                "at": 1.0,
+                "values": {
+                  "home": "-30%"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                7.1,
+                0.3,
+                -0.3
+              ],
+              [
+                8.2,
+                0.3,
+                0.6
+              ],
+              [
+                9.0,
+                0.3,
+                1.2
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 0.0,
+            "until": 4.5,
+            "count": 6,
+            "size": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "retorno",
+      "narration": "Una instalación se paga sola: en seis o siete años recuperas lo invertido.",
+      "title": {
+        "kicker": "Paso 25",
+        "main": "Costo y retorno"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "chart",
+            "at": 1.01,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.34,
+            "target": "chart",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "scale": [
+                0.2,
+                0.2,
+                0.2
+              ]
+            }
+          },
+          {
+            "at": 0.34,
+            "target": "chart",
+            "dur": 0.51,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.18,
+            "target": "chart/bar-0",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.61,
+            "target": "chart/bar-1",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.03,
+            "target": "chart/bar-2",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.45,
+            "target": "chart/bar-3",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.87,
+            "target": "chart/bar-4",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.3,
+            "target": "chart/bar-5",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.35,
+            "target": "chart/bar-0",
+            "dur": 0.42,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.82,
+            "target": "chart/bar-1",
+            "dur": 0.42,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.28,
+            "target": "chart/bar-2",
+            "dur": 0.42,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2.75,
+            "target": "chart/bar-3",
+            "dur": 0.42,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.21,
+            "target": "chart/bar-4",
+            "dur": 0.42,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 3.68,
+            "target": "chart/bar-5",
+            "dur": 0.42,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "Retorno de inversión",
+            "at": 0.51
+          }
+        ]
+      }
+    },
+    {
+      "id": "gratis",
+      "narration": "Y durante veinte años más, la energía del sol es prácticamente gratis.",
+      "title": {
+        "kicker": "Paso 26",
+        "main": "Veinte años de ahorro"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "chart",
+            "at": 0.0,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "chart",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": [
+                1.1,
+                1.1,
+                1.1
+              ]
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "chart/bar-5",
+            "dur": 0.6,
+            "to": {
+              "emissive": 1.2
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "limit",
+            "label": "Ahorro total",
+            "limit": 1.0,
+            "limitLabel": "Inversión recuperada",
+            "value": 0.4,
+            "steps": [
+              {
+                "at": 0.8,
+                "value": 0.7
+              },
+              {
+                "at": 2.4,
+                "value": 0.95
+              }
+            ],
+            "at": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "eolica",
+      "narration": "A diferencia de una turbina de viento, el panel no tiene partes que giren.",
+      "title": {
+        "kicker": "Paso 27",
+        "main": "Panel contra turbina"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "turbine",
+            "at": 1.73,
+            "frame": "medium"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "chart",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.27,
+            "target": "turbine",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "scale": [
+                0.2,
+                0.2,
+                0.2
+              ]
+            }
+          },
+          {
+            "at": 0.27,
+            "target": "turbine",
+            "dur": 0.4,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "turbine/rotor",
+            "dur": 4.0,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                0,
+                720
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "versus",
+            "left": {
+              "title": "Panel solar",
+              "sub": "sin movimiento",
+              "icon": "solar-panel"
+            },
+            "right": {
+              "title": "Turbina",
+              "sub": "gira con viento",
+              "icon": "wind"
+            },
+            "at": 0.53
+          }
+        ]
+      }
+    },
+    {
+      "id": "resumen",
+      "narration": "En resumen: luz, celdas, corriente continua, inversor y casa. Así funciona.",
+      "title": {
+        "kicker": "Resumen",
+        "main": "Del sol a tu casa"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0.0,
+            "frame": "wide",
+            "zoom": 1.55
+          },
+          {
+            "shot": "wide",
+            "at": 3.32,
+            "frame": "wide",
+            "zoom": 1.9
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.0,
+            "target": "turbine",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.25,
+            "target": "panel/cell",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.28,
+            "target": "panel/cell-1",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.32,
+            "target": "panel/cell-2",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.35,
+            "target": "panel/cell-3",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.38,
+            "target": "panel/cell-4",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.42,
+            "target": "panel/cell-5",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.45,
+            "target": "panel/cell-6",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.48,
+            "target": "panel/cell-7",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.51,
+            "target": "panel/cell-8",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.55,
+            "target": "panel/cell-9",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.58,
+            "target": "panel/cell-10",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.61,
+            "target": "panel/cell-11",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.65,
+            "target": "panel/cell-12",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.68,
+            "target": "panel/cell-13",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.71,
+            "target": "panel/cell-14",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.75,
+            "target": "panel/cell-15",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.78,
+            "target": "panel/cell-16",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.81,
+            "target": "panel/cell-17",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.85,
+            "target": "panel/cell-18",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.88,
+            "target": "panel/cell-19",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.91,
+            "target": "panel/cell-20",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.95,
+            "target": "panel/cell-21",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.98,
+            "target": "panel/cell-22",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 1.01,
+            "target": "panel/cell-23",
+            "dur": 0.33,
+            "to": {
+              "emissive": 0.7
+            }
+          },
+          {
+            "at": 0.33,
+            "target": "house/win-glass",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.46,
+            "target": "house/win-glass-1",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.58,
+            "target": "house/win-glass-2",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.71,
+            "target": "house/win-glass-3",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.83,
+            "target": "house/win-glass-4",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.95,
+            "target": "house/win-glass-5",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 1.08,
+            "target": "house/win-glass-6",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "house/win-glass-7",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 1.33,
+            "target": "house/win-glass-8",
+            "dur": 0.42,
+            "to": {
+              "emissive": 1.2
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "chips": [
+              {
+                "id": "pan",
+                "icon": "solar-panel",
+                "label": "Panel"
+              },
+              {
+                "id": "ctl",
+                "icon": "gauge",
+                "label": "Control"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-charging",
+                "label": "Bateria"
+              },
+              {
+                "id": "inv",
+                "icon": "lightning",
+                "label": "Inversor"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "Casa"
+              }
+            ],
+            "active": "pan",
+            "at": 0.17,
+            "steps": [
+              {
+                "at": 0.66,
+                "active": "pan"
+              },
+              {
+                "at": 1.49,
+                "active": "ctl"
+              },
+              {
+                "at": 2.32,
+                "active": "bat"
+              },
+              {
+                "at": 3.15,
+                "active": "inv"
+              },
+              {
+                "at": 3.98,
+                "active": "home",
+                "values": {
+                  "home": "AC"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                -3.2,
+                7.4,
+                -6.5
+              ],
+              [
+                -4.9,
+                1.7,
+                0.6
+              ]
+            ],
+            "color": "#FFD43B",
+            "at": 0.0,
+            "until": 4.5,
+            "count": 10,
+            "size": 1.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                -4.2,
+                0.4,
+                1.6
+              ],
+              [
+                -3.0,
+                0.4,
+                2.6
+              ],
+              [
+                -1.9,
+                0.5,
+                3.3
+              ]
+            ],
+            "color": "#F59E0B",
+            "at": 0.0,
+            "until": 4.5,
+            "count": 5,
+            "size": 1.2
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                3.5,
+                0.45,
+                3.3
+              ],
+              [
+                4.8,
+                0.4,
+                2.0
+              ],
+              [
+                5.3,
+                0.4,
+                0.4
+              ]
+            ],
+            "color": "#3B82F6",
+            "at": 2.49,
+            "until": 4.5,
+            "count": 5,
+            "size": 1.2
+          }
+        ]
+      }
+    }
+  ]
+}

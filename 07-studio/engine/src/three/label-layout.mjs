@@ -10,9 +10,9 @@ const boxOf = (cx, cy, w, h) => ({ x0: cx - w / 2, y0: cy - h / 2, x1: cx + w / 
 /**
  * @param {{id: string|number, ax: number, ay: number, w: number, h: number, priority?: number}[]} items anchors in px; (ax, ay) is the
  *   point on the object, `w` x `h` the label box; higher `priority` is placed first (ties keep the input order)
- * @param {{bounds?: {x0: number, y0: number, x1: number, y1: number}, avoid?: {x0: number, y0: number, x1: number, y1: number}[], gap?: number, lift?: number, maxSteps?: number}} [opts]
+ * @param {{bounds?: {x0: number, y0: number, x1: number, y1: number}, avoid?: {x0: number, y0: number, x1: number, y1: number}[], gap?: number, lift?: number, maxSteps?: number, max?: number}} [opts]
  *   bounds: where a whole box must stay; avoid: bands no box may touch; gap: min space between boxes; lift: preferred distance of the
- *   box center above the anchor; maxSteps: how many vertical slots a label may move from its natural spot
+ *   box center above the anchor; maxSteps: how many vertical slots a label may move from its natural spot; max: at most this many labels are shown (the highest priorities)
  * @returns {{id: string|number, x: number, y: number, ax: number, ay: number, w: number, h: number, visible: boolean}[]} in input order; (x, y) is the box center
  */
 export function layoutLabels(items, opts = {}) {
@@ -20,6 +20,7 @@ export function layoutLabels(items, opts = {}) {
   const avoid = opts.avoid ?? [];
   const gap = opts.gap ?? 10;
   const maxSteps = opts.maxSteps ?? 4;
+  const maxShown = opts.max ?? Infinity;
   const lift = opts.lift ?? 64;
   const placed = [];
   const out = new Map();
@@ -30,7 +31,7 @@ export function layoutLabels(items, opts = {}) {
     const clampX = (x) => Math.max(bounds.x0 + w / 2, Math.min(bounds.x1 - w / 2, x));
     const clampY = (y) => Math.max(bounds.y0 + h / 2, Math.min(bounds.y1 - h / 2, y));
     let best = null;
-    if (onScreen) {
+    if (onScreen && placed.length < maxShown) {
       const slot = h + gap;
       const baseY = it.ay - lift;
       // natural spot first, then alternate above / below by one slot, then nudge sideways at each height

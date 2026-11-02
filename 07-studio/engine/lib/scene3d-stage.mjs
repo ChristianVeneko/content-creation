@@ -86,6 +86,7 @@ export const stageActorSchema = z
     at: n(0, 600).optional().describe("Seconds from the start of the video when it appears (default: visible from the start)"),
     buoyant: z.object({ amp: n(0, 15).optional().describe("Rock in degrees (default 3)"), speed: n(0.1, 4).optional() }).strict().optional().describe("Rocks gently, but only while a beat has lifted it off its rest position (floating)"),
     highlight: z.boolean().optional(),
+    noFrame: z.boolean().optional().describe("Leave this actor out of the camera framing (a sky body, a far prop, a world-sized veil)"),
     ...customObjectFields,
   })
   .strict();

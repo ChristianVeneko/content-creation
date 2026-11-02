@@ -8,6 +8,10 @@ import { SHOT_FRAMES, SHOT_PRESETS, shotsToKeys } from "../lib/scene3d-motion.mj
 import { STAGE_FRAME, frameContent } from "../lib/scene3d.mjs";
 import { STAGE_SAFE } from "../lib/scene3d-stage.mjs";
 import { getTemplate } from "../lib/templates.mjs";
+import { resolveSpec, validateSpec } from "../lib/spec.mjs";
+import { computeTimeline } from "../lib/timeline.mjs";
+import { planThree } from "../lib/scene3d.mjs";
+import { MAX_WORLD_EXPANDED, expandWorld } from "../lib/scene3d-motion.mjs";
 import { resolveCaptionLook } from "../lib/captions.mjs";
 
 const read = (rel) => JSON.parse(readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8"));
@@ -38,6 +42,12 @@ test("label layout: the highest priority label keeps its natural spot and the lo
   assert.equal(by.mid.visible, false);
   assert.equal(by.low.visible, false);
   assert.deepEqual(out.map((l) => l.id), ["low", "focus", "mid"], "input order is kept");
+});
+
+test("label layout: `max` keeps only the highest priorities", () => {
+  const items = [item("a", 200, 600, 1), item("b", 600, 600, 5), item("c", 900, 600, 3), item("d", 400, 1300, 0)];
+  const out = layoutLabels(items, { bounds: B, avoid: [], max: 2 });
+  assert.deepEqual(out.filter((l) => l.visible).map((l) => l.id).sort(), ["b", "c"]);
 });
 
 test("label layout: stagger vertically, deterministic, off-screen anchors hidden, a label never lands on the title band", () => {
@@ -103,4 +113,57 @@ test("tree builder: at least two more faceted layers than before on every non-pa
     assert.ok(parts.filter((q) => q.facets !== undefined).length >= 8, `${kind} stays faceted`);
     assert.ok(runBuilder("tree", { kind, density: 3, height: 5, crown: 2.5 }, { seed: 3 }).parts.length <= MAX_PARTS);
   }
+});
+
+test("energy builders: sun, pv-cell, night-veil and power-pole exist, are valid and expose the parts the solar example drives", async () => {
+  const { runBuilder, BUILDER_NAMES } = await import("../lib/scene3d-builders.mjs");
+  const ids = (n, p = {}) => new Set(runBuilder(n, p, { seed: 1 }).parts.map((q) => q.id));
+  for (const n of ["sun", "pv-cell", "night-veil", "power-pole"]) assert.ok(BUILDER_NAMES.includes(n), n);
+  assert.ok(ids("sun").has("rays") && !ids("sun", { kind: "moon" }).has("rays"));
+  const cell = ids("pv-cell");
+  for (const id of ["electrons", "holes", "junction", "n-layer", "p-layer", "glass"]) assert.ok(cell.has(id), id);
+  assert.ok(ids("night-veil").has("box"));
+  assert.ok(ids("power-pole").has("wire") && ids("power-pole").has("transformer"));
+});
+
+test("process-solar example: a standalone two-minute explainer on one persistent stage", () => {
+  const raw = read("../examples/process-solar.spec.json");
+  const r = validateSpec(raw);
+  assert.equal(r.ok, true, JSON.stringify(r.errors?.slice(0, 3)));
+  const res = resolveSpec(r.spec, getTemplate("process-explainer"));
+  assert.equal(res.language, "es");
+  assert.equal(res.voice.provider, "none");
+  assert.ok(res.scenes.length >= 24 && res.scenes.length <= 30, `${res.scenes.length} scenes`);
+  const tl = computeTimeline(res.scenes, { fps: res.format.fps });
+  const total = tl.totalFrames / res.format.fps;
+  assert.ok(total >= 110 && total <= 130, `${total.toFixed(1)} s`);
+  tl.scenes.forEach((s, i) => {
+    const sec = (s.durationInFrames - (i < tl.scenes.length - 1 ? tl.transitionFrames : 0)) / res.format.fps;
+    assert.ok(sec >= 3 && sec <= 6.5, `scene ${i} lasts ${sec.toFixed(1)} s`);
+  });
+  const plans = planThree(res, tl);
+  assert.ok(plans.every((p) => p.stage === plans[0].stage), "one persistent stage");
+  assert.ok(expandWorld(res.stage.world).length <= MAX_WORLD_EXPANDED);
+  // the story it must tell: state changes as beats, a real level change, cutaway and macro shots, overlays, a chart
+  const beats = res.scenes.flatMap((s) => s.visual.beats ?? []);
+  assert.ok(beats.some((b) => /^battery\/seg/.test(b.target)), "battery level beats");
+  assert.ok(beats.some((b) => b.target === "night"), "day to night");
+  assert.ok(beats.some((b) => b.target.startsWith("cloud")), "cloudy day");
+  assert.ok(beats.some((b) => b.target.startsWith("pole/")), "grid export");
+  const frames = new Set(res.scenes.flatMap((s) => (s.visual.shots ?? []).map((sh) => sh.frame)));
+  for (const f of ["wide", "medium", "close"]) assert.ok(frames.has(f), `${f} shots`);
+  const overlays = new Set(res.scenes.flatMap((s) => (s.visual.overlay ?? []).map((o) => o.type)));
+  for (const o of ["flow", "limit", "concept", "versus"]) assert.ok(overlays.has(o), `${o} overlay`);
+  assert.ok(res.stage.actors.some((a) => a.id === "chart"), "cost chart");
+  assert.ok(res.stage.terrain, "soil cutaway fills the lower frame");
+});
+
+test("process-story: the cart travels a real multi-beat path across the frame", () => {
+  const raw = read("../examples/process-story.spec.json");
+  const sc = raw.scenes.find((s) => (s.visual.beats ?? []).some((b) => b.target === "cart"));
+  const moves = sc.visual.beats.filter((b) => b.target === "cart" && b.to?.pos);
+  assert.ok(moves.length >= 3, "waypoints");
+  assert.ok(moves[moves.length - 1].to.pos[0] - moves[0].to.pos[0] > 3, "crosses the frame");
+  assert.ok(sc.visual.shots.filter((s) => s.focus === "cart").length >= 3, "the camera follows it");
+  assert.ok(validateSpec(raw).ok);
 });

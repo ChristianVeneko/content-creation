@@ -335,8 +335,22 @@ the start of scene N+1 is exactly the stage at the end of scene N (a hole dug in
   region. `liquids`: translucent volumes with a waved surface, `level` 0..1 tweened by beats, vapor while it drops.
 - `world.scatter`: deterministic (seeded) instanced copies; caps: 160 parts per object, 120 world parts, 1500 expanded.
 - Camera: one continuous path over all scenes (`shots` are keys on one timeline; `cut: true` for a hard cut); `zoom-to` a `focus` (actor,
-  `terrain:<carve id>`...) and `dive` to the cutaway face. The title sits on a palette-derived pill in the top band and the default
-  framing keeps the subject out of the title and caption bands.
+  `terrain:<carve id>`...) and `dive` to the cutaway face. The title sits on a slim palette-derived pill in the top band (y 200-350).
+- Portrait framing: the default framing fills the 9:16 frame (`STAGE_FRAME` in `lib/scene3d.mjs`: the world is cropped to about 9.5 units
+  across, a low zoom floor, the whole lower area is used for the soil cutaway or the action). A shot takes `frame: wide | medium | close
+  | cutaway` (`SHOT_FRAMES` in `lib/scene3d-motion.mjs`): the camera distance and a lift that seats the subject below the title; in a
+  stage `wide`, `medium` and `close` shots default to their own frame, other punch-in presets ease off. Actors with `noFrame: true`
+  (sky bodies, far props, a world-sized veil) do not pull the camera back.
+- Callout labels (`actor.label`) are laid out automatically (`src/three/label-layout.mjs`, pure and unit tested): projected to the screen,
+  placed greedily with fixed-size boxes in priority order (the actor of the current `focus` first), staggered vertically, never over the
+  title band or the caption line; at most four are shown, the lowest-priority overlaps are hidden.
+- `process-explainer` captions default to a small word-by-word style (`clean`, size `s`, white with a dark outline, 2 words per page,
+  `position: center`, about the middle of the frame); override with `captions.*`.
+- Energy builders added with `examples/process-solar.spec.json` (a standalone 2-minute "how solar panels work" explainer, 29 scenes,
+  one stage with soil cutaway, flow / limit / concept / versus overlays, day-night and cloud beats, a cost chart): `sun` (sun or moon),
+  `pv-cell` (layered cell cross-section with electrons and holes), `night-veil` (a translucent box that tints the world to night with an
+  `opacity` beat) and `power-pole`. `grass-tufts` are cheaper (group plus 3 blades) so denser fields fit the 1500-part budget, and
+  `tree` carries extra faceted layers (a skirt and a light tier on pines, an underside and a cap on crowns).
 - Example: `examples/stage-yard.spec.json` (render: `node cli.mjs build examples/stage-yard.spec.json --out <dir>`, about 19 s for 16 s of video).
   Known limit: the 3D looks' scene transitions (iris, wipe...) still run between staged scenes; a stage-aware fade belongs in `src/Video.tsx`.
 

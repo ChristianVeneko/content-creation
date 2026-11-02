@@ -703,7 +703,8 @@ export function planStageScenes(spec, timeline, captions = null) {
   const tracks = buildTracks(beats, { liquids });
   const palette = spec.theme?.palette ?? { bg: ["#0F0C29"], text: "#FFFFFF", accent: "#FFD60A" };
   // framing: actors + the ground block, filling the stage band (not the title and caption bands)
-  const items = [...placed];
+  // framing: actors flagged `noFrame` (sky bodies, far props, world-sized veils) do not pull the camera back
+  const items = placed.filter((_, k) => !actors[k].noFrame);
   if (terrain) items.push({ pos: [terrain.pos[0], -terrain.depth * 0.5, terrain.pos[1]], scale: 1, h: terrain.depth * 0.5 + 0.2, half: Math.min(8, Math.max(terrain.size[0], terrain.size[1] * 0.8) / 2) });
   if (!items.length) items.push({ pos: [0, 0, 0], scale: 1, h: 2, half: 3 });
   const frame = frameContent(items, look, STAGE_FRAME);

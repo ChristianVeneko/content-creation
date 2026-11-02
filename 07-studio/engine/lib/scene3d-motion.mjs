@@ -114,10 +114,10 @@ export const SHOT_NAMES = Object.keys(SHOT_PRESETS);
  * own yaw, pitch, zoom and shift still win. In a stage, `wide`, `medium` and `close` shots default to the frame of the same name.
  */
 export const SHOT_FRAMES = {
-  wide: { zoom: 1.0, pitch: 2, shift: [0, -0.15, 0] },
-  medium: { zoom: 0.75, pitch: 0 },
-  close: { zoom: 0.5, pitch: -2 },
-  cutaway: { zoom: 0.65, pitch: -6, shift: [0, -0.3, 0] },
+  wide: { zoom: 1.0, pitch: 2, shift: [0, 0.9, 0] },
+  medium: { zoom: 0.75, pitch: 0, shift: [0, 0.7, 0] },
+  close: { zoom: 0.5, pitch: -2, shift: [0, 0.45, 0] },
+  cutaway: { zoom: 0.65, pitch: -6, shift: [0, 0.2, 0] },
 };
 /** Stage punch-in presets are scaled by this (their zoom < 1) because the stage's base framing already fills the frame. */
 export const STAGE_ZOOM_EASE = 1.2;

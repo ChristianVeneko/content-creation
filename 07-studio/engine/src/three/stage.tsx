@@ -311,7 +311,11 @@ export const StageView: React.FC<{ scene: Scene; index: number; spec: ResolvedSp
     labelItems.push({ id: k, ax: p.x, ay: p.y, w: a.label.length * look.label.size * 0.68 + 56, h: look.label.size * 1.2 + 26, priority: (a.id === focusId ? 100 : 0) + (a.highlight ? 10 : 0) - k * 0.01 });
   });
   const caption = st.safe.caption;
-  const placedTags: Tag[] = (layoutLabels(labelItems, { bounds: { x0: 40, y0: st.safe.top, x1: 1040, y1: st.safe.bottom }, avoid: [{ x0: 40, y0: caption.y, x1: 1040, y1: caption.y + caption.h }], lift: 70 }) as { id: number; x: number; y: number; ax: number; ay: number; w: number; visible: boolean }[])
+  // the diegetic overlay (flow strip, concept pill, limit / versus card) hangs under the title: labels stay clear of it
+  const ov = plan!.overlay ?? [];
+  const hudTop = st.safe.title.y + st.safe.title.h + 16;
+  const overlayBottom = ov.length ? hudTop + (ov.some((o) => o.type === "flow") ? 184 : 18) + (ov.some((o) => o.type === "concept") ? 84 : 0) + (ov.some((o) => o.type === "limit" || o.type === "versus") ? 130 : 0) : 0;
+  const placedTags: Tag[] = (layoutLabels(labelItems, { bounds: { x0: 40, y0: st.safe.top, x1: 1040, y1: st.safe.bottom }, avoid: [{ x0: 40, y0: caption.y, x1: 1040, y1: caption.y + caption.h }, ...(overlayBottom ? [{ x0: 0, y0: 0, x1: 1080, y1: overlayBottom }] : [])], lift: 70, max: 4 }) as { id: number; x: number; y: number; ax: number; ay: number; w: number; visible: boolean }[])
     .filter((l) => l.visible)
     .map((l) => ({ x: l.x, y: l.y, ax: l.ax, ay: l.ay, w: l.w, text: st.actors[l.id].label as string, enter: Math.max(0, st.actors[l.id].at - (plan!.t0 ?? 0)) + 0.25 }));
   const toneMapping = profile.tone === "neutral" ? THREE.NeutralToneMapping : profile.tone === "aces" ? THREE.ACESFilmicToneMapping : profile.tone === "agx" ? THREE.AgXToneMapping : THREE.NoToneMapping;
@@ -342,7 +346,7 @@ export const StageView: React.FC<{ scene: Scene; index: number; spec: ResolvedSp
           {profile.bloom ? <color attach="background" args={[mixHex(bg.stops[1] ?? "#04050B", "#000000", 0.35)]} /> : null}
           {profile.fog ? <fog attach="fog" args={[fogColor, plan!.frame.dist * profile.fog.near + profile.fog.add + 8, plan!.frame.dist * profile.fog.far + profile.fog.add * 3 + 8]} /> : null}
           <Lights hdri={hdri} span={span} envIntensity={profile.envIntensity} shadowRadius={profile.shadowRadius} set={true} />
-          {world?.ground && world.ground.kind !== "look" ? <WorldGround ground={world.ground} center={center} half={half} /> : !terrain ? <Floor half={half} center={center} /> : null}
+          {world?.ground && world.ground.kind !== "look" ? <WorldGround ground={world.ground.kind === "plane" || world.ground.kind === undefined ? { ...world.ground, size: Math.max(world.ground.size ?? 60, 400) } : world.ground} center={center} half={half} /> : !terrain ? <Floor half={half} center={center} /> : null}
           {terrain && heights ? <Terrain terrain={terrain} heights={heights} sig={carveSig} g={g} /> : null}
           {world ? <WorldView world={world} t={g} sec={(m) => (typeof m === "number" ? m : 0)} seed={7} heightAt={heightAt} /> : null}
           {st.actors.map((a, k) => {
