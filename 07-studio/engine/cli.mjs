@@ -6,7 +6,8 @@
 //   node cli.mjs music
 //   node cli.mjs voices [--gender male|female] [--pick <seed>]
 //   node cli.mjs validate <spec.json|->
-//   node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work]
+//   node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--json-logs] [--keep-work]
+//   node cli.mjs hyperframes-brief <spec.json> [--json] [--audio-secs 4.1,3.2,...]
 //   node cli.mjs cover <spec.json> --out <dir>
 import { readFileSync } from "node:fs";
 import { setupEnv } from "./lib/env.mjs";
@@ -24,8 +25,13 @@ const USAGE = `Usage:
                                                            Trending Latin American Spanish ElevenLabs voices as JSON
                                                            (--pick prints only the auto-picked voice for that seed)
   node cli.mjs validate <spec.json|->                      Validate a VideoSpec (prints {ok, errors})
-  node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work]
+  node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--json-logs] [--keep-work]
                                                            Render video.mp4, cover.jpg, post.md, spec.json into <dir>
+                                                           (--renderer overrides theme.renderer; blender is for 3D templates)
+  node cli.mjs hyperframes-brief <spec.json> [--json] [--audio-secs s1,s2,...]
+                                                           Validate a spec and print the brief for the HyperFrames skill route
+                                                           (markdown by default, --json for the structured brief; --audio-secs gives
+                                                           the measured narration seconds per scene, else timings are text-timed)
   node cli.mjs cover <spec.json> --out <dir>               Reels templates: render cover.jpg + cover-check.png (3:4 crop) only`;
 
 function parseArgs(argv) {
@@ -39,6 +45,10 @@ function parseArgs(argv) {
     else if (a === "--keep-work") flags.keepWork = true;
     else if (a === "--brief") flags.brief = true;
     else if (a === "--creative") flags.creative = true;
+    else if (a === "--renderer") flags.renderer = argv[++i] ?? "";
+    else if (a.startsWith("--renderer=")) flags.renderer = a.slice(11);
+    else if (a === "--json") flags.json = true;
+    else if (a === "--audio-secs") flags.audioSecs = argv[++i] ?? "";
     else if (a === "--gender") flags.gender = argv[++i];
     else if (a === "--pick") flags.pick = argv[++i] ?? "";
     else if (a === "-h" || a === "--help") flags.help = true;
@@ -129,6 +139,13 @@ async function main() {
       console.error(USAGE);
       return 2;
     }
+    if (flags.renderer !== undefined) {
+      const { RENDERERS } = await import("./lib/blender-options.mjs");
+      if (!RENDERERS.includes(flags.renderer)) {
+        console.error(`Unknown renderer "${flags.renderer}"; allowed renderers: ${RENDERERS.join(", ")}\n${USAGE}`);
+        return 2;
+      }
+    }
     setupEnv();
     const log = flags.jsonLogs
       ? (step, status, message, progress, extra = {}) =>
@@ -136,7 +153,7 @@ async function main() {
       : (step, status, message, progress) => process.stderr.write(`[${String(Math.round(progress * 100)).padStart(3)}%] ${step.padEnd(8)} ${message}\n`);
     const { build } = await import("./lib/build.mjs");
     try {
-      await build({ specPath, outDir: flags.out, log, keepWork: flags.keepWork });
+      await build({ specPath, outDir: flags.out, log, keepWork: flags.keepWork, renderer: flags.renderer });
       return 0;
     } catch (e) {
       const step = e.step || "build";
@@ -144,6 +161,30 @@ async function main() {
       else process.stderr.write(`ERROR [${step}] ${e.message}\n`);
       return 1;
     }
+  }
+
+  if (cmd === "hyperframes-brief") {
+    const specPath = pos[1];
+    if (!specPath) {
+      console.error(USAGE);
+      return 2;
+    }
+    const { buildBrief, briefMarkdown } = await import("./lib/hyperframes-brief.mjs");
+    let raw;
+    try {
+      raw = JSON.parse(specPath === "-" ? readFileSync(0, "utf8") : readFileSync(specPath, "utf8"));
+    } catch (e) {
+      console.error(`Cannot read spec JSON: ${e.message}`);
+      return 1;
+    }
+    const audioSecs = flags.audioSecs ? flags.audioSecs.split(",").map(Number) : undefined;
+    const r = buildBrief(raw, { audioSecs });
+    if (!r.ok) {
+      process.stdout.write(JSON.stringify({ ok: false, errors: r.errors }, null, 2) + "\n");
+      return 1;
+    }
+    process.stdout.write(flags.json ? JSON.stringify(r.brief, null, 2) + "\n" : briefMarkdown(r.brief));
+    return 0;
   }
 
   if (cmd === "cover") {

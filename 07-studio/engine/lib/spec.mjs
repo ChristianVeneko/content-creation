@@ -13,6 +13,7 @@ import { CAPTION_POSITIONS, CAPTION_SIZES, CAPTION_STYLES } from "./captions.mjs
 import { FX_TYPES as FX3D_TYPES, fx3dSchema } from "./scene3d-motion.mjs";
 import { drawingVisualSchema } from "./drawing.mjs";
 import { FX2D_TYPES, MAX_FX2D, fx2dIssues, fx2dSchema } from "./fx2d.mjs";
+import { RENDERERS, rendererIssue } from "./blender-options.mjs";
 
 export { CAPTION_STYLES };
 
@@ -176,6 +177,7 @@ export const videoSpecSchema = z
         look: lookSchema.optional().describe("Illustrated-kit look; defaults to the template's own look"),
         look3d: z.enum(THREE_D_TEMPLATE_IDS).optional().describe("3D look (3D templates only); defaults to the template's own look"),
         captionStyle: z.enum(CAPTION_STYLES).optional().describe("Caption style; captions.style wins when both are set"),
+        renderer: z.enum(RENDERERS, { error: (iss) => `unknown renderer${iss.input === undefined ? "" : ` "${iss.input}"`}; allowed renderers: ${RENDERERS.join(", ")}` }).optional().describe("Render engine: remotion (default) or blender (3D templates only: Eevee frames, slower, cinematic)"),
       })
       .optional(),
     voice: z
@@ -268,6 +270,8 @@ export const videoSpecSchema = z
       .optional(),
   })
   .superRefine((spec, ctx) => {
+    const rendererMsg = rendererIssue(spec.template, spec.theme?.renderer);
+    if (rendererMsg && RENDERERS.includes(spec.theme?.renderer)) ctx.addIssue({ code: "custom", path: ["theme", "renderer"], message: rendererMsg });
     if (refineReels(spec, ctx)) return;
     if (!usesClassicLayout(spec.template)) {
       spec.scenes.forEach((s, i) => {
