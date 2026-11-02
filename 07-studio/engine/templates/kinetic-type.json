@@ -2,6 +2,7 @@
   "id": "kinetic-type",
   "name": "Kinetic Type",
   "category": "kinetic",
+  "format": "kinetic-type",
   "description": "Huge animated typography that punches in word by word on bold color fields. No b-roll needed: the words are the visuals.",
   "prompt_hint": "Write punchy onScreenText of 2-6 words per scene: the strongest phrase of that scene's narration. Use contrast, numbers and short imperatives. Visuals are gradient only. Keep narration rhythmic with short sentences.",
   "best_for": ["motivation", "manifestos", "hot takes", "announcements", "quotes"],

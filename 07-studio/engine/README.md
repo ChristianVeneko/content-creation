@@ -170,6 +170,10 @@ CC BY tracks are loaded (`lib/music.mjs` drops NC / ND / SA licenses, entries wi
 | `ui-cards` | Illustrated kit, depth format: dark navy grid + dust, HUD of labeled bars, two-line header, UI cards (post with highlighter + magnifier, chart with dashed "expected", jar meter + stamp, hourglass, hanging price tags, stat badge, timer, panels) |
 | `flat-depth` | Illustrated kit, depth format: flat-shaded 2.5D sets on a wooden table in perspective (laptops, phones, coin stacks, boxes, books, mugs, monitors, plants), round-headed characters with moods, yellow stat badge, karaoke headline |
 | `soft-gradient` | Illustrated kit, depth format: drifting pastel mesh gradients, frosted glass cards with soft long shadows, gradient accent word |
+| `host-tutorial` | Illustrated kit format: numbered step tutorial on warm paper, a persistent cutout host (`host` element, pose and expression per scene), `roadmap` card, `window` UI mockups, halftone-dot transition |
+| `checklist-glass` | Illustrated kit format: "Checklist n / N" pill, frosted `window` mockups with cursor and highlight, a persistent `mascot` slot, pastel mesh |
+| `spotlight-narrative` | Illustrated kit format: dark spotlight story, one `beacon` (icon in glowing rings with a counting number) or layered `drawing` per scene |
+| `pixel-versus` | Pixel family format: arena stage, `round` cards, `fighters` with a header strip of stars, `ranking` and `verdict` panels, crowns, `energy-beam` / `power-up` / `hit-flash` fx |
 
 **Depth pass.** Looks listed in `LOOK_DEPTH` (`lib/illustrated.mjs`) get soft contact shadows under elements, lit gradient
 panels with a top highlight, parallax background layers, a ground plane (`grid`, `floor`, `stage`, `table`) and a vignette

@@ -31,6 +31,9 @@
         "ui-cards",
         "flat-depth",
         "soft-gradient",
+        "host-tutorial",
+        "checklist-glass",
+        "spotlight-narrative",
         "clay-diorama",
         "iso-toon",
         "neon-glass",
@@ -46,6 +49,7 @@
         "pixel-night",
         "pixel-arcade",
         "pixel-mono",
+        "pixel-versus",
         "reels-nube",
         "reels-noche",
         "reels-menta",
@@ -147,7 +151,10 @@
             "pop-comic",
             "ui-cards",
             "flat-depth",
-            "soft-gradient"
+            "soft-gradient",
+            "host-tutorial",
+            "checklist-glass",
+            "spotlight-narrative"
           ]
         },
         "look3d": {
@@ -3411,6 +3418,444 @@
                       "properties": {
                         "type": {
                           "type": "string",
+                          "const": "host"
+                        },
+                        "id": {
+                          "description": "Reference for callouts",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "at": {
+                          "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "pose": {
+                          "default": "point",
+                          "type": "string",
+                          "enum": [
+                            "point",
+                            "wave",
+                            "think",
+                            "shrug",
+                            "cheer",
+                            "present"
+                          ]
+                        },
+                        "expression": {
+                          "default": "smile",
+                          "type": "string",
+                          "enum": [
+                            "smile",
+                            "wow",
+                            "wink",
+                            "calm",
+                            "think"
+                          ]
+                        },
+                        "skin": {
+                          "default": 0,
+                          "description": "Skin tone index 0..3",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 3
+                        },
+                        "shirt": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "hair": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "mascot"
+                        },
+                        "id": {
+                          "description": "Reference for callouts",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "at": {
+                          "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "mood": {
+                          "default": "happy",
+                          "type": "string",
+                          "enum": [
+                            "happy",
+                            "wow",
+                            "think",
+                            "proud"
+                          ]
+                        },
+                        "pose": {
+                          "default": "idle",
+                          "type": "string",
+                          "enum": [
+                            "idle",
+                            "wave",
+                            "point",
+                            "cheer"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "window"
+                        },
+                        "id": {
+                          "description": "Reference for callouts",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "at": {
+                          "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 28
+                        },
+                        "kind": {
+                          "default": "app",
+                          "type": "string",
+                          "enum": [
+                            "app",
+                            "settings",
+                            "browser"
+                          ]
+                        },
+                        "rows": {
+                          "minItems": 1,
+                          "maxItems": 5,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 30
+                              },
+                              "value": {
+                                "description": "Right-aligned value (a setting, a count)",
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 14
+                              },
+                              "icon": {
+                                "type": "string"
+                              },
+                              "toggle": {
+                                "description": "A switch; turn-on / turn-off flip while the row is revealed",
+                                "type": "string",
+                                "enum": [
+                                  "on",
+                                  "off",
+                                  "turn-on",
+                                  "turn-off"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "label"
+                            ]
+                          }
+                        },
+                        "button": {
+                          "description": "Primary button under the rows",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 16
+                        },
+                        "cursor": {
+                          "description": "0-based row the cursor glides to and clicks",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4
+                        },
+                        "highlight": {
+                          "description": "0-based row swept with a highlighter",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "title",
+                        "rows"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "roadmap"
+                        },
+                        "id": {
+                          "description": "Reference for callouts",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "at": {
+                          "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "title": {
+                          "default": "STEPS",
+                          "description": "Word after the count (n STEPS)",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 14
+                        },
+                        "items": {
+                          "minItems": 2,
+                          "maxItems": 8,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 30
+                          }
+                        },
+                        "active": {
+                          "description": "0-based step highlighted",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 7
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "items"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "beacon"
+                        },
+                        "id": {
+                          "description": "Reference for callouts",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "at": {
+                          "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 60
+                        },
+                        "color": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "accent",
+                                "accent2",
+                                "accent3",
+                                "good",
+                                "bad",
+                                "muted",
+                                "text"
+                              ]
+                            }
+                          ]
+                        },
+                        "icon": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Icon name (Lucide / Phosphor) of the metaphor"
+                        },
+                        "value": {
+                          "type": "number"
+                        },
+                        "from": {
+                          "type": "number"
+                        },
+                        "prefix": {
+                          "type": "string",
+                          "maxLength": 3
+                        },
+                        "suffix": {
+                          "type": "string",
+                          "maxLength": 5
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 28
+                        },
+                        "rings": {
+                          "default": 3,
+                          "type": "integer",
+                          "minimum": 2,
+                          "maximum": 5
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "icon",
+                        "value",
+                        "label"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
                           "const": "split"
                         },
                         "id": {
@@ -6268,6 +6713,444 @@
                                 "required": [
                                   "type"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "host"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "pose": {
+                                    "default": "point",
+                                    "type": "string",
+                                    "enum": [
+                                      "point",
+                                      "wave",
+                                      "think",
+                                      "shrug",
+                                      "cheer",
+                                      "present"
+                                    ]
+                                  },
+                                  "expression": {
+                                    "default": "smile",
+                                    "type": "string",
+                                    "enum": [
+                                      "smile",
+                                      "wow",
+                                      "wink",
+                                      "calm",
+                                      "think"
+                                    ]
+                                  },
+                                  "skin": {
+                                    "default": 0,
+                                    "description": "Skin tone index 0..3",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 3
+                                  },
+                                  "shirt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "hair": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "mascot"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "mood": {
+                                    "default": "happy",
+                                    "type": "string",
+                                    "enum": [
+                                      "happy",
+                                      "wow",
+                                      "think",
+                                      "proud"
+                                    ]
+                                  },
+                                  "pose": {
+                                    "default": "idle",
+                                    "type": "string",
+                                    "enum": [
+                                      "idle",
+                                      "wave",
+                                      "point",
+                                      "cheer"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "window"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 28
+                                  },
+                                  "kind": {
+                                    "default": "app",
+                                    "type": "string",
+                                    "enum": [
+                                      "app",
+                                      "settings",
+                                      "browser"
+                                    ]
+                                  },
+                                  "rows": {
+                                    "minItems": 1,
+                                    "maxItems": 5,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "label": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 30
+                                        },
+                                        "value": {
+                                          "description": "Right-aligned value (a setting, a count)",
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 14
+                                        },
+                                        "icon": {
+                                          "type": "string"
+                                        },
+                                        "toggle": {
+                                          "description": "A switch; turn-on / turn-off flip while the row is revealed",
+                                          "type": "string",
+                                          "enum": [
+                                            "on",
+                                            "off",
+                                            "turn-on",
+                                            "turn-off"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "label"
+                                      ]
+                                    }
+                                  },
+                                  "button": {
+                                    "description": "Primary button under the rows",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 16
+                                  },
+                                  "cursor": {
+                                    "description": "0-based row the cursor glides to and clicks",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 4
+                                  },
+                                  "highlight": {
+                                    "description": "0-based row swept with a highlighter",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 4
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "title",
+                                  "rows"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "roadmap"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "title": {
+                                    "default": "STEPS",
+                                    "description": "Word after the count (n STEPS)",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 14
+                                  },
+                                  "items": {
+                                    "minItems": 2,
+                                    "maxItems": 8,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 30
+                                    }
+                                  },
+                                  "active": {
+                                    "description": "0-based step highlighted",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 7
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "items"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "beacon"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "icon": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "description": "Icon name (Lucide / Phosphor) of the metaphor"
+                                  },
+                                  "value": {
+                                    "type": "number"
+                                  },
+                                  "from": {
+                                    "type": "number"
+                                  },
+                                  "prefix": {
+                                    "type": "string",
+                                    "maxLength": 3
+                                  },
+                                  "suffix": {
+                                    "type": "string",
+                                    "maxLength": 5
+                                  },
+                                  "label": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 28
+                                  },
+                                  "rings": {
+                                    "default": 3,
+                                    "type": "integer",
+                                    "minimum": 2,
+                                    "maximum": 5
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "icon",
+                                  "value",
+                                  "label"
+                                ]
                               }
                             ]
                           }
@@ -9095,6 +9978,444 @@
                                 "required": [
                                   "type"
                                 ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "host"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "pose": {
+                                    "default": "point",
+                                    "type": "string",
+                                    "enum": [
+                                      "point",
+                                      "wave",
+                                      "think",
+                                      "shrug",
+                                      "cheer",
+                                      "present"
+                                    ]
+                                  },
+                                  "expression": {
+                                    "default": "smile",
+                                    "type": "string",
+                                    "enum": [
+                                      "smile",
+                                      "wow",
+                                      "wink",
+                                      "calm",
+                                      "think"
+                                    ]
+                                  },
+                                  "skin": {
+                                    "default": 0,
+                                    "description": "Skin tone index 0..3",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 3
+                                  },
+                                  "shirt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "hair": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "mascot"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "mood": {
+                                    "default": "happy",
+                                    "type": "string",
+                                    "enum": [
+                                      "happy",
+                                      "wow",
+                                      "think",
+                                      "proud"
+                                    ]
+                                  },
+                                  "pose": {
+                                    "default": "idle",
+                                    "type": "string",
+                                    "enum": [
+                                      "idle",
+                                      "wave",
+                                      "point",
+                                      "cheer"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "window"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 28
+                                  },
+                                  "kind": {
+                                    "default": "app",
+                                    "type": "string",
+                                    "enum": [
+                                      "app",
+                                      "settings",
+                                      "browser"
+                                    ]
+                                  },
+                                  "rows": {
+                                    "minItems": 1,
+                                    "maxItems": 5,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "label": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 30
+                                        },
+                                        "value": {
+                                          "description": "Right-aligned value (a setting, a count)",
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 14
+                                        },
+                                        "icon": {
+                                          "type": "string"
+                                        },
+                                        "toggle": {
+                                          "description": "A switch; turn-on / turn-off flip while the row is revealed",
+                                          "type": "string",
+                                          "enum": [
+                                            "on",
+                                            "off",
+                                            "turn-on",
+                                            "turn-off"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "label"
+                                      ]
+                                    }
+                                  },
+                                  "button": {
+                                    "description": "Primary button under the rows",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 16
+                                  },
+                                  "cursor": {
+                                    "description": "0-based row the cursor glides to and clicks",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 4
+                                  },
+                                  "highlight": {
+                                    "description": "0-based row swept with a highlighter",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 4
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "title",
+                                  "rows"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "roadmap"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "title": {
+                                    "default": "STEPS",
+                                    "description": "Word after the count (n STEPS)",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 14
+                                  },
+                                  "items": {
+                                    "minItems": 2,
+                                    "maxItems": 8,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 30
+                                    }
+                                  },
+                                  "active": {
+                                    "description": "0-based step highlighted",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 7
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "items"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "beacon"
+                                  },
+                                  "id": {
+                                    "description": "Reference for callouts",
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  },
+                                  "at": {
+                                    "description": "Seconds into the scene when it appears; omitted = auto-staggered",
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  "color": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "accent",
+                                          "accent2",
+                                          "accent3",
+                                          "good",
+                                          "bad",
+                                          "muted",
+                                          "text"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "icon": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "description": "Icon name (Lucide / Phosphor) of the metaphor"
+                                  },
+                                  "value": {
+                                    "type": "number"
+                                  },
+                                  "from": {
+                                    "type": "number"
+                                  },
+                                  "prefix": {
+                                    "type": "string",
+                                    "maxLength": 3
+                                  },
+                                  "suffix": {
+                                    "type": "string",
+                                    "maxLength": 5
+                                  },
+                                  "label": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 28
+                                  },
+                                  "rings": {
+                                    "default": 3,
+                                    "type": "integer",
+                                    "minimum": 2,
+                                    "maximum": 5
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "icon",
+                                  "value",
+                                  "label"
+                                ]
                               }
                             ]
                           }
@@ -10502,7 +11823,8 @@
                           "temple",
                           "forest",
                           "lab",
-                          "space"
+                          "space",
+                          "arena"
                         ]
                       },
                       {
@@ -11554,7 +12876,7 @@
                     }
                   },
                   "fx": {
-                    "description": "Visual effects: particles, bursts, lightning, glitch, CRT...",
+                    "description": "Visual effects: particles, bursts, lightning, glitch, CRT, energy beams, power-ups, hit flashes...",
                     "maxItems": 10,
                     "type": "array",
                     "items": {
@@ -11587,7 +12909,10 @@
                             "pixelate-in",
                             "pixelate-out",
                             "dissolve-in",
-                            "dissolve-out"
+                            "dissolve-out",
+                            "energy-beam",
+                            "power-up",
+                            "hit-flash"
                           ]
                         },
                         "at": {
@@ -11680,6 +13005,26 @@
                         "loop": {
                           "description": "Repeat a one-shot every second or so",
                           "type": "boolean"
+                        },
+                        "to": {
+                          "description": "energy-beam: the target point, 0..1 of the view (default: across the stage)",
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "minimum": -0.2,
+                              "maximum": 1.2
+                            },
+                            "y": {
+                              "type": "number",
+                              "minimum": -0.2,
+                              "maximum": 1.2
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
                         }
                       },
                       "required": [
@@ -13770,6 +15115,202 @@
                     },
                     "required": [
                       "items"
+                    ]
+                  },
+                  "round": {
+                    "description": "\"ROUND n/N\" title card shown at the start of the scene (pixel-versus)",
+                    "type": "object",
+                    "properties": {
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 99
+                      },
+                      "of": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 99
+                      },
+                      "title": {
+                        "description": "Under the ROUND n/N card",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 24
+                      }
+                    },
+                    "required": [
+                      "n",
+                      "of"
+                    ]
+                  },
+                  "fighters": {
+                    "description": "Contestants on the stage with a header strip of names and star ratings (pixel-versus)",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "sprite": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Id of a sprite defined in any scene's `sprites` (draw it facing right; the right-hand fighter is mirrored)"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 12,
+                          "description": "Name in the header strip"
+                        },
+                        "stars": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 5,
+                          "multipleOf": 0.5,
+                          "description": "Rating 0-5 in half-star steps, drawn under the name"
+                        },
+                        "side": {
+                          "description": "Stage position (default: spread by count)",
+                          "type": "string",
+                          "enum": [
+                            "left",
+                            "center",
+                            "right"
+                          ]
+                        },
+                        "scale": {
+                          "description": "Pixel size of one sprite pixel (default 5)",
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 8
+                        },
+                        "crown": {
+                          "description": "A crown over the header cell and over the sprite",
+                          "type": "boolean"
+                        },
+                        "anim": {
+                          "description": "In-place animation",
+                          "type": "string",
+                          "enum": [
+                            "bob",
+                            "jump",
+                            "shake",
+                            "pulse",
+                            "sway"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "sprite",
+                        "name",
+                        "stars"
+                      ]
+                    }
+                  },
+                  "ranking": {
+                    "description": "Ranking panel: rows with rank, name, score and a bar (pixel-versus)",
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 20
+                      },
+                      "unit": {
+                        "description": "Suffix of every score (e.g. pts)",
+                        "type": "string",
+                        "maxLength": 4
+                      },
+                      "max": {
+                        "description": "Score that fills a bar (default: the best score)",
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                      },
+                      "rows": {
+                        "minItems": 2,
+                        "maxItems": 5,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 14
+                            },
+                            "score": {
+                              "type": "number",
+                              "minimum": 0
+                            },
+                            "crown": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "score"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "rows"
+                    ]
+                  },
+                  "verdict": {
+                    "description": "Verdict panel that fills in row by row, the winner gets a crown (pixel-versus)",
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 18
+                      },
+                      "rows": {
+                        "minItems": 2,
+                        "maxItems": 5,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 14
+                            },
+                            "score": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 8
+                                }
+                              ]
+                            },
+                            "note": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 10
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "score"
+                          ]
+                        }
+                      },
+                      "winner": {
+                        "description": "0-based row that wins and gets the crown (default: the highest score)",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4
+                      }
+                    },
+                    "required": [
+                      "rows"
                     ]
                   },
                   "speaker": {

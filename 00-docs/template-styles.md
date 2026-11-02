@@ -232,6 +232,9 @@ Source: https://eltelar.es/articulos/video-ia-herramientas.html (read 2026-11-01
 | `ui-cards` | illustrated-2d | template default | slow push-in | spring pop | navy grid with drifting dust, top light, parallax orbs, contact shadows, lit card gradients, vignette | default |
 | `flat-depth` | illustrated-2d | template default | dolly: slow lateral dolly along the table with a 3.5% push | drop: falls onto the table, squashes on contact | dark gradient wall, ceiling spot, wooden table in one-point perspective with a drifting vanishing point, contact shadows | default |
 | `soft-gradient` | illustrated-2d | template default | drift: slow pan with 2% scale | rise: fade + rise | drifting pastel mesh gradient, two parallax orb layers, frosted glass panels, soft long shadows | default |
+| `host-tutorial` | illustrated-2d | template default | settle: spring settle at scene start | pop | warm paper texture, halftone dot corner, hard-shadow cards, fixed cutout host at the bottom | halftone-dot swell |
+| `checklist-glass` | illustrated-2d | template default | drift | rise | pastel mesh with a glossy sheen, frosted UI-mockup cards, progress pill, bottom-right mascot | default |
+| `spotlight-narrative` | illustrated-2d | template default | push: slow push-in | rise | dark vignette, one spotlight cone, pulsing floor rings, dust, light leak, grain | zoom-through |
 | `pop-comic` | illustrated-2d | panel slam: next panel slams in on a diagonal with speed lines and a burst outline | dutch: punch-in on a tilted angle | slam: drops from 1.6x with overshoot and twist | yellow stock, Ben-Day dots, speed rays, gutter frame, newsprint dot screen, action burst on the cut | stamp (impact) / pop |
 | `paper-world` | 3d | page turn hinged on the left edge | crane / orbit / dolly / push, pitch 40 | unfold: stands up from the page on its hinge | flat-shaded paper, 9-sided paper island with cone trees and hills, falling paper confetti, paper grain overlay | default |
 | `toy-blocks` | 3d | block build: tiles snap in bottom-up in 10 held poses | macro long lens (fov 17): orbit / topdown / dolly / pan | snap: drops in 0.3-unit steps on twos, clicks in | glossy plastic, studded baseplate on a wooden desk, tilt-shift blur bands, falling bricks | default |
@@ -365,6 +368,9 @@ Reference: the dark-grid UI explainers (sebastiankra.ia) and the flat 2.5D scene
   - Whiteboard, editor-window and the six art styles are unchanged on purpose: their media are flat.
 - **`ui-cards`**: Montserrat 900 two-line header (white kicker line, accent main line), HUD of labeled bars in a dark glass bar, word-pill captions, handle footer.
 - **`flat-depth`**: Baloo 2 headline whose words light up one by one, the active word on a yellow chip; objects drawn with a lit face and a shade face; stacks stand on the table's front edge.
+- **`host-tutorial`**: bold sans headline with a serif-italic accent word (Fraunces), mono step kicker, white hard-shadow panels.
+- **`checklist-glass`**: same headline treatment, a frosted progress pill with a fill track, glass panels.
+- **`spotlight-narrative`**: Fraunces 700 headline with a tracked kicker, glowing beacon rings, dark panels.
 - **`soft-gradient`**: Rubik 800 headline with a gradient last word, a frosted pill kicker, glass panels with `backdrop-filter`.
 - **Format elements** (`src/illustrated/format-elements.tsx`): `post`, `chart`, `meter`, `hourglass`, `tags`, `stat`, `timer`, `panels`, `object`, `character`. They work in every illustrated-kit look. `character` is a generic person (round or blocky); there is no mascot.
 

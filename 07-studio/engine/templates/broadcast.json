@@ -2,8 +2,9 @@
   "id": "broadcast",
   "name": "Broadcast",
   "category": "illustrated-2d",
-  "description": "Broadcast TV graphics: red tab, white lower-third headline bars, a live clock and LIVE dot in the top bar, and a scrolling ticker with every headline. Hard cuts with an RGB glitch and a white flash, stamps that slam with a camera shake, red/white/black only. Urgent and punchy. No emoji.",
-  "prompt_hint": "Write 8-12 short scenes (3-5 s each) like a news anchor: scene 1 is the breaking headline, then facts, reactions, numbers and what happens next. title.kicker is the section label (e.g. ULTIMA HORA, EN VIVO, DATOS, REACCIONES) and title.main is the headline (max ~32 chars). Use stamp (CONFIRMADO, OFICIAL), counter for figures, timeline for what happened, compare for before/after, doc for statements, chat for quotes. Keep 1-3 elements per scene. Never use emoji.",
+  "format": "news",
+  "description": "Broadcast TV graphics: red tab, white lower-third headline bars, a live clock and LIVE dot in the top bar, and a scrolling ticker with every headline. Hard cuts with an RGB glitch and a white flash, stamps that slam with a camera shake, red/white/black only. Urgent and punchy. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-12 short scenes (3-5 s each) like a news anchor: scene 1 is the breaking headline, then facts, reactions, numbers and what happens next. title.kicker is the section label (e.g. ULTIMA HORA, EN VIVO, DATOS, REACCIONES) and title.main is the headline (max ~32 chars). Use stamp (CONFIRMADO, OFICIAL), counter for figures, timeline for what happened, compare for before/after, doc for statements, chat for quotes. Keep 1-3 elements per scene. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": ["tech news", "launches and announcements", "incidents and outages", "industry updates", "hot takes"],
   "preview": {
     "style": "illustrated",

@@ -2,8 +2,9 @@
   "id": "editorial-chart",
   "name": "Editorial Chart",
   "category": "illustrated-2d",
-  "description": "Editorial charts as protagonists: big bar charts with animated axes and gridlines, numbers that count up, timelines and annotations drawn as callouts, on a warm newspaper-salmon page with serif headlines. Calm, precise motion: smooth zoom-through transitions and slow camera drift. No emoji.",
-  "prompt_hint": "Write 8-14 scenes (4-6 s each) that tell one story with numbers. Almost every scene has one big chart element: bars (2-5 items, real values, unit), counter (the key figure, with label), timeline (dates), compare (before/after); add a callout (underline/circle/arrow, with a short label) on the most important bar or number. title.kicker = what is measured (e.g. ADOPCION 2024), title.main = the takeaway in plain words. Cite sources in the narration. Never use emoji.",
+  "format": "data-chart",
+  "description": "Editorial charts as protagonists: big bar charts with animated axes and gridlines, numbers that count up, timelines and annotations drawn as callouts, on a warm newspaper-salmon page with serif headlines. Calm, precise motion: smooth zoom-through transitions and slow camera drift. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-14 scenes (4-6 s each) that tell one story with numbers. Almost every scene has one big chart element: bars (2-5 items, real values, unit), counter (the key figure, with label), timeline (dates), compare (before/after); add a callout (underline/circle/arrow, with a short label) on the most important bar or number. title.kicker = what is measured (e.g. ADOPCION 2024), title.main = the takeaway in plain words. Cite sources in the narration. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": ["statistics and research", "market data", "benchmarks", "trends over time", "surveys"],
   "preview": {
     "style": "illustrated",

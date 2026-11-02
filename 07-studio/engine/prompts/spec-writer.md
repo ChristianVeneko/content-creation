@@ -232,6 +232,11 @@ anywhere). Each template brings its own look (palette, fonts, motion, transition
 unless the user asked for brand colors. Color tokens map to the look's palette (`accent`, `accent2`, `accent3`).
 One extra optional field per scene title: `title.number` (integer 0-99), shown by the look as described below.
 
+**Templates are formats, not subjects.** A look fixes the camera, motion, effects and layout; it never fixes the scenery.
+Draw new subjects in every video: invent the icons, `svg` sketches and `drawing` elements (and, in the depth formats, the
+objects, UI mockup rows and labels) for THIS topic, and never reuse the scenery, objects or wording of an example spec.
+When the subject is not in a format's fixed catalog, draw it with a `drawing` element instead of forcing the closest item.
+
 ### `whiteboard`
 Hand-drawn marker explainer on a white board (dark ink, red/blue/green markers, handwritten titles, eraser transitions).
 - Titles: short handwritten phrases, mixed case. Use `title.number` for numbered steps (drawn as a circled number).
@@ -289,7 +294,7 @@ is a medium with its own texture, motion and transition; pick by tone, then foll
 - `pop-comic`: pop-art comic page (Ben-Day dots, panel slams, action bursts). Punchy caps titles; `chat` renders as speech
   bubbles; `stamp` is an action burst with one word (`BOOM`, `NOPE`); `title.number` sits on a burst.
 
-### Depth formats: `ui-cards`, `flat-depth`, `soft-gradient`
+### Depth formats: `ui-cards`, `flat-depth`, `soft-gradient`, `host-tutorial`, `checklist-glass`, `spotlight-narrative`
 Same contract as above (8-14 scenes, `title` + `illustration`, no emoji, no `theme`). They draw scenes with depth: soft
 contact shadows, lit gradient panels, parallax background layers and a ground plane. Use the format elements above:
 - `ui-cards`: dark navy grid with a HUD of labeled bars. `title.kicker` is the white first line (`HASTA HOY:`, `OJO A LA`),
@@ -304,7 +309,7 @@ contact shadows, lit gradient panels, parallax background layers and a ground pl
   `battery`), `timer` with `clock`.
 
 Full examples: `examples/whiteboard.spec.json`, `examples/broadcast.spec.json`, `examples/editorial-chart.spec.json`,
-`examples/editor-window.spec.json`, `examples/rank-numbers.spec.json`, `examples/<art look>.spec.json` for each art style, and `examples/ui-cards.spec.json`, `examples/flat-depth.spec.json`, `examples/soft-gradient.spec.json`.
+`examples/editor-window.spec.json`, `examples/rank-numbers.spec.json`, `examples/<art look>.spec.json` for each art style, and `examples/ui-cards.spec.json`, `examples/flat-depth.spec.json`, `examples/soft-gradient.spec.json`, `examples/host-tutorial.spec.json`, `examples/checklist-glass.spec.json`, `examples/spotlight-narrative.spec.json`.
 
 ## Creative mode: 2D
 
@@ -576,7 +581,8 @@ parts; you looked at rendered frames before calling it done.
 ## Pixel templates
 
 `pixel-dusk` (warm sunset, orange and purple), `pixel-night` (navy and violet, moonlight, neon signs), `pixel-arcade`
-(bright saturated CRT with scanlines) and `pixel-mono` (strict 4-color handheld green) are looks of one pixel-art
+(bright saturated CRT with scanlines), `pixel-mono` (strict 4-color handheld green) and `pixel-versus` (arena rounds and
+head-to-head showdowns, see below) are looks of one pixel-art
 family: crisp low-res scenes upscaled x4, layered parallax with blurred background and foreground (fake depth of field),
 light rays, glow and dust. The narration is **typed into an RPG dialog box** at the bottom (speaker name, optional
 portrait), so the standard caption overlay is off by default; keep `captions` unset. **5-9 scenes** (3-5 s each,
@@ -587,7 +593,7 @@ portrait), so the standard caption overlay is off by default; keep `captions` un
 "visual": {
   "type": "pixel",
   "pixel": {
-    "set": "room" | "street" | "desert" | "factory" | "gallery" | "temple" | "forest" | "lab" | "space",
+    "set": "room" | "street" | "desert" | "factory" | "gallery" | "temple" | "forest" | "lab" | "space" | "arena",
     "props"?: [ { "kind": string, "x"?: 0-1, "label"?: string (<= 16 chars), "color"?: hex, "at"?: seconds,
                   "glow"?: boolean, "open"?: boolean (chest), "big"?: boolean (one hero prop per scene) } ],  // max 6
     "character"?: { "pose": "idle" | "walk" | "point" | "hold", "x"?: 0-1, "item"?: prop kind (pose "hold" only),
@@ -628,6 +634,24 @@ How to write pixel scenes:
    colors in every scene and use `point` to present a prop, `hold` (with `item`) for a reveal, `walk` for transitions.
 5. Narration is shown word by word in the dialog box: keep sentences short (<= 14 words) and give `speaker` a short
    name (or set `brand.handle`).
+
+### `pixel-versus`: rounds, fighters, ranking and verdict
+A tournament format (8-14 scenes of 2-5 s). Every scene uses `set: "arena"` (the fixed stage: crowd, truss lights, lit floor
+with a neon ring; keep it for the whole video). **Draw the contestants yourself** in `sprites` (facing right, 16-32 px tall,
+each id defined once and reused in every scene) and invent new contestants for this topic every video: never reuse the
+example's. Fields added to `visual.pixel`:
+- `round`: `{n, of, title?}` shows the "ROUND n/N" title card for ~2 s, then the scene continues.
+- `fighters` (1-3): `{sprite, name (<= 12), stars 0-5 in 0.5 steps, side?: left|center|right, scale?, crown?, anim?: bob|jump|
+  shake|pulse|sway}` stands the sprites on the stage (the right-hand one is mirrored) and draws the header strip of names and
+  stars; the strip pushes the banner and panels down.
+- `ranking`: `{title?, unit?, max?, rows: 2-5 of {name (<= 14), score, crown?}}` rows with rank, name, a growing bar and the score.
+- `verdict`: `{title?, rows: 2-5 of {name, score (number or <= 8 chars), note?}, winner?}` fills in row by row and crowns the winner.
+  `ranking` and `verdict` count as UI panels: one panel per scene (with `popup`, `counter`, `checklist`). They cover the middle of
+  the stage, so leave `fighters` out of those scenes or accept the overlap.
+- New `fx` types: `energy-beam` (`x`, `y` origin, `to: {x, y}` target, `at` a word of the narration), `power-up` (flame aura on
+  the fighter at `x`, `y`), `hit-flash` (star-burst impact with a shake at `x`, `y`). Beams and impacts are SFX beats.
+Typical round: a `round` card scene, one or two fight scenes (`power-up`, `energy-beam`, `hit-flash`), a `ranking` scene; end with
+a `verdict` scene. Full example: `examples/pixel-versus.spec.json`.
 
 Full examples: `examples/pixel-dusk.spec.json`, `examples/pixel-night.spec.json`, `examples/pixel-arcade.spec.json`,
 `examples/pixel-mono.spec.json`. Optional extras: agent-drawn `sprites` + `actors`, a custom `set` object, `motion` on

@@ -2,8 +2,9 @@
   "id": "paper-collage",
   "name": "Paper Cut Collage",
   "category": "illustrated-2d",
-  "description": "A stop-motion paper collage on kraft cardboard: torn paper scraps with soft layered shadows, masking tape, ransom-note headlines cut from different papers and faces, everything animated in held 12 fps poses with a hand-placed camera jitter. Scenes change when a new torn sheet is slid over the old one. Crafty, punchy and handmade. No emoji.",
-  "prompt_hint": "Write 8-12 punchy scenes (3-5 s each). title.main short (2-5 words: each word becomes its own paper scrap); title.kicker reads like a label on masking tape. visual.type \"illustration\" with 1-3 chunky elements: card, icon, badge, compare or split for before/after, checklist, stamp for a verdict. Few words per element. Never use emoji.",
+  "format": "paper-collage",
+  "description": "A stop-motion paper collage on kraft cardboard: torn paper scraps with soft layered shadows, masking tape, ransom-note headlines cut from different papers and faces, everything animated in held 12 fps poses with a hand-placed camera jitter. Scenes change when a new torn sheet is slid over the old one. Crafty, punchy and handmade. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-12 punchy scenes (3-5 s each). title.main short (2-5 words: each word becomes its own paper scrap); title.kicker reads like a label on masking tape. visual.type \"illustration\" with 1-3 chunky elements: card, icon, badge, compare or split for before/after, checklist, stamp for a verdict. Few words per element. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": [
     "culture and history explainers",
     "myths vs facts",

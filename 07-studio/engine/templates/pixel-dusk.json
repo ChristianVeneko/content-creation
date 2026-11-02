@@ -2,6 +2,7 @@
   "id": "pixel-dusk",
   "name": "Pixel Dusk",
   "category": "pixel",
+  "format": "pixel-scene",
   "description": "Pixel-art format with warm sunset light: crisp low-res scenes upscaled x4, layered parallax with blurred foreground and background (fake depth of field), amber light rays, dust and glow. Pixel title banner with one accent word, RPG dialog box that types the narration, popup windows, counters and checklists.",
   "prompt_hint": "Write 5-9 scenes (3-5 s each). Every scene has visual.type \"pixel\" with visual.pixel: {set, props?, character?, banner?, one of popup|counter|checklist?, speaker?}. Sets: room, street, desert, factory, gallery, temple, forest, lab, space. Props: monitor, laptop, phone, door, window, lamp, lantern, crate, plant, coin, block, trophy, hourglass, sign, chest, item, heart, key, scroll, robot (max 6, one may be big). The hook scene uses banner.big; other scenes use a short boxed banner (2-4 words) with one accent word. The narration is typed into the RPG dialog box at the bottom, so keep sentences short. Add character only when the user asks for one. Never use emoji.",
   "best_for": [
