@@ -2,7 +2,8 @@
 // Every element is drawn in code (SVG/HTML); the LLM picks elements and fills their text.
 import { z } from "zod";
 import { LOOKS } from "./illustrated-looks.mjs";
-import { COLOR_TOKENS, MAX_DRAW_PARTS, drawPartSchema, drawingFields } from "./drawing-schema.mjs";
+import { COLOR_TOKENS, MAX_BACKDROP_PARTS, MAX_BACKDROP_PATH_CHARS, MAX_DRAW_PARTS, drawPartSchema, drawingFields } from "./drawing-schema.mjs";
+import { GENERATORS, GEN_KINDS, expandLayer, genSchema } from "./drawing-gen.mjs";
 import { drawingIssues } from "./drawing.mjs";
 
 const hex = z
@@ -307,11 +308,13 @@ const backdropLayer = z
   .object({
     depth: z.enum(DEPTH_PLANES).default("subject").describe("far (sky, map, horizon), mid, subject (the hero of the scene) or near (foreground framing)"),
     viewBox: drawingFields.viewBox.describe('Layer coordinates; default "0 0 540 480" (the 1080x960 picture window at half scale)'),
-    parts: drawingFields.parts,
+    gen: z.array(genSchema).max(8).optional().describe(`Generators that paint a whole lit layer from a few params, drawn under this layer's parts (\`over: true\` for over): ${GEN_KINDS.map((k) => `${k} (${GENERATORS[k].about})`).join("; ")}`),
+    parts: z.array(drawPartSchema).max(MAX_BACKDROP_PARTS, `at most ${MAX_BACKDROP_PARTS} parts per backdrop layer`).default([]).describe(`Your own parts (up to ${MAX_BACKDROP_PARTS} per layer; the path budget is ${MAX_BACKDROP_PATH_CHARS} characters)`),
     motion: drawingFields.motion,
     keys: drawingFields.keys,
   })
-  .strict();
+  .strict()
+  .refine((l) => l.parts.length > 0 || (l.gen?.length ?? 0) > 0, { message: "a backdrop layer needs `parts` or `gen`", path: ["parts"] });
 
 /**
  * The picture-window illustrated scene of a data-atlas scene: 1-5 agent-drawn depth planes. In the "2.5d" mode (default)
@@ -329,7 +332,16 @@ const backdrop = z
   })
   .strict()
   .superRefine((b, ctx) =>
-    b.layers.forEach((l, i) => drawingIssues(l).forEach((iss) => ctx.addIssue({ code: "custom", path: ["layers", i, ...iss.path], message: iss.message }))),
+    b.layers.forEach((l, i) => {
+      let parts;
+      try {
+        parts = expandLayer(l).parts;
+      } catch {
+        return; // an invalid generator is already reported on the `gen` field itself
+      }
+      if (parts.length > MAX_BACKDROP_PARTS * 2) ctx.addIssue({ code: "custom", path: ["layers", i, "gen"], message: `the layer expands to ${parts.length} parts; the limit is ${MAX_BACKDROP_PARTS * 2}` });
+      drawingIssues({ ...l, parts }, { pathChars: MAX_BACKDROP_PATH_CHARS }).forEach((iss) => ctx.addIssue({ code: "custom", path: ["layers", i, ...iss.path], message: iss.message }));
+    }),
   );
 
 /** A dark rounded pill with a big number that counts up (lower middle of the frame). */

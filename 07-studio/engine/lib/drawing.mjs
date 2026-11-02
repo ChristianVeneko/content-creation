@@ -7,9 +7,9 @@ import { z } from "zod";
 import { EASE, hash01, keyTrack, sampleTrack, smooth } from "./motion.mjs";
 import { momentError, resolveMomentStrings, sceneWords } from "./scene3d-motion.mjs";
 
-import { COLOR_TOKENS, DRAW_MOTION_ABOUT, DRAW_MOTIONS, DRAW_ROLES, DRAW_SHAPES, MAX_DRAW_PARTS, MAX_PATH_CHARS, PART_TARGETING, SHAPE_FIELDS, drawPartSchema, drawingFields } from "./drawing-schema.mjs";
+import { COLOR_TOKENS, DRAW_BLENDS, DRAW_MOTION_ABOUT, DRAW_MOTIONS, DRAW_ROLES, DRAW_SHAPES, DRAW_TEXTURES, DRAW_TEXTURE_ABOUT, MAX_BACKDROP_PARTS, MAX_BACKDROP_PATH_CHARS, MAX_DRAW_PARTS, MAX_PATH_CHARS, PART_TARGETING, SHAPE_FIELDS, drawPartSchema, drawingFields } from "./drawing-schema.mjs";
 
-export { COLOR_TOKENS, DRAW_MOTION_ABOUT, DRAW_MOTIONS, DRAW_ROLES, DRAW_SHAPES, MAX_DRAW_PARTS, MAX_PATH_CHARS, SHAPE_FIELDS, drawPartSchema, drawingFields };
+export { COLOR_TOKENS, DRAW_BLENDS, DRAW_MOTION_ABOUT, DRAW_MOTIONS, DRAW_ROLES, DRAW_SHAPES, DRAW_TEXTURES, DRAW_TEXTURE_ABOUT, MAX_BACKDROP_PARTS, MAX_BACKDROP_PATH_CHARS, MAX_DRAW_PARTS, MAX_PATH_CHARS, SHAPE_FIELDS, drawPartSchema, drawingFields };
 
 /** `visual.drawing` of the classic templates. */
 export const drawingVisualSchema = z
@@ -23,9 +23,10 @@ const presetOf = (m) => (typeof m === "string" ? m : m.type);
 
 /**
  * Cross-field checks of one drawing: shapes and their geometry, budgets, ids, parents, cycles, motion and moments.
+ * @param {{pathChars?: number}} [limits]  a backdrop plane passes MAX_BACKDROP_PATH_CHARS
  * @returns {{path: (string|number)[], message: string}[]} paths relative to the drawing
  */
-export function drawingIssues(d) {
+export function drawingIssues(d, limits = {}) {
   const out = [];
   const add = (path, message) => out.push({ path, message });
   const at = (path, m) => {
@@ -39,7 +40,8 @@ export function drawingIssues(d) {
     else ids.set(p.id, p);
   });
   const chars = parts.reduce((a, p) => a + (p.shape === "path" && p.d ? p.d.length : 0), 0);
-  if (chars > MAX_PATH_CHARS) add(["parts"], `the drawing has ${chars} path characters; the budget is ${MAX_PATH_CHARS} (simplify the paths or use shapes)`);
+  const budget = limits.pathChars ?? MAX_PATH_CHARS;
+  if (chars > budget) add(["parts"], `the drawing has ${chars} path characters; the budget is ${budget} (simplify the paths or use shapes)`);
   const checkKeys = (keys, base) => (keys ?? []).forEach((k, i) => at([...base, i, "at"], k.at));
   const checkMotion = (motion, base, isPart) =>
     (motion ?? []).forEach((m, i) => {

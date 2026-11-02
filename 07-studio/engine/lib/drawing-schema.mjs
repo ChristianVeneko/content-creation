@@ -11,7 +11,7 @@ export const COLOR_TOKENS = ["accent", "accent2", "accent3", "good", "bad", "mut
 export const DRAW_ROLES = [...COLOR_TOKENS, "bg", "surface", "line", "paper", "ink"];
 const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 const colorMsg = `must be a palette role (${DRAW_ROLES.join(", ")}) or a hex color like #1A2B3C`;
-const drawColor = z.string().refine((s) => HEX_RE.test(s) || DRAW_ROLES.includes(s), { message: colorMsg });
+export const drawColor = z.string().refine((s) => HEX_RE.test(s) || DRAW_ROLES.includes(s), { message: colorMsg });
 const gradient = z
   .object({
     gradient: z.array(drawColor).min(2).max(4).describe("Color stops (roles or hex), first to last"),
@@ -61,6 +61,20 @@ export const DRAW_MOTIONS = Object.keys(DRAW_MOTION_ABOUT);
 export const PART_TARGETING = ["blink", "draw-on", "pop-in"];
 export const MAX_DRAW_PARTS = 60;
 export const MAX_PATH_CHARS = 8000;
+/** A data-atlas backdrop plane is a whole scene layer (a lit sky, a field, a building): it gets a larger budget. */
+export const MAX_BACKDROP_PARTS = 240;
+export const MAX_BACKDROP_PATH_CHARS = 48000;
+/** Procedural surface textures a part can wear (SVG turbulence modulating the part's own fill). */
+export const DRAW_TEXTURE_ABOUT = {
+  grain: "fine speckle: film grain, dust, sand (alpha speckle over the shape)",
+  mottle: "soft low-frequency blotches: stained paper, marble, cloud shade (darkens the fill unevenly)",
+  wood: "long streaks along x: wood grain, brushed metal (darkens the fill in lines)",
+  cracks: "a network of thin fissures: dry earth, old plaster (the fill shows only along the cracks)",
+  fibers: "fine criss-cross fibers: paper stock, cloth (darkens the fill with a fine weave)",
+};
+export const DRAW_TEXTURES = Object.keys(DRAW_TEXTURE_ABOUT);
+/** Blend modes a part can use against the parts drawn before it (glows use screen, shadows multiply). */
+export const DRAW_BLENDS = ["screen", "multiply", "overlay", "soft-light", "lighten", "color-dodge"];
 
 // ---------------- schema ----------------
 
@@ -126,6 +140,9 @@ export const drawPartSchema = z
     stroke: paint.optional(),
     width: num(0, 60).optional().describe("Stroke width (viewBox units)"),
     opacity: num(0, 1).optional(),
+    blur: num(0, 60).optional().describe("Gaussian blur radius in viewBox units: soft shadows, glows (pair with blend: screen), haze"),
+    blend: z.enum(DRAW_BLENDS).optional().describe(`Blend mode against what is drawn below: ${DRAW_BLENDS.join(", ")}`),
+    texture: z.enum(DRAW_TEXTURES).optional().describe(`Surface texture over the shape: ${DRAW_TEXTURES.join(", ")}`),
     pos: pt.optional().describe("Static offset [dx, dy] (moves the part and its children)"),
     rot: num(-360, 360).optional().describe("Static rotation in degrees around `origin`"),
     scale: z.union([num(0.01, 20), z.tuple([num(-20, 20), num(-20, 20)])]).optional().describe("Static scale around `origin`"),

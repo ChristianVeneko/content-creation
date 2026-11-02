@@ -310,16 +310,34 @@ contact shadows, lit gradient panels, parallax background layers and a ground pl
 - `data-atlas`: a data documentary, one dramatic illustrated metaphor per scene that YOU draw for the topic (a lit globe, a
   desk of papers, a city at dusk, a map of lit points). Scenes normally have **no `title`**: the word-synced captions
   (upper-middle, active word highlighted) carry the words; a `title` is only a small chapter tag at the very top. 8-14 scenes
-  of 3-5 s, each one image with one number or fact. Every scene starts with a `backdrop`, then the props that fit the beat:
-  - `backdrop`: `{ "layers": [ { "depth": "far" | "mid" | "subject" | "near", "viewBox"?: "0 0 540 480", "parts": [...],
-    "motion"?, "keys"? } ] (1-5), "mode"?: "2.5d" | "flat", "glow"?: color, "haze"?: 0..1 }`. Each layer is an agent-drawn
-    `drawing` (same parts, gradients, `draw`, `motion` and `keys` as the `drawing` element) on the picture window (the band y 302-1262 of the frame, the only part of a scene that shows) whose default
-    viewBox is `0 0 540 480` (half scale; the captions sit over its top 60 units, so keep the subject around y 110-280 and
-    the pill area y 250-310 free of detail). Draw 3-5 layers: `far` (sky, globe, map, horizon), `mid` (skyline, shelves, hills),
-    `subject` (the hero object or place), `near` (foreground framing: grass, rails, a window edge, out-of-focus bokeh). Use
-    palette roles (`accent`, `accent2`, `accent3`, `bg`, `surface`, `ink`, `paper`, `text`, `muted`), gradients and a few light
-    sources so the scene looks lit; keep illustration accents clear against what they sit on. Haze, glow, drifting motes and a
-    vignette are added over it automatically.
+  of 3-4 s (8-10 words each; 14-18 scenes for a 50 s documentary), each one image with one number or fact. Open and close on the lit globe when the story is geographic; vary the metaphors. Every scene starts with a `backdrop`, then the props that fit the beat:
+  - `backdrop`: `{ "layers": [ { "depth": "far" | "mid" | "subject" | "near", "viewBox"?: "0 0 540 960", "gen"?: [...], "parts"?: [...],
+    "motion"?, "keys"? } ] (1-5), "mode"?: "2.5d" | "flat", "glow"?: color, "haze"?: 0..1 }`. The backdrop is **full-bleed** (the
+    whole 1080x1920 frame): use `viewBox` `0 0 540 960` (half scale) and keep the hero between y 250 and 800; the captions sit
+    over the top ~250 units and the counter pill over y 700-780. Each layer is an agent-drawn `drawing` (same parts, gradients,
+    `draw`, `motion` and `keys` as the `drawing` element) with up to 240 parts and 48000 path characters. Draw 3-5 layers: `far`
+    (sky, globe, map, horizon), `mid` (skyline, ridges, hills), `subject` (the hero object or place), `near` (foreground framing:
+    grass, rails, a window edge, out-of-focus bokeh). Never leave a frame empty or a placeholder: every scene draws a lit image.
+    Quality comes from many parts with light: gradients (linear and `radial`), a rim light (a thin bright stroke on the lit
+    edge), a glow (a copy of the shape with `blur` and `blend: "screen"`), a soft shadow (dark shape with `blur`), `texture`
+    (`grain`, `mottle`, `wood`, `cracks`, `fibers`) on paper, wood and ground, `opacity` for haze, and `motion` (`float`,
+    `sway`, `pulse`, `draw-on` with `draw: true`) on smoke, wheat and routes. Use palette roles (`accent`, `accent2`, `accent3`,
+    `bg`, `surface`, `ink`, `paper`, `text`, `muted`) or hex (8-digit `#RRGGBBAA` for gradients that fade out); keep illustration
+    accents clear against what they sit on. Vary `glow` per scene (a different palette role or hex each time). Haze, glow,
+    drifting motes and a vignette are added over it automatically.
+  - **Generators** (`gen` on a layer; they paint a whole lit layer from a few params, under your `parts` unless `over: true`;
+    always give a different `seed`): `globe` (`cx`, `cy`, `r`, `lon`, `lat` view, `light` direction, `ocean`, `land`,
+    `atmosphere`, `tint` by landmass such as `{"north-america": "accent"}`, `pins`: [{at: place or [lon, lat]}], `arcs`:
+    [{from, to, color, lift, at}] glowing routes; real continent silhouettes, a night side and rim light), `starfield`
+    (`count`, `nebula`, `twinkle`), `sky` (`horizon`, 2-4 `colors` top to horizon, a `sun` or moon with glow, `clouds`),
+    `terrain` (ridge silhouettes: `y`, `layers`, `amp`, `colors` far to near, `rim`, `haze`), `rails` (perspective track:
+    `vp`, `baseX`, `baseY`, `gauge`, `bend`, `shine`), `grain-field` (wheat or crop rows in perspective: `horizon`, `rows`,
+    `stalks`, `height`, colors, `sway`), `water` (sea with a moon or sun path: `horizon`, `light` x, `glints`), `surface`
+    (`preset`: `wood`, `cracked-earth`, `paper`, `stone`; `box`, `colors`, `light` pool), `map` (flat landmasses with a
+    graticule for particle maps and routes; `box`, `lon` and `lat` ranges, `fill`, `edge`; place routes and the particle
+    `cluster` with the same lon/lat to percent math: x% = (box.x + (lon - lon0) / (lon1 - lon0) * box.w) / 540 * 100). Build
+    the objects no generator covers (a dome, a locomotive, a ship, blueprint sheets) with your own many-part `parts`, grouped
+    with a `group` part (`scale`, `pos`, `rot`) so a whole building can be moved or scaled as one.
   - **2.5D mode** (`mode: "2.5d"`, the default): every layer drifts sideways at its own speed (far slowest, near fastest, the
     direction flips each scene) with a slow dolly and a soft depth-of-field blur on the far and near layers. **Flat mode**
     (`mode: "flat"`): the same layers render as one picture with a single push-in, no parallax and no blur. To tell the same
