@@ -617,6 +617,7 @@ contrast-checked, so never set colors). All times are seconds or a narration wor
 - `concept`: `{text (<= 28)}` a yellow pill with the name of the term being introduced. Show it when the narration names it.
 - `limit`: a demand bar `{label (<= 14), value 0-1, limit 0.1-1, steps: [{at, value}], limitLabel?, note?, icons?: [3 names]}`;
   it turns red and shows `note` when the demand passes the limit (demand vs capacity, load vs budget, speed vs limit).
+- `counter`: a big animated number in a dark rounded pill `{value, from?, dur?, unit?, prefix?, label?, decimals?, sep?, steps?: [{at, value, dur?}]}`; one per scene, low in the safe box (see `documentary-3d`).
 - `versus`: the "not equal" card `{left: {title, sub?, icon?}, right: {...}}` for "A is not B" ideas.
 The strip sits at the top (HUD band) and the pill and card under it, above the 3D stage: do not also set `title` on those
 scenes (if you do, give it `title.color` "accent" or "accent3"). Captions stay at the bottom as usual.
@@ -718,6 +719,7 @@ target them). Run `node cli.mjs builders` for the catalog: every builder with it
   `wind-turbine` (`rotor` group), `solar-panel`, `battery`, `gear-train`, `pipe-run`, `valve`, `slab`, `rebar-grid`, `fence`.
 - home and cutaway: `appliance` (kind sofa, tv, lamp, kettle, microwave, fridge, bed, washer, heater, table; `on` starts it lit, beats recolor `tv/screen`, `lamp/bulb`, `kettle/led`, `heater/glow`), `house` with `cutaway: true` plus `furnish: false`, `stairs`, `partition`, `backWindows` for empty rooms you furnish with appliance actors, `person` `expression` (smile, surprised, worried), `glasses`, `beard`, `pipe-run` `style: "cable"`. Full example: `examples/cutaway-stage.spec.json` (a blackout, a home battery and an inverter; tiny base zoom needs `camera` scale beats for close-ups).
 - office and finance: `desk`, `chart-3d` (`bar-k`), `coin-stack`, `safe` (`door` group), `calendar` (`day-k`).
+- documentary set pieces (see `documentary-3d`): `globe`, `train` (+ `rail-track`), `dome-building`, `aircraft`, `ledger`, `blueprint-sheet`, `desk-wood`, `wheat-field`, `bowl`, `cracked-ground`, `particle-map`.
 In `stage.world.parts` a call becomes a group root (`pos`, `rot`, `scale`) with the parts hanging from it; `grass-tufts`, `flowers`
 and any call with `"scatter": {count, area, avoid, seed}` become instanced scatter copies (they follow the terrain). Budgets: 160
 parts per actor, 400 world parts (builder calls expand into them), 1500 expanded; keep scenery light (use scatter) and put the hero models in `actors`. An actor
@@ -752,6 +754,30 @@ tween its `opacity`); moving particles (photons, electrons) are `fx` of type `si
 Examples: `examples/process-solar.spec.json` (a 2-minute how solar panels work), `examples/process-tech-tutorial.spec.json` (a web request: laptop, router, cables, ISP building, cloud, server rack),
 `examples/process-story.spec.json` (a voyage: castle, war table, characters, cart, ship, flag), `examples/process-pool.spec.json`
 (a build with terrain strata, carve and liquid beats; the largest example), `examples/process-explainer.spec.json` (a short how-it-works).
+
+### `documentary-3d`
+A dark cinematic data documentary for any story told with numbers (history, economy, science, technology, geography; no domain is the
+default). It supplies style: dusk lighting (warm low key, cool rim, haze, bloom), a cross-dissolve between scenes, the `counter` overlay and
+word-synced captions in the upper middle. You supply the story, the set pieces and the numbers. 10-18 scenes of 2.5-4 s, one metaphor each.
+
+**Recipe: ONE persistent stage as a gallery.** Build the world ONCE in `stage`: every set piece is an actor at its own spot along a path
+(about 5-9 units apart in x, alternate the z a little for depth; |pos| <= 30), on a dark `world.ground` plane with low plinth discs. Never a new
+world per scene. Pick builders that stand for the story (`node cli.mjs builders`): `globe` (route, pins), `particle-map` (a region silhouette with
+particles and a route), `train` + `rail-track`, `dome-building`, `ledger`, `blueprint-sheet` on `desk-wood`, `aircraft`, `ship` (`lights`),
+`mountain` (`rim`), `sun` (`corona`, `rays: 0`), `wheat-field` (world scatter, sways), `bowl`, `cracked-ground`.
+- **Camera = a flight**: each scene is `shots: [{shot: "zoom-to", focus: "<actor>", frame: "medium", yaw, pitch, zoom, at}]`; the stage frame is
+  about 15 units wide at zoom 1, so set `zoom` per piece (about 0.2 for a 1.5-unit prop, 0.3-0.4 for a 4-unit piece). Vary the shot language: low
+  hero angle (`pitch` -10), push-in (a second shot with a smaller `zoom`), orbit (a second shot with another `yaw`), pull-back (`wide`), overhead
+  for maps. The flight between pieces is continuous; use `cut: true` only for a deliberate jump (at most twice). Focus an invisible marker actor
+  (`noFrame`) for world scenery such as a wheat field.
+- **Each scene does something real** with `beats`: a train drives toward the camera (`train` beat `to: {pos: [0, 0, 6]}`, wheels turn by
+  themselves), route segments `globe/route-0..7` appear one by one (`set: {visible: true}`), a hammer swings and a spike sinks, a lamp `desk/bulb`
+  rises in `emissive`, `blueprint-sheet` ink lines `ink-k` appear, a red `ledger/underline` is drawn. Add `fx`: `spotlight` for light shafts, `signal`
+  along a path for flowing particles, `trail` behind a mover, `particles` embers or stars. At most 6 fx per scene.
+- **Numbers**: a `counter` overlay in the scenes that carry a figure (`{label: "EN CARRETA", value: 180, unit: "dias", dur: 2.4, at: 0.9}`; a year uses
+  `sep: ""`; a counter that goes down uses `from` above `value`). Keep the narration to one short sentence per scene.
+- Captions: `two-tone`, size `s`, `position: top`, 3 words per page (the template default). No `title` needed.
+Example: `examples/documentary-3d-clavo.spec.json` (16 scenes, 12 builders, 50 s) and the short `examples/documentary-3d.spec.json`.
 
 ## Creative mode: 3D
 

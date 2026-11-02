@@ -415,6 +415,29 @@ export const LOOKS3D: Record<Look3DId, Look3D> = {
     vignette: 0.06,
     ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#FFFFFF", 0.2),
   },
+  // documentary: a dark dusk stage lit by a warm low key and a cool rim, glowing practicals, bloom and haze
+  "documentary-3d": {
+    id: "documentary-3d",
+    material: "paint",
+    floor: "set",
+    tone: "aces",
+    exposure: 1.05,
+    shadows: true,
+    outline: null,
+    bloom: { intensity: 0.55, threshold: 0.82 },
+    particles: "motes",
+    enter: "rise",
+    dark: "#0B1022",
+    light: "#EEF2FF",
+    good: "#3DDC97",
+    bad: "#FF4D5E",
+    screen: "#05070F",
+    bg: (p) => ({ stops: [p.bg[0], mixHexColor(p.bg[0], p.bg[1] ?? p.bg[0], 0.55), mixHexColor(p.bg[1] ?? p.bg[0], "#C2663A", 0.16), p.bg[1] ?? p.bg[0]], glow: "#FFB066", glowAlpha: 0.2 }),
+    label: { bg: "rgba(8,12,26,0.78)", fg: "#FFFFFF", border: "rgba(255,181,71,0.8)", radius: 14, font: fontStack("Montserrat"), weight: 800, size: 30, shadow: "0 8px 26px rgba(0,0,0,0.55)", leader: "none" },
+    vignette: 0.55,
+    night: false,
+    ground: (p) => mixHexColor(p.bg[1] ?? p.bg[0], "#000000", 0.25),
+  },
 };
 
 /** "#rrggbb" blend of two colors (hex stops are parsed by the gradient fog, so no css strings). */

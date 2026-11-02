@@ -13,7 +13,7 @@ import { stageSceneFields, resolveTarget, resolveFocus, buildTracks, terrainDefa
 import { customExtent, customHeight, expandWorld, partCenters,  partsSignature, sampleTrack, customObjectFields, generativeSceneFields, momentSchema, momentSec, refineGenerative, resolveMoments, sceneWords, shotsToKeys } from "./scene3d-motion.mjs";
 
 /** Templates rendered with the 3D kit. Their look id equals the template id. */
-export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot", "cutaway-explainer", "engineering-explainer", "process-explainer"];
+export const THREE_D_TEMPLATE_IDS = ["clay-diorama", "iso-toon", "neon-glass", "pedestal", "paper-world", "toy-blocks", "holo-studio", "neon-grid", "soft-studio", "moody-night", "voxel-world", "data-stage", "monolith-story", "clay-mascot", "cutaway-explainer", "engineering-explainer", "process-explainer", "documentary-3d"];
 export const usesThreeKit = (templateId) => THREE_D_TEMPLATE_IDS.includes(templateId);
 /** The 3D look of a resolved spec: theme.look3d when valid, else the template id, else clay-diorama. */
 export const look3dOf = (spec) => {
@@ -231,6 +231,8 @@ export const LOOK3D = {
   "engineering-explainer": { ortho: false, fov: 32, yaw: -18, pitch: 12, moves: ["pullout", "orbit", "dolly", "glide", "reveal"], float: 0, spin: 0, wide: 1.3 },
   // process explainer: one continuous daylight world seen from a gentle three-quarter angle; stage shots drive the camera
   "process-explainer": { ortho: false, fov: 32, yaw: -16, pitch: 10, moves: ["pullout", "glide", "orbit", "dolly", "reveal"], float: 0, spin: 0, wide: 1.3 },
+  // documentary: a long lens, a slightly low three-quarter hero angle; the stage shots fly the camera between set pieces
+  "documentary-3d": { ortho: false, fov: 30, yaw: -10, pitch: 7, moves: ["push", "orbit", "glide", "rise", "dolly"], float: 0, spin: 0, wide: 1.3 },
 };
 
 /**
@@ -258,6 +260,8 @@ export const RENDER3D = {
   "cutaway-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
   "engineering-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
   "process-explainer": { tone: "neutral", exposure: 1.1, hdri: null, envIntensity: 0, shadowRadius: 6, bloom: null, fog: null, set: "none" },
+  // documentary: filmic tone mapping, a soft bloom on the emissive lights and a dusk haze that melts distant set pieces away
+  "documentary-3d": { tone: "aces", exposure: 1.15, hdri: null, envIntensity: 0, shadowRadius: 5, bloom: { strength: 0.55, threshold: 0.82, radius: 0.6 }, fog: { near: 0.22, far: 1.0, add: 0 }, set: "none" },
 };
 
 /** The stock environment set of a scene3d visual: explicit set, else the look's default (none for every look). */
@@ -380,7 +384,7 @@ export function frameContent(placed, look, opts = {}) {
   const w = max[0] - min[0];
   const d = max[2] - min[2];
   const h = max[1] - min[1];
-  const targetY = min[1] + h * (opts.targetFrac ?? (look === "cutaway-explainer" || look === "engineering-explainer" || look === "process-explainer" ? 0.32 : 0.42));
+  const targetY = min[1] + h * (opts.targetFrac ?? (look === "cutaway-explainer" || look === "engineering-explainer" || look === "process-explainer" || look === "documentary-3d" ? 0.32 : 0.42));
   const target = [(min[0] + max[0]) / 2, targetY, (min[2] + max[2]) / 2];
   const pitch = L.pitch * DEG;
   // projected extents: width across the frame, and height (object height + depth foreshortened by the pitch)
@@ -861,6 +865,40 @@ export const collectIconNames3d = (spec) =>
 /** Icon names an overlay uses: flow chips, limit loads and versus halves. */
 export const overlayIcons = (overlay) =>
   (overlay ?? []).flatMap((o) => (o.type === "flow" ? o.chips.map((c) => c.icon) : o.type === "limit" ? (o.icons ?? []) : o.type === "versus" ? [o.left.icon, o.right.icon] : []));
+
+// ---------------- counter overlay (a number that counts) ----------------
+
+const easeOutCubic = (u) => 1 - (1 - Math.min(1, Math.max(0, u))) ** 3;
+/**
+ * Value of a planned `counter` overlay at `t` seconds into the scene (steps already in seconds): it counts from `from` to
+ * `value` over `dur` starting at the overlay's `at`, then on to every step. Pure and monotone between targets.
+ */
+export function counterValueAt(o, t) {
+  let v = o.from ?? 0;
+  let t0 = o.at ?? 0;
+  let target = o.value;
+  let dur = o.dur ?? 1.6;
+  const legs = [{ t0, target, dur }, ...(o.steps ?? []).map((s) => ({ t0: s.at, target: s.value, dur: s.dur ?? 1.2 }))];
+  for (const leg of legs) {
+    if (t < leg.t0) break;
+    const u = easeOutCubic((t - leg.t0) / Math.max(1e-6, leg.dur));
+    v = v + (leg.target - v) * u;
+    if (t < leg.t0 + leg.dur) break;
+    v = leg.target;
+  }
+  return v;
+}
+
+/** The text of a counter value: decimals, thousands separator, prefix. */
+export function formatCounter(value, o = {}) {
+  const dec = o.decimals ?? 0;
+  const sep = o.sep ?? ",";
+  const neg = value < 0;
+  const [int, frac] = Math.abs(value).toFixed(dec).split(".");
+  const grouped = sep === "" ? int : int.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+  const dsep = sep === "." ? "," : ".";
+  return `${neg ? "-" : ""}${o.prefix ?? ""}${grouped}${frac ? dsep + frac : ""}`;
+}
 
 // ---------------- overlay colors ----------------
 

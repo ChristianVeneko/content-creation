@@ -11,7 +11,7 @@ export type Caption = {
 export type CaptionPage = { startMs: number; endMs: number; words: Caption[] };
 
 export type Animation = "pop" | "slide" | "typewriter" | "zoom";
-export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world" | "data-stage" | "monolith-story" | "clay-mascot" | "cutaway-explainer" | "engineering-explainer" | "process-explainer";
+export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world" | "data-stage" | "monolith-story" | "clay-mascot" | "cutaway-explainer" | "engineering-explainer" | "process-explainer" | "documentary-3d";
 export type ArtTemplateId = "watercolor" | "paper-collage" | "chalkboard" | "risograph" | "ukiyo-e" | "pop-comic";
 export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient" | "host-tutorial" | "checklist-glass" | "spotlight-narrative" | "data-atlas";
 export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono" | "pixel-versus";
@@ -210,7 +210,8 @@ export type Overlay3DPlan =
   | ({ type: "flow"; chips: { id: string; icon: string; label: string; value?: string }[]; active?: string; steps?: { at: number; active?: string; values?: Record<string, string> }[] } & OverlayWindow)
   | ({ type: "concept"; text: string } & OverlayWindow)
   | ({ type: "limit"; label: string; value?: number; limit?: number; steps?: { at: number; value: number }[]; limitLabel?: string; note?: string; icons?: string[] } & OverlayWindow)
-  | ({ type: "versus"; left: VersusSide; right: VersusSide } & OverlayWindow);
+  | ({ type: "versus"; left: VersusSide; right: VersusSide } & OverlayWindow)
+  | ({ type: "counter"; value: number; from?: number; dur?: number; unit?: string; prefix?: string; label?: string; decimals?: number; sep?: string; steps?: { at: number; value: number; dur?: number }[] } & OverlayWindow);
 export type VersusSide = { title: string; sub?: string; icon?: string };
 /** One planned pixel scene (lib/pixel.mjs planPixelScene). Times are seconds into the scene. */
 export type PixelPlan = {

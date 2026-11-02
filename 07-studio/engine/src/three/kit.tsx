@@ -224,10 +224,14 @@ export const CameraRig: React.FC<{ cam: CamState }> = ({ cam }) => {
 
 // ---------------- lights + environment ----------------
 
-export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity: number; shadowRadius: number; set: boolean }> = ({ hdri, span, envIntensity, shadowRadius, set }) => {
+export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity: number; shadowRadius: number; set: boolean; follow?: number[] }> = ({ hdri, span, envIntensity, shadowRadius, set, follow }) => {
   const { look, palette } = useKit3D();
   // a set reaches past the objects: widen the key light's shadow frustum so props near the subject cast too
   const s = Math.max(set ? 9 : 6, span + (set ? 4 : 0));
+  // a long gallery of set pieces: the key light (and its shadow frustum) follows the camera's look-at point
+  const target = useMemo(() => new THREE.Object3D(), []);
+  const fx = follow ? Math.round(follow[0] * 2) / 2 : 0;
+  const fz = follow ? Math.round(follow[2] * 2) / 2 : 0;
   const shadowCam = (l: THREE.DirectionalLight | null) => {
     if (!l) return;
     // PCF penumbra width (PCFShadowMap; PCFSoftShadowMap is removed in three r186)
@@ -265,6 +269,16 @@ export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity:
         <>
           <hemisphereLight args={["#FFF6EA", "#C9B092", 1.5]} />
           <directionalLight ref={shadowCam} position={[-7, 8, 3]} intensity={2.4} color="#FFE6C7" {...key} />
+        </>
+      );
+    case "documentary-3d":
+      // data documentary: a dusk sky fill, a low warm key that rakes across the set (long shadows) and a cool rim from behind
+      return (
+        <>
+          <hemisphereLight args={["#8EA2DA", "#2A2118", 1.7]} />
+          <primitive object={target} position={[fx, 0, fz]} />
+          <directionalLight ref={shadowCam} target={target} position={[fx - 7, 4.5, fz + 6]} intensity={3.3} color="#FFB877" {...key} shadow-mapSize={[2048, 2048]} />
+          <directionalLight position={[fx + 6, 5, fz - 9]} intensity={1.7} color="#7BA8FF" />
         </>
       );
     case "moody-night":

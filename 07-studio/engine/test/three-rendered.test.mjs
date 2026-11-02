@@ -64,7 +64,7 @@ test("each new format has an example spec that validates, uses scene3d visuals o
 });
 
 test("every 3D look has a cheap render profile: tone mapping, one soft key shadow, fog, a default set; bloom only where it was", () => {
-  const BLOOM_BEFORE = ["neon-glass", "holo-studio", "data-stage"];
+  const BLOOM_BEFORE = ["neon-glass", "holo-studio", "data-stage", "documentary-3d"]; // documentary-3d: bloom on the glowing practicals (headlamps, windows, counters of light)
   for (const id of THREE_D_TEMPLATE_IDS) {
     const r = RENDER3D[id];
     assert.ok(r, `${id} has no render profile`);

@@ -387,6 +387,14 @@ Reference: the dark-grid UI explainers (sebastiankra.ia) and the flat 2.5D scene
 - **`soft-gradient`**: Rubik 800 headline with a gradient last word, a frosted pill kicker, glass panels with `backdrop-filter`.
 - **Format elements** (`src/illustrated/format-elements.tsx`): `post`, `chart`, `meter`, `hourglass`, `tags`, `stat`, `timer`, `panels`, `object`, `character`. They work in every illustrated-kit look. `character` is a generic person (round or blocky); there is no mascot.
 
+## documentary-3d (3D, 2026-11-02)
+Dark cinematic data documentary for any story told with numbers (history, economy, science, technology, geography). ONE persistent stage
+laid out as a gallery of set pieces along a path; one metaphor per scene (a lit globe with a glowing route, blueprint sheets on a wood desk, a
+domed building at dusk, a locomotive driving toward the camera, a particle map with a flowing route, a ledger with a red underline, a night
+aircraft, a wheat field at sunset, an empty bowl on cracked earth) and a camera that flies from piece to piece. Dusk key plus a cool rim, haze,
+volumetric `spotlight` shafts, bloom, a cross-dissolve, big `counter` pills and word-synced captions in the upper middle (`two-tone`, `top`).
+Recipes: gallery-flight, number-story, journey. Acceptance video: `examples/documentary-3d-clavo.spec.json`.
+
 ## Fonts added (all SIL Open Font License 1.1)
 
 Downloaded from the Google Fonts repository (https://github.com/google/fonts/tree/main/ofl) on 2026-11-01, each with its `OFL.txt` saved next to it in `03-assets/fonts/` and `07-studio/engine/public/looks/fonts/` (the engine bundles them through webpack imports, so no build staging is needed): Fraunces, Caveat, Fredericka the Great, Patrick Hand, Rubik Mono One, Space Mono Bold, Comic Neue Bold, Rubik, Gloock, Baloo 2, Chakra Petch SemiBold, Share Tech Mono (Reserved Font Name "Share"; used unmodified).

@@ -52,6 +52,7 @@
         "cutaway-explainer",
         "engineering-explainer",
         "process-explainer",
+        "documentary-3d",
         "pixel-dusk",
         "pixel-night",
         "pixel-arcade",
@@ -185,7 +186,8 @@
             "clay-mascot",
             "cutaway-explainer",
             "engineering-explainer",
-            "process-explainer"
+            "process-explainer",
+            "documentary-3d"
           ]
         },
         "captionStyle": {
@@ -20698,7 +20700,7 @@
                     "zoom": {
                       "description": "Distance multiplier: < 1 closer",
                       "type": "number",
-                      "minimum": 0.3,
+                      "minimum": 0.12,
                       "maximum": 3
                     },
                     "shift": {
@@ -21947,7 +21949,7 @@
                     },
                     "zoom": {
                       "type": "number",
-                      "minimum": 0.3,
+                      "minimum": 0.12,
                       "maximum": 3
                     },
                     "shift": {
@@ -21998,7 +22000,7 @@
                 "type": "boolean"
               },
               "overlay": {
-                "description": "Diegetic explainer UI over the stage (flow, concept, limit, versus); one flow, one concept and one card (limit or versus) per scene",
+                "description": "Diegetic explainer UI over the stage (flow, concept, limit, versus, counter); one flow, one concept and one card (limit or versus) per scene",
                 "maxItems": 4,
                 "type": "array",
                 "items": {
@@ -22397,6 +22399,142 @@
                         "type",
                         "left",
                         "right"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "counter"
+                        },
+                        "value": {
+                          "type": "number",
+                          "minimum": -1000000000000,
+                          "maximum": 1000000000000,
+                          "description": "The number the counter reaches (after `dur` seconds from its appearance)"
+                        },
+                        "from": {
+                          "description": "Where it starts counting (default 0)",
+                          "type": "number",
+                          "minimum": -1000000000000,
+                          "maximum": 1000000000000
+                        },
+                        "dur": {
+                          "description": "Seconds of the first count (default 1.6)",
+                          "type": "number",
+                          "minimum": 0.2,
+                          "maximum": 12
+                        },
+                        "unit": {
+                          "description": "Unit written after the number (days, km, people)",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 10
+                        },
+                        "prefix": {
+                          "description": "Symbol written before the number ($, ~)",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4
+                        },
+                        "label": {
+                          "description": "Small caption above the number",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 24
+                        },
+                        "decimals": {
+                          "description": "Decimal places (default 0)",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 3
+                        },
+                        "sep": {
+                          "description": "Thousands separator: \",\" (default), \".\", \" \" or \"\" for none",
+                          "type": "string",
+                          "enum": [
+                            ",",
+                            ".",
+                            " ",
+                            ""
+                          ]
+                        },
+                        "steps": {
+                          "description": "Later targets: from `at` it counts on to `value` over `dur` seconds (default 1.2)",
+                          "maxItems": 6,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "at": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 60
+                                  },
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 40
+                                  }
+                                ],
+                                "description": "Seconds into the scene, or a narration word: \"word\", \"word#2\", \"word+6\" (frames), \"inicio\", \"fin\""
+                              },
+                              "value": {
+                                "type": "number",
+                                "minimum": -1000000000000,
+                                "maximum": 1000000000000
+                              },
+                              "dur": {
+                                "type": "number",
+                                "minimum": 0.1,
+                                "maximum": 12
+                              }
+                            },
+                            "required": [
+                              "at",
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "at": {
+                          "description": "When it appears: seconds or a narration word (default: 0.4 s)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        },
+                        "until": {
+                          "description": "When it leaves (default: the end of the scene)",
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 40
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "value"
                       ],
                       "additionalProperties": false
                     }

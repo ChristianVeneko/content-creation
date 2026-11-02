@@ -1,0 +1,1210 @@
+{
+  "version": 1,
+  "title": "Documentary gallery sample",
+  "template": "documentary-3d",
+  "language": "es",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "a dark gallery of lit set pieces along one path, a story told with numbers",
+    "world": {
+      "concept": "a dark gallery of lit set pieces along a path, one for each beat of the story",
+      "backdrop": "#1B3A7A",
+      "ground": {
+        "kind": "plane",
+        "color": "#0B0F1C"
+      },
+      "parts": [
+        {
+          "id": "pl-g1",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            -28,
+            0.03,
+            0
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "pl-g2",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            29.5,
+            0.03,
+            -9
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "pl-ds",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            -22.5,
+            0.03,
+            -3
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "pl-dm",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            -16.5,
+            0.03,
+            -1
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "pl-mp",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            3,
+            0.03,
+            -2
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "pl-ld",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            21,
+            0.03,
+            -1
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "pl-sp",
+          "shape": "cylinder",
+          "size": [
+            2.5,
+            2.55,
+            0.06
+          ],
+          "pos": [
+            25.5,
+            0.03,
+            0
+          ],
+          "color": "#141B33",
+          "facets": 24
+        },
+        {
+          "id": "sea",
+          "shape": "cylinder",
+          "size": [
+            5.2,
+            5.2,
+            0.08
+          ],
+          "pos": [
+            9.5,
+            0.02,
+            0
+          ],
+          "color": "#0E3A73",
+          "material": "metal",
+          "emissive": 0.12,
+          "facets": 24
+        },
+        {
+          "build": "wheat-field",
+          "id": "wheat",
+          "seed": 4,
+          "params": {
+            "count": 600,
+            "area": [
+              -5.8,
+              -6,
+              -0.6,
+              1
+            ],
+            "height": 1,
+            "wind": 8
+          }
+        }
+      ]
+    },
+    "actors": [
+      {
+        "build": "globe",
+        "id": "globe",
+        "pos": [
+          -28,
+          0,
+          0
+        ],
+        "size": 1,
+        "seed": 3,
+        "params": {
+          "radius": 1.5,
+          "spin": 100,
+          "route": [
+            [
+              40,
+              -74
+            ],
+            [
+              37,
+              -122
+            ]
+          ],
+          "pins": [
+            [
+              40,
+              -74
+            ],
+            [
+              37,
+              -122
+            ]
+          ]
+        }
+      },
+      {
+        "build": "desk-wood",
+        "id": "desk",
+        "pos": [
+          -22.5,
+          0,
+          -3
+        ],
+        "size": 0.85,
+        "seed": 2
+      },
+      {
+        "build": "blueprint-sheet",
+        "id": "sheet-a",
+        "pos": [
+          -23.4,
+          0.26,
+          -2.1
+        ],
+        "rot": [
+          0,
+          -10,
+          0
+        ],
+        "size": 0.62,
+        "seed": 1,
+        "params": {
+          "drawing": "locomotive",
+          "tilt": 74
+        }
+      },
+      {
+        "build": "blueprint-sheet",
+        "id": "sheet-b",
+        "pos": [
+          -21.3,
+          0.27,
+          -2.6
+        ],
+        "rot": [
+          0,
+          14,
+          0
+        ],
+        "size": 0.62,
+        "seed": 2,
+        "params": {
+          "drawing": "plan",
+          "tilt": 78
+        }
+      },
+      {
+        "build": "dome-building",
+        "id": "dome",
+        "pos": [
+          -16.5,
+          0,
+          -1
+        ],
+        "size": 0.78,
+        "seed": 1
+      },
+      {
+        "build": "rail-track",
+        "id": "track-a",
+        "pos": [
+          -10.2,
+          0,
+          3
+        ],
+        "size": 1.5,
+        "seed": 1,
+        "params": {
+          "length": 8,
+          "sleepers": 36
+        }
+      },
+      {
+        "build": "rail-track",
+        "id": "track-b",
+        "pos": [
+          -8.4,
+          0,
+          3
+        ],
+        "size": 1.5,
+        "seed": 2,
+        "params": {
+          "length": 8,
+          "sleepers": 36
+        }
+      },
+      {
+        "build": "train",
+        "id": "train",
+        "pos": [
+          -10.2,
+          0,
+          -9
+        ],
+        "size": 1.5,
+        "seed": 1,
+        "params": {
+          "rails": false,
+          "carriages": 3
+        }
+      },
+      {
+        "build": "train",
+        "id": "train-b",
+        "pos": [
+          -8.4,
+          0,
+          -12
+        ],
+        "size": 1.5,
+        "seed": 4,
+        "params": {
+          "rails": false,
+          "carriages": 2,
+          "body": "#3A2B5E",
+          "carriage": "#7A4B2A"
+        }
+      },
+      {
+        "id": "wheat-mark",
+        "noFrame": true,
+        "pos": [
+          -3.2,
+          0,
+          -2
+        ],
+        "parts": [
+          {
+            "id": "m",
+            "shape": "sphere",
+            "size": [
+              0.05
+            ],
+            "pos": [
+              0,
+              0.6,
+              0
+            ],
+            "color": "#000000",
+            "opacity": 0.05
+          }
+        ]
+      },
+      {
+        "build": "sun",
+        "id": "sunset",
+        "noFrame": true,
+        "pos": [
+          -3.2,
+          2.2,
+          -10
+        ],
+        "size": 1.9,
+        "seed": 5,
+        "params": {
+          "radius": 0.9,
+          "corona": true,
+          "rays": 0,
+          "color": "#FF9A3C"
+        }
+      },
+      {
+        "build": "particle-map",
+        "id": "map",
+        "pos": [
+          3,
+          0,
+          -2
+        ],
+        "size": 1.15,
+        "seed": 5,
+        "params": {
+          "region": "north-america",
+          "particles": 110,
+          "route": [
+            [
+              0.12,
+              0.55
+            ],
+            [
+              0.88,
+              0.42
+            ]
+          ]
+        }
+      },
+      {
+        "build": "ship",
+        "id": "ship",
+        "pos": [
+          9.5,
+          0.05,
+          0
+        ],
+        "size": 0.9,
+        "seed": 3,
+        "params": {
+          "lights": true,
+          "masts": 2,
+          "hull": "#2C2F3A"
+        }
+      },
+      {
+        "build": "sun",
+        "id": "moon",
+        "noFrame": true,
+        "pos": [
+          7.5,
+          4.6,
+          -8
+        ],
+        "size": 0.75,
+        "seed": 2,
+        "params": {
+          "kind": "moon",
+          "radius": 0.8,
+          "corona": true
+        }
+      },
+      {
+        "build": "mountain",
+        "id": "mountain",
+        "pos": [
+          15.5,
+          0,
+          -5
+        ],
+        "size": 1.1,
+        "seed": 4,
+        "params": {
+          "height": 3.4,
+          "rim": "#FFB38A"
+        }
+      },
+      {
+        "build": "desk-wood",
+        "id": "desk-2",
+        "pos": [
+          21,
+          0,
+          -1
+        ],
+        "size": 0.55,
+        "seed": 7,
+        "params": {
+          "props": false
+        }
+      },
+      {
+        "build": "ledger",
+        "id": "ledger",
+        "pos": [
+          19.9,
+          0.17,
+          -0.09999999999999998
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "size": 0.95,
+        "seed": 1,
+        "params": {
+          "rows": [
+            [
+              "Carreta",
+              "180 dias"
+            ],
+            [
+              "Cabo de Hornos",
+              "150 dias"
+            ],
+            [
+              "Via Panama",
+              "40 dias"
+            ],
+            [
+              "Tren",
+              "7 dias"
+            ]
+          ],
+          "header": [
+            "Costa a costa",
+            "Tiempo"
+          ],
+          "total": [],
+          "underline": 3,
+          "width": 2.4
+        }
+      },
+      {
+        "id": "plinth",
+        "pos": [
+          25.5,
+          0,
+          0
+        ],
+        "size": 1,
+        "parts": [
+          {
+            "id": "tie",
+            "shape": "box",
+            "size": [
+              2.6,
+              0.22,
+              0.7
+            ],
+            "pos": [
+              0,
+              0.11,
+              0
+            ],
+            "color": "#5A3A22",
+            "radius": 0.02
+          },
+          {
+            "id": "rail-l",
+            "shape": "box",
+            "size": [
+              0.16,
+              0.14,
+              3
+            ],
+            "pos": [
+              -0.8,
+              0.29,
+              0
+            ],
+            "color": "#8A93A3",
+            "material": "metal"
+          },
+          {
+            "id": "rail-r",
+            "shape": "box",
+            "size": [
+              0.16,
+              0.14,
+              3
+            ],
+            "pos": [
+              0.8,
+              0.29,
+              0
+            ],
+            "color": "#8A93A3",
+            "material": "metal"
+          },
+          {
+            "id": "plate",
+            "shape": "box",
+            "size": [
+              0.5,
+              0.03,
+              0.4
+            ],
+            "pos": [
+              0.8,
+              0.375,
+              0
+            ],
+            "color": "#555B66"
+          },
+          {
+            "id": "hole",
+            "shape": "cylinder",
+            "size": [
+              0.06,
+              0.06,
+              0.02
+            ],
+            "pos": [
+              0.8,
+              0.388,
+              0
+            ],
+            "color": "#101010"
+          }
+        ]
+      },
+      {
+        "id": "spike",
+        "pos": [
+          26.3,
+          0,
+          0
+        ],
+        "parts": [
+          {
+            "id": "shaft",
+            "shape": "cone",
+            "size": [
+              0.055,
+              0.4
+            ],
+            "pos": [
+              0,
+              0.6,
+              0
+            ],
+            "rot": [
+              180,
+              0,
+              0
+            ],
+            "color": "#F2C14E",
+            "material": "metal",
+            "facets": 8
+          },
+          {
+            "id": "head",
+            "shape": "cylinder",
+            "size": [
+              0.11,
+              0.09,
+              0.07
+            ],
+            "pos": [
+              0,
+              0.83,
+              0
+            ],
+            "color": "#F7D56B",
+            "material": "metal",
+            "facets": 10
+          },
+          {
+            "id": "glint",
+            "shape": "sphere",
+            "size": [
+              0.04
+            ],
+            "pos": [
+              0.05,
+              0.86,
+              0.06
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 2.5,
+            "facets": 6
+          }
+        ]
+      },
+      {
+        "id": "hammer",
+        "pos": [
+          26.3,
+          0.9,
+          0
+        ],
+        "parts": [
+          {
+            "id": "pivot",
+            "shape": "group",
+            "pos": [
+              0.9,
+              0.8,
+              0
+            ]
+          },
+          {
+            "id": "handle",
+            "shape": "cylinder",
+            "size": [
+              0.035,
+              0.035,
+              1.5
+            ],
+            "pos": [
+              -0.45,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              90
+            ],
+            "color": "#7A4F2C",
+            "parent": "pivot",
+            "facets": 8
+          },
+          {
+            "id": "head",
+            "shape": "box",
+            "size": [
+              0.22,
+              0.3,
+              0.3
+            ],
+            "pos": [
+              -1.25,
+              0,
+              0
+            ],
+            "color": "#9AA3B2",
+            "material": "metal",
+            "parent": "pivot",
+            "radius": 0.02
+          }
+        ]
+      },
+      {
+        "build": "globe",
+        "id": "globe-2",
+        "pos": [
+          29.5,
+          0,
+          -9
+        ],
+        "size": 0.9,
+        "seed": 9,
+        "params": {
+          "radius": 1.3,
+          "spin": 100,
+          "route": [
+            [
+              40,
+              -74
+            ],
+            [
+              37,
+              -122
+            ]
+          ],
+          "pins": [
+            [
+              40,
+              -74
+            ],
+            [
+              37,
+              -122
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "globo",
+      "narration": "En 1860, cruzar Estados Unidos tomaba medio año.",
+      "durationSec": 3,
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "globe",
+            "frame": "medium",
+            "yaw": -16,
+            "pitch": -8,
+            "at": 0,
+            "zoom": 0.51
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "globe",
+            "frame": "close",
+            "yaw": -4,
+            "pitch": -2,
+            "at": 2.4,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "globe/route-0",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-1",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-2",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-3",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-4",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-5",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-6",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/route-7",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/traveler",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "globe/spin",
+            "dur": 3.4,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                -14,
+                0
+              ]
+            }
+          }
+        ],
+        "fx": [
+          {
+            "type": "spotlight",
+            "pos": [
+              -29.5,
+              9,
+              -4
+            ],
+            "aim": [
+              -28,
+              0.4,
+              0
+            ],
+            "color": "#FFC98A",
+            "size": 1.1,
+            "at": 0
+          }
+        ],
+        "overlay": [
+          {
+            "type": "counter",
+            "label": "EN CARRETA",
+            "value": 180,
+            "unit": "dias",
+            "dur": 2.4,
+            "at": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "planos",
+      "narration": "Entonces alguien dibujó un plan.",
+      "durationSec": 3,
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "desk",
+            "frame": "medium",
+            "yaw": 14,
+            "pitch": 22,
+            "cut": true,
+            "at": 0,
+            "zoom": 0.65
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "sheet-a",
+            "frame": "close",
+            "yaw": 4,
+            "pitch": 38,
+            "at": 2.2,
+            "zoom": 0.2
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "desk/bulb",
+            "set": {
+              "emissive": 0.2
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "desk/bulb",
+            "dur": 1.4,
+            "to": {
+              "emissive": 3
+            }
+          }
+        ],
+        "fx": [
+          {
+            "type": "spotlight",
+            "pos": [
+              -26,
+              9,
+              -8
+            ],
+            "aim": [
+              -23.2,
+              0.4,
+              -2.4
+            ],
+            "color": "#FFD9A0",
+            "size": 0.8,
+            "at": 0.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "tren",
+      "narration": "Una locomotora arrastrando vagones por la llanura.",
+      "durationSec": 3,
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "low",
+            "focus": "train",
+            "frame": "close",
+            "yaw": 0,
+            "pitch": -14,
+            "at": 0,
+            "zoom": 0.22
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "train",
+            "frame": "close",
+            "yaw": -6,
+            "pitch": -9,
+            "at": 2,
+            "zoom": 0.22
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "train",
+            "dur": 3.6,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                0,
+                0,
+                5
+              ]
+            }
+          },
+          {
+            "at": 0,
+            "target": "train/steam",
+            "dur": 3.6,
+            "ease": "linear",
+            "to": {
+              "scale": 1.6,
+              "pos": [
+                0,
+                0.4,
+                -0.3
+              ]
+            }
+          }
+        ],
+        "fx": [
+          {
+            "type": "particles",
+            "kind": "dust",
+            "target": "train",
+            "color": "#E8C9A0",
+            "at": 0,
+            "count": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "via",
+      "narration": "Dos mil ochocientos kilómetros de vía.",
+      "durationSec": 3,
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "train",
+            "frame": "medium",
+            "yaw": -22,
+            "pitch": -3,
+            "at": 0,
+            "zoom": 0.37
+          },
+          {
+            "shot": "high",
+            "focus": "train-b",
+            "frame": "medium",
+            "yaw": 12,
+            "pitch": 6,
+            "at": 2,
+            "zoom": 0.37
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "train",
+            "dur": 3.4,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                0,
+                0,
+                2.4
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "counter",
+            "label": "DE VIA",
+            "value": 2800,
+            "unit": "km",
+            "sep": ".",
+            "dur": 2.6,
+            "at": 0.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "libro",
+      "narration": "Del carro al tren, la diferencia era enorme.",
+      "durationSec": 3,
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "ledger",
+            "frame": "medium",
+            "yaw": 8,
+            "pitch": 20,
+            "at": 0,
+            "zoom": 0.37
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "ledger",
+            "frame": "close",
+            "yaw": -4,
+            "pitch": 12,
+            "at": 2,
+            "zoom": 0.22
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "ledger/underline",
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "ledger/underline",
+            "set": {
+              "visible": true
+            }
+          }
+        ],
+        "fx": [
+          {
+            "type": "spotlight",
+            "pos": [
+              18,
+              9,
+              -6
+            ],
+            "aim": [
+              21,
+              0.5,
+              -0.8
+            ],
+            "color": "#FFE0A8",
+            "size": 0.8,
+            "at": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "final",
+      "narration": "De seis meses a siete días: así cambió el mapa.",
+      "durationSec": 4,
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "globe-2",
+            "frame": "medium",
+            "yaw": -12,
+            "pitch": -6,
+            "at": 0,
+            "zoom": 0.46
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "globe-2",
+            "frame": "close",
+            "yaw": 4,
+            "pitch": -2,
+            "at": 2.4,
+            "zoom": 0.27
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "globe-2/spin",
+            "dur": 3.4,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                -12,
+                0
+              ]
+            }
+          }
+        ],
+        "fx": [
+          {
+            "type": "spotlight",
+            "pos": [
+              25,
+              9,
+              -8
+            ],
+            "aim": [
+              29.5,
+              0.4,
+              -9
+            ],
+            "color": "#FFC98A",
+            "size": 1.1,
+            "at": 0
+          }
+        ],
+        "overlay": [
+          {
+            "type": "counter",
+            "label": "DE COSTA A COSTA",
+            "value": 7,
+            "from": 180,
+            "unit": "dias",
+            "dur": 2.4,
+            "at": 0.4
+          }
+        ]
+      }
+    }
+  ]
+}

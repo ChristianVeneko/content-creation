@@ -302,7 +302,7 @@ const shotSchema = z
     cut: z.boolean().optional().describe("stage: hard cut to this shot instead of an eased move"),
     yaw: n(-180, 180).optional(),
     pitch: n(-60, 60).optional(),
-    zoom: n(0.3, 3).optional(),
+    zoom: n(0.12, 3).optional(),
     shift: v3(-5, 5).optional(),
     ease: z.enum(EASINGS).optional(),
   })
@@ -330,12 +330,13 @@ export const fx3dSchema = z
 // ---------------- overlay kit (diegetic 2D explainer UI over the 3D stage) ----------------
 
 /** Slots of the overlay kit: `flow` = the top chip strip, `concept` = the name pill, `limit` / `versus` = the card. */
-export const OVERLAY_TYPES = ["flow", "concept", "limit", "versus"];
+export const OVERLAY_TYPES = ["flow", "concept", "limit", "versus", "counter"];
 export const OVERLAY_ABOUT = {
   flow: "top strip of flow-diagram chips (icon, label, live value) joined by arrows; the active chip is highlighted and signal dots run along the arrows",
   concept: "a pill with the name of the concept being explained",
   limit: "a demand bar with a limit tick: it turns to the over-limit color when the demand passes the limit and shows `note`",
   versus: "a card that says two things are NOT the same: two titled halves with a not-equal sign between them",
+  counter: "a big animated number in a dark rounded pill with a small label: it counts from `from` up to `value` and on to later `steps` (data documentaries: days, people, distance, money)",
 };
 const chipId = z.string().min(1).max(16);
 const iconName = z.string().min(1).max(40);
@@ -378,7 +379,23 @@ const limitOverlaySchema = z
   .strict();
 const versusSide = z.object({ title: z.string().min(1).max(14), sub: z.string().min(1).max(16).optional(), icon: iconName.optional() }).strict();
 const versusOverlaySchema = z.object({ type: z.literal("versus"), left: versusSide, right: versusSide, ...overlayWindow }).strict();
-export const overlaySchema = z.discriminatedUnion("type", [flowOverlaySchema, conceptOverlaySchema, limitOverlaySchema, versusOverlaySchema], {
+export const COUNTER_SEPARATORS = [",", ".", " ", ""];
+const counterOverlaySchema = z
+  .object({
+    type: z.literal("counter"),
+    value: n(-1e12, 1e12).describe("The number the counter reaches (after `dur` seconds from its appearance)"),
+    from: n(-1e12, 1e12).optional().describe("Where it starts counting (default 0)"),
+    dur: n(0.2, 12).optional().describe("Seconds of the first count (default 1.6)"),
+    unit: z.string().min(1).max(10).optional().describe("Unit written after the number (days, km, people)"),
+    prefix: z.string().min(1).max(4).optional().describe("Symbol written before the number ($, ~)"),
+    label: z.string().min(1).max(24).optional().describe("Small caption above the number"),
+    decimals: z.number().int().min(0).max(3).optional().describe("Decimal places (default 0)"),
+    sep: z.enum(COUNTER_SEPARATORS).optional().describe('Thousands separator: "," (default), ".", " " or "" for none'),
+    steps: z.array(z.object({ at: momentSchema, value: n(-1e12, 1e12), dur: n(0.1, 12).optional() }).strict()).max(6).optional().describe("Later targets: from `at` it counts on to `value` over `dur` seconds (default 1.2)"),
+    ...overlayWindow,
+  })
+  .strict();
+export const overlaySchema = z.discriminatedUnion("type", [flowOverlaySchema, conceptOverlaySchema, limitOverlaySchema, versusOverlaySchema, counterOverlaySchema], {
   error: (iss) => `unknown overlay type${iss.input?.type === undefined ? "" : ` "${iss.input.type}"`}; use one of: ${OVERLAY_TYPES.join(", ")}`,
 });
 
@@ -387,7 +404,7 @@ const cameraKeySchema = z
     at: momentSchema,
     yaw: n(-180, 180).optional().describe("Degrees around the scene (added to the move)"),
     pitch: n(-60, 60).optional().describe("Degrees up/down (added)"),
-    zoom: n(0.3, 3).optional().describe("Distance multiplier: < 1 closer"),
+    zoom: n(0.12, 3).optional().describe("Distance multiplier: < 1 closer"),
     shift: v3(-5, 5).optional().describe("Offset of the look-at point"),
     focus: z.string().min(1).max(40).optional().describe("Object id to aim at"),
     ease: z.enum(EASINGS).optional(),
@@ -532,7 +549,7 @@ export function refineGenerative(v, ctx) {
         for (const id of Object.keys(st.values ?? {})) if (!chips.has(id)) add([...base, "steps", j, "values"], `no chip with id "${id}" in this flow`);
       });
     }
-    if (o.type === "limit") (o.steps ?? []).forEach((st, j) => at([...base, "steps", j, "at"], st.at));
+    if (o.type === "limit" || o.type === "counter") (o.steps ?? []).forEach((st, j) => at([...base, "steps", j, "at"], st.at));
   });
   if (v.world) {
     const wp = v.world.parts ?? [];
