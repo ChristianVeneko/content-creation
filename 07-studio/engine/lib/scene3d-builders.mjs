@@ -1784,6 +1784,7 @@ B.mountain = {
     snow: num(0.35, 0, 0.7, "Snow cap fraction"),
     rock: color("Rock color"),
     peaks: int(3, 1, 4, "Peaks"),
+    rim: color("Rim-light tint of the snow caps (dusk glow; default none)"),
   },
   build(p, k) {
     const rock = p.rock ?? "#7C8696";
@@ -1791,7 +1792,7 @@ B.mountain = {
     const peakAt = (name, x, z, h, w) => {
       k.cone(name, [w, h], [x, h / 2, z], rock, { facets: 6, rot: [0, k.vary(0, 60, name, x), 0] });
       k.cone(`${name}-mid`, [w * 0.72, h * 0.62], [x, h * 0.46 + 0.0, z + 0.05], shade(rock, -0.1), { facets: 6, rot: [0, 30, 0] });
-      if (p.snow > 0) k.cone(`${name}-snow`, [w * p.snow * 1.4, h * p.snow], [x, h - (h * p.snow) / 2, z], "#F4F8FF", { facets: 6, rot: [0, k.vary(0, 60, name, x), 0] });
+      if (p.snow > 0) k.cone(`${name}-snow`, [w * p.snow * 1.4, h * p.snow], [x, h - (h * p.snow) / 2, z], p.rim ?? "#F4F8FF", { facets: 6, rot: [0, k.vary(0, 60, name, x), 0], ...(p.rim ? { material: "emissive", emissive: 0.6 } : {}) });
     };
     peakAt("peak", 0, 0, H, H * 0.62);
     for (let i = 1; i < p.peaks; i++) peakAt(`peak-${i}`, (i % 2 ? -1 : 1) * (H * 0.55 + i * 0.3), 0.3 + i * 0.1, H * (0.7 - i * 0.12), H * 0.42);
@@ -1932,6 +1933,7 @@ B.ship = {
     sail: color("Sail color"),
     flag: color("Flag color"),
     cannons: int(3, 0, 5, "Cannons per side"),
+    lights: bool(false, "Lit portholes, a stern lantern and a masthead lamp (night scenes)"),
   },
   build(p, k) {
     const L = p.length;
@@ -1966,6 +1968,11 @@ B.ship = {
     }
     for (let i = 0; i < 2; i++) for (const s of [-1, 1]) k.cyl("rigging", [0.006, 0.006, 1.7], [-L * 0.1 + i * 0.5, 1.5, s * 0.25], "#B9A98C", { facets: 4, rot: [Math.round(-s * 8), 0, 0] });
     k.sph("anchor", [0.07], [L / 2 - 0.1, 0.4, 0.5], "#3A4150", { facets: 5 });
+    if (p.lights) {
+      for (let i = 0; i < 6; i++) for (const s of [-1, 1]) k.sph("porthole", [0.03], [-L * 0.32 + i * 0.4, 0.36, s * 0.51], "#FFC76B", { facets: 6, material: "emissive", emissive: 2 });
+      k.sph("lantern", [0.05], [-L / 2 + 0.1, 1.0, 0], "#FFB347", { facets: 6, material: "emissive", emissive: 3 });
+      k.sph("masthead-lamp", [0.04], [-L * 0.15, 3.0, 0], "#FFF0B8", { facets: 6, material: "emissive", emissive: 3 });
+    }
     k.cyl("bowsprit", [0.025, 0.035, 0.7], [L / 2 + 0.25, 0.75, 0], "#5B4636", { rot: [0, 0, -75], facets: 5 });
     k.sph("figurehead", [0.07], [L / 2 + 0.55, 0.9, 0], "#E8B84A", { facets: 5 });
     return {};
@@ -1979,20 +1986,23 @@ B.sun = {
   params: {
     kind: opt("sun", ["sun", "moon"], "Sun or moon"),
     radius: num(0.9, 0.4, 2, "Disc radius"),
-    rays: int(12, 6, 16, "Ray count (sun)"),
+    rays: int(12, 0, 16, "Ray count (sun; 0 = a plain glowing disc)"),
     color: color("Disc color"),
+    corona: bool(false, "Two extra soft halo shells (cinematic backlight; works with bloom)"),
   },
   build(p, k) {
     const moon = p.kind === "moon";
     const c = p.color ?? (moon ? "#E8ECF4" : "#FFC83D");
     const R = p.radius;
     k.sph("halo", [R * 1.45], [0, 0, -0.1], shade(c, 0.4), { facets: 12, material: "emissive", emissive: 0.5, opacity: 0.35 });
+    if (p.corona) for (const [m, o] of [[1.5, 0.12], [2.1, 0.06]]) k.sph("corona", [R * m], [0, 0, -0.2], shade(c, 0.2), { facets: 14, material: "emissive", emissive: 0.5, opacity: o });
     k.sph("disc", [R, R, R * 0.5], [0, 0, 0], c, { facets: 10, material: "emissive", emissive: moon ? 0.5 : 1.4 });
     k.sph("shine", [R * 0.55, R * 0.55, R * 0.2], [-R * 0.18, R * 0.2, R * 0.42], shade(c, 0.45), { facets: 8, material: "emissive", emissive: 1.0 });
     if (moon) {
       for (let i = 0; i < 4; i++) k.sph("crater", [R * k.vary(0.12, 0.2, "cr", i), R * k.vary(0.12, 0.2, "cr", i), R * 0.08], [R * k.vary(-0.5, 0.5, "cx", i), R * k.vary(-0.5, 0.5, "cy", i), R * 0.46], shade(c, -0.2), { facets: 6 });
       return {};
     }
+    if (p.rays === 0) return {};
     const rays = k.grp("rays", [0, 0, 0]);
     for (let i = 0; i < p.rays; i++) {
       const a = (i / p.rays) * 360;
@@ -2576,6 +2586,611 @@ B.appliance = {
       k.cyl("bowl", [0.16, 0.1, 0.1], [-W * 0.2, 0.81, 0.04], "#F2C14E", { facets: 8 });
       k.cyl("cup", [0.05, 0.04, 0.09], [W * 0.18, 0.79, -0.08], "#5CB8E8", { facets: 6 });
     }
+    return {};
+  },
+};
+
+// ---------------- documentary set pieces (documentary-3d: trains, globes, domes, aircraft, ledgers, maps) ----------------
+
+Kit.prototype.lathe = function (name, points, pos, color, o) {
+  return this.add("lathe", name, null, pos, color, { ...o, points: points.map((q) => q.map(r3)) });
+};
+
+/** Point on a sphere of radius r at latitude / longitude (degrees): longitude 0 faces +z, east is +x. */
+const llp = (lat, lon, r) => [r * Math.cos(rad(lat)) * Math.sin(rad(lon)), r * Math.sin(rad(lat)), r * Math.cos(rad(lat)) * Math.cos(rad(lon))];
+/** Euler XYZ degrees that turn a part's +z onto the unit normal n (its +y stays near north). */
+function faceNormal(n, spin = 0) {
+  const len = Math.hypot(...n) || 1;
+  const z = n.map((v) => v / len);
+  let x = [z[2], 0, -z[0]]; // up x z
+  if (Math.hypot(...x) < 1e-6) x = [1, 0, 0];
+  const xl = Math.hypot(...x);
+  x = x.map((v) => v / xl);
+  const y = [z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2], z[0] * x[1] - z[1] * x[0]];
+  const m13 = z[0];
+  const ey = Math.asin(Math.max(-1, Math.min(1, m13)));
+  let ex;
+  let ez;
+  if (Math.abs(m13) < 0.9999999) {
+    ex = Math.atan2(-z[1], z[2]);
+    ez = Math.atan2(-y[0], x[0]);
+  } else {
+    ex = Math.atan2(y[2], y[1]);
+    ez = 0;
+  }
+  return [deg(ex), deg(ey), deg(ez) + spin];
+}
+
+/** Coarse continent outlines [lon, lat] (a small built-in data set for the globe and the particle map). */
+export const LAND = {
+  "north-america": [[-168, 66], [-140, 70], [-95, 72], [-80, 70], [-62, 60], [-55, 50], [-67, 45], [-76, 36], [-81, 25], [-97, 26], [-97, 18], [-87, 15], [-80, 8], [-92, 14], [-105, 20], [-117, 32], [-125, 40], [-125, 49], [-137, 58], [-152, 60]],
+  greenland: [[-55, 60], [-45, 60], [-20, 70], [-20, 82], [-60, 82], [-72, 76]],
+  "south-america": [[-80, 10], [-62, 11], [-50, 0], [-35, -6], [-40, -22], [-48, -27], [-58, -38], [-65, -42], [-68, -52], [-74, -52], [-74, -40], [-71, -18], [-81, -6]],
+  eurasia: [[-10, 36], [-9, 43], [-2, 48], [-5, 52], [5, 58], [10, 63], [16, 69], [30, 71], [60, 70], [90, 76], [120, 73], [150, 70], [180, 66], [170, 60], [155, 58], [142, 48], [130, 42], [122, 40], [122, 30], [110, 20], [106, 10], [100, 2], [98, 12], [92, 20], [80, 14], [77, 8], [72, 20], [66, 25], [57, 25], [50, 28], [43, 13], [35, 28], [34, 31], [36, 37], [28, 36], [26, 40], [20, 40], [12, 38], [8, 43], [0, 38]],
+  africa: [[-17, 21], [-6, 36], [10, 37], [32, 31], [35, 22], [43, 12], [51, 12], [40, -3], [40, -15], [35, -25], [27, -34], [18, -34], [12, -18], [9, -1], [8, 5], [-8, 4], [-17, 14]],
+  australia: [[114, -22], [122, -18], [131, -12], [137, -12], [142, -11], [146, -19], [153, -26], [150, -37], [141, -38], [131, -31], [115, -34]],
+  antarctica: [[-180, -72], [-120, -75], [-60, -70], [0, -72], [60, -68], [120, -66], [180, -72], [180, -90], [-180, -90]],
+};
+const inPoly = (poly, x, y) => {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i];
+    const [xj, yj] = poly[j];
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+};
+const onLand = (lon, lat, names = Object.keys(LAND)) => names.some((n) => LAND[n] && inPoly(LAND[n], lon, lat));
+const REGIONS = Object.keys(LAND).filter((n) => n !== "antarctica");
+
+/** Points of an arc over a sphere between two lat / lon pairs (great circle, lifted by `lift` * r at the middle). */
+function arcPoints(a, b, r, lift, steps) {
+  const va = llp(a[0], a[1], 1);
+  const vb = llp(b[0], b[1], 1);
+  const dot = Math.max(-1, Math.min(1, va[0] * vb[0] + va[1] * vb[1] + va[2] * vb[2]));
+  const om = Math.acos(dot) || 1e-3;
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const t = i / steps;
+    const s1 = Math.sin((1 - t) * om) / Math.sin(om);
+    const s2 = Math.sin(t * om) / Math.sin(om);
+    const h = r * (1 + lift * Math.sin(Math.PI * t));
+    const v = [0, 1, 2].map((q) => va[q] * s1 + vb[q] * s2);
+    const l = Math.hypot(...v) || 1;
+    return v.map((c) => (c / l) * h);
+  });
+}
+
+B.globe = {
+  about: "Documentary globe: a faceted ocean sphere with continent tiles from a built-in coarse data set (`land-*`, tangent faceted patches), a night-side shade, a thin atmosphere rim, city pins `pin-0`.. and a glowing route arc as tube segments `route-0`..`route-7` (reveal them one by one with beats) with a `traveler` dot. Everything spins with the group `spin` (turn it with a beat). Faces +z (longitude 0 toward the camera).",
+  params: {
+    radius: num(1.6, 0.8, 2.4, "Globe radius"),
+    tile: int(12, 9, 18, "Degrees per land tile (smaller = finer continents, more parts)"),
+    regions: list(["north-america", "south-america", "eurasia", "africa", "australia", "greenland"], `Continents drawn (${REGIONS.join(", ")})`),
+    pins: list([[40, -74], [37, -122]], "City pins [[lat, lon], ...] (at most 6)"),
+    route: list([[40, -74], [37, -122]], "Route arc [[lat, lon], [lat, lon]] between two places ([] for none)"),
+    lift: num(0.16, 0, 0.5, "How high the route arc rises above the surface (fraction of the radius)"),
+    night: bool(true, "Shade the night hemisphere (away from the key light)"),
+    spin: num(0, -180, 180, "Initial longitude turn of the whole globe (degrees)"),
+    ocean: color("Ocean color"),
+    land: color("Land color"),
+    glow: color("Route and pin glow color"),
+  },
+  build(p, k) {
+    const R = p.radius;
+    const ocean = p.ocean ?? "#1B4F9C";
+    const land = p.land ?? "#58A04A";
+    const glow = p.glow ?? "#FFD27A";
+    const spin = k.grp("spin", [0, R + 0.05, 0], { rot: [0, p.spin, 0] });
+    k.sph("ocean", [R], [0, 0, 0], ocean, { parent: spin, facets: 18 });
+    const names = (p.regions ?? []).filter((n) => LAND[n]);
+    const step = p.tile;
+    let tiles = 0;
+    for (let lat = -90 + step / 2; lat < 90 && tiles < 118; lat += step) {
+      const cols = Math.max(4, Math.round(360 / step * Math.cos(rad(lat))));
+      for (let c = 0; c < cols && tiles < 118; c++) {
+        const lon = -180 + ((c + 0.5) / cols) * 360;
+        if (!onLand(lon, lat, names)) continue;
+        const wob = k.rnd("tile", tiles);
+        const norm = llp(lat, lon, 1);
+        const half = R * rad(step) * 0.86;
+        const wide = Math.max(half * 0.7, half * Math.cos(rad(lat)) ** 0.25);
+        const polar = lat < -60;
+        // flattened faceted blobs lying on the sphere: their edges sink into the ocean, so the continents read as one faceted relief
+        k.sph("land", [wide, half, R * (0.06 + wob * 0.04)], llp(lat, lon, R * 0.995), polar ? "#EEF3F8" : mix(land, k.pick(["#C2A35E", "#3E8F46", "#8DBB55", "#9A7442"], "tint", tiles), 0.25 + wob * 0.55), { parent: spin, facets: 6, rot: faceNormal(norm) });
+        tiles++;
+      }
+    }
+    k.sph("atmo", [R * 1.045], [0, 0, 0], "#6FB5FF", { parent: spin, facets: 18, material: "emissive", emissive: 0.6, opacity: 0.08 });
+    k.sph("atmo-outer", [R * 1.1], [0, 0, 0], "#4C8DFF", { facets: 14, material: "emissive", emissive: 0.6, opacity: 0.08, parent: k.grp("rim", [0, R + 0.05, 0]) });
+    if (p.night) {
+      // a hemisphere shell (lathe) turned away from the key light
+      const prof = Array.from({ length: 9 }, (_, i) => [Math.sin((i / 8) * (Math.PI / 2)) * R * 1.02, Math.cos((i / 8) * (Math.PI / 2)) * R * 1.02]);
+      k.lathe("night", prof, [0, R + 0.05, 0], "#050B1E", { rot: [0, 0, -90], opacity: 0.58 });
+    }
+    const pins = (p.pins ?? []).filter((q) => Array.isArray(q) && q.length === 2).slice(0, 6);
+    pins.forEach((q, i) => {
+      k.box("pin-stem", [0.014, 0.014, R * 0.1], llp(q[0], q[1], R * 1.04), "#FFFFFF", { parent: spin, rot: faceNormal(llp(q[0], q[1], 1)) });
+      k.sph(`pin-${i}`, [R * 0.035], llp(q[0], q[1], R * 1.085), glow, { parent: spin, facets: 6, material: "emissive", emissive: 2 });
+    });
+    const route = (p.route ?? []).filter((q) => Array.isArray(q) && q.length === 2);
+    if (route.length >= 2) {
+      const pts = arcPoints(route[0], route[1], R * 1.01, p.lift, 56);
+      for (let s = 0; s < 8; s++) {
+        const seg = pts.slice(Math.floor((s * 56) / 8), Math.floor(((s + 1) * 56) / 8) + 1);
+        k.tube(`route-${s}`, [R * 0.011], seg, glow, { parent: spin, material: "emissive", emissive: 2.2 });
+      }
+      k.sph("traveler", [R * 0.04], pts[0], "#FFFFFF", { parent: spin, facets: 6, material: "emissive", emissive: 3 });
+    }
+    return {};
+  },
+};
+
+B["rail-track"] = {
+  about: "Railway track along z (centered on its origin): two steel rails, sleepers, a ballast bed and a faint rail shine, N sleepers (the track meets the vanishing point when the camera sits low in front of it). Faces +z.",
+  params: {
+    length: num(8, 2, 8, "Track length (z)"),
+    sleepers: int(36, 8, 56, "Sleeper count"),
+    gauge: num(0.62, 0.3, 1.2, "Distance between the rails"),
+    steel: color("Rail color"),
+    wood: color("Sleeper color"),
+  },
+  build(p, k) {
+    const L = p.length;
+    const steel = p.steel ?? "#8A93A3";
+    const wood = p.wood ?? "#4A3322";
+    k.box("ballast", [p.gauge + 0.8, 0.05, L], [0, 0.025, 0], "#5C5750", { radius: 0.02 });
+    for (const s of [-1, 1]) {
+      k.box("rail", [0.045, 0.07, L], [s * p.gauge / 2, 0.095, 0], steel, { material: "metal" });
+      k.box("rail-shine", [0.012, 0.01, L], [s * p.gauge / 2, 0.135, 0], shade(steel, 0.5), { material: "emissive", emissive: 0.4 });
+    }
+    for (let i = 0; i < p.sleepers; i++) k.box("sleeper", [p.gauge + 0.34, 0.05, 0.1], [0, 0.075, L / 2 - 0.1 - (i * (L - 0.2)) / Math.max(1, p.sleepers - 1)], shade(wood, k.vary(-0.12, 0.1, "w", i)));
+    return {};
+  },
+};
+
+B.train = {
+  about: "Steam locomotive seen head-on (faces +z, drives toward the camera when an actor beat moves it along +z): funnel, boiler with bands, smokebox and a glowing headlamp, dome, cab with lit windows, pilot, driving wheels `wheel-0`.. that turn (`drive`), side rods, a tender and N carriages with lit windows, optional rails and sleepers under it, and `steam` puffs (`puff-0`.. under the group `steam`; scale or fade them with beats).",
+  params: {
+    carriages: int(3, 0, 6, "Carriages behind the tender"),
+    body: color("Locomotive body color"),
+    carriage: color("Carriage color"),
+    trim: color("Trim and brass color"),
+    rails: bool(true, "Rails and sleepers under it (false when it drives along a separate `rail-track` actor)"),
+    railLength: num(6, 3, 8, "Rail length"),
+    drive: bool(true, "Turn the driving wheels"),
+    puffs: int(3, 0, 5, "Steam puffs above the funnel"),
+    lamp: color("Headlamp color"),
+  },
+  build(p, k) {
+    const body = p.body ?? "#1F3B34";
+    const car = p.carriage ?? "#5E2F2A";
+    const brass = p.trim ?? "#C9A24A";
+    const lamp = p.lamp ?? "#FFF0B8";
+    const iron = "#20242B";
+    if (p.rails) {
+      const L = p.railLength;
+      for (const s of [-1, 1]) k.box("rail", [0.045, 0.07, L], [s * 0.31, 0.035, 1.5 - L / 2], "#8A93A3", { material: "metal" });
+      const n = Math.round(L / 0.24);
+      for (let i = 0; i < n; i++) k.box("sleeper", [0.84, 0.05, 0.1], [0, 0.0, 1.5 - (i * (L - 0.2)) / Math.max(1, n - 1)], shade("#4A3322", k.vary(-0.1, 0.1, "s", i)));
+    }
+    const y0 = 0.07;
+    k.box("frame", [0.62, 0.09, 1.9], [0, y0 + 0.18, 0.15], iron);
+    k.cyl("boiler", [0.27, 0.27, 1.15], [0, y0 + 0.5, 0.42], body, { rot: [90, 0, 0] });
+    for (const z of [0.0, 0.42, 0.8]) k.cyl("band", [0.285, 0.285, 0.05], [0, y0 + 0.5, z], brass, { rot: [90, 0, 0], material: "metal" });
+    k.cyl("smokebox", [0.275, 0.275, 0.16], [0, y0 + 0.5, 0.95], "#15181D", { rot: [90, 0, 0] });
+    k.cyl("door", [0.2, 0.2, 0.03], [0, y0 + 0.5, 1.04], "#2A2F36", { rot: [90, 0, 0] });
+    k.sph("door-knob", [0.04], [0, y0 + 0.5, 1.07], brass, { facets: 6, material: "metal" });
+    k.cyl("funnel", [0.15, 0.075, 0.34], [0, y0 + 0.95, 0.8], "#14171C", { facets: 12 });
+    k.cyl("funnel-rim", [0.17, 0.17, 0.03], [0, y0 + 1.14, 0.8], brass, { material: "metal" });
+    k.sph("dome", [0.11, 0.1, 0.11], [0, y0 + 0.8, 0.42], brass, { material: "metal", facets: 10 });
+    k.sph("sand-dome", [0.09, 0.08, 0.09], [0, y0 + 0.78, 0.1], body, { facets: 10 });
+    k.box("cab", [0.62, 0.66, 0.5], [0, y0 + 0.57, -0.38], shade(body, -0.05));
+    k.box("cab-roof", [0.7, 0.05, 0.62], [0, y0 + 0.93, -0.38], shade(body, 0.1), { radius: 0.02 });
+    for (const s of [-1, 1]) k.box("cab-window", [0.012, 0.2, 0.26], [s * 0.316, y0 + 0.66, -0.38], lamp, { material: "emissive", emissive: 0.9 });
+    k.box("cab-front-window", [0.3, 0.2, 0.012], [0, y0 + 0.66, -0.13], lamp, { material: "emissive", emissive: 0.9 });
+    k.box("lamp-housing", [0.14, 0.14, 0.12], [0, y0 + 0.86, 1.0], iron, { radius: 0.02 });
+    k.sph("headlamp", [0.065], [0, y0 + 0.86, 1.075], lamp, { facets: 8, material: "emissive", emissive: 3.2 });
+    k.box("buffer-beam", [0.64, 0.1, 0.07], [0, y0 + 0.18, 1.1], "#8B2A25");
+    for (const s of [-1, 1]) {
+      k.cyl("buffer", [0.04, 0.04, 0.1], [s * 0.22, y0 + 0.18, 1.17], "#C8CDD4", { rot: [90, 0, 0], material: "metal" });
+      k.sph("sidelamp", [0.03], [s * 0.26, y0 + 0.3, 1.14], "#FFB347", { facets: 5, material: "emissive", emissive: 1.4 });
+    }
+    k.cone("pilot", [0.3, 0.38], [0, y0 + 0.09, 1.28], iron, { facets: 4, rot: [90, 45, 0], scale: [1, 1, 0.5] });
+    for (let i = 0; i < 3; i++) for (const s of [-1, 1]) {
+      const g = k.grp(`wheel-${i * 2 + (s > 0 ? 1 : 0)}`, [s * 0.34, y0 + 0.2, 0.62 - i * 0.4], p.drive ? { motion: [{ type: "spin", axis: "x", speed: 2.4 }] } : {});
+      k.cyl("tyre", [0.2, 0.2, 0.06], [0, 0, 0], iron, { parent: g, rot: [0, 0, 90], facets: 14 });
+      k.cyl("rim", [0.155, 0.155, 0.07], [0, 0, 0], shade(body, 0.15), { parent: g, rot: [0, 0, 90], facets: 14 });
+      k.box("spoke-a", [0.075, 0.34, 0.03], [0, 0, 0], iron, { parent: g });
+      k.box("spoke-b", [0.075, 0.03, 0.34], [0, 0, 0], iron, { parent: g });
+      k.cyl("hub", [0.045, 0.045, 0.09], [0, 0, 0], brass, { parent: g, rot: [0, 0, 90], material: "metal", facets: 8 });
+    }
+    for (const s of [-1, 1]) k.box("side-rod", [0.03, 0.04, 0.82], [s * 0.385, y0 + 0.2, 0.42], brass, { material: "metal" });
+    // tender
+    k.box("tender", [0.6, 0.4, 0.62], [0, y0 + 0.4, -1.0], shade(body, -0.1), { radius: 0.02 });
+    k.sph("coal", [0.28, 0.1, 0.3], [0, y0 + 0.62, -1.0], "#14161B", { facets: 6 });
+    for (const s of [-1, 1]) for (const z of [-0.85, -1.15]) k.cyl("tender-wheel", [0.11, 0.11, 0.05], [s * 0.33, y0 + 0.11, z], iron, { rot: [0, 0, 90], facets: 10 });
+    // carriages
+    for (let i = 0; i < p.carriages; i++) {
+      const z = -1.72 - i * 0.98;
+      k.box("coach", [0.6, 0.46, 0.9], [0, y0 + 0.4, z], shade(car, k.vary(-0.06, 0.06, "c", i)), { radius: 0.02 });
+      k.box("coach-roof", [0.64, 0.07, 0.94], [0, y0 + 0.68, z], shade(car, 0.12), { radius: 0.03 });
+      k.box("coach-stripe", [0.612, 0.035, 0.91], [0, y0 + 0.5, z], brass);
+      for (const s of [-1, 1]) k.box("coach-window", [0.012, 0.15, 0.74], [s * 0.306, y0 + 0.43, z], lamp, { material: "emissive", emissive: 0.8 });
+      k.box("bogie", [0.5, 0.08, 0.6], [0, y0 + 0.1, z], iron);
+    }
+    if (p.puffs > 0) {
+      const g = k.grp("steam", [0, y0 + 1.2, 0.8]);
+      for (let i = 0; i < p.puffs; i++) {
+        const r = 0.06 + i * 0.03;
+        k.sph("puff", [r], [0.02 * i, 0.1 + i * 0.13, -0.1 * i], "#C9D2E6", { parent: g, facets: 8, opacity: Math.max(0.12, 0.42 - i * 0.08), material: "emissive", emissive: 0.2 });
+      }
+    }
+    return {};
+  },
+};
+
+B["dome-building"] = {
+  about: "Neoclassical domed building facing +z: stepped base, a colonnade with entablature and pediment, wings, lit windows (`win-0`..), a drum, a ribbed green dome with a lantern and a flagpole. Lit at dusk by default (`lit`); recolor `win-k` or the dome with beats.",
+  params: {
+    columns: int(10, 4, 14, "Columns of the colonnade"),
+    width: num(4.2, 2.6, 4.8, "Width of the main block"),
+    ribs: int(8, 4, 12, "Ribs of the dome"),
+    wings: bool(true, "Side wings"),
+    lit: bool(true, "Warm lit windows"),
+    stone: color("Stone color"),
+    dome: color("Dome color"),
+    glow: color("Window glow"),
+  },
+  build(p, k) {
+    const stone = p.stone ?? "#D8D2C4";
+    const domeC = p.dome ?? "#3E8F7C";
+    const glow = p.glow ?? "#FFC76B";
+    const W = p.width;
+    const H = 0.9;
+    for (let i = 0; i < 3; i++) k.box("step", [W + 0.7 - i * 0.2, 0.09, 1.0 - i * 0.15], [0, 0.045 + i * 0.09, 0.45 - i * 0.05], shade(stone, -0.05 - i * 0.03));
+    const y0 = 0.27;
+    k.box("block", [W, H, 1.2], [0, y0 + H / 2, 0], shade(stone, -0.12));
+    const n = p.columns;
+    for (let i = 0; i < n; i++) k.cyl("column", [0.075, 0.085, H], [-W / 2 + 0.2 + (i * (W - 0.4)) / (n - 1), y0 + H / 2, 0.66], stone, { facets: 10 });
+    const lit = p.lit ? { material: "emissive", emissive: 2.2 } : {};
+    for (let i = 0; i < n - 1; i++) for (let r = 0; r < 2; r++) k.box("win", [0.15, 0.22, 0.02], [-W / 2 + 0.2 + ((i + 0.5) * (W - 0.4)) / (n - 1), y0 + 0.28 + r * 0.42, 0.58], glow, lit);
+    k.box("entablature", [W + 0.1, 0.14, 1.3], [0, y0 + H + 0.07, 0.05], stone);
+    k.ext("pediment", 1.2, [[-W / 2 * 0.62, 0], [W / 2 * 0.62, 0], [0, 0.4]], [0, y0 + H + 0.14, 0.05], shade(stone, 0.05), { rot: [0, 0, 0] });
+    const dy = y0 + H + 0.14;
+    k.cyl("drum", [0.78, 0.82, 0.42], [0, dy + 0.21, -0.1], stone, { facets: 16 });
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      k.box("drum-window", [0.08, 0.2, 0.02], [Math.sin(a) * 0.805, dy + 0.22, -0.1 + Math.cos(a) * 0.805], glow, { ...lit, rot: [0, deg(a), 0] });
+    }
+    k.cyl("cornice", [0.86, 0.86, 0.05], [0, dy + 0.45, -0.1], shade(stone, 0.08), { facets: 16 });
+    const prof = Array.from({ length: 11 }, (_, i) => [Math.cos((i / 10) * (Math.PI / 2)) * 0.74, Math.sin((i / 10) * (Math.PI / 2)) * 0.62]);
+    k.lathe("dome", prof, [0, dy + 0.46, -0.1], domeC, { material: "metal" });
+    for (let i = 0; i < p.ribs; i++) k.tor("rib", [0.745, 0.012, 180], [0, dy + 0.46, -0.1], shade(domeC, 0.35), { rot: [0, (i / p.ribs) * 180, 0], scale: [1, 0.84, 1] });
+    k.cyl("lantern", [0.1, 0.12, 0.2], [0, dy + 1.18, -0.1], stone, { facets: 10 });
+    k.cone("lantern-roof", [0.12, 0.16], [0, dy + 1.36, -0.1], domeC, { facets: 10 });
+    k.cyl("flagpole", [0.01, 0.01, 0.32], [0, dy + 1.6, -0.1], "#C8CDD4", { facets: 4 });
+    k.box("flag", [0.18, 0.1, 0.01], [0.1, dy + 1.7, -0.1], "#C9473D");
+    if (p.wings) for (const s of [-1, 1]) {
+      k.box("wing", [1.0, 0.7, 0.9], [s * (W / 2 + 0.55), y0 + 0.35, -0.05], shade(stone, -0.14));
+      k.box("wing-roof", [1.06, 0.05, 0.96], [s * (W / 2 + 0.55), y0 + 0.72, -0.05], shade(stone, 0.04));
+      for (let i = 0; i < 3; i++) for (let r = 0; r < 2; r++) k.box("win", [0.12, 0.18, 0.02], [s * (W / 2 + 0.55) + (i - 1) * 0.28, y0 + 0.22 + r * 0.32, 0.41], glow, lit);
+    }
+    return {};
+  },
+};
+
+B.aircraft = {
+  about: "Four-engine transport aircraft seen from above and behind (nose toward +z): round fuselage with nose and tail cone, swept high wings, four engine nacelles with spinning propeller discs (`prop-0`..), tail fin and tailplane, a window row, a cockpit glass, red / green / white navigation lights (`nav-l`, `nav-r`, `strobe`) that blink. Fly it with actor beats; scale it with `size`.",
+  params: {
+    engines: int(4, 2, 4, "Engines (2 or 4)"),
+    span: num(4.2, 2.4, 4.8, "Wingspan"),
+    sweep: num(10, 0, 26, "Wing sweep (degrees)"),
+    body: color("Fuselage color"),
+    accent: color("Stripe and tail color"),
+    lights: bool(true, "Navigation lights"),
+  },
+  build(p, k) {
+    const body = p.body ?? "#C9D1DC";
+    const acc = p.accent ?? "#2D4E86";
+    const S = p.span;
+    k.add("capsule", "fuselage", [0.26, 2.0], [0, 0.4, 0], body, { rot: [90, 0, 0], facets: 12 });
+    k.cone("nose", [0.26, 0.5], [0, 0.4, 1.5], shade(body, -0.08), { rot: [90, 0, 0], facets: 12 });
+    k.cone("tail-cone", [0.26, 0.9], [0, 0.46, -1.9], body, { rot: [-90, 0, 0], facets: 12 });
+    k.box("cockpit", [0.3, 0.12, 0.2], [0, 0.6, 1.2], "#1A2B44", { radius: 0.04, material: "glass" });
+    k.box("belly-stripe", [0.54, 0.05, 2.6], [0, 0.35, -0.1], acc, { radius: 0.02 });
+    for (const s of [-1, 1]) {
+      k.box("wing", [S / 2, 0.05, 0.62], [s * (S / 4 + 0.15), 0.52, 0.1 - Math.sin(rad(p.sweep)) * S * 0.12], shade(body, -0.04), { rot: [0, -s * p.sweep, s * 2], radius: 0.015 });
+      k.box("tailplane", [S * 0.28, 0.04, 0.34], [s * (S * 0.14 + 0.08), 0.95, -2.0], body, { rot: [0, -s * 14, 0] });
+    }
+    k.ext("fin", 0.05, [[-0.4, 0], [0.12, 0], [0.0, 0.62], [-0.28, 0.62]], [0, 0.55, -1.75], acc, { rot: [0, 90, 0] });
+    const n = p.engines;
+    const xs = n === 4 ? [-0.34, -0.72, 0.34, 0.72] : [-0.58, 0.58];
+    xs.forEach((fx, i) => {
+      const x = fx * S * 0.5;
+      const z = 0.55 - Math.abs(fx) * 0.4 - Math.sin(rad(p.sweep)) * Math.abs(x) * 0.4;
+      k.cyl("nacelle", [0.085, 0.085, 0.5], [x, 0.46, z], shade(body, -0.15), { rot: [90, 0, 0], facets: 10 });
+      k.cone("spinner", [0.06, 0.12], [x, 0.46, z + 0.31], "#B8C0CC", { rot: [90, 0, 0], facets: 8 });
+      const pr = k.grp(`prop-${i}`, [x, 0.46, z + 0.36], { motion: [{ type: "spin", axis: "z", speed: 6 }] });
+      k.box("blade-a", [0.5, 0.04, 0.01], [0, 0, 0], "#2A2E36", { parent: pr });
+      k.box("blade-b", [0.04, 0.5, 0.01], [0, 0, 0], "#2A2E36", { parent: pr });
+      k.cyl("blur", [0.25, 0.25, 0.005], [0, 0, 0], "#9AA3B2", { parent: pr, rot: [90, 0, 0], opacity: 0.18, facets: 16 });
+    });
+    for (let i = 0; i < 9; i++) for (const s of [-1, 1]) k.box("window", [0.012, 0.05, 0.07], [s * 0.262, 0.46, 0.95 - i * 0.2], "#FFE9B0", { material: "emissive", emissive: 0.9 });
+    if (p.lights) {
+      k.sph("nav-l", [0.035], [-S * 0.5 + 0.1, 0.55, -0.12 - Math.sin(rad(p.sweep)) * S * 0.2], "#FF3B30", { facets: 6, material: "emissive", emissive: 3 });
+      k.sph("nav-r", [0.035], [S * 0.5 - 0.1, 0.55, -0.12 - Math.sin(rad(p.sweep)) * S * 0.2], "#34C759", { facets: 6, material: "emissive", emissive: 3 });
+      k.sph("strobe", [0.03], [0, 1.2, -1.95], "#FFFFFF", { facets: 6, material: "emissive", emissive: 3.5 });
+      k.sph("landing-light", [0.04], [0, 0.3, 1.78], "#FFF6D0", { facets: 6, material: "emissive", emissive: 2.5 });
+    }
+    return {};
+  },
+};
+
+B.ledger = {
+  about: "Ledger page: an aged paper sheet standing upright (faces +z; tilt the actor to lay it on a desk) with a header, ruled lines, a vertical rule and a pixel-font table of rows `row-label-k` / `row-value-k` (text from `rows`), a bold total line and a red underline `underline` (reveal it with a beat). Text parts are `sign` parts (<= 24 characters each).",
+  params: {
+    rows: list([["Alfa", "4.000"], ["Beta", "58.000"], ["Gamma", "40.000"], ["Delta", "3.000"], ["Epsilon", "342.000"], ["Zeta", "8.000"]], "Table rows [[label, value], ...] (at most 11; label <= 14, value <= 12 characters)"),
+    header: list(["Pais", "Numero"], "Column titles [left, right]"),
+    total: list(["Total", "11.000.000"], "Total line [label, value] ([] for none)"),
+    underline: int(-1, -1, 10, "Row (0-based) to underline in red; -1 underlines the total line (none without a total)"),
+    width: num(2.6, 1.6, 3.4, "Sheet width"),
+    paper: color("Paper color"),
+    ink: color("Ink color"),
+    mark: color("Underline color"),
+  },
+  build(p, k) {
+    const paper = p.paper ?? "#E9DDB8";
+    const ink = p.ink ?? "#3B2E22";
+    const mark = p.mark ?? "#D62828";
+    const W = p.width;
+    const rows = (p.rows ?? []).filter((r) => Array.isArray(r) && r.length === 2).slice(0, 11).map((r) => [String(r[0]).slice(0, 14), String(r[1]).slice(0, 12)]);
+    const n = rows.length + (p.total?.length === 2 ? 1 : 0) + 1;
+    const rh = 0.19;
+    const H = n * rh + 0.55;
+    k.box("sheet", [W, H, 0.025], [0, H / 2, 0], paper, { radius: 0.01 });
+    k.box("shade-edge", [W + 0.03, H + 0.03, 0.012], [0, H / 2, -0.012], shade(paper, -0.35));
+    k.box("rule-v", [0.012, H - 0.3, 0.004], [W * 0.18, H / 2 - 0.05, 0.016], shade(ink, 0.3), { opacity: 0.55 });
+    const rowAt = (i) => H - 0.32 - i * rh;
+    const line = (y, o = 0.5) => k.box("rule", [W - 0.3, 0.008, 0.004], [0, y - rh / 2, 0.016], shade(ink, 0.35), { opacity: o });
+    const text = (name, t, x, y, w, color, bold) => k.add("sign", name, [w, rh * 0.8], [x, y, 0.02], paper, { text: t, textColor: color });
+    const h = p.header?.length === 2 ? p.header : ["", ""];
+    if (h[0]) text("head-label", h[0], -W * 0.18, rowAt(0), W * 0.56, shade(ink, 0.2));
+    if (h[1]) text("head-value", h[1], W * 0.28, rowAt(0), W * 0.36, shade(ink, 0.2));
+    line(rowAt(0));
+    rows.forEach((r, i) => {
+      text("row-label", r[0], -W * 0.18, rowAt(i + 1), W * 0.56, ink);
+      text("row-value", r[1], W * 0.28, rowAt(i + 1), W * 0.36, ink);
+      line(rowAt(i + 1), 0.28);
+    });
+    if (p.total?.length === 2) {
+      const y = rowAt(rows.length + 1) - 0.06;
+      k.box("total-rule", [W - 0.3, 0.014, 0.004], [0, y + rh / 2 - 0.01, 0.016], ink);
+      text("total-label", p.total[0], -W * 0.18, y, W * 0.56, ink, true);
+      text("total-value", p.total[1], W * 0.28, y, W * 0.36, ink, true);
+      if (p.underline < 0) k.box("underline", [W * 0.38, 0.03, 0.006], [W * 0.28, y - rh * 0.45, 0.02], mark);
+    }
+    if (p.underline >= 0 && p.underline < rows.length) k.box("underline", [W * 0.38, 0.03, 0.006], [W * 0.28, rowAt(p.underline + 1) - rh * 0.45, 0.02], mark);
+    return {};
+  },
+};
+
+B["blueprint-sheet"] = {
+  about: "Blue technical drawing sheet: a blue board with a grid, a white border and title block, and drawn ink lines `ink-0`.. (a locomotive, a domed building or a route plan) that you reveal one by one with beats (`visible`, `opacity`). Stands upright facing +z, tilted back by `tilt` degrees (0 = upright, 90 = lying flat).",
+  params: {
+    drawing: opt("locomotive", ["locomotive", "dome", "plan", "none"], "What is drawn on it"),
+    width: num(2.2, 1.4, 3, "Sheet width"),
+    height: num(3, 2, 3.6, "Sheet height"),
+    tilt: num(0, 0, 90, "Tilt back from upright (degrees)"),
+    grid: int(8, 4, 12, "Grid cells across"),
+    paper: color("Sheet color"),
+    ink: color("Line color"),
+  },
+  build(p, k) {
+    const paper = p.paper ?? "#1F4E9E";
+    const ink = p.ink ?? "#E6F0FF";
+    const W = p.width;
+    const H = p.height;
+    const root = k.grp("sheet", [0, 0, 0], { rot: [-p.tilt, 0, 0] });
+    const lift = H / 2 * Math.sin(rad(p.tilt)) * 0;
+    k.box("board", [W, H, 0.03], [0, H / 2 + lift, 0], paper, { parent: root, radius: 0.01 });
+    const cells = p.grid;
+    const cell = W / cells;
+    for (let i = 1; i < cells; i++) k.box("grid-v", [0.006, H - 0.16, 0.004], [-W / 2 + i * cell, H / 2, 0.018], shade(paper, 0.28), { parent: root, opacity: 0.6 });
+    for (let j = 1; j < Math.floor(H / cell); j++) k.box("grid-h", [W - 0.16, 0.006, 0.004], [0, j * cell, 0.018], shade(paper, 0.28), { parent: root, opacity: 0.6 });
+    for (const [x, y, w, h] of [[0, H - 0.07, W - 0.1, 0.012], [0, 0.07, W - 0.1, 0.012], [-W / 2 + 0.05, H / 2, 0.012, H - 0.14], [W / 2 - 0.05, H / 2, 0.012, H - 0.14]]) k.box("border", [w, h, 0.006], [x, y, 0.02], ink, { parent: root });
+    k.box("title-block", [W * 0.42, 0.34, 0.006], [W * 0.26, 0.26, 0.02], shade(paper, -0.12), { parent: root });
+    k.add("sign", "title-text", [W * 0.38, 0.12], [W * 0.26, 0.3, 0.025], shade(paper, -0.12), { parent: root, text: "PLANO 1:50", textColor: ink });
+    let ink_i = 0;
+    const line = (x0, y0, x1, y1, w = 0.018) => {
+      const len = Math.hypot(x1 - x0, y1 - y0);
+      k.box(`ink-${ink_i++}`, [len, w, 0.01], [(x0 + x1) / 2, (y0 + y1) / 2, 0.026], ink, { parent: root, rot: [0, 0, deg(Math.atan2(y1 - y0, x1 - x0))], material: "emissive", emissive: 0.5 });
+    };
+    const cx = 0;
+    const cy = H * 0.58;
+    if (p.drawing === "locomotive") {
+      const u = W / 2.2;
+      line(cx - 0.7 * u, cy - 0.1 * u, cx + 0.5 * u, cy - 0.1 * u);
+      line(cx - 0.7 * u, cy + 0.2 * u, cx + 0.5 * u, cy + 0.2 * u);
+      line(cx + 0.5 * u, cy - 0.1 * u, cx + 0.5 * u, cy + 0.2 * u);
+      line(cx - 0.7 * u, cy - 0.1 * u, cx - 0.7 * u, cy + 0.5 * u);
+      line(cx - 0.7 * u, cy + 0.5 * u, cx - 0.3 * u, cy + 0.5 * u);
+      line(cx - 0.3 * u, cy + 0.5 * u, cx - 0.3 * u, cy + 0.2 * u);
+      line(cx + 0.28 * u, cy + 0.2 * u, cx + 0.28 * u, cy + 0.45 * u);
+      line(cx + 0.2 * u, cy + 0.45 * u, cx + 0.36 * u, cy + 0.45 * u);
+      for (let i = 0; i < 3; i++) k.tor(`ink-${ink_i++}`, [0.16 * u, 0.008], [cx - 0.3 * u + i * 0.42 * u, cy - 0.18 * u, 0.026], ink, { parent: root, material: "emissive", emissive: 0.5 });
+      line(cx - 0.3 * u, cy - 0.18 * u, cx + 0.54 * u, cy - 0.18 * u, 0.008);
+      line(cx - 0.8 * u, cy - 0.35 * u, cx + 0.6 * u, cy - 0.35 * u, 0.008);
+    } else if (p.drawing === "dome") {
+      const u = W / 2.2;
+      for (const [r, sy] of [[0.62, 0.8], [0.5, 0.78]]) k.tor(`ink-${ink_i++}`, [r * u, 0.008, 180], [cx, cy - 0.1 * u, 0.026], ink, { parent: root, scale: [1, sy, 1], material: "emissive", emissive: 0.5 });
+      line(cx - 0.8 * u, cy - 0.1 * u, cx + 0.8 * u, cy - 0.1 * u);
+      for (let i = 0; i < 7; i++) line(cx - 0.7 * u + i * 0.233 * u, cy - 0.1 * u, cx - 0.7 * u + i * 0.233 * u, cy - 0.6 * u, 0.01);
+      line(cx - 0.8 * u, cy - 0.6 * u, cx + 0.8 * u, cy - 0.6 * u);
+      line(cx, cy + 0.4 * u, cx, cy + 0.6 * u);
+    } else if (p.drawing === "plan") {
+      const pts = [[-0.8, -0.5], [-0.4, -0.1], [0.0, -0.3], [0.4, 0.2], [0.8, 0.5]];
+      for (let i = 0; i < pts.length - 1; i++) line(cx + pts[i][0] * W * 0.5, cy + pts[i][1] * W * 0.5, cx + pts[i + 1][0] * W * 0.5, cy + pts[i + 1][1] * W * 0.5, 0.014);
+      for (const q of pts) k.tor(`ink-${ink_i++}`, [0.05, 0.007], [cx + q[0] * W * 0.5, cy + q[1] * W * 0.5, 0.026], ink, { parent: root, material: "emissive", emissive: 0.5 });
+    }
+    return {};
+  },
+};
+
+B["desk-wood"] = {
+  about: "Dark wooden desk top seen from above: planks with grain lines, a border, a pencil, a ruler with ticks, a compass, an inkwell and a small brass lamp with a warm emissive bulb (`bulb`). Its surface is at y = 0.3; lay `blueprint-sheet` or `ledger` actors on it.",
+  params: {
+    width: num(4.8, 3, 5, "Desk width"),
+    depth: num(3.2, 2, 4.5, "Desk depth"),
+    planks: int(8, 4, 12, "Planks"),
+    props: bool(true, "Pencil, ruler, compass, inkwell and lamp"),
+    wood: color("Wood color"),
+  },
+  build(p, k) {
+    const wood = p.wood ?? "#4A2E1B";
+    const W = p.width;
+    const D = p.depth;
+    const pw = D / p.planks;
+    for (let i = 0; i < p.planks; i++) {
+      const c = shade(wood, k.vary(-0.18, 0.16, "plank", i));
+      k.box("plank", [W, 0.12, pw - 0.012], [0, 0.24, -D / 2 + (i + 0.5) * pw], c, { radius: 0.01 });
+      k.box("grain", [W * k.vary(0.4, 0.9, "gl", i), 0.004, 0.012], [k.vary(-W * 0.2, W * 0.2, "gx", i), 0.306, -D / 2 + (i + 0.5) * pw + k.vary(-0.03, 0.03, "gz", i)], shade(c, -0.25), { opacity: 0.7 });
+    }
+    k.box("edge-front", [W + 0.1, 0.16, 0.08], [0, 0.22, D / 2 + 0.02], shade(wood, -0.2));
+    k.box("edge-back", [W + 0.1, 0.16, 0.08], [0, 0.22, -D / 2 - 0.02], shade(wood, -0.2));
+    if (!p.props) return {};
+    k.cyl("pencil", [0.025, 0.025, 0.9], [W * 0.36, 0.34, D * 0.18], "#E0A800", { rot: [90, 0, 62], facets: 6 });
+    k.cone("pencil-tip", [0.025, 0.08], [W * 0.36 + 0.43, 0.34, D * 0.18 + 0.0], "#E8C9A0", { rot: [0, 0, -90], facets: 6 });
+    k.box("ruler", [1.4, 0.015, 0.22], [-W * 0.32, 0.32, D * 0.3], "#D9C48A", { rot: [0, 8, 0] });
+    for (let i = 0; i < 12; i++) k.box("tick", [0.008, 0.004, i % 2 ? 0.05 : 0.09], [-W * 0.32 - 0.62 + i * 0.113, 0.33, D * 0.3 + 0.07 + i * 0.0], "#2B2219", { rot: [0, 8, 0] });
+    k.cyl("inkwell", [0.12, 0.13, 0.16], [-W * 0.4, 0.38, -D * 0.28], "#15181D", { facets: 10 });
+    k.cyl("ink", [0.05, 0.05, 0.02], [-W * 0.4, 0.47, -D * 0.28], "#0B1030", { facets: 8 });
+    k.cyl("lamp-base", [0.16, 0.18, 0.05], [W * 0.38, 0.34, -D * 0.3], "#C9A24A", { facets: 10, material: "metal" });
+    k.cyl("lamp-arm", [0.018, 0.018, 0.6], [W * 0.38, 0.65, -D * 0.3], "#C9A24A", { rot: [0, 0, 0], facets: 6, material: "metal" });
+    k.cone("lamp-shade", [0.2, 0.18], [W * 0.38, 0.98, -D * 0.3], "#1E5B4B", { facets: 12, rot: [180, 0, 0] });
+    k.sph("bulb", [0.06], [W * 0.38, 0.9, -D * 0.3], "#FFD98A", { facets: 8, material: "emissive", emissive: 3 });
+    return {};
+  },
+};
+
+B["wheat-field"] = {
+  about: "Wheat field: a scatter of golden stalks with heavy ears (2 instanced parts per stalk) that sways in the wind (the renderer rocks every copy with a traveling wave). Use it in stage.world.parts with `params.count` and `params.area`; the copies follow the terrain.",
+  scatterDefault: true,
+  params: {
+    count: int(520, 20, 700, "Stalks (2 instanced parts each; the stage budget is 1500 parts)"),
+    area: list([-6, -4, 6, 4], "Ground rectangle [x0, z0, x1, z1]"),
+    avoid: list([], "Keep-out zones"),
+    height: num(0.9, 0.4, 1.6, "Stalk height"),
+    wind: num(7, 0, 20, "Sway amplitude in degrees (0 = still)"),
+    gold: color("Ear color"),
+    straw: color("Stem color"),
+  },
+  build(p, k) {
+    const straw = p.straw ?? "#C79A3A";
+    const gold = p.gold ?? "#F0C14B";
+    const mo = p.wind > 0 ? { motion: [{ type: "wobble", amp: p.wind, speed: 1 }] } : {};
+    k.cone("stalk", [0.03, p.height], [0, p.height / 2, 0], straw, { facets: 3, ...mo });
+    k.sph("ear", [0.055, 0.17, 0.055], [0, p.height * 0.98, 0], gold, { facets: 5, parent: "stalk", ...mo });
+    return { scatterMany: [{ part: "stalk", count: p.count, area: p.area, avoid: p.avoid, jitter: { scale: 0.35, rot: 180 } }] };
+  },
+};
+
+B.bowl = {
+  about: "Terracotta bowl (a lathed profile with a rim ring): empty by default, optionally with `grain` kernels or a little water. Base on y = 0; part names `body`, `rim`, `inside`.",
+  params: {
+    radius: num(0.9, 0.4, 1.6, "Bowl radius"),
+    depth: num(0.38, 0.2, 0.8, "Bowl depth"),
+    clay: color("Clay color"),
+    grain: int(0, 0, 30, "Grain kernels inside (0 = empty)"),
+  },
+  build(p, k) {
+    const R = p.radius;
+    const D = p.depth;
+    const clay = p.clay ?? "#A85A32";
+    const outer = [[0.001, 0], [R * 0.45, 0.01], [R * 0.75, D * 0.35], [R * 0.95, D * 0.75], [R, D]];
+    k.lathe("body", outer, [0, 0, 0], clay);
+    k.lathe("inside", [[0.001, 0.04], [R * 0.4, 0.05], [R * 0.72, D * 0.38], [R * 0.9, D * 0.76]], [0, 0.01, 0], shade(clay, -0.45));
+    k.tor("rim", [R * 0.98, 0.028], [0, D, 0], shade(clay, 0.1), { rot: [90, 0, 0] });
+    k.cyl("foot", [R * 0.42, R * 0.46, 0.04], [0, 0.02, 0], shade(clay, -0.2), { facets: 16 });
+    for (let i = 0; i < 3; i++) k.tor("glaze-band", [R * (0.78 + i * 0.07), 0.01], [0, D * (0.46 + i * 0.16), 0], i % 2 ? shade(clay, 0.25) : shade(clay, -0.3), { rot: [90, 0, 0] });
+    k.cyl("shadow", [R * 1.25, R * 1.25, 0.006], [0, 0.003, 0], "#000000", { facets: 20, opacity: 0.3 });
+    for (let i = 0; i < p.grain; i++) k.sph("kernel", [0.035, 0.02, 0.02], [k.vary(-R * 0.4, R * 0.4, "gx", i), 0.07, k.vary(-R * 0.4, R * 0.4, "gz", i)], "#E8C25A", { facets: 5, rot: [0, k.vary(0, 180, "gr", i), 0] });
+    return {};
+  },
+};
+
+B["cracked-ground"] = {
+  about: "Dry cracked earth: a dark base disc with N raised faceted plates whose gaps read as cracks (`plate-k`), some pebbles and dust; the surface is at y = 0.1. Parched look for droughts, deserts and dry lakes.",
+  params: {
+    radius: num(2.4, 1, 3.5, "Disc radius"),
+    plates: int(34, 12, 60, "Plates"),
+    soil: color("Soil color"),
+    crack: color("Crack color"),
+  },
+  build(p, k) {
+    const soil = p.soil ?? "#8A5A3A";
+    const R = p.radius;
+    k.cyl("base", [R, R, 0.1], [0, 0.05, 0], p.crack ?? "#1A0F08", { facets: 24 });
+    // jittered spiral layout: every plate keeps a small gap to its neighbours
+    const n = p.plates;
+    for (let i = 0; i < n; i++) {
+      const a = i * 2.39996 + k.rnd("a", i) * 0.4;
+      const d = Math.sqrt((i + 0.5) / n) * R * 0.93;
+      const r = (R / Math.sqrt(n)) * k.vary(0.62, 0.88, "r", i);
+      k.cyl("plate", [r, r * 1.04, 0.035 + k.rnd("h", i) * 0.035], [Math.cos(a) * d, 0.11 + k.rnd("h", i) * 0.015, Math.sin(a) * d], shade(soil, k.vary(-0.22, 0.14, "c", i)), { facets: 5 + (i % 3), rot: [k.vary(-4, 4, "tx", i), k.vary(0, 180, "ry", i), k.vary(-4, 4, "tz", i)] });
+    }
+    for (let i = 0; i < 6; i++) k.sph("pebble", [0.05 + k.rnd("pb", i) * 0.05, 0.035, 0.05], [k.vary(-R * 0.7, R * 0.7, "px", i), 0.17, k.vary(-R * 0.7, R * 0.7, "pz", i)], shade("#8C8378", k.vary(-0.2, 0.2, "pc", i)), { facets: 5 });
+    return {};
+  },
+};
+
+B["particle-map"] = {
+  about: "Particle map: a dark landmass silhouette (an extruded outline of a built-in region) lying flat, covered with glowing particles `dot-k` (white with a share of gold), a bright route tube as segments `route-0`..`route-7` with a `head` dot, and a few extra `flow-k` dots on the route that beats can move (`pos`) to show things flowing along it. For counters: pair it with a `counter` overlay.",
+  params: {
+    region: opt("eurasia", REGIONS, "Landmass silhouette"),
+    particles: int(120, 10, 122, "Glowing particles over the land"),
+    gold: num(0.3, 0, 1, "Fraction of gold particles"),
+    flows: int(6, 0, 12, "Extra flow dots on the route"),
+    size: num(4, 2, 4.8, "Width of the map"),
+    lean: num(55, 0, 90, "How far the map lies back from upright toward flat (degrees; 90 = flat on the ground)"),
+    route: list([[0.1, 0.55], [0.9, 0.35]], "Route from [u, v] to [u, v] inside the map (0..1)"),
+    land: color("Land color"),
+    glow: color("Route color"),
+  },
+  build(p, k) {
+    const poly = LAND[p.region];
+    const lons = poly.map((q) => q[0]);
+    const lats = poly.map((q) => q[1]);
+    const [lo0, lo1] = [Math.min(...lons), Math.max(...lons)];
+    const [la0, la1] = [Math.min(...lats), Math.max(...lats)];
+    const S = p.size / Math.max(lo1 - lo0, 1e-3);
+    const toXY = (lon, lat) => [(lon - (lo0 + lo1) / 2) * S, (lat - (la0 + la1) / 2) * S];
+    const halfH = ((la1 - la0) * S) / 2;
+    const flat = k.grp("map", [0, 0.08 + halfH * Math.cos(rad(p.lean)), 0], { rot: [-p.lean, 0, 0] });
+    const outline = poly.map((q) => toXY(q[0], q[1]));
+    k.ext("land", 0.06, outline.slice(0, 64), [0, 0, 0], p.land ?? "#2B4580", { parent: flat, radius: 0.01, material: "emissive", emissive: 0.35 });
+    k.ext("land-edge", 0.02, outline.slice(0, 64), [0, 0, 0.035], "#6F9BFF", { parent: flat, opacity: 0.5, material: "emissive", emissive: 0.9 });
+    const glow = p.glow ?? "#FFC857";
+    let made = 0;
+    for (let i = 0; i < p.particles * 4 && made < p.particles; i++) {
+      const lon = lo0 + (lo1 - lo0) * k.rnd("lon", i);
+      const lat = la0 + (la1 - la0) * k.rnd("lat", i);
+      if (!inPoly(poly, lon, lat)) continue;
+      const [x, y] = toXY(lon, lat);
+      const g = k.rnd("g", made) < p.gold;
+      k.sph(g ? "dot-gold" : "dot", [g ? 0.055 : 0.045], [x, y, 0.06 + k.rnd("z", made) * 0.05], g ? glow : "#DCE8FF", { parent: flat, facets: 5, material: "emissive", emissive: g ? 2.4 : 1.8 });
+      made++;
+    }
+    const a = p.route[0];
+    const b = p.route[1];
+    const pa = [(a[0] - 0.5) * p.size, (a[1] - 0.5) * p.size * 0.7];
+    const pb = [(b[0] - 0.5) * p.size, (b[1] - 0.5) * p.size * 0.7];
+    const pts = Array.from({ length: 33 }, (_, i) => {
+      const t = i / 32;
+      return [pa[0] + (pb[0] - pa[0]) * t, pa[1] + (pb[1] - pa[1]) * t + Math.sin(t * Math.PI) * 0.14 * p.size * 0.2, 0.14];
+    });
+    for (let s = 0; s < 8; s++) k.tube(`route-${s}`, [0.025], pts.slice(s * 4, s * 4 + 5), glow, { parent: flat, material: "emissive", emissive: 2.6 });
+    k.sph("head", [0.07], pts[0], "#FFFFFF", { parent: flat, facets: 6, material: "emissive", emissive: 3.4 });
+    for (let i = 0; i < p.flows; i++) k.sph("flow", [0.04], pts[Math.round(((i + 0.5) / p.flows) * 32)], "#FFFFFF", { parent: flat, facets: 5, material: "emissive", emissive: 3 });
     return {};
   },
 };
