@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Channel, ChannelSummary, GenerateOptions, PalettePreset, ProviderId, ProviderInfo, TemplateInfo, ThemePreset } from "../../shared/types.ts";
 import { DEFAULT_MUSIC } from "../../shared/music.ts";
+import { RENDERER_CHOICES, is3dTemplate } from "../../shared/renderers.ts";
 import { DURATION_CHOICES, durationLabel } from "../../shared/durations.ts";
 import { FAMILIES, formatFamily } from "../lib/formats.ts";
 import { CAPTION_LABEL, CaptionPanel } from "../components/CaptionPanel.tsx";
@@ -214,6 +215,8 @@ export function Create(props: { channel?: string; idea?: string }) {
   const knownIds = useMemo(() => new Set((templates ?? []).map((t) => t.id)), [templates]);
   const recommended = useMemo(() => (theme?.templates ?? []).filter((id) => knownIds.has(id)), [theme, knownIds]);
   const palette = resolveChoice(draft.paletteChoice, palettes, template);
+  // 3D formats can render with Remotion (three.js, fast) or Blender (Eevee, slower and more cinematic); 2D formats never send it
+  const is3d = is3dTemplate(template);
   const setOpt = <K extends keyof GenerateOptions>(k: K, v: GenerateOptions[K]) => setDraft((d) => ({ ...d, options: { ...d.options, [k]: v } }));
 
   const missing = useMemo(() => {
@@ -262,13 +265,13 @@ export function Create(props: { channel?: string; idea?: string }) {
     setElapsed(0);
     setError(null);
     try {
-      const { voiceId, ...rest } = draft.options;
+      const { voiceId, renderer, ...rest } = draft.options;
       const res = await api.generate({
         prompt: draft.prompt,
         template: draft.template,
         provider: provider.id,
         model: model || undefined,
-        options: { ...rest, ...(voiceId?.trim() ? { voiceId: voiceId.trim() } : {}), ...(palette.override ? { palette: palette.override } : {}) },
+        options: { ...rest, ...(voiceId?.trim() ? { voiceId: voiceId.trim() } : {}), ...(palette.override ? { palette: palette.override } : {}), ...(is3d && renderer ? { renderer } : {}) },
         ...(channel ? { channel: channel.slug } : {}),
         ...(idea ? { jobId: idea.id } : {}),
       });
@@ -526,6 +529,17 @@ export function Create(props: { channel?: string; idea?: string }) {
                     ))}
                   </ul>
                 )}
+                {is3d && (
+                  <>
+                    <Segmented
+                      label="Motor de render"
+                      value={draft.options.renderer ?? "remotion"}
+                      options={RENDERER_CHOICES.map(({ value, label }) => ({ value, label }))}
+                      onChange={(v) => setOpt("renderer", v)}
+                    />
+                    <p className="length-note" data-testid="renderer-hint">{RENDERER_CHOICES.find((r) => r.value === (draft.options.renderer ?? "remotion"))?.hint}</p>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -642,7 +656,7 @@ export function Create(props: { channel?: string; idea?: string }) {
                 { k: "Canal", v: channel?.name ?? "Sin canal", go: 0 },
                 { k: "Idea", v: draft.prompt.trim() || "Sin escribir", go: 0, warn: !draft.prompt.trim() },
                 { k: "Temática", v: theme?.label ?? "Ninguna", go: 0 },
-                { k: "Formato", v: template ? `${template.name}${template.category ? ` · ${CATEGORY_LABEL[template.category] ?? template.category}` : ""}` : "Sin elegir", go: 1, warn: !template },
+                { k: "Formato", v: template ? `${template.name}${template.category ? ` · ${CATEGORY_LABEL[template.category] ?? template.category}` : ""}${is3d && draft.options.renderer === "blender" ? " · render Blender" : ""}` : "Sin elegir", go: 1, warn: !template },
                 { k: "Paleta", v: palette.label, go: 2, palette: palette.preview },
                 { k: "Voz", v: `${VOICE_LABEL[draft.options.voiceProvider]}${draft.options.voiceId ? ` · ${draft.options.voiceId}` : draft.options.voiceProvider === "elevenlabs" ? " · automática en tendencia" : ""} · ${LANGUAGE_LABEL[draft.options.language] ?? draft.options.language}`, go: 3 },
                 { k: "Música", v: musicLabel, go: 3 },

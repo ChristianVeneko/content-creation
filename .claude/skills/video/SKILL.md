@@ -33,6 +33,7 @@ Group up to 4 questions per call (AskUserQuestion allows at most 4 options per q
    - Rank by fit with the idea: a channel template or a theme's `templates` first (`grep -n -A8 'id: "<theme>"' 07-studio/engine/lib/themes.mjs`; themes: tecnologia-ia, programacion, ingenieria, finanzas, salud-fitness, cocina, viajes, educacion, noticias, motivacion, ciencia, gaming, negocios-marketing), then the best-for match.
    - Offer at most 4 options: the best fit "(Recomendado)" with its one-line look ("<format>: <how it looks and moves>"), then the best fits from three different families. Last option "Ver más formatos": re-ask with the next 4 (other families first), or "Otro" lets the user type a format or template id. Kinetic classics (`captions-voice`, `kinetic-type`, `countdown`, `glass-cards`, `letterbox`) only if the user types one.
    - Say once, when a 3D format is in play: "Las plantillas 3D solo fijan el estilo (cámara, luz, materiales, movimiento): yo construyo los modelos desde cero y pruebo varias tomas de cámara por escena." Pixel adds a `character` only if asked.
+   - Motor de render (solo plantillas 3D): "Remotion / three.js (Recomendado)" (rápido, ~2 min) / "Blender Eevee" (más cinematográfico, sombras y materiales suaves, ~0,3 s/frame). Si eligen Blender, escribe `theme.renderer: "blender"`; Remotion es el valor por omisión y queda omitido. Para videos 2D con HyperFrames en vez de Remotion, usa la ruta §5 con `hyperframes-brief`.
 3. Plataforma: "Las 3 (Recomendado)" / Reels / TikTok / Shorts (skip if the channel lists platforms).
 4. Duración: "30 s (Recomendado)" / "1 min" / "2 min" / "Otra" (typed: 15 s, 45 s, 1,5 min, 2,5 min or 3 min). Allowed totals: 15, 30, 45, 60, 90, 120, 150, 180 s (max 3 min). Short videos 15-45 s; from 90 s on plan MORE scenes of 3-6 s, never longer ones, and keep a turn or open loop every 2-4 s. The channel's `defaults.durationSec` pre-answers it.
 
@@ -67,7 +68,7 @@ Visuals default to animated backgrounds (no keys). Ask about stock Pexels/Pixaba
 
 ## 5. Other routes
 
-- **Motion graphics / estilo Opus**: load the `hyperframes` skill; for Opus prompts grep `05-tools/repos/awesome-opus5-5-videos/prompts/` for the closest match, adapt to 1080x1920. Output `$P/video.mp4`, then 4.2-4.5.
+- **Motion graphics / estilo Opus / HyperFrames**: para videos 2D en HyperFrames, genera el brief desde la spec con `node 07-studio/engine/cli.mjs hyperframes-brief $P/spec.json > $P/brief-hyperframes.md`, o usa directamente las skills `hyperframes` y `hyperframes-cli`; para Opus prompts grep `05-tools/repos/awesome-opus5-5-videos/prompts/` for the closest match, adapt to 1080x1920. Output `$P/video.mp4`, then 4.2-4.5.
 - **Lanzamiento**: `/brag` (or `brag-slim`) with `--format vertical`; copy `brag.mp4` to `$P/video.mp4`, then 4.3-4.5.
 - **Clip de video largo**: `02-scripts/transcribe.sh`; pick 20-55 s spans that open on a complete thought, have a turn and end on a line (`01-prompts/05-repurpose-long-video.md`); write a NEW first line and score it with `$H/hookscore.py`; cut with ffmpeg, reframe with `02-scripts/to-vertical.sh` or `blur-pad-vertical.sh`, captions via `02-scripts/karaoke-ass.py` + `burn-captions.sh`.
 

@@ -32,6 +32,12 @@ test("spec request validation errors are 400", async () => {
   assert.equal(res.status, 400);
 });
 
+test("an unknown render engine option is a 400 naming the allowed ones", async () => {
+  const res = await app.request("/api/spec", { method: "POST", body: JSON.stringify({ prompt: "x", provider: "anthropic", template: "kinetic-type", options: { renderer: "cycles" } }) });
+  assert.equal(res.status, 400);
+  assert.match(((await res.json()) as Json).error, /Motor de render inválido: usa remotion o blender/);
+});
+
 test("render streams engine progress and ends done with outputs", async () => {
   const spec = {
     version: 1, title: "Prueba", template: "countdown", language: "es",
