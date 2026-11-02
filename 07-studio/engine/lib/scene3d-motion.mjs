@@ -197,6 +197,7 @@ export const partSchema = z
     size: z.array(n(0.005, 360)).max(3).optional().describe("Dimensions in world units (<= 8), meaning per shape; torus arc in degrees"),
     points: z.array(z.array(n(-6, 6)).min(2).max(3)).max(64).optional().describe("tube: [[x,y,z]...]; extrude: outline [[x,y]...]; lathe: profile [[r,y]...]"),
     radius: n(0, 0.5).optional().describe("box: edge rounding; extrude: bevel"),
+    facets: z.number().int().min(3).max(24).optional().describe("cylinder, cone, sphere: number of flat sides (4-8 reads as faceted low-poly; omit for a smooth round shape)"),
     text: z.string().min(1).max(24).optional().describe("sign: the text printed on the sign (pixel font)"),
     textColor: color.optional().describe("sign: text color (default: readable on the panel)"),
     pos: v3(-5, 5).optional().describe("Center, relative to the parent part's center (or the object's base)"),
