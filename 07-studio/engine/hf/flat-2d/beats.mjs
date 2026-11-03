@@ -6,6 +6,7 @@ import { CAST_AT } from "./layout.mjs";
 import { CastState, clipOps, lifeOps } from "./clips.mjs";
 import { STAGE } from "./layout.mjs";
 import { estimateSize } from "./safe.mjs";
+import { placeStamp } from "./place.mjs";
 
 const ROLE_VAR = (r) => `var(--${r})`;
 const cen = (b) => ({ x: b.x + b.w / 2, y: b.y + b.h / 2 });
@@ -19,6 +20,12 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
   const add = (...o) => ops.push(...o.flat());
   const cue = (at, kind) => sfx.push({ at: r2(at), kind });
   const rng = (n) => mulberry32(hashSeed("flat2d" + n));
+
+  // cursor boxes per scene (tip of every click target): the hero stamp stays off them
+  const cursors = model.scenes.map((sc, si) => timeline.beats[si].filter((b) => b.do === "click" && b.target && sc.targets.get(b.target)).map((b) => {
+    const T = sc.targets.get(b.target), c = cen(T.box);
+    return { x: r2(c.x + T.box.w * 0.18 - 20), y: r2(c.y + T.box.h * 0.12 - 20), w: 110, h: 110 };
+  }));
 
   // ---- characters: life + initial poses
   const castStates = new Map();
@@ -305,9 +312,13 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
         }
         case "hero": {
           const id = `hr${uid++}`, len = [...b.text].length;
-          const fs = len <= 5 ? 170 : len <= 10 ? 120 : 84;
-          tags.push({ id, kind: "hero", si, x: 480, y: 560, anchor: "c", ...estimateSize("hero", b.text, fs) });
-          mkOv(`<div class="hero cx" id="${id}" style="left:480px;top:560px;font-size:${fs}px;color:${ROLE_VAR(b.role ?? "accent")};opacity:0">${esc(b.text)}</div>`);
+          const fs0 = len <= 5 ? 170 : len <= 10 ? 120 : 84;
+          const est = estimateSize("hero", b.text, fs0);
+          // free band: never over a character or a cursor target; off the replicas while the stamp stays big
+          const spot = placeStamp({ w: est.w, h: est.h, avoid: [...sc.cast.map((c) => c.box), ...cursors[si]], soft: sc.props.map((p) => p.box) });
+          const fs = Math.round(fs0 * spot.scale), sz = estimateSize("hero", b.text, fs);
+          tags.push({ id, kind: "hero", si, x: r2(spot.x), y: r2(spot.y), anchor: "c", ...sz });
+          mkOv(`<div class="hero cx" id="${id}" style="left:${r2(spot.x)}px;top:${r2(spot.y)}px;font-size:${fs}px;color:${ROLE_VAR(b.role ?? "accent")};opacity:0">${esc(b.text)}</div>`);
           add({ k: "fromTo", t, sel: `#${id}`, from: { opacity: 0, scale: 2.6, rotation: -14 }, to: { opacity: 1, scale: 1, rotation: -5 }, d: 0.28, ease: "power4.in" });
           add({ k: "fromTo", t: r2(t + 0.3), sel: `#${id}`, from: { y: 0 }, to: { y: 8 }, d: 0.05, repeat: 3, yoyo: true });
           add({ k: "to", t: r2(Math.min(sceneEnd - 0.3, t + 1.9)), sel: `#${id}`, v: { opacity: 0, scale: 1.15 }, d: 0.3, ease: "power2.in" });
@@ -354,6 +365,6 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
   sfx.sort((a, b) => a.at - b.at);
   const dedup = [];
   for (const c of sfx) { const last = dedup.findLast?.((x) => x.kind === c.kind); if (!last || c.at - last.at >= 0.09) dedup.push(c); }
-  return { ops, sfx: dedup, camBeats, ov, lines, origins, tags };
+  return { ops, sfx: dedup, camBeats, ov, lines, origins, tags, cursors };
 }
 export { STAGE };

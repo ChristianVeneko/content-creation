@@ -63,14 +63,29 @@ function fixOn(on) {
   return o;
 }
 
+/** Attach `list` (deduplicated) as a non-enumerable `__warnings` array on `obj`. */
+function carry(obj, list) {
+  const all = [...new Set(list)];
+  if (!all.length) return obj;
+  Object.defineProperty(obj, "__warnings", { value: all, enumerable: false, configurable: true, writable: true });
+  return obj;
+}
+
 export function normalize(input, ctx) {
   // The engine registry hands over the WHOLE spec (template, mode, narration scenes, hf); the payload is spec.hf.
   if (input && typeof input === "object" && ("template" in input || "hf" in input)) {
     const out = { ...input };
-    if (out.hf && typeof out.hf === "object") out.hf = normalize(out.hf, { spec: out, warnings: ctx?.warnings ?? [] });
+    const warnings = ctx?.warnings ?? [];
+    const before = warnings.length;
+    if (out.hf && typeof out.hf === "object") out.hf = normalize(out.hf, { spec: out, warnings });
+    // the registry calls normalize(spec) without a context, so the warnings would be lost: carry them (plus the ones
+    // an earlier pass attached) on the returned spec, non-enumerable so they never reach JSON or the schema
+    carry(out, [...(input.__warnings ?? []), ...warnings.slice(before)]);
     return out;
   }
   const p = structuredClone(input ?? {});
+  const own = [];
+  const warn = (m) => { own.push(m); ctx?.warnings?.push(m); };
   if (typeof p.style === "string") p.style = pickAlias(p.style, STYLE_IDS, STYLE_ALIASES);
   if (p.mode !== undefined) {
     // spec.mode is the single source of truth: a stray hf.mode never reaches the payload
@@ -78,10 +93,10 @@ export function normalize(input, ctx) {
     const mode = ["single", "mono", "monoscene", "one", "single-scene"].includes(m) ? "single" : ["multi", "multiscene", "multi-scene", "many", "multiple"].includes(m) ? "multi" : null;
     const spec = ctx?.spec;
     if (spec && mode) {
-      if (spec.mode === undefined || spec.mode === null) { spec.mode = mode; ctx.warnings?.push(`hf.mode "${p.mode}" moved to spec.mode (${mode}); do not set hf.mode`); }
-      else if (spec.mode !== mode) ctx.warnings?.push(`hf.mode "${p.mode}" ignored: spec.mode "${spec.mode}" wins`);
-      else ctx.warnings?.push(`hf.mode ignored (same as spec.mode); do not set hf.mode`);
-    } else ctx?.warnings?.push(`hf.mode "${p.mode}" ignored: set the mode in spec.mode`);
+      if (spec.mode === undefined || spec.mode === null) { spec.mode = mode; warn(`hf.mode "${p.mode}" moved to spec.mode (${mode}); do not set hf.mode`); }
+      else if (spec.mode !== mode) warn(`hf.mode "${p.mode}" ignored: spec.mode "${spec.mode}" wins`);
+      else warn(`hf.mode ignored (same as spec.mode); do not set hf.mode`);
+    } else warn(`hf.mode "${p.mode}" ignored: set the mode in spec.mode`);
     delete p.mode;
   }
   const props = settingPropNames();
@@ -188,5 +203,5 @@ export function normalize(input, ctx) {
   });
   for (const sc of p.scenes) delete sc.notes;
   void declared;
-  return p;
+  return carry(p, [...(input?.__warnings ?? []), ...own]);
 }

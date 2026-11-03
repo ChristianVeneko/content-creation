@@ -28,6 +28,8 @@ export function buildComposition({ spec, words, durationSec, captions, fontRel =
   const raw = spec?.hf ?? spec;
   // spec.mode is the single source of truth; a stray hf.mode only fills a missing spec.mode (with a warning)
   const modeCtx = { spec: { mode: spec?.mode }, warnings: [] };
+  // warnings an earlier normalize() pass (the registry's, which has no way to return them) attached to the spec or payload
+  const carried = [...(spec?.__warnings ?? []), ...(raw?.__warnings ?? [])];
   const hf = payloadSchema.parse(normalize(raw, modeCtx));
   hf.scenes = hf.scenes.map((s, i) => ({ ...s, id: s.id ?? `s${i + 1}` }));
   const mode = modeCtx.spec.mode ?? "single";
@@ -93,8 +95,8 @@ export function buildComposition({ spec, words, durationSec, captions, fontRel =
     tags: [...model.scenes.flatMap((sc, i) => (sc.def.label ? [{ id: `lab${i}`, kind: "label", si: i, x: 28, y: 22, anchor: "tl", ...estimateSize("label", sc.def.label) }] : [])), ...comp.tags],
   };
   const html = renderHtml({ hf, mode, style, d, model, layout, comp, deco, cap, plan, fontRel, D });
-  const placed = model.scenes.map((sc) => ({ index: sc.index, props: sc.props.map((p) => ({ id: p.id, box: p.box })), cast: sc.cast.map((c) => ({ who: c.who, x: c.x, box: c.box })) }));
-  return { html, sfx, plan: { ...plan, placed }, warnings: [...modeCtx.warnings, ...timeline.warnings], hf, mode, durationSec: D };
+  const placed = model.scenes.map((sc) => ({ index: sc.index, props: sc.props.map((p) => ({ id: p.id, box: p.box })), cast: sc.cast.map((c) => ({ who: c.who, x: c.x, box: c.box })), cursor: comp.cursors[sc.index] }));
+  return { html, sfx, plan: { ...plan, placed }, warnings: [...new Set([...carried, ...modeCtx.warnings, ...timeline.warnings])], hf, mode, durationSec: D };
 }
 
 function sceneHtml({ sc, si, mode, style, comp, d }) {

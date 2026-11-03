@@ -46,7 +46,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-f
 #root{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--ink-bg)}
 #bgFar,#bgMid,#world{position:absolute;left:0;top:0;width:0;height:0}
 #world{transform-origin:0 0}
-#wmask{position:absolute;left:0;top:0;width:1080px;height:1920px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 440px,#000 462px);mask-image:linear-gradient(to bottom,transparent 0,transparent 440px,#000 462px)}
+#wmask{position:absolute;left:0;top:0;width:1080px;height:1920px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 454px,#000 456px);mask-image:linear-gradient(to bottom,transparent 0,transparent 454px,#000 456px)}
 #bgGrad{position:absolute;left:0;top:0;width:1080px;height:1920px;background:${style.id === "flat-glass-ui" ? `linear-gradient(160deg,${c.bg} 0%,${c.bg2} 55%,#0B6FA8 100%)` : style.id === "flat-low-poly" ? `linear-gradient(180deg,${c.bg} 0%,${c.bg2} 60%,#C0507A 100%)` : style.id === "flat-soft-gradient" ? `linear-gradient(180deg,${c.bg} 0%,${c.bg2} 100%)` : style.id === "flat-clay-2d" ? `linear-gradient(180deg,${c.bg} 0%,${c.bg2} 100%)` : "var(--bg)"}}
 #bgMid .tex{position:absolute;left:-5000px;top:-5000px;width:10000px;height:10000px;${tex}}
 .deco{position:absolute}

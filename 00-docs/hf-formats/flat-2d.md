@@ -2,7 +2,7 @@
 
 Data-driven flat 2D explainers: flat vector worlds, rigged characters, app replicas and a travelling camera, drawn in SVG/HTML and animated with one paused GSAP timeline (1080x1920, 30 fps). An LLM drives it through a JSON payload (`spec.hf`); no coding agent is involved.
 
-Code: `07-studio/engine/hf/flat-2d/`. Contract (`meta`, `payloadSchema`, `promptSection`, `normalize`, `compose`) is `index.mjs`; `compose` returns `{ entry, sfx, durationSec, warnings }` where `entry` is the absolute path of `index.html`. The composition draws its OWN captions (variable `captions`), so the engine's caption overlay must not be applied.
+Code: `07-studio/engine/hf/flat-2d/`. Contract (`meta`, `payloadSchema`, `promptSection`, `normalize`, `compose`) is `index.mjs`; `compose` returns `{ entry, sfx, durationSec, warnings }` (warnings include those `normalize` attached as a non-enumerable `__warnings` on the spec and payload it returned, because the registry calls `normalize(spec)` without a way to get them back; they survive only while the same object reaches `compose`, not a JSON round trip) where `entry` is the absolute path of `index.html`. The composition draws its OWN captions (variable `captions`), so the engine's caption overlay must not be applied.
 
 ## Modes
 `spec.mode` (top level) is the single source of truth. `hf.mode` does not exist: `normalize` drops it (moving it to `spec.mode` only when that is missing) and warns; the prompt tells the LLM never to set it.
@@ -39,9 +39,11 @@ Six designs (nico, dora, beto, luz, tomas, mica) with head, torso, 2-segment arm
 
 ## Layout and safe zones
 Stage 960x1040 at frame (60,450). Project rule: text inside the centre 900x1300 box (x 90-990, y 310-1610); nothing important in the top 220 px, bottom 420 px or 60 px at the sides (`safe.mjs`).
-- Captions own the band y 320-470 (x 90-990, 2-4 words, at most 22 characters, two lines max); the world sits behind a mask that fades out above y 440-462, so a card in transit never crosses the captions.
+- Captions own the band y 320-470 (x 90-990, 2-4 words, at most 22 characters, two lines max); the world sits behind a mask with a clean clip at y 454-456 (no soft fade, so nothing ghosts at the edge while the camera travels), so a card in transit is cut at the band and never crosses the captions.
 - Labels, chips, hero stamps and emotes are registered tags (`plan.tags`). At every camera state the player clamps them to their own panel and to the content box (x 90-990, y 480-1610) with the CSS `translate` property (pure function of the camera state); `placeTagCore` in `safe.mjs` is inlined into the player and unit tested.
 - `place.mjs` (`separateCast`): a character never stands over a replica; it moves to the nearest free column, else the replica is lifted (never above y 104) and, last, shrunk to at most 60 %.
+- `place.mjs` (`separateProps`): two replicas of a scene never overlap and none covers a character. The replica the beats mention most (then the biggest) is the active subject and keeps its place; the others move to the nearest free spot of the stage (grid of 20 px), shrinking down to 60 %; when even that is not enough the biggest replica involved is shrunk a little more and the scene is settled again. A tall kit at size `l` (chat, phone, calendar) next to a second replica and a character can still be infeasible: the least-overlap spot is used.
+- `place.mjs` (`placeStamp`): the hero stamp goes to a free band: never over a character or a cursor click target (cursor boxes are exposed as `plan.placed[i].cursor`), off the replicas while it keeps at least 70 % of its size, scaled down to 55 % to fit, always inside x 30-930, y 104-960 of the stage. `clear` is false only when no room exists at the smallest scale.
 Caption text 58-66 px, replica text 34-48 px (base size l).
 
 ## Assets and licenses
@@ -63,4 +65,4 @@ Add `{ about, base:{w,h}, fields, css, build(ctx,p) }` in `kit/*.mjs`, register 
 `04-projects/hf-showcase/flat-2d/`: `build-showcase.mjs` (12 style and 24 setting compositions), `build-sheets.sh` (snapshots and tiles the sheets), `build-main.mjs` (22 s reel), `contact-sheet-12-styles.png`, `contact-sheet-24-settings.png`, `flat-2d-showcase.mp4` (not re-rendered in U8). Tests: `node --test test/hf-flat-2d*.test.mjs` from `07-studio/engine`.
 
 ## Known weaknesses
-Characters are rigid-limb puppets (no cloth or hair secondary motion); 3/4 view is a mirrored side rig, not a true turn; the isometric style is extruded shapes, not true isometric projection; replica-over-replica overlaps are not resolved; setting decor can still sit behind a replica; tag sizes are estimated in tests and measured only in the browser.
+Characters are rigid-limb puppets (no cloth or hair secondary motion); 3/4 view is a mirrored side rig, not a true turn; the isometric style is extruded shapes, not true isometric projection; a replica pushed off its slot by the solver may land far from the `at` the author chose; setting decor can still sit behind a replica; tag sizes are estimated in tests and measured only in the browser.

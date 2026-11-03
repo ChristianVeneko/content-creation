@@ -6,7 +6,7 @@ import { SETTINGS } from "./settings/index.mjs";
 import { DESIGN_IDS, RIG, sizeScale, characterSvg } from "./rig.mjs";
 import { icon } from "./icons.mjs";
 import { esc } from "./util.mjs";
-import { separateCast } from "./place.mjs";
+import { separateCast, separateProps } from "./place.mjs";
 
 const DEFAULT_SIZE = { browser: "l", chat: "m", phone: "m", list: "m", stats: "m", chart: "m", notification: "m", rack: "m", router: "s", calendar: "m", "stamp-card": "m", progress: "m", card: "m" };
 const DEFAULT_AT = ["top", "floor-right", "middle-left", "top-right", "middle-right", "top-left"];
@@ -59,6 +59,14 @@ export function buildModel(hf, d, beatsByScene) {
     const sep = separateCast(props.map((p) => ({ id: p.id, box: p.box })), pre0);
     props.forEach((p, i) => {
       const nb = sep.props[i];
+      if (nb.shrink !== 1) p.k *= nb.shrink;
+      p.box = nb.box;
+    });
+    // layout rule: replicas never overlap each other either; the replica the beats talk about most keeps its place
+    const uses = (id) => (beatsByScene[si] ?? []).filter((b) => b.target === id || b.from === id || b.to === id).length;
+    const sep2 = separateProps(props.map((p) => ({ id: p.id, box: p.box, weight: uses(p.id) })), sep.cast);
+    props.forEach((p, i) => {
+      const nb = sep2.props[i];
       if (nb.shrink !== 1) p.k *= nb.shrink;
       p.box = nb.box;
       targets.set(p.id, { type: "prop", el: p.el, box: p.box, prop: p });
