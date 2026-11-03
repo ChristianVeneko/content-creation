@@ -29,7 +29,7 @@ node cli.mjs prompt <template>                          # spec-writer prompt tri
 node cli.mjs music                                      # JSON: moods (id, label, count), library tracks, level references
 node cli.mjs voices [--gender male|female] [--pick <seed>] # JSON: trending Latin American Spanish ElevenLabs voices (or the auto pick)
 node cli.mjs validate <spec.json|->                     # {"ok":true|false,"errors":[{"path","message"}]}; exit 0/1
-node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work] [--renderer remotion|blender]
+node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work] [--renderer remotion|blender] [--quality draft|looks|delivery]  # --quality: HyperFrames formats only
 node cli.mjs hyperframes-brief <spec.json> [--audio-secs <n>] # prints a Markdown brief for authoring in HyperFrames
 ```
 
@@ -391,6 +391,47 @@ How it works:
    build transcribes the narration for pixel templates even with captions disabled.
 
 Fonts (OFL, `public/fonts/`, copies in `03-assets/fonts/`): Pixelify Sans, Press Start 2P, Silkscreen.
+
+## HyperFrames formats
+
+Formats whose look is a HyperFrames composition (`hf/<id>/index.mjs`, e.g. `pixel-world`, `flat-2d`) go through the
+same spec -> `build` pipeline as every other template, so LLM providers and the web app can make them. Set
+`template` to the format id; the format-specific part of the spec lives in `hf`, and `mode` is `single` (one continuous
+world) or `multi` (a sequence of worlds). Scenes still carry `narration` (the voice) and `onScreenText`.
+
+Route (`lib/build-hf.mjs`, wired in `lib/build.mjs`): validate `spec.hf` with the module's `payloadSchema` -> TTS
+(`lib/tts.mjs`, ElevenLabs or Kokoro) -> word timings (the engine's mlx-whisper transcription aligned to the script;
+text-timed fallback, logged) -> `compose()` -> `npx hyperframes@0.9.6 render --quality <draft|looks|delivery>` twice
+(captions on and off) -> voice + music + the format's SFX cues mixed to -14 LUFS (two-pass loudnorm) -> cover. Outputs:
+`video.mp4` (captions on, or off when `captions.enabled` is false), `video-sin-subtitulos.mp4`, `cover.jpg`, `post.md`,
+`spec.json`, `words.json`. Same `--json-logs` steps as the other routes. `--quality` (HyperFrames formats only; default
+`looks`) sets the render quality; HyperFrames caches stay in `05-tools/cache/hyperframes`.
+
+**Captions rule.** The composition draws its OWN captions (boolean variable `captions`, read with
+`window.__hyperframes.getVariables()`). The engine never applies its caption layer (`lib/captions.mjs`, the Remotion caption
+components, the Blender/ASS burn-in) to these formats, and the final mux copies the video stream. `captions.enabled=false`
+renders the composition with captions off. UIs should hide the caption style panel for them (`ownsCaptions: true` in the
+template entry).
+
+**Module contract** (`hf/registry.mjs` checks it at load and fails with the format name and every problem):
+
+```js
+export const meta = { id, name, about, modes: ["single", "multi"], styles: [{ id, name, about }], settings: [{ id, name, about }] };
+export const payloadSchema;   // zod: the format-specific part of the spec, stored at spec.hf
+export const promptSection;   // spec-writer guidance for LLM providers (`node cli.mjs prompt <id>` = common rules + this)
+export async function compose({ spec, words, durationSec, outDir, assetsDir, captions: { enabled }, scenes }) {
+  // write a deterministic composition into outDir; words = [{ text, start, end }] seconds; scenes = [{ id, startSec, endSec, speechStartSec, speechSec }]
+  return { entry: "index.html", sfx: [{ at: 1.2, kind: "pop" }], durationSec, coverAtSec /* optional */ };
+}
+export function normalize(spec) {}   // optional: lenient authoring, called before validation (fix slips, never drop content)
+```
+
+Optional `meta.defaults` ({ theme, voice, music, sfx, captions, hf }), `meta.category`, `meta.best_for`, `meta.preview`
+fill the catalog entry. SFX `kind`s are mapped onto the sound kit in `03-assets/sfx` (`whoosh`, `pop`, `tick`, `type`,
+`hit`, `ding`, `page`, ... see `HF_SFX_ALIASES`) or can be a file path under it. Directories starting with `_`
+(`hf/_stub/`, the reference module to copy) are internal: hidden unless `CC_HF_INTERNAL=1`. To add a format: create
+`hf/<id>/index.mjs` and add its id to `HF_TEMPLATE_IDS` in `lib/spec.mjs` (that file also reaches the Remotion browser
+bundle, so ids are listed, not discovered); `test/hf-registry.test.mjs` fails when they disagree.
 
 ## LLM prompt
 

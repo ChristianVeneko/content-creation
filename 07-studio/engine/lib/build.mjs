@@ -21,6 +21,8 @@ import { computeReelsTimeline, reelsTtsText, usesReelsKit } from "./reels.mjs";
 import { prepareReels, renderReelsCover } from "./reels-build.mjs";
 import { chooseRenderer } from "./blender-options.mjs";
 import { renderBlenderVideo } from "./blender.mjs";
+import { buildHf } from "./build-hf.mjs";
+import { isHfTemplate } from "../hf/registry.mjs";
 
 export class StepError extends Error {
   constructor(step, message) {
@@ -71,10 +73,12 @@ export function postMarkdown(spec) {
 
 /**
  * Build a video from a spec file.
- * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean, renderer?: "remotion" | "blender", voice?: {provider: string, voiceId?: string}}} opts
+ * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean, renderer?: "remotion" | "blender", voice?: {provider: string, voiceId?: string}, quality?: "draft" | "looks" | "delivery", hfDeps?: object}} opts
  *   renderer: overrides `theme.renderer` (the CLI's --renderer); blender is for the 3D templates
+ *   quality: HyperFrames render quality (HyperFrames formats only; the CLI's --quality)
+ *   hfDeps: test seam of the HyperFrames route (see lib/build-hf.mjs)
  */
-export async function build({ specPath, outDir, log, keepWork = false, renderer: rendererOverride, voice: voiceOverride }) {
+export async function build({ specPath, outDir, log, keepWork = false, renderer: rendererOverride, voice: voiceOverride, quality, hfDeps }) {
   let step = "validate";
   const fail = (message) => {
     throw new StepError(step, message);
@@ -91,11 +95,16 @@ export async function build({ specPath, outDir, log, keepWork = false, renderer:
     const v = validateSpec(raw);
     if (!v.ok) fail(`Invalid spec: ${v.errors.map((e) => `${e.path}: ${e.message}`).join("; ")}`);
     const spec = resolveSpec(v.spec, getTemplate(v.spec.template));
-    const choice = chooseRenderer(spec, rendererOverride);
+    const hf = isHfTemplate(spec.template);
+    if (quality !== undefined && !hf) fail(`--quality is only for HyperFrames formats; template "${spec.template}" renders with Remotion`);
+    if (hf && rendererOverride !== undefined) fail(`Invalid renderer: HyperFrames format "${spec.template}" renders with HyperFrames; --renderer does not apply`);
+    const choice = hf ? { renderer: "hyperframes" } : chooseRenderer(spec, rendererOverride);
     if (choice.error) fail(`Invalid renderer: ${choice.error}`);
     if (rendererOverride) spec.theme = { ...spec.theme, renderer: rendererOverride };
     if (voiceOverride) spec.voice = voiceOverride.provider === "none" ? { ...spec.voice, provider: "none" } : { ...spec.voice, ...voiceOverride };
     const specDir = dirname(resolve(specPath));
+    // HyperFrames formats: their own route (the composition draws its own captions; no Remotion, no caption overlay)
+    if (hf) return await buildHf({ spec, specDir, outDir, log, keepWork, quality, deps: hfDeps, helpers: { StepError, resolveAssetPath, needsAutoVoice, postMarkdown } });
     outDir = resolve(outDir);
     const work = join(outDir, ".work");
     const pub = join(work, "public");

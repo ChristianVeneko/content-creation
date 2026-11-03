@@ -63,6 +63,8 @@
         "reels-menta",
         "reels-limon",
         "reels-pizarra",
+        "pixel-world",
+        "flat-2d",
         "captions-voice",
         "kinetic-type",
         "countdown",
@@ -219,6 +221,22 @@
           ]
         }
       }
+    },
+    "mode": {
+      "description": "HyperFrames formats: \"single\" (one continuous world, stations on one canvas) or \"multi\" (a sequence of worlds); must be one of the format's modes",
+      "type": "string",
+      "enum": [
+        "single",
+        "multi"
+      ]
+    },
+    "hf": {
+      "description": "HyperFrames formats: the format-specific payload, validated by the format module (node cli.mjs prompt <format>)",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
     },
     "stage": {
       "description": "3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus",

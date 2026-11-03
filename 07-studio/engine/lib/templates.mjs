@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { TEMPLATE_IDS, canonicalTemplateId } from "./spec.mjs";
 import { ILLUSTRATED_TEMPLATE_IDS } from "./illustrated.mjs";
 import { lookSchema } from "./illustration-schema.mjs";
+import { hfTemplateEntries } from "../hf/registry.mjs";
 
 export const TEMPLATES_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "templates");
 
@@ -25,7 +26,7 @@ export function validateTemplate(t) {
   return t;
 }
 
-/** All templates, in the canonical order. */
+/** All templates, in the canonical order. The default catalog also lists the registered HyperFrames formats. */
 export function listTemplates(dir = TEMPLATES_DIR) {
   const byId = new Map(
     readdirSync(dir)
@@ -34,6 +35,7 @@ export function listTemplates(dir = TEMPLATES_DIR) {
       .map((t) => ({ ...t, format: t.format ?? t.id }))
       .map((t) => [t.id, t]),
   );
+  if (dir === TEMPLATES_DIR) for (const t of hfTemplateEntries()) byId.set(t.id, t);
   return templateOrder().filter((id) => byId.has(id)).map((id) => byId.get(id));
 }
 

@@ -7,13 +7,14 @@
 //   node cli.mjs music
 //   node cli.mjs voices [--gender male|female] [--pick <seed>]
 //   node cli.mjs validate <spec.json|->
-//   node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--voice-id <id>] [--voice elevenlabs|kokoro|none] [--json-logs] [--keep-work]
+//   node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--quality draft|looks|delivery] [--voice-id <id>] [--voice elevenlabs|kokoro|none] [--json-logs] [--keep-work]
 //   node cli.mjs hyperframes-brief <spec.json> [--json] [--audio-secs 4.1,3.2,...]
 //   node cli.mjs cover <spec.json> --out <dir>
 import { readFileSync } from "node:fs";
 import { setupEnv } from "./lib/env.mjs";
 import { validateSpec } from "./lib/spec.mjs";
 import { listTemplates } from "./lib/templates.mjs";
+import { hfPromptFor, isHfTemplate } from "./hf/registry.mjs";
 
 const USAGE = `Usage:
   node cli.mjs templates                                   Print the template list as JSON
@@ -21,15 +22,19 @@ const USAGE = `Usage:
   node cli.mjs template <id>                               Print one template's full entry as JSON
   node cli.mjs prompt <template> [--creative]              Print the spec-writer prompt trimmed to that template's family
                                                            (--creative adds the originals-first sections for Claude Code)
+                                                           (HyperFrames formats: the common rules plus the format module's own section)
   node cli.mjs builders                                    Print the 3D stage builders (names, params with defaults, part counts) as JSON
   node cli.mjs music                                       Print the music library (moods, tracks, levels) as JSON
   node cli.mjs voices [--gender male|female] [--pick <seed>]
                                                            Trending Latin American Spanish ElevenLabs voices as JSON
                                                            (--pick prints only the auto-picked voice for that seed)
   node cli.mjs validate <spec.json|->                      Validate a VideoSpec (prints {ok, errors})
-  node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--voice-id <id>] [--voice elevenlabs|kokoro|none] [--json-logs] [--keep-work]
+  node cli.mjs build <spec.json> --out <dir> [--renderer remotion|blender] [--quality draft|looks|delivery] [--voice-id <id>] [--voice elevenlabs|kokoro|none] [--json-logs] [--keep-work]
                                                            Render video.mp4, cover.jpg, post.md, spec.json into <dir>
                                                            (--renderer overrides theme.renderer; blender is for 3D templates)
+                                                           (HyperFrames formats render with HyperFrames and draw their own captions: video.mp4 has
+                                                           them (unless captions.enabled is false), video-sin-subtitulos.mp4 never does; --quality
+                                                           sets the HyperFrames render quality, default looks)
                                                            (--voice-id sets spec.voice.voiceId: a 20-character ElevenLabs id or a Kokoro id like em_alex; --voice forces the provider)
   node cli.mjs hyperframes-brief <spec.json> [--json] [--audio-secs s1,s2,...]
                                                            Validate a spec and print the brief for the HyperFrames skill route
@@ -49,6 +54,8 @@ function parseArgs(argv) {
     else if (a === "--brief") flags.brief = true;
     else if (a === "--creative") flags.creative = true;
     else if (a === "--renderer") flags.renderer = argv[++i] ?? "";
+    else if (a === "--quality") flags.quality = argv[++i] ?? "";
+    else if (a.startsWith("--quality=")) flags.quality = a.slice(10);
     else if (a === "--voice-id") flags.voiceId = argv[++i] ?? "";
     else if (a.startsWith("--voice-id=")) flags.voiceId = a.slice(11);
     else if (a === "--voice") flags.voice = argv[++i] ?? "";
@@ -98,7 +105,8 @@ async function main() {
     }
     const { specWriterPromptFor } = await import("./lib/spec-writer-prompt.mjs");
     const manual = readFileSync(new URL("./prompts/spec-writer.md", import.meta.url), "utf8");
-    process.stdout.write(specWriterPromptFor(pos[1], manual, { creative: Boolean(flags.creative) }));
+    const common = specWriterPromptFor(pos[1], manual, { creative: Boolean(flags.creative) });
+    process.stdout.write(isHfTemplate(pos[1]) ? hfPromptFor(pos[1], common) : common);
     return 0;
   }
 
@@ -159,6 +167,13 @@ async function main() {
         return 2;
       }
     }
+    if (flags.quality !== undefined) {
+      const { HF_QUALITIES } = await import("./lib/build-hf.mjs");
+      if (!HF_QUALITIES.includes(flags.quality)) {
+        console.error(`Unknown quality "${flags.quality}"; allowed qualities: ${HF_QUALITIES.join(", ")}\n${USAGE}`);
+        return 2;
+      }
+    }
     const { resolveVoiceOverride } = await import("./lib/voice-override.mjs");
     const voiceChoice = resolveVoiceOverride({ voiceId: flags.voiceId, provider: flags.voice });
     if (voiceChoice.error) {
@@ -172,7 +187,7 @@ async function main() {
       : (step, status, message, progress) => process.stderr.write(`[${String(Math.round(progress * 100)).padStart(3)}%] ${step.padEnd(8)} ${message}\n`);
     const { build } = await import("./lib/build.mjs");
     try {
-      await build({ specPath, outDir: flags.out, log, keepWork: flags.keepWork, renderer: flags.renderer, voice: voiceChoice.override ?? undefined });
+      await build({ specPath, outDir: flags.out, log, keepWork: flags.keepWork, renderer: flags.renderer, voice: voiceChoice.override ?? undefined, quality: flags.quality });
       return 0;
     } catch (e) {
       const step = e.step || "build";

@@ -70,3 +70,13 @@ test("durations: a 180 s video is valid (many scenes of 3-6 s), a single scene s
   const bad = validateSpec({ version: 1, title: "x", template: "illustrated", scenes: [scene(0, 61)] });
   assert.equal(bad.ok, false);
 });
+
+test("previous behavior kept: without HyperFrames formats installed/visible the catalog, --brief and prompt output are the classic ones", () => {
+  const env = { ...process.env, CC_HF_INTERNAL: "" };
+  const brief = execFileSync(process.execPath, [cli, "templates", "--brief"], { encoding: "utf8", env }).trim().split("\n");
+  assert.deepEqual(brief.map((l) => l.split("\t")[0]), listTemplates().map((t) => t.id).filter((id) => !id.startsWith("_")));
+  assert.ok(brief.every((l) => l.split("\t").length === 5));
+  assert.ok(brief.some((l) => l.startsWith("countdown\t")));
+  const p = execFileSync(process.execPath, [cli, "prompt", "countdown"], { encoding: "utf8", env });
+  assert.ok(!p.includes("## HyperFrames format"), "non-HF prompt has no HF section");
+});

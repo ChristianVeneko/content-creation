@@ -26,7 +26,22 @@ export const usesClassicLayout = (templateId) => CLASSIC_TEMPLATE_IDS.includes(t
 
 // `illustrated` is listed first: it is the recommended default template. Then the other illustrated-kit looks,
 // the 3D looks (three.js), and the classic templates last.
-export const TEMPLATE_IDS = ["illustrated", "whiteboard", "broadcast", "editorial-chart", "editor-window", "rank-numbers", ...ART_LOOKS, ...FORMAT_2D_LOOKS, ...THREE_D_TEMPLATE_IDS, ...PIXEL_TEMPLATE_IDS, ...REELS_TEMPLATE_IDS, ...CLASSIC_TEMPLATE_IDS];
+/**
+ * HyperFrames formats (hf/<id>/index.mjs). The ids are listed here, not discovered, because this file also reaches the
+ * Remotion browser bundle (no fs): add an id when its module lands. hf/registry.mjs registers the loaded modules
+ * (registerHfSupport) and a test checks every discovered public module is listed. Internal ids (underscore) are
+ * accepted only when CC_HF_INTERNAL=1 is set before this module loads.
+ */
+export const HF_TEMPLATE_IDS = ["pixel-world", "flat-2d", ...(["1", "true", "yes"].includes(String(globalThis.process?.env?.CC_HF_INTERNAL ?? "").toLowerCase()) ? ["_stub"] : [])];
+export const HF_MODES = ["single", "multi"];
+
+export const TEMPLATE_IDS = ["illustrated", "whiteboard", "broadcast", "editorial-chart", "editor-window", "rank-numbers", ...ART_LOOKS, ...FORMAT_2D_LOOKS, ...THREE_D_TEMPLATE_IDS, ...PIXEL_TEMPLATE_IDS, ...REELS_TEMPLATE_IDS, ...HF_TEMPLATE_IDS, ...CLASSIC_TEMPLATE_IDS];
+
+let hfSupport = null;
+/** Registered by hf/registry.mjs: { isHf(id), normalize(raw), parse(spec), modes(id) }. Keeps this file free of Node built-ins. */
+export function registerHfSupport(support) {
+  hfSupport = support;
+}
 /** Old topic-named ids (renamed 2026-11-01 to format names). Saved specs keep working through this map. */
 export const LEGACY_TEMPLATE_IDS = {
   "breaking-news": "broadcast",
@@ -194,6 +209,8 @@ export const videoSpecSchema = z
         renderer: z.enum(RENDERERS, { error: (iss) => `unknown renderer${iss.input === undefined ? "" : ` "${iss.input}"`}; allowed renderers: ${RENDERERS.join(", ")}` }).optional().describe("Render engine: remotion (default) or blender (3D templates only: Eevee frames, slower, cinematic)"),
       })
       .optional(),
+    mode: z.enum(HF_MODES).optional().describe('HyperFrames formats: "single" (one continuous world, stations on one canvas) or "multi" (a sequence of worlds); must be one of the format\'s modes'),
+    hf: z.record(z.string(), z.unknown()).optional().describe("HyperFrames formats: the format-specific payload, validated by the format module (node cli.mjs prompt <format>)"),
     stage: stageSchema.optional().describe("3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus"),
     voice: z
       .object({
@@ -287,6 +304,17 @@ export const videoSpecSchema = z
   .superRefine((spec, ctx) => {
     const rendererMsg = rendererIssue(spec.template, spec.theme?.renderer);
     if (rendererMsg && RENDERERS.includes(spec.theme?.renderer)) ctx.addIssue({ code: "custom", path: ["theme", "renderer"], message: rendererMsg });
+    if (HF_TEMPLATE_IDS.includes(spec.template)) {
+      if (!hfSupport?.isHf(spec.template)) {
+        ctx.addIssue({ code: "custom", path: ["template"], message: `HyperFrames format "${spec.template}" is not installed (no hf/${spec.template}/index.mjs) or the format registry is not loaded` });
+        return;
+      }
+      const parsed = hfSupport.parse(spec);
+      for (const e of parsed.errors) ctx.addIssue({ code: "custom", path: e.path, message: e.message });
+      if (spec.mode && !hfSupport.modes(spec.template).includes(spec.mode)) ctx.addIssue({ code: "custom", path: ["mode"], message: `format "${spec.template}" supports mode ${hfSupport.modes(spec.template).map((m) => `"${m}"`).join(" or ")}, not "${spec.mode}"` });
+      return;
+    }
+    if (spec.hf !== undefined) ctx.addIssue({ code: "custom", path: ["hf"], message: `\`hf\` is only for HyperFrames formats: ${HF_TEMPLATE_IDS.filter((id) => !id.startsWith("_")).join(", ")}` });
     if (refineReels(spec, ctx)) return;
     if (!usesClassicLayout(spec.template)) {
       spec.scenes.forEach((s, i) => {
@@ -373,10 +401,16 @@ export function formatIssues(error) {
  */
 export function validateSpec(raw) {
   // stage builder calls ({ build, params, seed }) expand to plain parts first, so everything downstream sees ordinary specs
-  const { spec: expanded, errors: buildErrors } = expandBuilders(normalizeStageAuthoring(migrateLegacyIds(raw)));
+  let migrated = migrateLegacyIds(raw);
+  // HyperFrames formats: generic lenient fixes plus the module's own `normalize` (never drops content)
+  const isHf = Boolean(hfSupport?.isHf(migrated?.template));
+  if (isHf) migrated = hfSupport.normalize(migrated);
+  const { spec: expanded, errors: buildErrors } = expandBuilders(normalizeStageAuthoring(migrated));
   if (buildErrors.length) return { ok: false, errors: buildErrors };
   const res = videoSpecSchema.safeParse(expanded);
   if (!res.success) return { ok: false, errors: formatIssues(res.error) };
+  // the format module's parsed payload (defaults filled) replaces spec.hf
+  if (isHf) res.data.hf = hfSupport.parse(res.data).data;
   return { ok: true, spec: res.data, errors: [] };
 }
 
