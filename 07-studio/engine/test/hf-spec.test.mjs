@@ -112,3 +112,16 @@ test("spec.schema.json declares mode and hf and stays in sync with the schema (t
   assert.deepEqual(gen.properties.template.enum.filter((x) => x !== "_stub"), onDisk.properties.template.enum);
   assert.ok(TEMPLATE_IDS.includes("_stub"));
 });
+
+test("common HyperFrames controls (pace, camera, cta, variants, brand pill and follow click) reach the module and are range-checked", () => {
+  const r = validateSpec(base({ pace: "fast", camera: { intensity: "dynamic", shake: true }, cta: { type: "comment", text: "TOKEN" }, variants: { count: 3 }, brand: { handle: "@veneko", pill: true, followClick: true } }));
+  assert.equal(r.ok, true, JSON.stringify(r.errors));
+  assert.equal(r.spec.pace, "fast");
+  assert.deepEqual(r.spec.camera, { intensity: "dynamic", shake: true });
+  assert.deepEqual(r.spec.cta, { type: "comment", text: "TOKEN" });
+  assert.deepEqual(r.spec.variants, { count: 3 });
+  assert.equal(r.spec.brand.pill, true);
+  assert.equal(r.spec.brand.followClick, true);
+  assert.equal(validateSpec(base({ pace: "warp" })).ok, false);
+  assert.equal(validateSpec(base({ variants: { count: 99 } })).ok, false);
+});

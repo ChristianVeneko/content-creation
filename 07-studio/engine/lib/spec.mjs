@@ -211,6 +211,16 @@ export const videoSpecSchema = z
       .optional(),
     mode: z.enum(HF_MODES).optional().describe('HyperFrames formats: "single" (one continuous world, stations on one canvas) or "multi" (a sequence of worlds); must be one of the format\'s modes'),
     hf: z.record(z.string(), z.unknown()).optional().describe("HyperFrames formats: the format-specific payload, validated by the format module (node cli.mjs prompt <format>)"),
+    pace: z.enum(["calm", "normal", "fast"]).optional().describe("HyperFrames formats: rhythm of visual beats (calm about 3 s, normal 2 s, fast 1.5 s between beats)"),
+    camera: z
+      .object({ intensity: z.enum(["none", "subtle", "dynamic"]).optional(), shake: z.boolean().optional().describe("Short camera shake on emphasis beats") })
+      .optional()
+      .describe("HyperFrames formats: camera intensity"),
+    cta: z
+      .object({ type: z.enum(["follow", "comment", "send", "custom"]), text: z.string().min(1).max(60).optional().describe("Word to comment or custom call to action") })
+      .optional()
+      .describe("HyperFrames formats: the closing call to action"),
+    variants: z.object({ count: z.number().int().min(1).max(10) }).optional().describe("HyperFrames formats: re-render the same script in N different worlds"),
     stage: stageSchema.optional().describe("3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus"),
     voice: z
       .object({
@@ -255,6 +265,8 @@ export const videoSpecSchema = z
       .object({
         handle: z.string().min(1).max(40).optional(),
         avatar: z.string().min(1).optional().describe("Local image path for the footer avatar"),
+        pill: z.boolean().optional().describe("HyperFrames formats: pin an avatar + handle pill for the whole video"),
+        followClick: z.boolean().optional().describe("HyperFrames formats: animate a fake follow click with a cursor on the pill"),
       })
       .optional(),
     captions: z

@@ -238,6 +238,71 @@
       },
       "additionalProperties": {}
     },
+    "pace": {
+      "description": "HyperFrames formats: rhythm of visual beats (calm about 3 s, normal 2 s, fast 1.5 s between beats)",
+      "type": "string",
+      "enum": [
+        "calm",
+        "normal",
+        "fast"
+      ]
+    },
+    "camera": {
+      "description": "HyperFrames formats: camera intensity",
+      "type": "object",
+      "properties": {
+        "intensity": {
+          "type": "string",
+          "enum": [
+            "none",
+            "subtle",
+            "dynamic"
+          ]
+        },
+        "shake": {
+          "description": "Short camera shake on emphasis beats",
+          "type": "boolean"
+        }
+      }
+    },
+    "cta": {
+      "description": "HyperFrames formats: the closing call to action",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "follow",
+            "comment",
+            "send",
+            "custom"
+          ]
+        },
+        "text": {
+          "description": "Word to comment or custom call to action",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "variants": {
+      "description": "HyperFrames formats: re-render the same script in N different worlds",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "count"
+      ]
+    },
     "stage": {
       "description": "3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus",
       "type": "object",
@@ -2425,6 +2490,14 @@
           "description": "Local image path for the footer avatar",
           "type": "string",
           "minLength": 1
+        },
+        "pill": {
+          "description": "HyperFrames formats: pin an avatar + handle pill for the whole video",
+          "type": "boolean"
+        },
+        "followClick": {
+          "description": "HyperFrames formats: animate a fake follow click with a cursor on the pill",
+          "type": "boolean"
         }
       }
     },
