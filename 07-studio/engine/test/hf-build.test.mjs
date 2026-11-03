@@ -157,3 +157,13 @@ test("compose() may return the entry as a relative or an absolute path, but it m
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("compose warnings are formatted for the build log, capped and de-duplicated", async () => {
+  const { composeWarningLines } = await import("../lib/build-hf.mjs");
+  assert.deepEqual(composeWarningLines(undefined), []);
+  assert.deepEqual(composeWarningLines(["a", "a", "b"]), ["Compose warning: a", "Compose warning: b"]);
+  const many = Array.from({ length: 30 }, (_, i) => `w${i}`);
+  const lines = composeWarningLines(many);
+  assert.equal(lines.length, 11);
+  assert.equal(lines[10], "Compose warning: 20 more not shown");
+});

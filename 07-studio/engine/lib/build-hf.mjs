@@ -17,6 +17,14 @@ import { alignToScript, computeTimeline, syntheticCaptions } from "./timeline.mj
 import { effectiveProvider, synthesize } from "./tts.mjs";
 import { pickVoice, trendingVoices } from "./voices.mjs";
 
+/** Build-log lines for the warnings a format's compose() returned (de-duplicated, at most 10 shown). */
+export function composeWarningLines(warnings) {
+  const list = [...new Set((Array.isArray(warnings) ? warnings : []).map(String))];
+  const lines = list.slice(0, 10).map((w) => `Compose warning: ${w}`);
+  if (list.length > 10) lines.push(`Compose warning: ${list.length - 10} more not shown`);
+  return lines;
+}
+
 /** The composition entry as a path relative to outDir (a module may return it relative or absolute); null when it is missing or outside outDir. */
 export function resolveHfEntry(outDir, entry) {
   if (typeof entry !== "string" || !entry) return null;
@@ -271,6 +279,7 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
   }
   const entryRel = composed ? resolveHfEntry(hfDir, composed.entry) : null;
   if (!entryRel) fail(`Format "${spec.template}" compose() must return { entry } naming a file it wrote in outDir`);
+  for (const line of composeWarningLines(composed.warnings)) log(step, "running", line, 0.456);
   if (!Number.isFinite(composed.durationSec) || composed.durationSec <= 0) fail(`Format "${spec.template}" compose() must return a positive durationSec`);
   if (Math.abs(composed.durationSec - totalSec) > 0.25) log(step, "running", `Composition lasts ${composed.durationSec}s but the narration timeline ${r3(totalSec)}s; audio follows the composition`, 0.456);
   totalSec = composed.durationSec;
