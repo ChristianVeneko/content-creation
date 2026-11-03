@@ -17,13 +17,15 @@ function anchorX(w, at, size) {
 
 function prepWorld(w) {
   w.def = SC[w.sc] || SC[Object.keys(SC)[0]];
+  if (w.def.build) w.def = w.def.build(w.pl || [], w.th);
   w.W = w.def.w || 270; w.gy = w.def.gy || GYD;
   w.pe = {}; w.camKeys = [[w.t0, 0]]; w.zoom = []; w.labels = []; w.emotes = []; w.mults = []; w.bursts = []; w.shakes = []; w.stamps = []; w.flashes = [];
   const heroId = SPEC.hero;
-  const castIn = w.cast && w.cast.length ? w.cast : [{ who: 'hero', at: 'center', size: 'M' }];
+  const castIn = w.cast && w.cast.length ? w.cast : [{ who: 'hero', at: 'center' }];
+  const defSize = (c) => c.size || (castIn.length <= 1 ? 'L' : 'M');
   w.cast = castIn.map((c, i) => {
     const who = c.who === 'hero' ? heroId : c.who;
-    return { id: c.who, who, size: c.size || 'M', u: sizeU(c.size || 'M'), dir: c.dir || 1, x0: anchorX(w, c.at, c.size || 'M'), segs: [], acts: [], isHero: c.who === 'hero' || !!HEROES[who], talk: c.talk !== false && (c.who === 'hero' || !!HEROES[who]), bs: i * 0.77 };
+    return { id: c.who, who, size: defSize(c), u: sizeU(defSize(c)), dir: c.dir || 1, x0: anchorX(w, c.at, defSize(c)), segs: [], acts: [], isHero: c.who === 'hero' || !!HEROES[who], talk: c.talk !== false && (c.who === 'hero' || !!HEROES[who]), bs: i * 0.77 };
   });
   const castOf = (id) => w.cast.find((c) => c.id === id) || w.cast.find((c) => c.who === id) || w.cast[0];
   const sorted = w.beats.slice().sort((a, b) => a.t - b.t);
@@ -149,8 +151,8 @@ function worldUI(g, t, w) {
     const dur = l.dur || 1.8, p = pr(t, l.t, 0.22), out = t > l.t + dur - 0.2 ? clamp((l.t + dur - t) / 0.2) : 1;
     if (t < l.t || t > l.t + dur) continue;
     const b = l.target ? propBox(w, l.target) : { cx: w.W / 2, y: 200 };
-    const y = Math.max(132, b.y - 24);
-    chip(g, l.text, clamp(b.cx, txtW(l.text, 8) / 2 + 8, w.W - txtW(l.text, 8) / 2 - 8), y, rampOf(l.color, M.yellow), p * out, 8);
+    const y = Math.max(ZONES.caption.y1 + 4, b.y - 24);
+    chip(g, l.text, clamp(b.cx, txtW(l.text, 8) / 2 + 14, w.W - txtW(l.text, 8) / 2 - 14), y, rampOf(l.color, M.yellow), p * out, 8);
     if (p >= 1 && l.target) arrowDown(g, clamp(b.cx, 12, w.W - 12), y + 18, t, '#ffffff');
   }
   for (const m of w.mults) {

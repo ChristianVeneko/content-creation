@@ -5,6 +5,7 @@ import { HERE, RUNTIME_DIR, runtimeFiles } from "./catalog.mjs";
 import { payloadSchema } from "./schema.mjs";
 import { resolvePayload } from "./resolve.mjs";
 import { normalizePayload } from "./normalize.mjs";
+import { ZONES } from "./layout.mjs";
 
 const FONTS = ["PressStart2P-Regular.ttf", "PixelifySans-Variable.ttf"];
 const hexToRgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; };
@@ -28,18 +29,23 @@ export function postCss(style) {
   return css;
 }
 
-export function buildHtml({ data, style }) {
+/** The composition script: data prelude (style, spec, zones) followed by the runtime files in load order. */
+export function buildScript({ data, style }) {
   const rt = runtimeFiles().map((f) => readFileSync(join(RUNTIME_DIR, f), "utf8"));
   const styleData = { id: style.id, px: style.px, palette: style.palette, mono: !!style.mono, bit1: !!style.bit1, outline: style.outline, shade: style.shade, glow: style.glow, sat: style.sat, gamma: style.gamma, time: style.time ?? null, atmos: style.atmos, cap: style.cap };
-  const prelude = `const STYLE=${JSON.stringify(styleData)};\nconst DUR=${data.dur},FPS=30;\nconst SPEC=${JSON.stringify(data)};\n`;
-  const js = [prelude, ...rt].join("\n");
+  const prelude = `const STYLE=${JSON.stringify(styleData)};\nconst DUR=${data.dur},FPS=30;\nconst ZONES=${JSON.stringify(ZONES)};\nconst SPEC=${JSON.stringify(data)};\n`;
+  return [prelude, ...rt].join("\n");
+}
+
+export function buildHtml({ data, style }) {
+  const js = buildScript({ data, style });
   const ink = style.cap.ink, bg = style.palette[0];
   const tpl = readFileSync(join(HERE, "template.html"), "utf8");
   return tpl
     .replace(/__DUR__/g, String(data.dur)).replace(/__LANG__/g, "und").replace(/__CAPS__/g, data.capsDefault ? "true" : "false")
     .replace(/__BG__/g, bg).replace(/__BLURB__/g, String(style.blur?.[0] ?? 0)).replace(/__BLURF__/g, String(style.blur?.[1] ?? 0))
     .replace(/__POST__/g, postCss(style)).replace(/__SHADE__/g, hexToRgba(ink, 0.55)).replace(/__PILL__/g, hexToRgba(ink, 0.88))
-    .replace(/__CAPFG__/g, style.cap.fg).replace(/__CAPINK__/g, ink)
+    .replace(/__CAPFG__/g, style.cap.fg).replace(/__CAPINK__/g, ink).replace(/__CAPTOP__/g, String(ZONES.capTop)).replace(/__STAMPTOP__/g, String(ZONES.stampTop))
     .replace("/*__JS__*/", () => js);
 }
 

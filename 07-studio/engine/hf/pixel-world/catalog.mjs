@@ -7,6 +7,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { STYLES } from "./styles.mjs";
+import { LEGACY_TOPICS } from "./topics.mjs";
 
 export const HERE = dirname(fileURLToPath(import.meta.url));
 export const RUNTIME_DIR = join(HERE, "runtime");
@@ -51,30 +52,37 @@ export const BEAT_DOCS = {
 };
 
 let cache = null;
-function evalFiles(files, extra = {}) {
+// Evaluates runtime files in one vm context with stubs (their top level only registers definitions). Returns the registries.
+function evalFiles(files) {
   const defs = { scenarios: [], heroes: [], npcs: [] };
   const M = new Proxy({}, { get: (_, k) => (k === "ink" ? "#000000" : ["#000000", "#000000", "#000000", "#000000", "#000000"]) });
   const ctx = vm.createContext({
-    M, INK: "#000000", console,
-    defScenario: (d) => defs.scenarios.push(d), defHero: (d) => defs.heroes.push(d), defNpc: (d) => defs.npcs.push(d), ...extra,
+    M, INK: "#000000", console, hs: () => 0,
+    defScenario: (d) => defs.scenarios.push(d), defHero: (d) => defs.heroes.push(d), defNpc: (d) => defs.npcs.push(d),
   });
   for (const f of files) vm.runInContext(readFileSync(join(RUNTIME_DIR, f), "utf8"), ctx, { filename: f });
+  defs.PL = files.includes("props.js") ? vm.runInContext("PL", ctx) : {};
   return defs;
 }
 
 export function loadCatalog() {
   if (cache) return cache;
   const scenFiles = readdirSync(RUNTIME_DIR).filter((f) => /^scenarios-.*\.js$/.test(f)).sort();
-  const sc = evalFiles(scenFiles);
+  const sc = evalFiles(["props.js", ...scenFiles]);
   const cast = evalFiles(["cast.js"]);
-  const scenarios = sc.scenarios.map((d) => ({
-    id: d.id, name: d.name, about: d.about, keywords: d.keywords ?? [], w: d.w ?? 270, time: d.time ?? "day",
-    props: Object.entries(d.props ?? {}).map(([id, p]) => ({ id, x: p.x, y: p.y, w: p.w, h: p.h, about: p.about ?? id, fills: !!p.fills, chops: !!p.chops, stamps: !!p.stamps, opens: !!p.opens })),
-  }));
+  const scenarios = sc.scenarios.map((d) => {
+    const legacy = LEGACY_TOPICS[d.id] ?? {};
+    const topics = d.topics ?? legacy.topics ?? [], avoid = d.avoid ?? legacy.avoid ?? [];
+    return {
+      id: d.id, name: d.name, about: d.about, keywords: [...(d.keywords ?? []), ...topics], topics, avoid, dynamic: !!d.dynamic, layers: ["far", "back", "mid", "fore"].filter((k) => typeof d[k] === "function").length, w: d.w ?? 270, time: d.time ?? "day",
+      props: Object.entries(d.props ?? {}).map(([id, p]) => ({ id, x: p.x, y: p.y, w: p.w, h: p.h, about: p.about ?? id, fills: !!p.fills, chops: !!p.chops, stamps: !!p.stamps, opens: !!p.opens })),
+    };
+  });
   const ids = new Set();
   for (const s of scenarios) { if (ids.has(s.id)) throw new Error(`pixel-world: duplicate scenario id "${s.id}"`); ids.add(s.id); }
+  const propLib = Object.entries(sc.PL).map(([kind, d]) => ({ kind, about: d.about, row: d.row, w: d.w, h: d.h, fills: !!d.fills, opens: !!d.opens }));
   cache = {
-    scenarios,
+    scenarios, propLib,
     heroes: cast.heroes.map((h) => ({ id: h.id, name: h.name, about: h.about })),
     npcs: cast.npcs.map((n) => ({ id: n.id, name: n.name, about: n.about })),
     styles: STYLES,
@@ -90,5 +98,26 @@ export const castIds = () => ["hero", ...heroIds(), ...npcIds()];
 /** Runtime sources in load order (the data prelude is prepended by compose). */
 export function runtimeFiles() {
   const scen = readdirSync(RUNTIME_DIR).filter((f) => /^scenarios-.*\.js$/.test(f)).sort();
-  return ["core.js", "fx.js", "kit.js", "cast.js", ...scen, "beats.js", "main.js"];
+  return ["core.js", "contrast.js", "fx.js", "kit.js", "floor.js", "cast.js", "props.js", ...scen, "beats.js", "main.js"];
+}
+
+export const propKinds = () => loadCatalog().propLib.map((p) => p.kind);
+export const WORKSHOP_THEMES = ["bench", "sky", "grid", "night-city"];
+export const WORKSHOP_ID = "workshop-stage";
+export const WORKSHOP_MAX_PROPS = 8;
+/** Stable ids of a workshop-stage prop list: explicit `id`, else the kind, with -2, -3 suffixes for repeats. */
+export function workshopProps(list) {
+  const seen = {};
+  return (Array.isArray(list) ? list : []).filter((p) => p && typeof p === "object" && typeof p.kind === "string").map((p) => {
+    const base = typeof p.id === "string" && p.id ? p.id : p.kind;
+    seen[base] = (seen[base] ?? 0) + 1;
+    return { ...p, id: seen[base] > 1 ? `${base}-${seen[base]}` : base };
+  });
+}
+/** Props a beat may target in a world: the scenario's own props, or the payload's props for workshop-stage. */
+export function worldProps(w) {
+  const sc = getScenario(w?.scenario);
+  if (!sc) return [];
+  if (sc.dynamic) { const lib = Object.fromEntries(loadCatalog().propLib.map((p) => [p.kind, p])); return workshopProps(w.props).map((p) => ({ id: p.id, about: `${p.kind}: ${lib[p.kind]?.about ?? p.kind}`, kind: p.kind })); }
+  return sc.props;
 }

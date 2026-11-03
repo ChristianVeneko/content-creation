@@ -1,7 +1,7 @@
 // zod 4 schema of `spec.hf` for the pixel-world format. Enums are closed and every failure names the allowed values.
 import { z } from "zod";
 import { STYLE_IDS } from "./styles.mjs";
-import { BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, ANCHORS, scenarioIds, heroIds, castIds, getScenario } from "./catalog.mjs";
+import { BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, ANCHORS, scenarioIds, heroIds, castIds, getScenario, worldProps, propKinds, workshopProps, WORKSHOP_THEMES, WORKSHOP_MAX_PROPS } from "./catalog.mjs";
 
 const preview = (list) => (list.length > 14 ? `${list.slice(0, 14).join(", ")}, ... (${list.length} total)` : list.join(", "));
 const closedEnum = (list, what) => z.enum(list, { error: (iss) => `unknown ${what} ${JSON.stringify(iss.input)}; use one of: ${preview(list)}` });
@@ -51,8 +51,18 @@ const castEntry = z.object({
   talk: z.boolean().optional(),
 });
 
+const workshopPropSchema = z.object({
+  kind: closedEnum(propKinds(), "prop kind"),
+  id: z.string().min(1).max(24).regex(/^[a-z0-9-]+$/, "prop id: lowercase letters, digits and dashes").optional(),
+  at: z.union([closedEnum(ANCHORS, "position"), z.number().min(0)]).optional(),
+  size: closedEnum(SIZES, "size (S|M|L)").optional(),
+  row: closedEnum(["floor", "bench", "high"], "row").optional(),
+});
+
 export const worldSchema = z.object({
   scenario: closedEnum(scenarioIds(), "scenario"),
+  props: z.array(workshopPropSchema).max(WORKSHOP_MAX_PROPS, `at most ${WORKSHOP_MAX_PROPS} props per workshop-stage world`).optional(),
+  theme: closedEnum(WORKSHOP_THEMES, "workshop theme").optional(),
   from: z.union([z.number().min(0), wordRef]).optional(),
   transition: closedEnum(TRANSITIONS, "transition").optional(),
   time: closedEnum(TIMES, "time of day").optional(),
@@ -60,7 +70,10 @@ export const worldSchema = z.object({
   beats: z.array(beatSchema).max(48).default([]),
 }).superRefine((w, ctx) => {
   const sc = getScenario(w.scenario); if (!sc) return;
-  const props = sc.props.map((p) => p.id);
+  if (sc.dynamic && !(w.props?.length)) ctx.addIssue({ code: "custom", path: ["props"], message: `scenario "${w.scenario}" needs \`props\`: 1-${WORKSHOP_MAX_PROPS} items { kind, id?, at?, size? }; kinds: ${propKinds().join(", ")}` });
+  if (!sc.dynamic && (w.props?.length || w.theme)) ctx.addIssue({ code: "custom", path: [w.props?.length ? "props" : "theme"], message: `\`props\` and \`theme\` exist only on scenario "workshop-stage" (this world uses "${w.scenario}")` });
+  const wp = worldProps(w), props = wp.map((p) => p.id);
+  if (sc.dynamic) { const ids = workshopProps(w.props).map((p) => p.id); if (new Set(ids).size !== ids.length) ctx.addIssue({ code: "custom", path: ["props"], message: "prop ids must be unique" }); }
   const okPos = (v) => typeof v === "number" || ANCHORS.includes(v) || props.includes(v);
   const castIdsHere = (w.cast ?? [{ who: "hero" }]).map((c) => c.who);
   w.beats.forEach((b, i) => {

@@ -48,6 +48,7 @@ function drawWorld(i, t, o) {
   lay(L.b, cam, k2, (g) => { if (d.back) d.back(g, t, c); });
   lay(L.m, cam, 1, (g) => {
     if (d.mid) d.mid(g, t, c);
+    dressFloor(g, t, w);
     if (o.seam) { if (TOWER) R(g, -40, -2, w.W + 80, 6, M.stone[2]); else { R(g, -2, 0, 8, H, M.stone[1]); R(g, -2, 0, 2, H, M.stone[3]); } }
     for (const id in d.props) drawProp(g, t, w, id, c);
     const order = w.cast.map((cc, ix) => ({ cc, ix })).filter((e) => !(o.hideHero && e.cc.id === 'hero')).sort((a, b) => a.cc.x0 - b.cc.x0);
@@ -55,6 +56,7 @@ function drawWorld(i, t, o) {
   });
   lay(L.f, cam, k3, (g) => {
     if (d.fore) d.fore(g, t, c);
+    dressFore(g, t, w);
     if (STYLE.atmos === 'rain') rain(g, t, 36, 5, M.steel[3]);
     else if (STYLE.atmos === 'embers') embers(g, t, 20, 9, 400);
     else if (STYLE.atmos === 'smoke') dust(g, t, 22, 4, M.steel[3], 3, 60, 360);
@@ -129,6 +131,14 @@ SPEC.caps.forEach((gr, gi) => {
   capGroups.push({ el: dv, ws, g: gr });
 });
 let lastGroup = -1;
+const PALSET = PALHEX.slice();
+const stampCache = {};
+/* stamp look: fill readable (WCAG >= 4.5) against its own ink stroke, else a boxed banner with the best palette pair */
+function stampLook(name) {
+  if (stampCache[name]) return stampCache[name];
+  const r = rampOf(name, M.yellow), cands = [r[2], r[3], r[4]].map(domCol).concat([STYLE.cap.fg, PALHEX[PALORDER[PALORDER.length - 1]]]);
+  return (stampCache[name] = stampPair(STYLE.cap.ink, cands, PALSET));
+}
 const BOXES = STYLE.cap.boxes;
 function overlays(t) {
   let cur = -1;
@@ -153,8 +163,10 @@ function overlays(t) {
     const p = EA.back(clamp((t - st.t) / 0.2)), out = clamp((st.t1 - t) / 0.12);
     stampEl.style.display = 'block';
     if (stampEl.textContent !== st.text) stampEl.textContent = st.text;
-    stampEl.style.color = domCol(rampOf(st.color, M.yellow)[2]);
-    stampEl.style.webkitTextStrokeColor = STYLE.cap.ink; stampEl.style.textShadow = '8px 8px 0 ' + STYLE.cap.ink;
+    const sp = stampLook(st.color);
+    stampEl.style.color = sp.fg; stampEl.style.background = sp.boxed ? sp.bg : 'transparent'; stampEl.style.padding = sp.boxed ? '24px 0 30px' : '0'; stampEl.style.lineHeight = sp.boxed ? '1.25' : 'normal';
+    stampEl.style.webkitTextStrokeColor = sp.boxed ? 'transparent' : sp.stroke; stampEl.style.webkitTextStrokeWidth = sp.boxed ? '0' : '14px';
+    stampEl.style.textShadow = sp.boxed ? 'none' : '8px 8px 0 ' + sp.stroke; stampEl.style.borderTop = stampEl.style.borderBottom = sp.boxed ? '8px solid ' + sp.fg : '0';
     stampEl.style.transform = 'scale(' + ((0.4 + 0.6 * p) * (0.8 + 0.2 * out)).toFixed(3) + ') rotate(' + (st.rot || -2) + 'deg)';
     stampEl.style.opacity = out.toFixed(2);
   } else stampEl.style.display = 'none';
@@ -203,8 +215,14 @@ function hud(t) {
   let prog = null, cnt = null;
   const pk = [], ck = [];
   for (const h of hv) { if (h.hud === 'progress') { pk.push([h.t - 0.001, pk.length ? pk[pk.length - 1][1] : 0], [h.t + 0.5, clamp(h.value)]); if (t >= h.t) prog = h; } else if (h.hud === 'counter') { ck.push([h.t - 0.001, ck.length ? ck[ck.length - 1][1] : 0], [h.t + 0.4, h.value]); if (t >= h.t) cnt = h; } }
-  if (prog) { const x = 148, y = 62, ww = 106; progressBar(g, x, y, ww, kf(t, pk, EA.out), M.green, 12); if (prog.label) txt(g, prog.label, x + 4, y + 2, 8, '#ffffff', 'left', INK); }
-  if (cnt) { const x = 254, y = 62, s = String(Math.round(kf(t, ck, EA.out))), lab = cnt.label ? cnt.label + ' ' : '', bump = (t - cnt.t) < 0.2 ? 1 : 0; const ww = txtW(lab + s, 8) + 12; if (!prog || true) { const yy = prog ? y + 16 : y; box(g, x - ww, yy - bump, ww, 14, M.dark); txt(g, lab, x - ww + 6, yy + 3 - bump, 8, '#ffffff', 'left'); txt(g, s, x - 6, yy + 3 - bump, 8, M.yellow[3], 'right'); } }
+  if (prog) { const z = ZONES.hudProgress; progressBar(g, z.x, z.y, z.w, kf(t, pk, EA.out), M.green, z.h); if (prog.label) txt(g, String(prog.label).slice(0, Math.floor((z.w - 8) / 8)), z.x + 4, z.y + 2, 8, '#ffffff', 'left', INK); }
+  if (cnt) {
+    const z = ZONES.hudCounter, s = String(Math.round(kf(t, ck, EA.out))), bump = (t - cnt.t) < 0.2 ? 1 : 0;
+    let lab = cnt.label ? String(cnt.label).trim() : ''; while (lab.length && txtW(lab + ' ' + s, 8) + 12 > z.w) lab = lab.slice(0, -1);
+    if (lab) lab += ' ';
+    const ww = txtW(lab + s, 8) + 12, xr = z.x + z.w;
+    box(g, xr - ww, z.y - bump, ww, z.h, M.dark); txt(g, lab, xr - ww + 6, z.y + 3 - bump, 8, '#ffffff', 'left'); txt(g, s, xr - 6, z.y + 3 - bump, 8, M.yellow[3], 'right');
+  }
   g.restore();
 }
 

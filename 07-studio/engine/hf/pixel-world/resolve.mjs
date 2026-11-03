@@ -1,6 +1,7 @@
 // Resolves a validated payload against the narration: world windows, beat times (bound to words), caption groups, sfx cues.
 // Pure and deterministic: the same inputs always give the same output.
-import { getScenario, PROP_ACTS } from "./catalog.mjs";
+import { getScenario, PROP_ACTS, worldProps, workshopProps } from "./catalog.mjs";
+import { densify, DENSITY_MIN_PER_SEC } from "./normalize.mjs";
 import { getStyle } from "./styles.mjs";
 
 export const normWord = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
@@ -108,6 +109,12 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       if (b.t < t0 || b.t > t1 - 0.05) { if (b.t < t0 - 0.01 || b.t > t1) warnings.push(`world ${wi + 1} beat ${b._i + 1} (${b.do}) lands outside its world (${b.t.toFixed(2)} s); clamped into ${t0.toFixed(1)}-${t1.toFixed(1)} s`); b.t = Math.min(Math.max(b.t, t0), t1 - 0.05); }
       b.t = +b.t.toFixed(3);
     }
+    const dens = densify({ t0, t1, beats, words: ws, propIds: worldProps(w).map((p) => p.id), castIds: (w.cast ?? [{ who: "hero" }]).map((c) => c.who) });
+    if (dens.length) {
+      const before = beats.length / (t1 - t0);
+      beats.push(...dens.map((d, k) => ({ ...d, _i: -1 - k })));
+      warnings.push(`world ${wi + 1}: ${before.toFixed(2)} beats/s is below ${DENSITY_MIN_PER_SEC}; added ${dens.length} ambient reaction beat(s) (${dens.map((d) => `${d.do}@${d.t.toFixed(1)}s`).join(", ")})`);
+    }
     const out = [];
     for (const b of beats) {
       const { _i, on, ...rest } = b;
@@ -115,10 +122,10 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       if (b.do === "progress" || b.do === "counter") { hud.push({ t: b.t, hud: b.do, value: b.value, label: b.label ?? b.text ?? null }); }
       else if (b.do === "follow") { /* handled by the brand pill */ }
       else out.push(rest);
-      if (SFX_OF[b.do]) sfx.push({ at: b.t, kind: SFX_OF[b.do] });
+      if (SFX_OF[b.do] && !b.ambient) sfx.push({ at: b.t, kind: SFX_OF[b.do] });
     }
     if (wi > 0) sfx.push({ at: +(t0 - 0.5).toFixed(3), kind: "whoosh" });
-    return { sc: w.scenario, t0, t1, tr: w.transition ?? defaultTr[(wi - 1 + 4) % 4], time: w.time ?? null, cast: w.cast ?? null, beats: out, _props: sc.props.length };
+    return { sc: w.scenario, t0, t1, tr: w.transition ?? defaultTr[(wi - 1 + 4) % 4], time: w.time ?? null, cast: w.cast ?? null, pl: sc.dynamic ? workshopProps(w.props) : undefined, th: sc.dynamic ? w.theme ?? "bench" : undefined, beats: out, _props: sc.props.length };
   });
   worlds.forEach((w) => delete w._props);
 

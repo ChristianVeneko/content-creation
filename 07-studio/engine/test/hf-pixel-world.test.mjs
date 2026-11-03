@@ -42,7 +42,7 @@ test("schema rejects a beat target that is not a prop of the scenario", () => {
   const ex = example(); ex.worlds[0].beats[0].target = "rocket";
   const r = payloadSchema.safeParse(ex); assert.equal(r.success, false);
   const issue = r.error.issues.find((i) => i.path.join(".") === "worlds.0.beats.0.target");
-  assert.match(issue.message, /no prop "rocket".*machine/);
+  assert.match(issue.message, /no prop "rocket".*phone/);
 });
 
 test("schema requires per-kind fields and rejects unknown beat kinds", () => {
@@ -129,7 +129,7 @@ test("compose is deterministic: byte-identical output twice, own captions, varia
 });
 
 test("every style x a sample of scenarios composes in both modes without throwing", async () => {
-  const cat = catalog(), sample = [cat.scenarios[0].id, cat.scenarios[Math.floor(cat.scenarios.length / 2)].id, cat.scenarios.at(-1).id];
+  const cat = catalog(), fixed = cat.scenarios.filter((s) => !s.dynamic), sample = [fixed[0].id, fixed[Math.floor(fixed.length / 2)].id, fixed.at(-1).id];
   const dirs = [];
   try {
     for (const st of cat.styles) for (const mode of ["multi", "single"]) {
@@ -160,7 +160,7 @@ test("determinism: no Date.now / Math.random / requestAnimationFrame / repeat:-1
 
 test("every scenario declares 3+ props and the cast/styles lists are consistent", () => {
   const cat = catalog();
-  for (const s of cat.scenarios) { assert.ok(s.props.length >= 3, `${s.id} props`); assert.ok(s.about.length > 20); }
+  for (const s of cat.scenarios) { assert.ok(s.dynamic || s.props.length >= 3, `${s.id} props`); assert.ok(s.about.length > 20); }
   assert.equal(new Set(cat.scenarios.map((s) => s.id)).size, cat.scenarios.length);
   for (const st of cat.styles) assert.ok(st.palette.length >= 2 && st.palette.every((c) => /^#[0-9a-f]{6}$/i.test(c)), st.id);
 });

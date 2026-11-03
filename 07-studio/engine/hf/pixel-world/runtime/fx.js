@@ -116,14 +116,27 @@ function tile(g, x, y, s, k, fs = 8, o = {}) {
   if (s) txt(g, s, x + w / 2, y + (h - fs) / 2 + 1, fs, INK, 'center');
   return { w, h };
 }
+/* label chip colours with WCAG contrast >= 4.5 between text and fill; works on mapped (palette) colours, master values are returned */
+const chipCache = {};
+function chipColors(ramp) {
+  const k = ramp[2]; if (chipCache[k]) return chipCache[k];
+  const solid = (c) => { const v = col(c); return typeof v === 'string' ? v : null; }, light = PALHEX[PALORDER[PALORDER.length - 1]], dark = PALHEX[PALORDER[0]];
+  let res = null;
+  for (const b of [ramp[2], ramp[3], ramp[4], ramp[1]]) {
+    const bv = solid(b); if (!bv) continue;
+    for (const f of [INK, dark, light]) { const fv = solid(f); if (fv && contrastRatio(bv, fv) >= 4.5) { res = { bg: b, fg: f }; break; } }
+    if (res) break;
+  }
+  return (chipCache[k] = res || { bg: light, fg: dark });
+}
 function chip(g, s, x, y, ramp, p, fs = 8, al = 'center') {
   if (p <= 0) return;
-  const sc = p < 1 ? EA.back(p) : 1, w = txtW(s, fs) + 10, h = fs + 8;
+  const cc = chipColors(ramp), sc = p < 1 ? EA.back(p) : 1, fh = Math.max(fs, Math.max(PX, Math.round(fs / 8 / PX) * PX) * 8), w = txtW(s, fs) + 10, h = fh + 8; // fh: real glyph height (grows with the style grid)
   const ww = Math.round(w * Math.min(sc, 1.15)), hh = Math.round(h * Math.min(sc, 1.15));
   const cx = al === 'center' ? x - ww / 2 : x;
-  R(g, cx - 1, y - 1, ww + 2, hh + 2, INK); R(g, cx, y, ww, hh, ramp[2]);
-  if (STYLE.shade === 'bevel') { R(g, cx, y, ww, 2, ramp[3]); R(g, cx, y + hh - 2, ww, 2, ramp[1]); }
-  if (sc > 0.8) txt(g, s, cx + ww / 2 + 1, y + (hh - fs) / 2 + 1, fs, INK, 'center');
+  R(g, cx - 1, y - 1, ww + 2, hh + 2, INK); R(g, cx, y, ww, hh, cc.bg);
+  if (STYLE.shade === 'bevel' && cc.bg === ramp[2]) { R(g, cx, y, ww, 2, ramp[3]); R(g, cx, y + hh - 2, ww, 2, ramp[1]); }
+  if (sc > 0.8) txt(g, s, cx + ww / 2 + 1, y + (hh - fh) / 2 + 1, fs, cc.fg, 'center');
 }
 function gear(g, cx, cy, r, teeth, ang, ramp) {
   for (let i = 0; i < teeth; i++) { const a = ang + (i * Math.PI * 2) / teeth; R(g, cx + Math.cos(a) * (r + 1.5) - 2, cy + Math.sin(a) * (r + 1.5) - 2, 4, 4, ramp[3]); }

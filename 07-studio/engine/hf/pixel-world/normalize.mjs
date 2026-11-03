@@ -1,6 +1,6 @@
 // Lenient authoring: maps the slips an LLM makes in the payload to valid values without dropping content.
 // Anything it cannot map is left untouched so the schema reports a precise error instead of guessing.
-import { loadCatalog, BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, getScenario } from "./catalog.mjs";
+import { loadCatalog, BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, getScenario, worldProps, WORKSHOP_ID, WORKSHOP_THEMES } from "./catalog.mjs";
 import { STYLES } from "./styles.mjs";
 
 const flat = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
@@ -16,9 +16,9 @@ export function nearest(value, candidates, aliases = {}) {
   const al = aliases[v] ?? aliases[v.replace(/ /g, "")]; if (al && ids.includes(al)) return al;
   let best = null, bs = 0;
   for (const c of candidates) {
-    const terms = new Set([...toks(c.id), ...toks(c.name), ...(c.keywords ?? []).flatMap(toks)]);
+    const own = new Set([...toks(c.id), ...toks(c.name)]), terms = new Set([...own, ...(c.keywords ?? []).flatMap(toks)]);
     let s = 0;
-    for (const t of vt) { if (terms.has(t)) s += 2; else for (const k of terms) if (k.length >= 4 && t.length >= 4 && (k.startsWith(t) || t.startsWith(k) || k.slice(0, 4) === t.slice(0, 4))) { s += 1; break; } }
+    for (const t of vt) { if (own.has(t)) s += 3; else if (terms.has(t)) s += 2; else for (const k of terms) if (k.length >= 4 && t.length >= 4 && (k.startsWith(t) || t.startsWith(k) || k.slice(0, 4) === t.slice(0, 4))) { s += 1; break; } }
     if (s > bs) { bs = s; best = c.id; }
   }
   if (best) return best;
@@ -41,6 +41,7 @@ const EMOTE_ALIASES = { question: "?", "question mark": "?", exclamation: "!", "
 const COLOR_ALIASES = { cyan: "teal", aqua: "teal", violet: "purple", magenta: "pink", grey: "white", gray: "white", black: "blue", brown: "orange", lime: "green", amber: "orange", crimson: "red" };
 const TR_ALIASES = { wipe: "tiles", tile: "tiles", mosaic: "tiles", circle: "iris", round: "iris", push: "slide", pan: "slide", scroll: "slide", drop: "down", fall: "down", vertical: "down", "slide down": "down" };
 const TIME_ALIASES = { sunset: "dusk", evening: "dusk", sunrise: "dusk", twilight: "dusk", nightfall: "night", dark: "night", midnight: "night", morning: "day", noon: "day", afternoon: "day", light: "day", daytime: "day" };
+const PROP_KIND_ALIASES = { battery: "battery", cell: "battery", celular: "phone", smartphone: "phone", mobile: "phone", cpu: "chip", processor: "chip", ventilador: "fan", wire: "cable", usb: "cable", lightning: "bolt", thunder: "bolt", lock: "padlock", virus: "bug", fire: "flame", heat: "flame", cold: "snowflake", ice: "snowflake", monitor: "screen", display: "screen", chart: "barchart", graph: "barchart", gauge: "gauge", dial: "gauge", temperature: "thermometer", search: "magnifier", lens: "magnifier", money: "coin", cog: "gear", rack: "server", db: "database", idea: "bulb", light: "bulb", wireless: "wifi" };
 const LAYOUT_ALIASES = { horizontal: "strip", row: "strip", side: "strip", sideways: "strip", vertical: "tower", column: "tower", down: "tower", descend: "tower" };
 
 const pickList = (v, list, aliases) => { const k = flat(v); if (list.includes(String(v))) return v; if (aliases[k]) return aliases[k]; if (list.includes(k)) return k; return v; };
@@ -59,7 +60,7 @@ function normBeat(b, w, heroId, castIds) {
   // kind
   const kind = o.do ?? o.kind ?? o.type ?? o.action; delete o.kind; delete o.type; delete o.action;
   if (kind !== undefined) { const k = flat(kind); o.do = BEAT_KINDS.includes(String(kind)) ? kind : BEAT_KINDS.includes(k) ? k : BEAT_KINDS.includes(k.replace(/ /g, "-")) ? k.replace(/ /g, "-") : DO_ALIASES[k] ?? kind; }
-  const props = getScenario(w.scenario)?.props ?? [];
+  const props = worldProps(w);
   if (typeof o.target === "string" && props.length && !props.some((p) => p.id === o.target)) {
     const near = nearest(o.target, props.map((p) => ({ id: p.id, name: p.id.replace(/-/g, " "), keywords: toks(p.about) })));
     if (near) o.target = near;
@@ -102,6 +103,12 @@ export function normalizePayload(hf) {
     const w = { ...w0 };
     if (w.scenario === undefined && typeof (w.scene ?? w.world ?? w.id) === "string") { w.scenario = w.scene ?? w.world ?? w.id; delete w.scene; delete w.world; }
     if (typeof w.scenario === "string") w.scenario = nearest(w.scenario, cat.scenarios.map((s) => ({ id: s.id, name: s.name, keywords: s.keywords })), {}) ?? w.scenario;
+    if (Array.isArray(w.props)) {
+      const lib = cat.propLib.map((p) => ({ id: p.kind, name: p.kind, keywords: toks(p.about) }));
+      w.props = w.props.map((p0) => { if (typeof p0 === "string") p0 = { kind: p0 }; if (!isObj(p0)) return p0; const p = { ...p0 }; if (p.kind === undefined && typeof (p.type ?? p.name) === "string") { p.kind = p.type ?? p.name; delete p.type; delete p.name; } if (typeof p.kind === "string" && !lib.some((l) => l.id === p.kind)) p.kind = nearest(p.kind, lib, PROP_KIND_ALIASES) ?? p.kind; if (typeof p.size === "string") { const k = p.size.trim().toUpperCase(); p.size = SIZES.includes(k) ? k : { SMALL: "S", MEDIUM: "M", LARGE: "L", BIG: "L" }[k] ?? p.size; } if (typeof p.at === "string") { const k = flat(p.at); if (["left", "center", "right"].includes(k)) p.at = k; } return p; });
+      if ((w.scenario === undefined || w.scenario === null) && w.props.length) w.scenario = WORKSHOP_ID;
+    }
+    if (typeof w.theme === "string") w.theme = pickList(w.theme, WORKSHOP_THEMES, { office: "bench", workshop: "bench", lab: "bench", clouds: "sky", cloud: "sky", day: "sky", cyber: "grid", neon: "grid", night: "night-city", city: "night-city", dark: "night-city" });
     if (typeof w.transition === "string") w.transition = pickList(w.transition, TRANSITIONS, TR_ALIASES);
     if (typeof w.time === "string") w.time = pickList(w.time, TIMES, TIME_ALIASES);
     if (typeof w.from === "string") w.from = { word: w.from };
@@ -112,7 +119,7 @@ export function normalizePayload(hf) {
       const c = { ...c0 }; const who = c.who ?? c.id ?? c.name; delete c.id; delete c.name;
       if (typeof who === "string") { const k = flat(who); c.who = castIds.includes(who) ? who : k === flat(out.hero) || ["main", "narrator", "player"].includes(k) ? "hero" : nearest(who, castIds.map((id) => ({ id, name: id }))) ?? who; }
       if (typeof c.size === "string") { const k = c.size.trim().toUpperCase(); c.size = SIZES.includes(k) ? k : { SMALL: "S", MEDIUM: "M", LARGE: "L", BIG: "L", TINY: "S" }[k] ?? c.size; }
-      if (typeof c.at === "string") { const k = flat(c.at); if (["left", "center", "right"].includes(k)) c.at = k; else { const props = getScenario(w.scenario)?.props ?? []; if (!props.some((p) => p.id === c.at)) c.at = nearest(c.at, props.map((p) => ({ id: p.id, name: p.id, keywords: toks(p.about) }))) ?? c.at; } }
+      if (typeof c.at === "string") { const k = flat(c.at); if (["left", "center", "right"].includes(k)) c.at = k; else { const props = worldProps(w); if (!props.some((p) => p.id === c.at)) c.at = nearest(c.at, props.map((p) => ({ id: p.id, name: p.id, keywords: toks(p.about) }))) ?? c.at; } }
       if (c.dir === "left") c.dir = -1; else if (c.dir === "right") c.dir = 1;
       return c;
     });
@@ -129,4 +136,50 @@ export function normalize(spec) {
   if (isObj(spec.hf)) return { ...spec, hf: normalizePayload(spec.hf) };
   if (spec.hf === undefined && spec.worlds !== undefined && spec.template === undefined) return normalizePayload(spec); // bare payload
   return spec;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Beat density pass. A world with fewer than 1 beat per 2 s of its span gets ambient reaction beats bound to spoken words.
+// Existing beats are never changed. Pure function of its inputs (words, existing beat times, cast, props).
+// ---------------------------------------------------------------------------------------------------------------------
+export const DENSITY_MIN_PER_SEC = 0.5;
+const SKIP_WORDS = new Set(["para", "pero", "como", "esta", "este", "estos", "estas", "that", "this", "with", "from", "have", "then", "they", "your", "tiene", "cuando", "donde", "porque", "entonces", "tambien", "mucho", "cada"]);
+const nw = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
+const AMBIENT_KINDS = ["react", "pulse", "emote", "jump", "pulse", "react"];
+const AMBIENT_SYMBOLS = { react: ["!", "idea", "heart", "star", "check"], emote: ["?", "dots", "note", "star", "!"] };
+
+/**
+ * @param {{ t0:number, t1:number, beats:Array<{t:number,do:string}>, words:Array<{text:string,start:number,end:number}>, propIds:string[], castIds:string[] }} a
+ * @returns {Array<{t:number,do:string,on:{word:string,n:number},who?:string,target?:string,symbol?:string,ambient:true}>}
+ */
+export function densify({ t0, t1, beats, words, propIds = [], castIds = ["hero"] }) {
+  const span = t1 - t0;
+  if (!(span > 0)) return [];
+  const need = Math.ceil(span * DENSITY_MIN_PER_SEC - 1e-9) - beats.length;
+  if (need <= 0) return [];
+  const inWin = words.filter((w) => w.start >= t0 + 0.3 && w.start <= t1 - 0.6);
+  const cands = inWin.map((w) => ({ w, k: nw(w.text) })).filter(({ k }) => k.length >= 4 && !SKIP_WORDS.has(k));
+  const times = beats.map((b) => b.t).sort((a, b) => a - b);
+  const added = [];
+  const others = castIds.filter((c) => c !== "hero");
+  let ki = 0, si = { react: 0, emote: 0 }, pi = 0;
+  for (let n = 0; n < need; n++) {
+    const pts = [t0, ...times, t1];
+    let gap = null;
+    for (let i = 0; i + 1 < pts.length; i++) { const g = pts[i + 1] - pts[i]; if (!gap || g > gap.g) gap = { g, mid: (pts[i] + pts[i + 1]) / 2 }; }
+    if (!gap || gap.g < 1.2) break;
+    const free = cands.filter(({ w }) => times.every((t) => Math.abs(t - w.start) >= 0.6));
+    if (!free.length) break;
+    free.sort((a, b) => Math.abs(a.w.start - gap.mid) - Math.abs(b.w.start - gap.mid));
+    const { w, k } = free[0];
+    let kind = AMBIENT_KINDS[ki++ % AMBIENT_KINDS.length];
+    if (kind === "pulse" && !propIds.length) kind = "react";
+    const b = { t: +w.start.toFixed(3), do: kind, on: { word: w.text.replace(/[^\p{L}\p{N}]/gu, ""), n: 1 }, ambient: true };
+    if (kind === "pulse") b.target = propIds[pi++ % propIds.length];
+    else if (kind === "emote") { b.who = others.length ? others[(si.emote) % others.length] : "hero"; b.symbol = AMBIENT_SYMBOLS.emote[si.emote++ % AMBIENT_SYMBOLS.emote.length]; }
+    else if (kind === "react") { b.who = "hero"; b.symbol = AMBIENT_SYMBOLS.react[si.react++ % AMBIENT_SYMBOLS.react.length]; }
+    else b.who = "hero";
+    added.push(b); times.push(b.t); times.sort((a, c) => a - c);
+  }
+  return added;
 }
