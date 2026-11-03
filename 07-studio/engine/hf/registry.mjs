@@ -64,6 +64,26 @@ export function hfContractProblems(id, mod) {
   return out;
 }
 
+/** Import and check one `<dir>/<id>/index.mjs`; throws HfContractError naming the format and every problem. */
+async function loadOne(dir, id) {
+  let mod;
+  try {
+    mod = await import(pathToFileURL(join(dir, id, "index.mjs")).href);
+  } catch (e) {
+    throw new HfContractError(id, [`the module failed to load: ${e.message}`]);
+  }
+  const problems = hfContractProblems(id, mod);
+  if (problems.length) throw new HfContractError(id, problems);
+  return { id, module: mod, internal: isInternalId(id) };
+}
+
+function formatIds(dir) {
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith(".") && d.name !== "node_modules" && existsSync(join(dir, d.name, "index.mjs")))
+    .map((d) => d.name)
+    .sort();
+}
+
 /**
  * Load every `<dir>/<id>/index.mjs`. Strict: a module that violates the contract (or fails to import) throws a
  * clear error naming the format and every problem. Directories without index.mjs are skipped (work in progress).
@@ -71,25 +91,34 @@ export function hfContractProblems(id, mod) {
  */
 export async function loadHfRegistry(dir = HF_DIR) {
   const out = new Map();
-  const ids = readdirSync(dir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith(".") && d.name !== "node_modules" && existsSync(join(dir, d.name, "index.mjs")))
-    .map((d) => d.name)
-    .sort();
-  for (const id of ids) {
-    let mod;
-    try {
-      mod = await import(pathToFileURL(join(dir, id, "index.mjs")).href);
-    } catch (e) {
-      throw new HfContractError(id, [`the module failed to load: ${e.message}`]);
-    }
-    const problems = hfContractProblems(id, mod);
-    if (problems.length) throw new HfContractError(id, problems);
-    out.set(id, { id, module: mod, internal: isInternalId(id) });
-  }
+  for (const id of formatIds(dir)) out.set(id, await loadOne(dir, id));
   return out;
 }
 
-const REGISTRY = await loadHfRegistry();
+/** Same discovery, but a broken module never takes the others down: it is reported in `failures` instead. */
+export async function loadHfRegistryTolerant(dir = HF_DIR) {
+  const formats = new Map();
+  const failures = new Map();
+  for (const id of formatIds(dir)) {
+    try {
+      formats.set(id, await loadOne(dir, id));
+    } catch (e) {
+      failures.set(id, e);
+    }
+  }
+  return { formats, failures };
+}
+
+/** Message for a format that is not available: names the failure when the module exists but did not load. */
+export function unknownFormatMessage(id, available, failures = new Map()) {
+  const list = available.join(", ") || "(none)";
+  const failed = failures.get(id);
+  if (failed) return `HyperFrames format "${id}" is installed but failed to load: ${String(failed.problems?.join("; ") ?? failed.message)}. Available: ${list}`;
+  return `Unknown HyperFrames format "${id}". Available: ${list}`;
+}
+
+const { formats: REGISTRY, failures: HF_FAILURES } = await loadHfRegistryTolerant();
+for (const [id, e] of HF_FAILURES) if (!isInternalId(id) || hfInternalEnabled()) console.warn(`[hyperframes] format "${id}" skipped: ${e.problems?.join("; ") ?? e.message}`);
 
 const visible = () => [...REGISTRY.values()].filter((e) => !e.internal || hfInternalEnabled());
 
@@ -103,7 +132,7 @@ export const isHfTemplate = (id) => visible().some((e) => e.id === id);
 /** The format module for an id. Throws a clear error (with the available ids) when it is not registered. */
 export function getHfFormat(id) {
   const e = visible().find((x) => x.id === id);
-  if (!e) throw new Error(`Unknown HyperFrames format "${id}". Available: ${visible().map((x) => x.id).join(", ") || "(none)"}`);
+  if (!e) throw new Error(unknownFormatMessage(id, visible().map((x) => x.id), HF_FAILURES));
   return e.module;
 }
 

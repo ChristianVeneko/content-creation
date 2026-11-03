@@ -95,3 +95,29 @@ test("hfPromptFor appends the module's promptSection to the common rules", () =>
   assert.ok(p.startsWith("COMMON RULES"));
   assert.ok(p.includes(reg.getHfFormat("_stub").promptSection.trim()));
 });
+
+test("tolerant loading keeps the working formats and reports the broken ones instead of failing everything", async () => {
+  const dir = fixture({ fine: GOOD, broken: 'import "./missing.mjs";\n' + GOOD, bad: GOOD.replace('modes: ["single"]', "modes: []") });
+  try {
+    const { formats, failures } = await reg.loadHfRegistryTolerant(dir);
+    assert.deepEqual([...formats.keys()], ["fine"]);
+    assert.deepEqual([...failures.keys()].sort(), ["bad", "broken"]);
+    assert.ok(failures.get("broken") instanceof reg.HfContractError);
+    assert.match(failures.get("broken").message, /failed to load/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("asking for a format that failed to load explains why, and the strict loader still throws", async () => {
+  const msg = reg.unknownFormatMessage("three-looks", ["pixel-world", "flat-2d"], new Map([["three-looks", new Error("the module failed to load: Cannot find module compose.mjs")]]));
+  assert.match(msg, /"three-looks" is installed but failed to load: the module failed to load: Cannot find module compose\.mjs/);
+  assert.match(msg, /Available: pixel-world, flat-2d/);
+  assert.match(reg.unknownFormatMessage("nope", ["a"], new Map()), /Unknown HyperFrames format "nope"\. Available: a/);
+  const dir = fixture({ broken: 'import "./missing.mjs";\n' + GOOD });
+  try {
+    await assert.rejects(() => reg.loadHfRegistry(dir), /"broken".*failed to load/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
