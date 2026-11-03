@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { validateSpec } from "../lib/spec.mjs";
+import { normalizeStageAuthoring } from "../lib/scene3d-lenient.mjs";
 
 const base = () => JSON.parse(readFileSync(new URL("../examples/process-tech-tutorial.spec.json", import.meta.url), "utf8"));
 const problems = (spec) => {
@@ -71,4 +72,31 @@ test("labels also resolve when the chips are already objects, and a truly unknow
   assert.deepEqual(problems(spec), []);
   flow.active = "Nada";
   assert.ok(problems(spec).some((p) => /no chip with id "Nada"/.test(p)));
+});
+
+test("an unknown part role is repaired instead of rejecting the spec", () => {
+  const part = (id, role) => ({ id, shape: "box", size: [1, 1, 1], role });
+  const spec = { scenes: [{ visual: { type: "scene3d", world: { parts: [part("a", "wood"), part("b", "#AA5500"), part("c", "banana"), part("d", "metal")] } } }] };
+  const [a, b, c, d] = normalizeStageAuthoring(spec).scenes[0].visual.world.parts;
+  assert.equal(a.role, "body");
+  assert.equal(b.role, undefined);
+  assert.equal(b.color, "#AA5500");
+  assert.equal(c.role, "body");
+  assert.equal(d.role, "metal");
+  assert.equal(spec.scenes[0].visual.world.parts[0].role, "wood", "input is not mutated");
+});
+
+test("keyframe position offsets beyond +-6 are clamped, in parts and in objects", () => {
+  const spec = { scenes: [{ visual: { type: "scene3d", objects: [{ id: "o", keys: [{ at: 0, pos: [0, 0, -9] }] }, { id: "p", parts: [{ id: "x", shape: "box", keys: [{ at: 0, pos: [0, 0, 0] }, { at: 1, pos: [2, 3, -12] }] }] }] } }] };
+  const out = normalizeStageAuthoring(spec).scenes[0].visual.objects;
+  assert.deepEqual(out[0].keys[0].pos, [0, 0, -6]);
+  assert.deepEqual(out[1].parts[0].keys[1].pos, [2, 3, -6]);
+  assert.deepEqual(spec.scenes[0].visual.objects[1].parts[0].keys[1].pos, [2, 3, -12], "input is not mutated");
+});
+
+test("easing names written in other styles map to the valid ones; unknown names fall back to the default", () => {
+  const ease = (e) => ({ at: 0, ease: e });
+  const spec = { scenes: [{ visual: { type: "scene3d", objects: [{ id: "o", keys: ["easeInOut", "ease-out", "easeIn", "ease", "cubic-bezier", "spring", "bounce", "linear", "in-out-back"].map(ease) }] } }] };
+  const got = normalizeStageAuthoring(spec).scenes[0].visual.objects[0].keys.map((k) => k.ease);
+  assert.deepEqual(got, ["in-out", "out", "in", "in-out", undefined, "elastic", "bounce", "linear", "back"]);
 });
