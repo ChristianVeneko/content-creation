@@ -50,8 +50,17 @@ function dressFloor(g, t, w) {
   }
 }
 
+/* Foreground silhouette tones. Styles with blur soften the silhouettes themselves; styles without blur would show hard black blocks,
+ * so they use dithered palette-dark tones (two darkest palette colours) instead. */
+let fgCache = null;
+function fgRamp() {
+  if (fgCache) return fgCache;
+  if (STYLE.blur && STYLE.blur[0] > 0) return (fgCache = M.dark);
+  const p0 = PALHEX[PALORDER[0]], p1 = PALHEX[PALORDER[Math.min(1, PALORDER.length - 1)]];
+  return (fgCache = [patRaw(p0, p1, 1), patRaw(p0, p1, 0), patRaw(p0, p1, 2), { raw: p1 }, { raw: p1 }]);
+}
 function fgShape(g, t, kind, x, base, h, sd) {
-  const D = M.dark, dk = D[0];
+  const D = fgRamp(), dk = D[0];
   if (kind === 'crate') { R(g, x, base - h, h, h, dk); R(g, x, base - h, h, 2, D[3]); R(g, x + 2, base - h * 0.55, h * 0.5, h * 0.55, D[1]); R(g, x + h * 0.45, base - h * 1.35, h * 0.55, h * 0.4, dk); }
   else if (kind === 'pipe') { R(g, x - 20, base - h * 0.5, h + 60, h * 0.5, dk); R(g, x - 20, base - h * 0.5, h + 60, 2, D[3]); R(g, x + h * 0.4, base - h * 1.1, h * 0.28, h * 0.6, dk); }
   else if (kind === 'plant') { R(g, x + h * 0.3, base - h * 0.3, h * 0.4, h * 0.3, dk); for (let i = -3; i <= 3; i++) line(g, x + h * 0.5, base - h * 0.3, x + h * 0.5 + i * h * 0.22, base - h * (0.95 - Math.abs(i) * 0.12) + Math.round(Math.sin(t * 1.2 + i) * 1.5), 3, dk); }

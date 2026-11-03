@@ -4,6 +4,23 @@ import { getScenario, PROP_ACTS, worldProps, workshopProps } from "./catalog.mjs
 import { densify, DENSITY_MIN_PER_SEC } from "./normalize.mjs";
 import { getStyle } from "./styles.mjs";
 
+/** Smallest visible change of a progress bar or a prop fill between two consecutive values (12 % of its length). */
+export const MIN_VISIBLE_DELTA = 0.12;
+/** Nudges values whose change from the previous one is too small to notice, in time order (never lowers a big change). Returns descriptions of what moved. */
+function nudgeSeries(items, label) {
+  const notes = [], r2 = (v) => +v.toFixed(2);
+  let prev = 0;
+  for (const it of items.slice().sort((a, b) => a.t - b.t)) {
+    const v = it.value;
+    if (typeof v === "number" && Math.abs(v - prev) < MIN_VISIBLE_DELTA - 1e-9) {
+      const up = v >= prev, nv = up ? Math.min(1, r2(prev + MIN_VISIBLE_DELTA)) : Math.max(0, r2(prev - MIN_VISIBLE_DELTA));
+      if (Math.abs(nv - prev) > Math.abs(v - prev) + 1e-9) { notes.push(`${label} at ${it.t.toFixed(2)} s moved from ${v} to ${nv} so the change is visible (minimum ${Math.round(MIN_VISIBLE_DELTA * 100)} % of the bar)`); it.value = nv; }
+    }
+    prev = typeof it.value === "number" ? it.value : prev;
+  }
+  return notes;
+}
+
 export const normWord = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
 
 function lev(a, b) {
@@ -124,10 +141,14 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       else out.push(rest);
       if (SFX_OF[b.do] && !b.ambient) sfx.push({ at: b.t, kind: SFX_OF[b.do] });
     }
+    const byTarget = {};
+    for (const b of out) if (b.do === "fill" && typeof b.target === "string") (byTarget[b.target] ??= []).push(b);
+    for (const [id, list] of Object.entries(byTarget)) warnings.push(...nudgeSeries(list, `world ${wi + 1} fill of ${id}: the nudged value is`).map((m) => m.replace(": the nudged value is", ": fill")));
     if (wi > 0) sfx.push({ at: +(t0 - 0.5).toFixed(3), kind: "whoosh" });
     return { sc: w.scenario, t0, t1, tr: w.transition ?? defaultTr[(wi - 1 + 4) % 4], time: w.time ?? null, cast: w.cast ?? null, pl: sc.dynamic ? workshopProps(w.props) : undefined, th: sc.dynamic ? w.theme ?? "bench" : undefined, beats: out, _props: sc.props.length };
   });
   worlds.forEach((w) => delete w._props);
+  warnings.push(...nudgeSeries(hud.filter((h) => h.hud === "progress"), "progress beat"));
 
   let brand = null;
   if (payload.brand) {

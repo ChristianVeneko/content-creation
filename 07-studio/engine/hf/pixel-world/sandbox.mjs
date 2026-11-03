@@ -23,9 +23,13 @@ function makeCtx(grid, state) {
       const y0 = Math.max(0, Math.floor((y + st.y) / CELL)), y1 = Math.min(ROWS - 1, Math.floor((y + st.y + h - 1) / CELL));
       for (let r = y0; r <= y1; r++) for (let c = x0; c <= x1; c++) grid[r][c] = key;
     },
-    fillText(s, x, y) { const w = String(s).length * 8; ctx.fillRect(x - (ctx.textAlign === "center" ? w / 2 : ctx.textAlign === "right" ? w : 0), y, w, 8); },
+    fillText(s, x, y) {
+      const fs = parseFloat(ctx.font) || 8, w = String(s).length * fs, x0 = x - (ctx.textAlign === "center" ? w / 2 : ctx.textAlign === "right" ? w : 0);
+      (ctx.__texts ??= []).push({ s: String(s), x: x0 + st.x, y: y + st.y, w, h: fs });
+      ctx.fillRect(x0, y, w, fs);
+    },
   };
-  ctx.__grid = grid; ctx.__reset = () => { for (const row of grid) row.fill(null); };
+  ctx.__grid = grid; ctx.__reset = () => { for (const row of grid) row.fill(null); ctx.__texts = []; };
   return ctx;
 }
 
@@ -61,6 +65,8 @@ export function open({ data, style }) {
       });
       return { grid, cols: COLS, rows: ROWS, cell: CELL, thirds, hud: hudCtx.__grid };
     },
+    /** Texts the HUD canvas drew in the last at(t): { s, x, y, w, h } in logical px (glyph box from the font size, outline copies included). */
+    hudTexts: () => hudCtx.__texts ?? [],
   };
 }
 /** One-shot frame snapshot. */

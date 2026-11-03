@@ -113,6 +113,7 @@ function nearest(r, g, b) {
 }
 /* master hex -> style colour (string, or a CanvasPattern in 1-bit styles) */
 function col(c) {
+  if (c && c.raw) return c.raw; // { raw: '#rrggbb' } bypasses the palette remap (used for functional, readability-critical colours)
   if (typeof c !== 'string' || c.charAt(0) !== '#') return c;
   const key = c + '|' + TONE;
   let v = colCache.get(key);
@@ -153,9 +154,8 @@ function line(g, x0, y0, x1, y1, w, c) {
   for (let i = 0; i <= n; i += step) { const f = i / n; g.fillRect(snap(x0 + (x1 - x0) * f - w / 2), snap(y0 + (y1 - y0) * f - w / 2), w, w); }
 }
 const patC = {};
-function pat(c1, c2, kind = 0) {
-  const a = col(c1), b = col(c2);
-  if (typeof a !== 'string' || typeof b !== 'string') return typeof a !== 'string' ? a : b;
+/* 4x4 dither tile of two final (already remapped) colours, as a repeating canvas pattern */
+function patRaw(a, b, kind = 0) {
   const k = a + b + kind;
   if (!patC[k]) {
     const c = document.createElement('canvas'); c.width = c.height = 4 * PX; const p = c.getContext('2d');
@@ -168,6 +168,11 @@ function pat(c1, c2, kind = 0) {
     patC[k] = L.m.createPattern(c, 'repeat');
   }
   return patC[k];
+}
+function pat(c1, c2, kind = 0) {
+  const a = col(c1), b = col(c2);
+  if (typeof a !== 'string' || typeof b !== 'string') return typeof a !== 'string' ? a : b;
+  return patRaw(a, b, kind);
 }
 function dith(g, x, y, w, h, c1, c2, kind = 0) {
   const x0 = snap(x), y0 = snap(y);

@@ -4,7 +4,7 @@ import { dirname, join, resolve as pathResolve } from "node:path";
 import { HERE, RUNTIME_DIR, runtimeFiles } from "./catalog.mjs";
 import { payloadSchema } from "./schema.mjs";
 import { resolvePayload } from "./resolve.mjs";
-import { normalizePayload } from "./normalize.mjs";
+import { normalizePayload, styleAdvice } from "./normalize.mjs";
 import { ZONES } from "./layout.mjs";
 
 const FONTS = ["PressStart2P-Regular.ttf", "PixelifySans-Variable.ttf"];
@@ -32,7 +32,7 @@ export function postCss(style) {
 /** The composition script: data prelude (style, spec, zones) followed by the runtime files in load order. */
 export function buildScript({ data, style }) {
   const rt = runtimeFiles().map((f) => readFileSync(join(RUNTIME_DIR, f), "utf8"));
-  const styleData = { id: style.id, px: style.px, palette: style.palette, mono: !!style.mono, bit1: !!style.bit1, outline: style.outline, shade: style.shade, glow: style.glow, sat: style.sat, gamma: style.gamma, time: style.time ?? null, atmos: style.atmos, cap: style.cap };
+  const styleData = { id: style.id, px: style.px, palette: style.palette, mono: !!style.mono, bit1: !!style.bit1, outline: style.outline, shade: style.shade, glow: style.glow, blur: style.blur ?? [0, 0], sat: style.sat, gamma: style.gamma, time: style.time ?? null, atmos: style.atmos, cap: style.cap };
   const prelude = `const STYLE=${JSON.stringify(styleData)};\nconst DUR=${data.dur},FPS=30;\nconst ZONES=${JSON.stringify(ZONES)};\nconst SPEC=${JSON.stringify(data)};\n`;
   return [prelude, ...rt].join("\n");
 }
@@ -57,6 +57,8 @@ export async function compose({ spec, words, durationSec, outDir, assetsDir, cap
   if (!parsed.success) throw new Error(`pixel-world payload is invalid:\n${parsed.error.issues.map((i) => `  - hf.${i.path.join(".") || "(root)"}: ${i.message}`).join("\n")}`);
   const mode = spec?.mode === "single" ? "single" : "multi";
   const { data, sfx, warnings, durationSec: dur, style } = resolvePayload({ payload: parsed.data, words, durationSec: durationSec ?? spec?.durationSec, mode, captionsEnabled: captions?.enabled !== false });
+  const topic = [spec?.title, spec?.topic, spec?.hook, ...(words ?? []).map((w) => w.text)].filter((x) => typeof x === "string").join(" ");
+  warnings.unshift(...styleAdvice(raw, topic));
   const root = pathResolve(outDir);
   mkdirSync(join(root, "assets", "fonts"), { recursive: true });
   for (const f of FONTS) copyFileSync(findFont(f, assetsDir), join(root, "assets", "fonts", f));

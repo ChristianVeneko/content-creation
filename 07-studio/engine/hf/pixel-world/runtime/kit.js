@@ -85,9 +85,14 @@ function beltH(g, x0, x1, y, t, speed = 90, body = M.steel) {
   for (let x = x0 - 10; x < x1 + 10; x += 10) { const xx = x + off; if (xx >= x0 && xx + 4 <= x1) R(g, xx, y + 5, 4, 3, body[2]); }
   R(g, x0, y + 11, x1 - x0, 2, body[0]);
 }
-function progressBar(g, x, y, w, v, ramp = M.green, h = 7) {
-  R(g, x - 1, y - 1, w + 2, h + 2, INK); R(g, x, y, w, h, M.dark[1]);
-  const fw = Math.round(w * clamp(v)); if (fw > 0) { R(g, x, y, fw, h, ramp[2]); if (STYLE.shade === 'bevel') R(g, x, y, fw, 2, ramp[3]); }
+/* Progress bar with guaranteed contrast: ink outline, light frame, dark track and a fill that reads against the track
+ * (palette pair computed by fnLook, >= 3:1 in every style). `pop` (0-1) draws a bright halo around the bar right after its beat. */
+function progressBar(g, x, y, w, v, ramp = M.green, h = 7, pop = 0) {
+  const F = fnLook(), ins = Math.max(1, PX), ink = { raw: F.ink }, light = { raw: F.frame };
+  if (pop > 0.05) { R(g, x - 2 - PX, y - 2 - PX, w + 4 + 2 * PX, h + 4 + 2 * PX, ink); R(g, x - 1 - PX, y - 1 - PX, w + 2 + 2 * PX, h + 2 + 2 * PX, Math.floor(pop * 8) % 2 ? { raw: F.fill } : light); }
+  R(g, x - 1, y - 1, w + 2, h + 2, ink); R(g, x, y, w, h, light); R(g, x + ins, y + ins, w - 2 * ins, h - 2 * ins, { raw: F.track });
+  const iw = w - 2 * ins, fw = Math.round(iw * clamp(v));
+  if (fw > 0) { R(g, x + ins, y + ins, fw, h - 2 * ins, { raw: F.fill }); if (pop > 0.5) R(g, x + ins + Math.max(0, fw - 2 * PX), y + ins, 2 * PX, h - 2 * ins, light); }
 }
 function stool(g, x, y, ramp = M.red) { R(g, x - 5, y, 11, 4, ramp[2]); R(g, x - 5, y, 11, 1, ramp[3]); R(g, x - 1, y + 4, 3, 10, M.steel[1]); R(g, x - 5, y + 14, 11, 2, M.steel[1]); }
 function fishShape(g, x, y, dir, ramp, t, s = 1) {

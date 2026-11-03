@@ -1,7 +1,7 @@
 // Lenient authoring: maps the slips an LLM makes in the payload to valid values without dropping content.
 // Anything it cannot map is left untouched so the schema reports a precise error instead of guessing.
 import { loadCatalog, BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, getScenario, worldProps, WORKSHOP_ID, WORKSHOP_THEMES } from "./catalog.mjs";
-import { STYLES } from "./styles.mjs";
+import { STYLES, STYLE_GUIDE, RETRO_RE, recommendStyles } from "./styles.mjs";
 
 const flat = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 const toks = (s) => flat(s).split(" ").filter(Boolean);
@@ -182,4 +182,21 @@ export function densify({ t0, t1, beats, words, propIds = [], castIds = ["hero"]
     added.push(b); times.push(b.t); times.sort((a, c) => a - c);
   }
   return added;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Style advisor. Never overrides the model's choice (content is the model's): it only reports a warning when `hf.style` is
+// missing, or when a retro-only (monochrome / 4-tone) style is chosen for a topic that does not ask for a retro look.
+// `text` is the narration (plus title/topic when known). Pure function; the input payload is not mutated.
+// ---------------------------------------------------------------------------------------------------------------------
+export function styleAdvice(hf, text = "") {
+  const style = isObj(hf) ? hf.style : undefined, out = [];
+  const topic = flat(text), rec = recommendStyles(text).join(", ");
+  if (style === undefined || style === null || style === "") {
+    out.push(`hf.style is missing: the engine default pixel-snes-16bit applies. For this topic prefer: ${rec}.`);
+    return out;
+  }
+  const g = STYLE_GUIDE[style];
+  if (g?.retroOnly && !RETRO_RE.test(` ${topic} `)) out.push(`${style} is a monochrome style (progress bars and colour coding read poorly) and the topic does not ask for a retro or handheld look; it is kept as chosen. For this topic prefer: ${rec}. Use monochrome styles only when the user asks for retro/handheld.`);
+  return out;
 }

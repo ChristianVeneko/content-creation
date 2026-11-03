@@ -1,9 +1,10 @@
 // Spec-writer guidance for LLM providers: generated from the catalog so it always matches what the runtime can draw.
+import { STYLE_GUIDE } from "./styles.mjs";
 import { loadCatalog, BEAT_DOCS, BEAT_KINDS, EMOTES, TRANSITIONS, WORKSHOP_THEMES, WORKSHOP_MAX_PROPS } from "./catalog.mjs";
 
 export function buildPromptSection() {
   const cat = loadCatalog();
-  const styles = cat.styles.map((s) => `- ${s.id}: ${s.about}`).join("\n");
+  const styles = ["| style | mood | colours | good for | avoid |", "|---|---|---|---|---|", ...cat.styles.map((s) => { const g = STYLE_GUIDE[s.id]; return `| ${s.id} | ${g.mood} | ${s.palette.length}${s.mono ? " (monochrome)" : ""} | ${g.goodFor} | ${g.avoid} |`; })].join("\n");
   const short = (t, n = 70) => (t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t);
   const scen = ["| scenario | suits topics | NOT for | props (beat targets) |", "|---|---|---|---|", ...cat.scenarios.filter((s) => !s.dynamic).map((s) => `| ${s.id} | ${s.topics.slice(0, 7).join(", ")} | ${s.avoid.join(", ") || "-"} | ${s.props.map((p) => p.id).join(", ")} |`)].join("\n");
   const ws = cat.scenarios.find((s) => s.dynamic);
@@ -41,8 +42,9 @@ Payload: { "style": <style>, "hero": <hero>, "layout"?: "strip"|"tower", "flash"
 - Worlds without \`from\` are spaced evenly. Give \`from\` on the word where the new idea starts.
 - Captions are drawn by the format itself, never add caption text.
 
-Styles (one per video, applies to every scenario): 
+Styles (one per video, applies to every scenario). CHOOSE BY TOPIC, never by habit:
 ${styles}
+Default picks: tech and AI, phones, hardware, networks -> pixel-cyberpunk-neon, pixel-snes-16bit or pixel-crt-arcade; kids, friendly, everyday life, health -> pixel-snes-16bit or pixel-pico8; serious, security, privacy, mystery -> pixel-noir or pixel-crt-arcade; heat, energy, weather -> pixel-liquid-fire; nature, travel, stories -> pixel-dusk-lowres. The monochrome styles (pixel-gameboy-dmg, pixel-1bit-dither, pixel-virtual-red, 2-4 tones) are chosen only when the user asks for retro or handheld: in them progress bars, heat and colour coding barely read. Always set \`style\`; when unsure use pixel-snes-16bit.
 
 Hero: ${heroes}. NPCs (use in \`cast\`): ${cat.npcs.map((n) => `${n.id} (${n.about})`).join("; ")}.
 

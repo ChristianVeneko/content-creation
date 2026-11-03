@@ -14,20 +14,20 @@ defProp('phone', { about: 'smartphone: screen, app grid, battery percent; open s
     box(g, x, y, w, h, M.steel); R(g, x + Q(2), y + Q(4), w - Q(4), h - Q(9), S.open > 0.3 ? M.dark[1] : (S.lit > 0.1 ? M.teal[1] : M.dark[2]));
     if (S.open > 0.3) { const e = clamp(S.open); R(g, x + Q(4), y + Q(8), Q(7), Q(7), M.green[2]); R(g, x + Q(13), y + Q(8), Q(7), Q(5), M.steel[3]); R(g, x + Q(4), y + Q(20), Q(16), Q(10) * e, M.gold[2]); for (let i = 0; i < 4; i++) R(g, x + Q(4) + i * Q(4), y + Q(33), Q(2), Q(2), M.teal[3]); }
     else for (let i = 0; i < 6; i++) { const on = S.lit > 0.1; R(g, x + Q(4) + (i % 3) * Q(6), y + Q(7) + Math.floor(i / 3) * Q(6), Q(4), Q(4), on ? M[TOKR[i % 6]][3] : M.dark[3]); }
-    R(g, x + Q(4), y + h - Q(9), Q(16) * clamp(S.fill), Q(2), fireRamp(1 - S.fill)[3]); R(g, x + w / 2 - Q(2), y + h - Q(4), Q(4), Q(1.5), M.steel[0]);
+    R(g, x + Q(4), y + h - Q(9), Q(16) * clamp(S.fill), Q(2), fnOn(fireRamp(1 - S.fill)[3])); R(g, x + w / 2 - Q(2), y + h - Q(4), Q(4), Q(1.5), M.steel[0]);
     if (S.lit > 0.1) glow(g, x + w / 2, y + h / 2, Q(22), M.teal[3], 0.25 * S.lit);
   } });
 defProp('battery', { about: 'battery with charge segments (fill = charge level)', w: 36, h: 20, row: 'bench', fills: true,
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s), w = Q(32), h = Q(20), n = 5, lvl = S.fill * n;
-    box(g, x, y, w, h, M.steel); R(g, x + w + 1, y + Q(6), Q(3), Q(8), M.steel[3]); R(g, x + Q(2), y + Q(2), w - Q(4), h - Q(4), M.dark[1]);
-    for (let i = 0; i < n; i++) { const on = i < Math.floor(lvl) || (i === Math.floor(lvl) && Math.sin(t * 8) > 0 && lvl % 1 > 0.05); if (on) R(g, x + Q(3) + i * Q(5.6), y + Q(3), Q(4.4), h - Q(6), fireRamp(1 - S.fill)[2]); }
+    box(g, x, y, w, h, M.steel); R(g, x + w + 1, y + Q(6), Q(3), Q(8), M.steel[3]); R(g, x + Q(2), y + Q(2), w - Q(4), h - Q(4), fnDk(M.dark[1]));
+    for (let i = 0; i < n; i++) { const on = i < Math.floor(lvl) || (i === Math.floor(lvl) && Math.sin(t * 8) > 0 && lvl % 1 > 0.05); if (on) R(g, x + Q(3) + i * Q(5.6), y + Q(3), Q(4.4), h - Q(6), fnOn(fireRamp(1 - S.fill)[2])); }
     if (S.lit > 0.1) glow(g, x + w / 2, y + h / 2, Q(24), M.green[3], 0.3 * S.lit);
   } });
 defProp('thermometer', { about: 'thermometer: the mercury rises with fill and turns red', w: 14, h: 48, row: 'floor', fills: true,
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s), h = Q(40), v = clamp(S.fill), c = heatRamp(v);
-    R(g, x + Q(3) - 1, y - 1, Q(6) + 2, h + 2, INK); R(g, x + Q(3), y, Q(6), h, M.white[3]); R(g, x + Q(5), y + h - Q(34) * v - Q(2), Q(2), Q(34) * v + Q(2), c[2]);
+    R(g, x + Q(3) - 1, y - 1, Q(6) + 2, h + 2, INK); R(g, x + Q(3), y, Q(6), h, fnLook().low ? { raw: fnLook().light } : M.white[3]); R(g, x + Q(5), y + h - Q(34) * v - Q(2), Math.max(2, Q(2)), Q(34) * v + Q(2), fnDk(c[2]));
     ball(g, x + Q(6), y + h + Q(4), Q(5), c); for (let i = 0; i < 5; i++) R(g, x + Q(10), y + Q(4) + i * Q(7), Q(3), 1, M.steel[1]);
     if (v > 0.7) glow(g, x + Q(6), y + h + Q(4), Q(14), M.red[2], 0.35);
   } });
@@ -36,7 +36,7 @@ defProp('gauge', { about: 'round dial with a needle and a red zone (fill = readi
     const Q = (n) => Math.round(n * s), cx = x + Q(16), cy = y + Q(16), r = Q(14), a = Math.PI * (1.1 + 0.8 * clamp(S.fill)) + Math.sin(t * 20) * 0.02 * S.fill;
     ball(g, cx, cy, r, M.steel); disc(g, cx, cy, r - Q(3), M.white[3]);
     for (let i = 0; i < 9; i++) { const k = Math.PI * (1.1 + 0.8 * i / 8); R(g, cx + Math.cos(k) * (r - Q(4)), cy + Math.sin(k) * (r - Q(4)), Math.max(1, Q(1.5)), Math.max(1, Q(1.5)), i > 6 ? M.red[2] : M.steel[1]); }
-    line(g, cx, cy, cx + Math.cos(a) * (r - Q(5)), cy + Math.sin(a) * (r - Q(5)), Math.max(1, Q(1.4)), M.red[1]); disc(g, cx, cy, Math.max(1, Q(1.6)), INK);
+    line(g, cx, cy, cx + Math.cos(a) * (r - Q(5)), cy + Math.sin(a) * (r - Q(5)), Math.max(1, Q(1.4)), fnDk(M.red[1])); disc(g, cx, cy, Math.max(1, Q(1.6)), INK);
   } });
 defProp('chip', { about: 'processor chip with pins and a die; fill heats it up, light powers the cores', w: 32, h: 32, row: 'bench', fills: true,
   draw(g, t, S, x, y, s) {
@@ -83,7 +83,7 @@ defProp('cloud', { about: 'cloud; fill shows an upload bar, light makes it glow'
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s), bob = Math.round(Math.sin(t * 1.5 + x) * 2);
     y += bob; disc(g, x + Q(12), y + Q(16), Q(9), M.white[3]); disc(g, x + Q(24), y + Q(11), Q(11), M.white[3]); disc(g, x + Q(34), y + Q(17), Q(8), M.white[3]); R(g, x + Q(8), y + Q(16), Q(30), Q(9), M.white[3]); R(g, x + Q(8), y + Q(22), Q(30), Q(3), M.white[1]);
-    if (S.fill > 0.02) { R(g, x + Q(10), y + Q(20), Q(26), Q(3), M.dark[2]); R(g, x + Q(10), y + Q(20), Q(26) * S.fill, Q(3), M.teal[2]); const ay = y + Q(10) - Math.round(((t * 2) % 1) * Q(4)); R(g, x + Q(22), ay, Q(3), Q(7), M.teal[1]); R(g, x + Q(19), ay + Q(1), Q(9), Q(2), M.teal[1]); }
+    if (S.fill > 0.02) { R(g, x + Q(9), y + Q(19), Q(28), Q(5), { raw: fnLook().dark }); R(g, x + Q(10), y + Q(20), Q(26) * S.fill, Q(3), { raw: fnLook().fill }); const ay = y + Q(10) - Math.round(((t * 2) % 1) * Q(4)); R(g, x + Q(22), ay, Q(3), Q(7), M.teal[1]); R(g, x + Q(19), ay + Q(1), Q(9), Q(2), M.teal[1]); }
     if (S.lit > 0.1) glow(g, x + Q(22), y + Q(14), Q(30), M.white[4], 0.25 * S.lit);
   } });
 defProp('padlock', { about: 'padlock; open lifts the shackle, light turns it gold', w: 22, h: 30, row: 'floor', opens: true,
@@ -112,7 +112,7 @@ defProp('coin', { about: 'spinning coin; pulse or coins make it hop', w: 18, h: 
 defProp('barchart', { about: 'bar chart on a board; fill raises the bars', w: 36, h: 30, row: 'high', fills: true,
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s); box(g, x, y, Q(36), Q(30), M.white); R(g, x + Q(3), y + Q(26), Q(30), 1, M.steel[1]);
-    for (let i = 0; i < 4; i++) { const v = clamp((0.25 + 0.2 * i) * (0.3 + 0.7 * S.fill) + 0.03 * Math.sin(t * 3 + i)); R(g, x + Q(4) + i * Q(7.5), y + Q(26) - Q(22) * v, Q(5.5), Q(22) * v, M[['teal', 'green', 'yellow', 'red'][i]][2]); }
+    for (let i = 0; i < 4; i++) { const v = clamp((0.25 + 0.2 * i) * (0.3 + 0.7 * S.fill) + 0.03 * Math.sin(t * 3 + i)); R(g, x + Q(4) + i * Q(7.5), y + Q(26) - Q(22) * v, Q(5.5), Q(22) * v, fnDk(M[['teal', 'green', 'yellow', 'red'][i]][2])); }
   } });
 defProp('flame', { about: 'flame; fill grows it, it flickers', w: 20, h: 28, row: 'floor', fills: true,
   draw(g, t, S, x, y, s) {
@@ -137,7 +137,7 @@ defProp('screen', { about: 'monitor with a progress bar; light turns it on, fill
     const Q = (n) => Math.round(n * s), on = S.lit > 0.1 || S.fill > 0.02;
     R(g, x + Q(14), y + Q(28), Q(12), Q(4), M.steel[1]); R(g, x + Q(8), y + Q(31), Q(24), Q(3), M.steel[1]); box(g, x, y, Q(40), Q(29), M.steel);
     R(g, x + Q(3), y + Q(3), Q(34), Q(23), on ? M.blue[1] : M.dark[1]);
-    if (on) { for (let i = 0; i < 3; i++) R(g, x + Q(6), y + Q(6) + i * Q(4), Q(14 + ((i * 7) % 9)), Math.max(1, Q(1.5)), M.teal[3]); R(g, x + Q(6), y + Q(19), Q(28), Q(3), M.dark[2]); R(g, x + Q(6), y + Q(19), Q(28) * S.fill, Q(3), M.green[2]); }
+    if (on) { for (let i = 0; i < 3; i++) R(g, x + Q(6), y + Q(6) + i * Q(4), Q(14 + ((i * 7) % 9)), Math.max(1, Q(1.5)), M.teal[3]); R(g, x + Q(6), y + Q(18), Q(28), Q(5), fnLook().low ? { raw: fnLook().light } : M.dark[2]); R(g, x + Q(7), y + Q(19), Q(26), Q(3), fnLook().low ? { raw: fnLook().dark } : M.dark[2]); R(g, x + Q(7), y + Q(19), Q(26) * S.fill, Q(3), fnLook().low ? { raw: fnLook().light } : M.green[3]); }
   } });
 defProp('keyboard', { about: 'keyboard; keys flash while typing, pulse presses a key', w: 44, h: 16, row: 'bench',
   draw(g, t, S, x, y, s) {

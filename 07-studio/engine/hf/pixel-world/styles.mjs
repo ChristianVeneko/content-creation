@@ -42,3 +42,42 @@ export const STYLES = [
 
 export const STYLE_IDS = STYLES.map((s) => s.id);
 export const getStyle = (id) => STYLES.find((s) => s.id === id);
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Style guide: what each style is good for. Shown to the spec-writer (prompt table) and used by the style advisor.
+// `retroOnly` styles are monochrome or near-monochrome: they only suit topics that ask for retro/handheld looks.
+// `topics` are keyword stems (accent-free, lower case) matched against the narration; `rank` orders the default pick.
+// ---------------------------------------------------------------------------------------------------------------------
+export const STYLE_GUIDE = {
+  "pixel-gameboy-dmg": { mood: "nostalgic, handheld, flat green", goodFor: "retro games, Game Boy, handheld consoles, nostalgia", avoid: "anything with progress bars, heat or colour coding (4 tones only)", retroOnly: true, topics: ["retro", "gameboy", "handheld", "nintendo", "portatil", "nostalg"] },
+  "pixel-nes-8bit": { mood: "classic, bold, arcade-home", goodFor: "games, history of tech, simple explainers, challenges", avoid: "soft or realistic subjects", retroOnly: false, topics: ["juego", "game", "nes", "8-bit", "historia", "history", "nivel", "level"] },
+  "pixel-snes-16bit": { mood: "warm, friendly, adventure RPG", goodFor: "kids, friendly explainers, everyday life, health, learning, tech for beginners", avoid: "harsh security or horror topics", retroOnly: false, topics: ["nino", "kid", "amig", "friend", "aprend", "learn", "salud", "health", "vida", "life", "cocina", "food", "celular", "phone"] },
+  "pixel-pico8": { mood: "playful, bright, chunky", goodFor: "kids, fun facts, games, coding tips, light humour", avoid: "serious or dark topics", retroOnly: false, topics: ["nino", "kid", "diver", "fun", "juego", "game", "codigo", "code", "curios", "facts"] },
+  "pixel-crt-arcade": { mood: "loud, neon, scanlines", goodFor: "tech, AI, security, hacking, speed, gaming, internet", avoid: "calm nature or cosy topics", retroOnly: false, topics: ["tecnolog", "tech", "ia", "ai", "inteligencia", "hack", "segur", "secur", "internet", "red", "network", "velocidad", "speed", "bateria", "procesador"] },
+  "pixel-1bit-dither": { mood: "stark, Mac-classic, graphic", goodFor: "retro computing, minimalism, a deliberately austere look", avoid: "colour-coded data, progress, heat, most explainers", retroOnly: true, topics: ["retro", "mac", "minimal", "1-bit", "clasic"] },
+  "pixel-cyberpunk-neon": { mood: "dark city, neon glow, rain", goodFor: "tech, AI, hacking, crypto, future, night, networks, cities, hardware", avoid: "kids or bright cheerful topics", retroOnly: false, topics: ["tecnolog", "tech", "ia", "ai", "inteligencia", "hack", "cripto", "crypto", "futuro", "future", "ciudad", "city", "chip", "procesador", "celular", "phone", "bateria", "datos", "data", "internet", "red", "robot"] },
+  "pixel-noir": { mood: "serious, moody, one red accent", goodFor: "security, crime, mystery, privacy, investigations, serious news", avoid: "kids, cheerful or colour-coded explainers", retroOnly: false, topics: ["segur", "secur", "crimen", "crime", "misterio", "mystery", "privacidad", "privacy", "fraude", "fraud", "investig", "espia", "spy", "contrasena", "password"] },
+  "pixel-dusk-lowres": { mood: "warm, calm, golden hour", goodFor: "nature, travel, reflection, food, stories, history, sunsets", avoid: "fast tech or night security", retroOnly: false, topics: ["naturaleza", "nature", "viaje", "travel", "historia", "history", "cocina", "food", "calma", "relax", "atardecer", "sunset"] },
+  "pixel-c64": { mood: "chunky home-computer blue", goodFor: "retro computing, programming history, BASIC, hobby tech", avoid: "modern UI topics", retroOnly: false, topics: ["commodore", "c64", "programacion", "programming", "basic", "retro", "computadora"] },
+  "pixel-gba-handheld": { mood: "saturated, cheerful, handheld", goodFor: "adventure, creatures, daily life, tutorials, school", avoid: "dark or serious topics", retroOnly: false, topics: ["aventura", "adventure", "escuela", "school", "tutorial", "criatura", "animal", "mascota", "pet"] },
+  "pixel-liquid-fire": { mood: "hot and cold contrast, embers", goodFor: "heat vs cold, energy, chemistry, weather, cooling, power, engines", avoid: "calm or purely abstract topics", retroOnly: false, topics: ["calor", "heat", "frio", "cold", "temperatura", "energia", "energy", "fuego", "fire", "agua", "water", "clima", "enfri", "cool", "quema", "bateria"] },
+  "pixel-vaporwave": { mood: "dreamy, pink-violet, aesthetic", goodFor: "music, culture, nostalgia of the 90s web, lifestyle, creative topics", avoid: "technical or serious topics", retroOnly: false, topics: ["musica", "music", "arte", "art", "cultura", "culture", "estetica", "aesthetic", "internet antiguo", "moda", "fashion"] },
+  "pixel-virtual-red": { mood: "harsh red on black, Virtual Boy", goodFor: "Virtual Boy, horror, alarms, a deliberately harsh look", avoid: "almost everything else (4 red tones)", retroOnly: true, topics: ["virtual boy", "terror", "horror", "alarma", "alarm", "retro"] },
+};
+for (const s of STYLES) { const g = STYLE_GUIDE[s.id]; if (g) s.guide = { ...g, colors: s.palette.length, lowColor: !!s.mono || s.palette.length <= 8 }; }
+
+const flatText = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9\- ]+/g, " ");
+/** Best styles for a topic text: keyword matches first, then a fixed friendly default order. Never returns a retro-only style unless the text asks for retro. */
+export function recommendStyles(text, n = 3) {
+  const t = ` ${flatText(text)} `, retro = RETRO_RE.test(t);
+  const scored = STYLES.map((s, i) => {
+    const g = STYLE_GUIDE[s.id]; if (g.retroOnly && !retro) return { id: s.id, score: -1, i };
+    let score = 0; for (const k of g.topics) if (t.includes(k.length <= 3 ? ` ${k} ` : k)) score += 1;
+    return { id: s.id, score, i };
+  });
+  const base = ["pixel-snes-16bit", "pixel-cyberpunk-neon", "pixel-crt-arcade"];
+  scored.forEach((x) => { const b = base.indexOf(x.id); if (x.score >= 0) x.score += b >= 0 ? 0.3 - b * 0.05 : 0; });
+  return scored.filter((x) => x.score >= 0).sort((a, b) => b.score - a.score || a.i - b.i).slice(0, n).map((x) => x.id);
+}
+/** True when the text asks for a retro / handheld look (so a monochrome style is a deliberate choice). */
+export const RETRO_RE = /\b(retro|handheld|game ?boy|nintendo|8 ?-?bits?|16 ?-?bits?|portatil|nostalg\w*|vintage|clasic\w*|antigu\w*|arcade|consola|virtual boy|dmg|noventa|ochenta|90s|80s)\b/;

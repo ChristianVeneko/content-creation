@@ -12,6 +12,15 @@ Animated pixel-art worlds driven by a JSON payload (`spec.hf`), no coding agent 
 - Beats are bound to narration words: `on: { word, n?, offset? }` (n-th occurrence, accents and punctuation ignored; fixed tolerance: exact, then 4+ letter prefix, then edit distance 1-2) or `on: { at: seconds }`. A word that cannot be found gets spread evenly inside its world and a warning is returned; nothing is dropped.
 - Frame zones (`layout.mjs`, one source of truth for runtime, template and tests; logical 270x480): caption band y 90-140 (DOM captions only), brand pill y 56-80, action band y 77-346 (16-72 % of the height: props and cast), floor y 346-480. The HUD (`progress`, `counter`) lives in the first floor rows y 350-372, never in the caption band; the hero stamp is a DOM element at 700 px (logical 175). A test asserts no HUD element intersects the caption band.
 
+## Readability guarantees (U10)
+
+- **Style guidance**: the spec-writer prompt carries a table (mood, colours, good for, avoid) and default picks by topic (`STYLE_GUIDE`, `recommendStyles` in `styles.mjs`). Monochrome styles (`gameboy-dmg`, `1bit-dither`, `virtual-red`) are for retro/handheld topics only. `styleAdvice` (`normalize.mjs`) never overrides the model: it adds a warning when `hf.style` is missing or a retro-only style is used for a non-retro topic.
+- **Functional contrast**: `fnLook()` (`runtime/hud.js`) picks the highest-contrast palette pair per style; bar fills, frames, outlines >= 3:1 and HUD text >= 4.5:1 (tested for all 14 styles). Props with a fill state use it in low-colour styles.
+- **HUD**: labels are measured and auto-abbreviated (CULPABLES -> CLPBLS in 2x styles); 2x styles get a taller, wider HUD (`hudZonesFor(px)`).
+- **Hero placement**: a solver keeps the hero out of the props that beats target (free column, shrinks only a defaulted size) and walks it aside before a beat that targets the prop it stands on.
+- **Foreground silhouettes**: styles without blur use dithered palette-dark tones instead of black blocks.
+- **Beat feedback**: progress bars and prop fills move at least 12 % per beat (nudged values are reported in warnings); progress/counter beats pop (halo, chip flip) and prop fills get a derived pulse.
+
 ## Styles
 
 | id | look | palette source |

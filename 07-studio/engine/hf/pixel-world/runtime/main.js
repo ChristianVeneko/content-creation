@@ -215,14 +215,8 @@ function hud(t) {
   let prog = null, cnt = null;
   const pk = [], ck = [];
   for (const h of hv) { if (h.hud === 'progress') { pk.push([h.t - 0.001, pk.length ? pk[pk.length - 1][1] : 0], [h.t + 0.5, clamp(h.value)]); if (t >= h.t) prog = h; } else if (h.hud === 'counter') { ck.push([h.t - 0.001, ck.length ? ck[ck.length - 1][1] : 0], [h.t + 0.4, h.value]); if (t >= h.t) cnt = h; } }
-  if (prog) { const z = ZONES.hudProgress; progressBar(g, z.x, z.y, z.w, kf(t, pk, EA.out), M.green, z.h); if (prog.label) txt(g, String(prog.label).slice(0, Math.floor((z.w - 8) / 8)), z.x + 4, z.y + 2, 8, '#ffffff', 'left', INK); }
-  if (cnt) {
-    const z = ZONES.hudCounter, s = String(Math.round(kf(t, ck, EA.out))), bump = (t - cnt.t) < 0.2 ? 1 : 0;
-    let lab = cnt.label ? String(cnt.label).trim() : ''; while (lab.length && txtW(lab + ' ' + s, 8) + 12 > z.w) lab = lab.slice(0, -1);
-    if (lab) lab += ' ';
-    const ww = txtW(lab + s, 8) + 12, xr = z.x + z.w;
-    box(g, xr - ww, z.y - bump, ww, z.h, M.dark); txt(g, lab, xr - ww + 6, z.y + 3 - bump, 8, '#ffffff', 'left'); txt(g, s, xr - 6, z.y + 3 - bump, 8, M.yellow[3], 'right');
-  }
+  if (prog) drawHudProgress(g, prog, kf(t, pk, EA.out), hudPop(t, 'progress'));
+  if (cnt) drawHudCounter(g, cnt, String(Math.round(kf(t, ck, EA.out))), hudPop(t, 'counter'));
   g.restore();
 }
 

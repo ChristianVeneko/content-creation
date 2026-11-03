@@ -15,6 +15,42 @@ function anchorX(w, at, size) {
   return w.W / 2;
 }
 
+/* ---- hero placement solver: the hero stands in a free column beside the props that beats target, never on top of them ---- */
+const HERO_HALF = 14; // half width of a standing figure per size unit u (torso, arms and hair), logical px
+const ovl = (a0, a1, b0, b1) => Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
+/* props a world's beats point at: id -> number of beats (any beat kind with a `target` that is one of the world's props) */
+function targetWeights(w) {
+  const wt = {};
+  for (const b of w.beats) if (b.target && w.def.props[b.target]) wt[b.target] = Math.min(3, (wt[b.target] || 0) + 1);
+  return wt;
+}
+function heroCost(w, x, half, wt) {
+  let c = 0;
+  for (const id in wt) { const p = w.def.props[id]; c += wt[id] * ovl(x - half, x + half, p.x, p.x + p.w); }
+  return c;
+}
+/* nearest x to x0 (step 2 px) with the lowest weighted overlap; keeps x0 when it is already free */
+function heroSpot(w, x0, half, wt) {
+  const c0 = heroCost(w, x0, half, wt); if (c0 === 0) return { x: x0, cost: 0 };
+  const lo = Math.min(half + 2, w.W / 2), hi = Math.max(w.W - half - 2, w.W / 2);
+  let best = x0, bc = c0, bd = 0;
+  for (let x = lo; x <= hi; x += 2) { const c = heroCost(w, x, half, wt), d = Math.abs(x - x0); if (c < bc || (c === bc && d < bd)) { best = x; bc = c; bd = d; } }
+  return { x: best, cost: bc };
+}
+/* hero x at time t from the walk segments already queued (destination of the last segment that started before t) */
+const heroXAt = (c, t) => { let x = c.x0; for (const s of c.segs) if (s.t0 <= t) x = s.x1; return x; };
+/* before a beat that targets a prop, move the hero aside when it stands on that prop (a walk that ends just before the beat) */
+function yieldHero(w, c, b, wt) {
+  const p = w.def.props[b.target], half = HERO_HALF * c.u, x = heroXAt(c, b.t);
+  if (ovl(x - half, x + half, p.x, p.x + p.w) <= 0) return;
+  const w2 = {}; for (const id in wt) w2[id] = 1; w2[b.target] = 1000;
+  const spot = heroSpot(w, x, half, w2);
+  if (Math.abs(spot.x - x) < 4) return;
+  const last = c.segs.length ? c.segs[c.segs.length - 1] : null, dur = Math.max(0.45, Math.abs(spot.x - x) / (70 * Math.sqrt(c.u)));
+  const t0 = Math.max(b.t - dur - 0.1, last ? last.t1 : w.t0);
+  c.segs.push({ t0, t1: t0 + dur, x0: x, x1: spot.x });
+}
+
 function prepWorld(w) {
   w.def = SC[w.sc] || SC[Object.keys(SC)[0]];
   if (w.def.build) w.def = w.def.build(w.pl || [], w.th);
@@ -23,14 +59,27 @@ function prepWorld(w) {
   const heroId = SPEC.hero;
   const castIn = w.cast && w.cast.length ? w.cast : [{ who: 'hero', at: 'center' }];
   const defSize = (c) => c.size || (castIn.length <= 1 ? 'L' : 'M');
+  const wt = targetWeights(w);
   w.cast = castIn.map((c, i) => {
     const who = c.who === 'hero' ? heroId : c.who;
-    return { id: c.who, who, size: defSize(c), u: sizeU(defSize(c)), dir: c.dir || 1, x0: anchorX(w, c.at, defSize(c)), segs: [], acts: [], isHero: c.who === 'hero' || !!HEROES[who], talk: c.talk !== false && (c.who === 'hero' || !!HEROES[who]), bs: i * 0.77 };
+    let size = defSize(c), x0 = anchorX(w, c.at, size);
+    if (c.who === 'hero' && Object.keys(wt).length) {
+      // the hero keeps its requested spot when free; otherwise it moves to the nearest free column, and a defaulted size may shrink to fit
+      let spot = heroSpot(w, x0, HERO_HALF * sizeU(size), wt);
+      for (const sz of c.size ? [] : ['M', 'S']) { if (spot.cost === 0) break; const s2 = heroSpot(w, anchorX(w, c.at, sz), HERO_HALF * sizeU(sz), wt); if (s2.cost < spot.cost) { spot = s2; size = sz; } }
+      x0 = spot.x;
+    }
+    return { id: c.who, who, size, u: sizeU(size), dir: c.dir || 1, x0, segs: [], acts: [], isHero: c.who === 'hero' || !!HEROES[who], talk: c.talk !== false && (c.who === 'hero' || !!HEROES[who]), bs: i * 0.77 };
   });
+  const heroC = w.cast.find((c) => c.id === 'hero');
   const castOf = (id) => w.cast.find((c) => c.id === id) || w.cast.find((c) => c.who === id) || w.cast[0];
-  const sorted = w.beats.slice().sort((a, b) => a.t - b.t);
+  // a fill is a visible change: give it a pop (derived pulse) unless the author already pulsed that prop within 0.3 s
+  const derived = [];
+  for (const b of w.beats) if (b.do === 'fill' && b.target && !w.beats.some((o) => o.do === 'pulse' && o.target === b.target && Math.abs(o.t - b.t) <= 0.3)) derived.push({ t: b.t, do: 'pulse', target: b.target, derived: true });
+  const sorted = w.beats.concat(derived).sort((a, b) => a.t - b.t);
   let camX = 0;
   for (const b of sorted) {
+    if (heroC && b.target && w.def.props[b.target] && !b.derived && b.do !== 'walk') yieldHero(w, heroC, b, wt);
     if (b.do === 'fill' || b.do === 'open' || b.do === 'close' || b.do === 'light' || b.do === 'dim' || b.do === 'burst' || b.do === 'recolor' || b.do === 'coins' || b.do === 'chop' || b.do === 'stamp' || b.do === 'pulse') {
       const id = b.target; (w.pe[id] = w.pe[id] || []).push(b);
     } else if (b.do === 'label') w.labels.push(b);
