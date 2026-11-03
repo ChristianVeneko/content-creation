@@ -18,6 +18,9 @@ import { drawingVisualSchema } from "./drawing.mjs";
 import { FX2D_TYPES, MAX_FX2D, fx2dIssues, fx2dSchema } from "./fx2d.mjs";
 import { RENDERERS, rendererIssue } from "./blender-options.mjs";
 
+/** Moods of the chiptune a HyperFrames format synthesizes itself (provider "format"); mirrors hf/pixel-world/audio-music.mjs (a test keeps them equal). */
+export const FORMAT_MOODS = ["adventure", "calm", "tense", "playful", "mystery"];
+
 export { CAPTION_STYLES };
 
 /** The classic templates: one big text + an emoji/icon hero, or an agent `drawing` (visual.type "drawing"). */
@@ -232,13 +235,14 @@ export const videoSpecSchema = z
     music: z
       .object({
         provider: z
-          .enum(MUSIC_PROVIDERS)
+          .enum([...MUSIC_PROVIDERS, "format"])
           .optional()
-          .describe('"library" (default: curated CC0/CC BY tracks by mood), "elevenlabs" (generated per video, opt-in, spends credits; falls back to the library), "none" (no music)'),
+          .describe('"library" (default: curated CC0/CC BY tracks by mood), "elevenlabs" (generated per video, opt-in, spends credits; falls back to the library), "format" (HyperFrames formats only: the format synthesizes its own music in code, no credit needed; default of pixel-world), "none" (no music)'),
         mood: z
-          .enum([...MOODS, "auto"])
+          .enum([...MOODS, "auto", ...FORMAT_MOODS])
           .optional()
-          .describe('Library mood, or "auto" (picked from tone, topic keywords and template)'),
+          .describe('Library mood, or "auto" (picked from tone, topic keywords and template). With provider "format": the format mood (pixel-world: adventure, calm, tense, playful, mystery) or "auto" (the style decides)'),
+        seed: z.number().int().min(0).max(4294967295).optional().describe('Provider "format" only: seed of the generated music (default: derived from the title, so each video has its own tune)'),
         track: z.string().min(1).optional().describe('Library track id (03-assets/music/library.json) or "auto"'),
         file: z.string().optional().describe("Local audio file (absolute or relative to the spec); wins over track/mood"),
         volume: z.number().min(0).max(1).default(0.12).describe("Music bed level: 0.12 = 13 dB under the voice; each doubling +6 dB (0.24 = -7 dB, 0.06 = -19 dB)"),
@@ -248,6 +252,8 @@ export const videoSpecSchema = z
       })
       .superRefine((m, ctx) => {
         if (m.prompt && m.provider !== "elevenlabs") ctx.addIssue({ code: "custom", path: ["prompt"], message: 'music.prompt is only used with music.provider "elevenlabs"' });
+        if (m.seed !== undefined && m.provider !== "format") ctx.addIssue({ code: "custom", path: ["seed"], message: 'music.seed is only used with music.provider "format"' });
+        if (m.mood && FORMAT_MOODS.includes(m.mood) && m.provider !== "format") ctx.addIssue({ code: "custom", path: ["mood"], message: `mood "${m.mood}" is a format mood: it needs music.provider "format"` });
       })
       .optional(),
     sfx: z
@@ -421,6 +427,7 @@ export function validateSpec(raw) {
   if (buildErrors.length) return { ok: false, errors: buildErrors };
   const res = videoSpecSchema.safeParse(expanded);
   if (!res.success) return { ok: false, errors: formatIssues(res.error) };
+  if (!isHf && res.data.music?.provider === "format") return { ok: false, errors: [{ path: "music.provider", message: 'provider "format" is only available for HyperFrames formats (they synthesize their own music); use "library", "elevenlabs" or "none" here' }] };
   // the format module's parsed payload (defaults filled) replaces spec.hf
   if (isHf) res.data.hf = hfSupport.parse(res.data).data;
   return { ok: true, spec: res.data, errors: [] };

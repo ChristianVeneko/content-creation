@@ -21,7 +21,7 @@ const ovl = (a0, a1, b0, b1) => Math.max(0, Math.min(a1, b1) - Math.max(a0, b0))
 /* props a world's beats point at: id -> number of beats (any beat kind with a `target` that is one of the world's props) */
 function targetWeights(w) {
   const wt = {};
-  for (const b of w.beats) if (b.target && w.def.props[b.target]) wt[b.target] = Math.min(3, (wt[b.target] || 0) + 1);
+  for (const b of w.beats) if (!b.auto && b.target && w.def.props[b.target]) wt[b.target] = Math.min(3, (wt[b.target] || 0) + 1);
   return wt;
 }
 function heroCost(w, x, half, wt) {
@@ -55,10 +55,10 @@ function prepWorld(w) {
   w.def = SC[w.sc] || SC[Object.keys(SC)[0]];
   if (w.def.build) w.def = w.def.build(w.pl || [], w.th);
   w.W = w.def.w || 270; w.gy = w.def.gy || GYD;
-  w.pe = {}; w.camKeys = [[w.t0, 0]]; w.zoom = []; w.labels = []; w.emotes = []; w.mults = []; w.bursts = []; w.shakes = []; w.stamps = []; w.flashes = [];
+  w.pe = {}; w.camKeys = [[w.t0, 0]]; w.zoom = []; w.punch = []; w.hits = []; w.labels = []; w.emotes = []; w.mults = []; w.bursts = []; w.shakes = []; w.stamps = []; w.flashes = [];
   const heroId = SPEC.hero;
   const castIn = w.cast && w.cast.length ? w.cast : [{ who: 'hero', at: 'center' }];
-  const defSize = (c) => c.size || (castIn.length <= 1 ? 'L' : 'M');
+  const defSize = (c) => c.size || 'M'; // M for everyone unless the payload asks for another size (a lone hero used to default to L, 28 % of the frame)
   const wt = targetWeights(w);
   w.cast = castIn.map((c, i) => {
     const who = c.who === 'hero' ? heroId : c.who;
@@ -66,7 +66,7 @@ function prepWorld(w) {
     if (c.who === 'hero' && Object.keys(wt).length) {
       // the hero keeps its requested spot when free; otherwise it moves to the nearest free column, and a defaulted size may shrink to fit
       let spot = heroSpot(w, x0, HERO_HALF * sizeU(size), wt);
-      for (const sz of c.size ? [] : ['M', 'S']) { if (spot.cost === 0) break; const s2 = heroSpot(w, anchorX(w, c.at, sz), HERO_HALF * sizeU(sz), wt); if (s2.cost < spot.cost) { spot = s2; size = sz; } }
+      for (const sz of c.size ? [] : ['S']) { if (spot.cost === 0) break; const s2 = heroSpot(w, anchorX(w, c.at, sz), HERO_HALF * sizeU(sz), wt); if (s2.cost < spot.cost) { spot = s2; size = sz; } }
       x0 = spot.x;
     }
     return { id: c.who, who, size, u: sizeU(size), dir: c.dir || 1, x0, segs: [], acts: [], isHero: c.who === 'hero' || !!HEROES[who], talk: c.talk !== false && (c.who === 'hero' || !!HEROES[who]), bs: i * 0.77 };
@@ -79,7 +79,7 @@ function prepWorld(w) {
   const sorted = w.beats.concat(derived).sort((a, b) => a.t - b.t);
   let camX = 0;
   for (const b of sorted) {
-    if (heroC && b.target && w.def.props[b.target] && !b.derived && b.do !== 'walk') yieldHero(w, heroC, b, wt);
+    if (heroC && b.target && w.def.props[b.target] && !b.derived && !b.auto && b.do !== 'walk') yieldHero(w, heroC, b, wt);
     if (b.do === 'fill' || b.do === 'open' || b.do === 'close' || b.do === 'light' || b.do === 'dim' || b.do === 'burst' || b.do === 'recolor' || b.do === 'coins' || b.do === 'chop' || b.do === 'stamp' || b.do === 'pulse') {
       const id = b.target; (w.pe[id] = w.pe[id] || []).push(b);
     } else if (b.do === 'label') w.labels.push(b);
@@ -104,6 +104,15 @@ function prepWorld(w) {
       if (b.do === 'react') w.emotes.push({ t: b.t, who: b.who, symbol: b.symbol || '!' });
     }
   }
+  // impact beats punch the camera in (a quarter-step zoom for ~0.4 s, at most one per 1.8 s, never over a written push) and squash the hero
+  let lastPunch = -9;
+  for (const b of sorted) {
+    if (b.do === 'shake' || b.do === 'hero-stamp' || b.do === 'radial-burst' || b.do === 'burst') { if (!w.hits.length || b.t - w.hits[w.hits.length - 1] >= 0.15) w.hits.push(b.t); }
+    if ((b.do === 'hero-stamp' || b.do === 'radial-burst' || b.do === 'burst') && b.t - lastPunch >= 2.4 && !w.zoom.some((k) => b.t >= k.t - 0.3 && b.t < k.t + 1.1 + k.hold)) {
+      const bx = b.target && w.def.props[b.target] ? propBox(w, b.target) : { cx: W / 2, cy: 230 };
+      w.punch.push({ t: b.t, z: 1.25, hold: 0.12, ox: bx.cx, oy: bx.cy }); lastPunch = b.t;
+    }
+  }
   w.camKeys.sort((a, b) => a[0] - b[0]);
   w.camKeys = w.camKeys.reduce((acc, k) => { if (acc.length && k[0] < acc[acc.length - 1][0]) k = [acc[acc.length - 1][0], k[1]]; acc.push(k); return acc; }, []);
 }
@@ -114,6 +123,10 @@ function zoomAt(w, t) {
   for (const k of w.zoom) {
     const a = pr(t, k.t, 0.5), b = pr(t, k.t + 0.5 + k.hold, 0.6);
     const v = 1 + (k.z - 1) * EA.io(a) * (1 - EA.io(b));
+    if (v > z) { z = v; ox = k.ox; oy = k.oy; }
+  }
+  for (const k of w.punch) {
+    const a = pr(t, k.t, 0.06), b = pr(t, k.t + 0.06 + k.hold, 0.22), v = 1 + (k.z - 1) * EA.out(a) * (1 - EA.io(b));
     if (v > z) { z = v; ox = k.ox; oy = k.oy; }
   }
   return { z, ox, oy };
@@ -142,7 +155,8 @@ function drawProp(g, t, w, id, c) {
   TONE = S.tone;
   g.save();
   const pulse = S.ev.pulse >= 0 ? Math.round(Math.sin(S.ev.pulse * Math.PI) * 4) : 0;
-  g.translate(0, -pulse);
+  const kick = S.ev.chop >= 0 ? Math.round(Math.sin(S.ev.chop * 34) * 2 * (1 - S.ev.chop)) : 0; // the prop jolts under a chop
+  g.translate(kick, -pulse);
   if (S.ev.burst >= 0) {
     const k = Math.round(Math.sin(S.ev.burst * Math.PI) * 14), cx = p.x + p.w / 2;
     for (const s of [-1, 1]) { g.save(); g.beginPath(); if (s < 0) g.rect(p.x - 60, -40, cx - p.x + 60, H + 80); else g.rect(cx, -40, p.w + 60, H + 80); g.clip(); g.translate(s * k, -Math.round(k * 0.3)); p.draw(g, t, S, c); g.restore(); }
@@ -154,13 +168,15 @@ function drawProp(g, t, w, id, c) {
 /* generic effects on top of any prop (UI layer): glow, fill bar, slash, stamp, coins, burst, recolor flash */
 function propOverlay(g, t, w, id) {
   const p = w.def.props[id], S = propState(w, id, t), b = propBox(w, id);
-  if (S.lit > 0.02) { glow(g, b.cx, b.cy, Math.max(b.w, b.h) * 0.45, M.yellow[3], 0.22 * S.lit); if (S.lit > 0.9) sparkle(g, b.x + 3, b.y + 3, t, Math.floor(t * 3) / 3, '#ffffff'); }
+  if (S.lit > 0.02) { glow(g, b.cx, b.cy, Math.max(b.w, b.h) * 0.45, M.yellow[3], 0.22 * S.lit * (0.7 + 0.3 * flicker(t, id.length))); if (S.lit > 0.9) sparkle(g, b.x + 3, b.y + 3, t, Math.floor(t * 3) / 3, '#ffffff'); }
   if (S.fill > 0.01 && !p.fills) progressBar(g, b.x + 2, b.y - 12, b.w - 4, S.fill, M.green, 6);
+  for (const e of w.pe[id] || []) if (e.do === 'fill' && t >= e.t && t < e.t + 1) gain(g, t, e.t, b.cx, b.y + 6, 5, Math.floor(e.t * 10) % 40, M.teal); // tokens fly into a filling prop
+  if (S.ev.chop >= 0) chips(g, t, t - S.ev.chop * PROP_ACT_DUR.chop, b.cx, b.cy, 8, id.length * 3, [M.steel[3], '#ffffff', M.orange[3]], 80, 300, 0.7);
   if (S.ev.chop >= 0 && !p.chops) { const e = S.ev.chop, x = b.x + b.w * e; line(g, b.x - 4 + b.w * e * 0.6, b.y - 6, x + 6, b.y + b.h + 6, 2, '#ffffff'); }
   if (S.ev.stamp >= 0 && !p.stamps) { const e = S.ev.stamp, dy = e < 0.4 ? lerp(-30, 0, EA.in(e / 0.4)) : 0; R(g, b.cx - 9, b.cy - 18 + dy, 18, 12, M.steel[2]); R(g, b.cx - 3, b.cy - 26 + dy, 6, 8, M.wood[2]); if (e >= 0.4) { R(g, b.cx - 10, b.cy - 6, 20, 12, M.red[2]); R(g, b.cx - 8, b.cy - 4, 16, 8, M.red[3]); } }
   if (S.ev.coins >= 0) {
-    const e = S.ev.coins * PROP_ACT_DUR.coins, gy = w.gy;
-    for (let i = 0; i < 7; i++) { const t0 = i * 0.1; if (e < t0) continue; const dt = e - t0, x = b.cx + (hs(i + 3) - 0.5) * 50, y = Math.min(gy - 4 - Math.abs(Math.sin(dt * 6)) * 8 * Math.exp(-dt * 2.2), b.y + 4 + 0.5 * 420 * dt * dt); disc(g, x, y, 3, M.gold[3]); R(g, x - 1, y - 1, 1, 2, M.gold[4]); }
+    const e = S.ev.coins * PROP_ACT_DUR.coins, gy = w.gy - 4;
+    for (let i = 0; i < 7; i++) { const c = toss(e, i * 0.1, b.cx, b.y + 4, (hs(i + 3) - 0.5) * 96, -(70 + hs(i * 5 + 1) * 60), gy, 1.4); if (!c) continue; disc(g, c[0], c[1], 3, M.gold[3]); R(g, c[0] - 1, c[1] - 1, 1, 2, M.gold[4]); if (Math.floor(e * 14 + i) % 4 === 0) R(g, c[0] + 2, c[1] - 2, 1, 1, '#ffffff'); }
   }
   if (S.ev.burst >= 0) burst(g, b.cx, b.cy, t - S.ev.burst * PROP_ACT_DUR.burst, t, 18, [M.yellow[3], '#ffffff', M.orange[2], M.red[2]], 11, 80, 150, 0.9, 3);
   if (S.recolorT != null && t - S.recolorT < 0.4) sparkle(g, b.cx, b.y + 2, t, S.recolorT, '#ffffff');
@@ -185,6 +201,8 @@ function castState(w, c, t) {
     if (a.kind === 'jump') { const h = Math.sin(e * Math.PI) * 14 * Math.sqrt(c.u); o.jump = Math.round(h); o.fa = 150; o.ba = -150; o.mood = 'h'; o.sq = e < 0.12 || e > 0.9 ? 2 : 0; }
     if (a.kind === 'cheer') { o.fa = 170; o.ba = -170; o.mood = 'h'; o.lit = true; o.jump = Math.round(Math.abs(Math.sin(e * Math.PI * 2)) * 4); }
   }
+  if (c.isHero && !acted) { for (const h of w.hits) { if (h > t) break; const q = hitSquash(t, h); if (q) { o.sq = q.sq; o.jump = q.jump; break; } } } // squash and stretch on every impact
+  if (!SINGLE) { const di = dropIn(t, w.t0 <= 0.01 ? 0.05 + c.bs * 0.12 : w.t0 - 0.35 + c.bs * 0.12, 34, 0.55); if (di < -0.5) o.jump = Math.max(o.jump, Math.round(-di)); } // bounce-in when the world appears
   if (c.talk && !mv) o.talk = talkLevel(t);
   else if (c.talk && mv) o.talk = talkLevel(t);
   if (!acted && c.talk && o.talk) o.mood = 'n';

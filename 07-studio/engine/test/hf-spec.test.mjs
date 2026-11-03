@@ -125,3 +125,33 @@ test("common HyperFrames controls (pace, camera, cta, variants, brand pill and f
   assert.equal(validateSpec(base({ pace: "warp" })).ok, false);
   assert.equal(validateSpec(base({ variants: { count: 99 } })).ok, false);
 });
+
+test('music.provider "format" (the format synthesizes its own music): validates for HF formats with format moods and a seed; library, elevenlabs and none keep working', () => {
+  for (const music of [{ provider: "format" }, { provider: "format", mood: "adventure", seed: 7 }, { provider: "format", mood: "auto", volume: 0.2, duck: false }, { provider: "library", mood: "tech-lofi" }, { provider: "elevenlabs", prompt: "lofi" }, { provider: "none" }]) {
+    const r = validateSpec(base({ music }));
+    assert.equal(r.ok, true, JSON.stringify([music, r.errors]));
+  }
+  const bad = (music, path) => { const r = validateSpec(base({ music })); assert.equal(r.ok, false, JSON.stringify(music)); assert.ok(r.errors.some((e) => e.path === path || e.path === `music.${path}`), JSON.stringify(r.errors)); };
+  bad({ provider: "library", mood: "adventure" }, "mood"); // a format mood needs the format provider
+  bad({ mood: "calm" }, "mood");
+  bad({ provider: "library", seed: 3 }, "seed");
+  bad({ provider: "format", seed: -1 }, "seed");
+  bad({ provider: "format", mood: "polka" }, "mood");
+});
+
+test('music.provider "format" is refused on templates that are not HyperFrames formats, with a message that names the alternatives', () => {
+  const r = validateSpec({ version: 1, title: "T", template: "kinetic-type", music: { provider: "format" }, scenes: [{ id: "a", narration: "Hola mundo", visual: { type: "gradient" }, onScreenText: "HOLA" }] });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.path === "music.provider" && /library/.test(e.message)), JSON.stringify(r.errors));
+});
+
+test('pixel-world defaults to the format chiptune and the schema file lists the provider, the moods and the seed', async () => {
+  const { hfTemplateEntry } = await import("../hf/registry.mjs");
+  assert.equal(hfTemplateEntry("pixel-world").defaults.music.provider, "format");
+  assert.equal(hfTemplateEntry("_stub").defaults.music.provider, "library", "other formats keep the library");
+  const schema = JSON.parse(readFileSync(fileURLToPath(new URL("../spec.schema.json", import.meta.url)), "utf8"));
+  const music = schema.properties.music.properties;
+  assert.ok(music.provider.enum.includes("format") && ["library", "elevenlabs", "none"].every((p) => music.provider.enum.includes(p)));
+  assert.ok(music.mood.enum.includes("adventure") && music.mood.enum.includes("tech-lofi"));
+  assert.ok(music.seed);
+});

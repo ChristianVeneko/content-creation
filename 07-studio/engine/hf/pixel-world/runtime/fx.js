@@ -1,4 +1,4 @@
-/* fx.js: ambient motion and particles. Closed-form (no state): every position is a function of t and a seed. */
+/* fx.js: ambient motion, particles and the motion kit. Closed-form (no state): every position is a function of t and a seed. */
 'use strict';
 function dust(g, t, n, seed, c, speed = 6, y0 = 40, span = 300) {
   g.save(); g.fillStyle = col(c);
@@ -141,4 +141,45 @@ function chip(g, s, x, y, ramp, p, fs = 8, al = 'center') {
 function gear(g, cx, cy, r, teeth, ang, ramp) {
   for (let i = 0; i < teeth; i++) { const a = ang + (i * Math.PI * 2) / teeth; R(g, cx + Math.cos(a) * (r + 1.5) - 2, cy + Math.sin(a) * (r + 1.5) - 2, 4, 4, ramp[3]); }
   disc(g, cx, cy, r, ramp[2]); disc(g, cx, cy, Math.max(2, Math.round(r * 0.5)), ramp[0]); R(g, cx - 1, cy - 1, 3, 3, ramp[3]);
+}
+
+/* ---------------- MOTION KIT: what the hand-made scenes do (bounce-in, parabola flights, chips, flicker, squash), reusable by any prop ---------------- */
+/* stepped flicker 0.55-1 (torch, lamp, neon): changes `rate` times per second, never smooth */
+function flicker(t, seed = 0, rate = 12) { return 0.55 + 0.45 * hs(Math.floor(t * rate) + seed * 17); }
+/* bounce-in: y offset (<= 0) of something dropped from `h` px above its rest position at t0 */
+function dropIn(t, t0, h = 40, d = 0.6) { return -h * (1 - EA.bounce(pr(t, t0, d))); }
+/* squash then stretch of a figure after a hit at t0: { sq: squash px, jump: stretch hop px } or null */
+function hitSquash(t, t0) {
+  const dt = t - t0; if (dt < 0 || dt > 0.27) return null;
+  if (dt < 0.07) return { sq: 2, jump: 0 };
+  return { sq: 0, jump: Math.round(Math.sin(pr(t, t0 + 0.07, 0.2) * Math.PI) * 3) };
+}
+/* shards thrown from (x,y): each on its own parabola with chunky 2-3 px pixels (chop, break, impact) */
+function chips(g, t, t0, x, y, n, seed, cols, speed = 70, grav = 280, life = 0.75) {
+  const dt = t - t0; if (dt < 0 || dt > life) return;
+  g.save();
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI / 2 + (hs(i + seed) - 0.5) * 2.6, sp = speed * (0.5 + hs(i * 3 + seed) * 0.7);
+    g.globalAlpha = clamp(1 - Math.pow(dt / life, 3));
+    const s = hs(i * 7 + seed) > 0.5 ? 3 : 2;
+    R(g, x + Math.cos(a) * sp * dt, y + Math.sin(a) * sp * dt + 0.5 * grav * dt * dt, s, s, cols[i % cols.length]);
+  }
+  g.restore();
+}
+/* tokens flying in from the sides on parabolas and landing on (x1,y1) one after another, a spark on every landing (fill, deposit) */
+function gain(g, t, t0, x1, y1, n, seed, ramp) {
+  for (let i = 0; i < n; i++) {
+    const ti = t0 + i * 0.07, d = 0.34; if (t < ti || t > ti + d + 0.3) continue;
+    const x0 = x1 + (hs(i + seed) - 0.5) * 90, y0 = y1 - 38 - hs(i * 3 + seed) * 26, f = fly(t, ti, d, x0, y0, x1 + (hs(i * 5 + seed) - 0.5) * 8, y1, 20);
+    if (!f[2]) { R(g, f[0] - 1, f[1] - 1, 4, 4, INK); R(g, f[0], f[1], 3, 3, ramp[3]); R(g, f[0], f[1], 1, 1, ramp[4]); }
+    else sparkle(g, x1, y1 - 2, t, ti + d, '#ffffff');
+  }
+}
+/* coin thrown out of (x,y): launch velocity, gravity and a damped bounce on the ground line gy; returns [x, y, lifeFraction] or null */
+function toss(t, t0, x, y, vx, vy, gy, life = 1.5) {
+  const dt = t - t0; if (dt < 0 || dt > life) return null;
+  const g = 480, disc2 = vy * vy + 2 * g * (gy - y), tl = disc2 > 0 ? (-vy + Math.sqrt(disc2)) / g : 0;
+  if (dt < tl) return [x + vx * dt, y + vy * dt + 0.5 * g * dt * dt, dt / life];
+  const q = dt - tl;
+  return [x + vx * (tl + Math.min(q, 0.35) * 0.4), gy - Math.abs(Math.sin(q * 11)) * 9 * Math.exp(-q * 4.5), dt / life];
 }

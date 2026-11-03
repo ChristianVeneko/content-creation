@@ -1,7 +1,7 @@
 // Lenient authoring: maps the slips an LLM makes in the payload to valid values without dropping content.
 // Anything it cannot map is left untouched so the schema reports a precise error instead of guessing.
 import { loadCatalog, BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, getScenario, worldProps, WORKSHOP_ID, WORKSHOP_THEMES } from "./catalog.mjs";
-import { STYLES, STYLE_GUIDE, RETRO_RE, recommendStyles } from "./styles.mjs";
+import { STYLES, STYLE_GUIDE, RETRO_RE, recommendStyles, PIXEL_SCALES } from "./styles.mjs";
 
 const flat = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 const toks = (s) => flat(s).split(" ").filter(Boolean);
@@ -42,6 +42,7 @@ const COLOR_ALIASES = { cyan: "teal", aqua: "teal", violet: "purple", magenta: "
 const TR_ALIASES = { wipe: "tiles", tile: "tiles", mosaic: "tiles", circle: "iris", round: "iris", push: "slide", pan: "slide", scroll: "slide", drop: "down", fall: "down", vertical: "down", "slide down": "down" };
 const TIME_ALIASES = { sunset: "dusk", evening: "dusk", sunrise: "dusk", twilight: "dusk", nightfall: "night", dark: "night", midnight: "night", morning: "day", noon: "day", afternoon: "day", light: "day", daytime: "day" };
 const PROP_KIND_ALIASES = { battery: "battery", cell: "battery", celular: "phone", smartphone: "phone", mobile: "phone", cpu: "chip", processor: "chip", ventilador: "fan", wire: "cable", usb: "cable", lightning: "bolt", thunder: "bolt", lock: "padlock", virus: "bug", fire: "flame", heat: "flame", cold: "snowflake", ice: "snowflake", monitor: "screen", display: "screen", chart: "barchart", graph: "barchart", gauge: "gauge", dial: "gauge", temperature: "thermometer", search: "magnifier", lens: "magnifier", money: "coin", cog: "gear", rack: "server", db: "database", idea: "bulb", light: "bulb", wireless: "wifi" };
+const PIXEL_SCALE_ALIASES = { coarse: "chunky", thick: "chunky", big: "chunky", large: "chunky", low: "chunky", grueso: "chunky", normal: "standard", default: "standard", medium: "standard", regular: "standard", estandar: "standard", high: "fine", hd: "fine", detailed: "fine", smooth: "fine", small: "fine", fino: "fine", detail: "fine" };
 const LAYOUT_ALIASES = { horizontal: "strip", row: "strip", side: "strip", sideways: "strip", vertical: "tower", column: "tower", down: "tower", descend: "tower" };
 
 const pickList = (v, list, aliases) => { const k = flat(v); if (list.includes(String(v))) return v; if (aliases[k]) return aliases[k]; if (list.includes(k)) return k; return v; };
@@ -94,6 +95,7 @@ export function normalizePayload(hf) {
   if (typeof out.style === "string") out.style = nearest(out.style, STYLES.map((s) => ({ id: s.id, name: s.name, keywords: s.about.split(" ") })), STYLE_ALIASES) ?? out.style;
   if (typeof out.hero === "string") { const k = flat(out.hero); out.hero = cat.heroes.some((h) => h.id === out.hero) ? out.hero : nearest(k, cat.heroes.map((h) => ({ id: h.id, name: h.name, keywords: toks(h.about) })), { kid: "hoodie", boy: "hoodie", girl: "capgirl", cap: "capgirl", mage: "wizard", witch: "wizard", astronaut: "astro", space: "astro", bot: "robot", droid: "robot" }) ?? out.hero; }
   if (typeof out.layout === "string") out.layout = pickList(out.layout, LAYOUTS, LAYOUT_ALIASES);
+  if (typeof out.pixelScale === "string") out.pixelScale = pickList(out.pixelScale, PIXEL_SCALES, PIXEL_SCALE_ALIASES);
   if (out.flash !== undefined && typeof out.flash !== "boolean") out.flash = out.flash === "true" || out.flash === 1;
   if (isObj(out.brand)) { out.brand = { ...out.brand }; if (typeof out.brand.handle === "string" && out.brand.handle && !out.brand.handle.startsWith("@")) out.brand.handle = "@" + out.brand.handle; if (typeof out.brand.follow === "string") out.brand.follow = { word: out.brand.follow }; if (out.brand.follow === true) delete out.brand.follow; }
   else if (typeof out.brand === "string") out.brand = { handle: out.brand.startsWith("@") ? out.brand : "@" + out.brand };
@@ -182,6 +184,101 @@ export function densify({ t0, t1, beats, words, propIds = [], castIds = ["hero"]
     added.push(b); times.push(b.t); times.sort((a, c) => a - c);
   }
   return added;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Punch pass. A world whose punctuation (hero stamps, shakes, bursts, flashes, emotes) is below ~0.6 events per second gets
+// extra events bound to its strongest spoken words until it reaches about 0.75 per second. Like densify it never changes an
+// existing beat, is a pure function of its inputs and reports every addition. `deriveShakes` adds the small screen shake that
+// should accompany every impact beat. `capFlashes` is the photosensitivity guard for the white flash.
+// ---------------------------------------------------------------------------------------------------------------------
+export const PUNCH_MIN_PER_SEC = 0.6, PUNCH_AIM_PER_SEC = 0.75;
+const PUNCH_WEIGHT = { "hero-stamp": 1, shake: 1, "radial-burst": 1, burst: 1, flash: 1, x2: 1, emote: 0.5 };
+const PUNCH_CYCLE = ["hero-stamp", "shake", "radial-burst", "shake", "hero-stamp", "emote"];
+const STAMP_COLORS = ["yellow", "teal", "pink", "orange", "green", "white"];
+const STAMP_GAP = 1.6, STAMP_MAX_CHARS = 11;
+/** How much punctuation a beat list carries (hero-stamp, shake, burst, radial-burst, flash when enabled, x2 = 1; emote = 0.5). */
+export const punchLoad = (beats, flashOn = false) => beats.reduce((a, b) => a + (b.do === "flash" && !flashOn ? 0 : PUNCH_WEIGHT[b.do] ?? 0), 0);
+const isPunch = (b, flashOn) => (PUNCH_WEIGHT[b.do] ?? 0) > 0 && (b.do !== "flash" || flashOn);
+const clean = (s) => String(s ?? "").replace(/[^\p{L}\p{N}]/gu, "");
+
+/**
+ * @param {{ t0:number, t1:number, beats:Array<{t:number,do:string}>, words:Array<{text:string,start:number,end:number}>, propIds?:string[], castIds?:string[], flash?:boolean, hook?:boolean }} a
+ * `hook`: true for the first world, which also gets a stamp on its first strong word (hook in the first 2.5 s).
+ * @returns {Array<object>} beats to add (`auto: true`), sorted by time
+ */
+export function punctuate({ t0, t1, beats, words, propIds = [], castIds = ["hero"], flash = false, hook = false }) {
+  const span = t1 - t0;
+  if (!(span > 0)) return [];
+  const load = punchLoad(beats, flash), rate = load / span;
+  const needHook = hook && !beats.some((b) => b.do === "hero-stamp" && b.t < t0 + 2.5);
+  if (rate >= PUNCH_MIN_PER_SEC && !needHook) return [];
+  let need = Math.max(needHook ? 1 : 0, Math.ceil(span * PUNCH_AIM_PER_SEC - 1e-9 - load));
+  if (need <= 0) return [];
+  const occ = {};
+  const strong = words.map((w, i) => { const k = nw(w.text); occ[k] = (occ[k] ?? 0) + 1; return { w, k, n: occ[k], i }; })
+    .filter(({ w, k }) => w.start >= t0 + 0.2 && w.start <= t1 - 0.5 && (/\d/.test(k) || (k.length >= 4 && !SKIP_WORDS.has(k))))
+    .map((c) => ({ ...c, score: (/\d/.test(c.k) ? 3 : 0) + (c.k.length >= 7 ? 2 : 1) + (/[.!?:]$/.test(c.w.text.trim()) ? 1 : 0) }));
+  if (!strong.length) return [];
+  const added = [], punchT = beats.filter((b) => isPunch(b, flash)).map((b) => b.t), stampT = beats.filter((b) => b.do === "hero-stamp").map((b) => b.t);
+  const others = castIds.filter((c) => c !== "hero");
+  let ki = 0, pi = 0, ci = 0;
+  const make = (cand, kind) => {
+    const word = clean(cand.w.text), b = { t: +cand.w.start.toFixed(3), do: kind, on: { word, n: cand.n }, auto: true };
+    if (kind === "hero-stamp") { b.text = word.toUpperCase(); b.color = STAMP_COLORS[ci++ % STAMP_COLORS.length]; }
+    else if (kind === "shake") b.amp = 3;
+    else if (kind === "radial-burst") { if (propIds.length) b.target = propIds[pi++ % propIds.length]; }
+    else if (kind === "emote") { b.who = others.length ? others[ci % others.length] : "hero"; b.symbol = ["!", "star", "idea", "heart"][ci++ % 4]; }
+    return b;
+  };
+  const pick = (kindOk) => {
+    const pts = [t0, ...punchT.slice().sort((a, b) => a - b), t1];
+    let gap = null;
+    for (let i = 0; i + 1 < pts.length; i++) { const g = pts[i + 1] - pts[i]; if (!gap || g > gap.g) gap = { g, mid: (pts[i] + pts[i + 1]) / 2 }; }
+    if (!gap || gap.g < 0.9) return null;
+    const free = strong.filter((c) => punchT.every((t) => Math.abs(t - c.w.start) >= 0.45) && kindOk(c));
+    if (!free.length) return null;
+    free.sort((a, b) => Math.abs(a.w.start - gap.mid) - Math.abs(b.w.start - gap.mid) || b.score - a.score);
+    return free[0];
+  };
+  const stampOk = (c) => clean(c.w.text).length >= 3 && clean(c.w.text).length <= STAMP_MAX_CHARS && stampT.every((t) => Math.abs(t - c.w.start) >= STAMP_GAP);
+  if (needHook) {
+    const first = strong.filter((c) => c.w.start < t0 + 2.5 && stampOk(c) && punchT.every((t) => Math.abs(t - c.w.start) >= 0.45)).sort((a, b) => b.score - a.score || a.w.start - b.w.start)[0];
+    if (first) { const b = make(first, "hero-stamp"); added.push(b); punchT.push(b.t); stampT.push(b.t); need--; }
+  }
+  while (need-- > 0) {
+    let kind = PUNCH_CYCLE[ki++ % PUNCH_CYCLE.length];
+    if (flash && ki % 5 === 0) kind = "flash";
+    let c = pick(kind === "hero-stamp" ? stampOk : () => true);
+    if (!c && kind === "hero-stamp") { kind = "shake"; c = pick(() => true); }
+    if (!c) break;
+    const b = make(c, kind); added.push(b); punchT.push(b.t); if (kind === "hero-stamp") stampT.push(b.t);
+  }
+  return added.sort((a, b) => a.t - b.t);
+}
+
+const IMPACT = ["hero-stamp", "radial-burst", "burst", "push"];
+/** The small screen shake that accompanies each impact beat (stamp, burst, radial burst, push) that has none within 0.3 s. Silent (no sfx). */
+export function deriveShakes(beats) {
+  const shakes = beats.filter((b) => b.do === "shake").map((b) => b.t), added = [];
+  for (const b of beats.slice().sort((a, c) => a.t - c.t)) {
+    if (!IMPACT.includes(b.do)) continue;
+    if (shakes.some((t) => t >= b.t - 0.1 && t <= b.t + 0.3)) continue;
+    const s = { t: b.t, do: "shake", amp: b.do === "hero-stamp" ? 3 : 2, auto: true, ambient: true, on: b.on };
+    added.push(s); shakes.push(s.t);
+  }
+  return added;
+}
+
+export const FLASH_MAX_PER_10S = 3, FLASH_MIN_START = 0.5, FLASH_MIN_GAP = 0.5;
+/** Photosensitivity guard: no flash before 0.5 s, at most 3 per 10 s window, at least 0.5 s apart. Returns the times to keep and drop. */
+export function capFlashes(times) {
+  const kept = [], dropped = [];
+  for (const t of times.slice().sort((a, b) => a - b)) {
+    const ok = t >= FLASH_MIN_START && kept.every((k) => t - k >= FLASH_MIN_GAP) && kept.filter((k) => t - k < 10).length < FLASH_MAX_PER_10S;
+    (ok ? kept : dropped).push(t);
+  }
+  return { kept, dropped };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

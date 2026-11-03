@@ -9,6 +9,8 @@ export type HfQuality = "draft" | "looks" | "delivery";
 export type HfPace = "calm" | "normal" | "fast";
 export type HfCamera = "none" | "subtle" | "dynamic";
 export type HfCta = "follow" | "comment" | "send" | "custom";
+/** Pixel quality of the pixel-world format (written to `spec.hf.pixelScale`): chunky 8 px, standard 4 px, fine 2 px per art pixel. */
+export type HfPixelScale = "chunky" | "standard" | "fine";
 
 /** What the Create wizard (and the storyboard) lets the user choose for a HyperFrames format. */
 export interface HfOptions {
@@ -20,6 +22,8 @@ export interface HfOptions {
   /** "Video principal con subtitulos" (default): `spec.captions.enabled`. The engine always also writes the version without. */
   withSubtitles: boolean;
   quality: HfQuality;
+  /** Pixel quality (pixel-world only; written to `spec.hf.pixelScale` when set, absent = standard). */
+  pixelScale?: HfPixelScale;
   /** Advanced, format-agnostic (SDD 7.7); each is written to the spec only when set. */
   pace?: HfPace;
   camera?: HfCamera;
@@ -34,6 +38,8 @@ export const HF_QUALITIES: HfQuality[] = ["draft", "looks", "delivery"];
 export const HF_PACES: HfPace[] = ["calm", "normal", "fast"];
 export const HF_CAMERAS: HfCamera[] = ["none", "subtle", "dynamic"];
 export const HF_CTAS: HfCta[] = ["follow", "comment", "send", "custom"];
+export const HF_PIXEL_SCALES: HfPixelScale[] = ["chunky", "standard", "fine"];
+export const HF_PIXEL_FORMAT = "pixel-world";
 export const HF_MAX_VARIANTS = 5;
 
 export const HF_MODE_CHOICES: { value: HfMode; label: string; hint: string }[] = [
@@ -45,6 +51,13 @@ export const HF_QUALITY_CHOICES: { value: HfQuality; label: string; hint: string
   { value: "looks", label: "Normal", hint: "Calidad de publicación; es el valor por defecto." },
   { value: "delivery", label: "Entrega", hint: "La más alta y la más lenta." },
 ];
+export const HF_PIXEL_CHOICES: { value: HfPixelScale; label: string; hint: string }[] = [
+  { value: "chunky", label: "Grueso", hint: "Píxeles grandes y muy legibles (retro, portátil). El más rápido de renderizar." },
+  { value: "standard", label: "Estándar", hint: "El tamaño de píxel propio del estilo. Es el valor por defecto." },
+  { value: "fine", label: "Fino", hint: "Píxeles de la mitad de tamaño: más detalle y movimiento más suave. Tarda cerca de un tercio más en renderizar (unos 40 s en lugar de 30 s en un video de 55 s) y el archivo pesa más." },
+];
+/** The draft render always uses the standard pixel size (speed first); shown next to the control. */
+export const HF_PIXEL_DRAFT_NOTE = "El borrador siempre se renderiza con calidad de píxel estándar.";
 export const HF_PACE_LABEL: Record<HfPace, string> = { calm: "Calmado", normal: "Normal", fast: "Rápido" };
 export const HF_CAMERA_LABEL: Record<HfCamera, string> = { none: "Fija", subtle: "Sutil", dynamic: "Dinámica" };
 export const HF_CTA_LABEL: Record<HfCta, string> = { follow: "Seguir", comment: "Comentar una palabra", send: "Enviar a un amigo", custom: "Personalizado" };
@@ -74,6 +87,7 @@ export function resolveHfOptions(saved: Partial<HfOptions> | undefined, t?: Temp
   if (o.style !== undefined && !(t?.styles ?? []).some((s) => s.id === o.style)) o.style = base.style;
   if (o.setting !== undefined && !(t?.settings ?? []).some((s) => s.id === o.setting)) delete o.setting;
   if (!HF_QUALITIES.includes(o.quality)) o.quality = base.quality;
+  if (o.pixelScale !== undefined && (t?.id !== HF_PIXEL_FORMAT || !HF_PIXEL_SCALES.includes(o.pixelScale))) delete o.pixelScale;
   return o;
 }
 
@@ -89,6 +103,7 @@ export function hfOptionsIssue(v: unknown, t?: TemplateInfo | null): string | nu
   if (o.style !== undefined && (typeof o.style !== "string" || (t?.styles && t.styles.length > 0 && !t.styles.some((s) => s.id === o.style)))) return `Estilo desconocido para este formato: ${String(o.style)}.`;
   if (o.setting !== undefined && (typeof o.setting !== "string" || (t?.settings && t.settings.length > 0 && !t.settings.some((s) => s.id === o.setting)))) return `Escenario desconocido para este formato: ${String(o.setting)}.`;
   if (o.quality !== undefined && !isHfQuality(o.quality)) return `Calidad inválida: usa ${HF_QUALITIES.join(", ")}.`;
+  if (o.pixelScale !== undefined && !HF_PIXEL_SCALES.includes(o.pixelScale as HfPixelScale)) return `Calidad de píxel inválida: usa ${HF_PIXEL_SCALES.join(", ")}.`;
   if (o.pace !== undefined && !HF_PACES.includes(o.pace as HfPace)) return `Ritmo inválido: usa ${HF_PACES.join(", ")}.`;
   if (o.camera !== undefined && !HF_CAMERAS.includes(o.camera as HfCamera)) return `Cámara inválida: usa ${HF_CAMERAS.join(", ")}.`;
   if (o.cta !== undefined && !HF_CTAS.includes(o.cta as HfCta)) return `Cierre inválido: usa ${HF_CTAS.join(", ")}.`;
@@ -104,7 +119,8 @@ export function hfOptionsIssue(v: unknown, t?: TemplateInfo | null): string | nu
  */
 export function applyHfOptions(spec: VideoSpec, o: HfOptions): VideoSpec {
   const next: VideoSpec = { ...spec, mode: o.mode };
-  if (o.style) next.hf = { ...(isObj(spec.hf) ? spec.hf : {}), style: o.style };
+  const pixel = o.pixelScale && spec.template === HF_PIXEL_FORMAT ? { pixelScale: o.pixelScale } : {};
+  if (o.style || Object.keys(pixel).length > 0) next.hf = { ...(isObj(spec.hf) ? spec.hf : {}), ...(o.style ? { style: o.style } : {}), ...pixel };
   else if (spec.hf !== undefined && !isObj(spec.hf)) delete next.hf;
   if (o.pace) next.pace = o.pace;
   if (o.camera) next.camera = { ...(isObj(spec.camera) ? spec.camera : {}), intensity: o.camera };
@@ -135,6 +151,7 @@ export function hfPromptLines(o: HfOptions, t?: TemplateInfo | null): string[] {
     `Scene mode: ${o.mode} (${o.mode === "single" ? "one continuous world, one camera travelling between stations, no cuts" : "a sequence of worlds joined by cuts or wipes"})`,
     o.style ? `Style: ${o.style}${name(t?.styles, o.style) ? ` (${name(t?.styles, o.style)})` : ""}. Use exactly this style in spec.hf.` : null,
     o.setting ? `Setting/scenario: ${o.setting}${name(t?.settings, o.setting) ? ` (${name(t?.settings, o.setting)})` : ""}. Build the world around it.` : null,
+    o.pixelScale && o.pixelScale !== "standard" ? `Pixel quality: set \`pixelScale\` to "${o.pixelScale}" in spec.hf.` : null,
     o.pace ? `Pace: ${o.pace}` : null,
     o.camera ? `Camera intensity: ${o.camera}` : null,
     o.brandPill ? "Show the brand pill (avatar + handle)." : null,

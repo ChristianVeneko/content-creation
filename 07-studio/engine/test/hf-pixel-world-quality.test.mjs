@@ -112,13 +112,13 @@ test("the lower third keeps its detail in a 4-colour style too", () => {
   }
 });
 
-test("new scenarios place props inside the action band (16-72 % of the height) and the cast defaults to a large size", () => {
+test("new scenarios place props inside the action band (16-72 % of the height) and the cast defaults to size M", () => {
   const top = ZONES.action.y0, bottom = ZONES.action.y1 + 4;
   for (const id of NEW_SCENARIOS) for (const p of cat.scenarios.find((s) => s.id === id).props) assert.ok(p.y >= top && p.y + p.h <= bottom, `${id}/${p.id} y ${p.y}-${p.y + p.h} outside ${top}-${bottom}`);
   assert.equal(Math.round(ZONES.action.y0 / FRAME.h * 100), 16);
   const { data, style } = world({ worlds: [{ scenario: "phone-workshop" }, { scenario: "battery-lab", cast: [{ who: "hero" }, { who: "cat" }] }] });
   const f = open({ data, style });
-  assert.equal(f.run("WORLDS[0].cast[0].size"), "L");
+  assert.equal(f.run("WORLDS[0].cast[0].size"), "M", "a lone hero is M by default now (L only when the payload asks)");
   assert.deepEqual(JSON.parse(f.run("JSON.stringify(WORLDS[1].cast.map((c) => c.size))")), ["M", "M"]);
 });
 
@@ -196,9 +196,9 @@ test("resolvePayload reports ambient beats in warnings and keeps written beats",
   const r = resolvePayload({ payload, words: dWords, durationSec: 11 });
   assert.ok(r.warnings.some((w) => /ambient reaction beat/.test(w)), r.warnings.join("|"));
   const beats = r.data.worlds[0].beats;
-  assert.ok(beats.length >= 5 && beats.filter((b) => b.ambient).length === beats.length - 1);
-  assert.equal(beats.find((b) => !b.ambient).do, "light");
-  assert.ok(!r.sfx.some((s) => s.kind === "blip" && beats.filter((b) => b.ambient).some((b) => Math.abs(b.t - s.at) < 1e-6)), "ambient beats are silent");
+  assert.ok(beats.length >= 5 && beats.filter((b) => b.ambient || b.auto).length === beats.length - 1);
+  assert.equal(beats.find((b) => !b.ambient && !b.auto).do, "light");
+  assert.ok(!r.sfx.some((s) => s.kind === "blip" && beats.filter((b) => b.ambient && !beats.some((o) => o.auto && o.t === b.t)).some((b) => Math.abs(b.t - s.at) < 1e-6)), "ambient beats are silent");
   const dense = payloadSchema.parse({ worlds: [{ scenario: "phone-workshop", beats: Array.from({ length: 6 }, (_, i) => ({ on: { at: i * 1.8 }, do: "pulse", target: "phone" })) }] });
   assert.ok(!resolvePayload({ payload: dense, words: dWords, durationSec: 11 }).warnings.some((w) => /ambient/.test(w)));
 });

@@ -5,7 +5,7 @@
 // the prompt and receives the script in its own folder.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Channel, ChannelSummary, GenerateOptions, PalettePreset, ProviderId, ProviderInfo, TemplateInfo, ThemePreset } from "../../shared/types.ts";
-import { DEFAULT_MUSIC } from "../../shared/music.ts";
+import { DEFAULT_MUSIC, formatMusicAvailable, musicForTemplate } from "../../shared/music.ts";
 import { RENDERER_CHOICES, is3dTemplate } from "../../shared/renderers.ts";
 import { DURATION_CHOICES, durationLabel } from "../../shared/durations.ts";
 import { FAMILIES, formatFamily } from "../lib/formats.ts";
@@ -321,7 +321,9 @@ export function Create(props: { channel?: string; idea?: string }) {
     ? "Sin música"
     : music.provider === "elevenlabs"
       ? "ElevenLabs Music"
-      : music.mood === "auto"
+      : music.provider === "format"
+        ? `Chiptune del formato${music.mood === "auto" ? "" : ` · ${music.mood}`}`
+        : music.mood === "auto"
         ? "Biblioteca · automática"
         : `Biblioteca · ${themes?.find((t) => t.mood === music.mood)?.moodLabel ?? music.mood}`;
 
@@ -514,7 +516,7 @@ export function Create(props: { channel?: string; idea?: string }) {
               <TemplateGallery
                 templates={templates}
                 value={draft.template}
-                onChange={(id) => setDraft((d) => ({ ...d, template: id }))}
+                onChange={(id) => setDraft((d) => ({ ...d, template: id, options: { ...d.options, music: musicForTemplate(d.options.music ?? DEFAULT_MUSIC, id) } }))}
                 recommended={recommended}
                 recommendedFor={theme?.label}
                 disabled={busy}
@@ -606,7 +608,7 @@ export function Create(props: { channel?: string; idea?: string }) {
               </div>
               <div className="panel">
                 <p className="field-label">Música y efectos</p>
-                <MusicPanel value={music} onChange={(m) => setOpt("music", m)} disabled={busy} />
+                <MusicPanel value={music} onChange={(m) => setOpt("music", m)} disabled={busy} formatMusic={formatMusicAvailable(draft.template)} />
               </div>
             </div>
             <div className="panel">

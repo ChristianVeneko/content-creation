@@ -3,6 +3,7 @@
 const WORLDS = SPEC.worlds;
 WORLDS.forEach(prepWorld);
 const TRD = 0.5, TRV = 1.0;
+const FLASH_LEN = 0.06; // flash length: less than two frames at 30 fps
 const SINGLE = SPEC.mode === 'single', TOWER = SPEC.layout === 'tower';
 const SHK = [], STAMPS = [];
 WORLDS.forEach((w) => { w.shakes.forEach((s) => SHK.push(s)); w.stamps.forEach((s) => STAMPS.push(s)); });
@@ -32,6 +33,21 @@ function pass(ox, oy, fn, clipFn) {
   for (const k in L) L[k].restore();
   return r;
 }
+/* cast draw: at pixelScale "fine" the figure is drawn under scale(1/SS) with its measures (u) times SS, so it gets SS times more pixels */
+function drawCastX(g, who, o) {
+  if (SS === 1) { drawCast(g, who, o); return; }
+  const G0 = G, LS0 = LS;
+  g.save(); g.scale(1 / SS, 1 / SS); G = PX; LS = 1;
+  drawCast(g, who, Object.assign({}, o, { x: o.x * SS, y: o.y * SS, u: o.u * SS, jump: (o.jump || 0) * SS, sq: (o.sq || 0) * SS }));
+  G = G0; LS = LS0; g.restore();
+}
+/* slow seeded camera drift of a world (logical px): a triangle sway (constant speed, so it keeps stepping) with a small wobble at the
+ * turns; the far, back and foreground layers sway around the focal plane (props and cast), and together they never rest for 2 s */
+function driftAt(w, t) {
+  const d = w.dr; if (!d) return 0;
+  const a = (t * 6.2832) / d[1] + d[2];
+  return d[0] * (0.85 * Math.asin(Math.sin(a)) * 0.63662 + 0.15 * Math.sin(a * 2.3 + d[2] * 1.7));
+}
 function worldAt(t) { let i = 0; for (let k = 1; k < WORLDS.length; k++) if (t >= WORLDS[k].t0) i = k; return i; }
 
 /* draws one world on all four layers. o: {ox, oy, cam, par, clip, hideHero} */
@@ -43,16 +59,16 @@ function drawWorld(i, t, o) {
     if (o.clip) { g.beginPath(); g.rect(o.ox, o.oy, w.W, H); g.clip(); }
     g.translate(o.ox, o.oy);
   }
-  const cam = o.cam;
-  lay(L.b, cam, k1, (g) => { if (d.far) d.far(g, t, c); });
-  lay(L.b, cam, k2, (g) => { if (d.back) d.back(g, t, c); });
+  const cam = o.cam, dv = driftAt(w, t);
+  lay(L.b, cam, k1, (g) => { if (d.far) d.far(g, t, c); }, -dv * 0.75);
+  lay(L.b, cam, k2, (g) => { if (d.back) d.back(g, t, c); }, -dv * 0.45);
   lay(L.m, cam, 1, (g) => {
     if (d.mid) d.mid(g, t, c);
     dressFloor(g, t, w);
     if (o.seam) { if (TOWER) R(g, -40, -2, w.W + 80, 6, M.stone[2]); else { R(g, -2, 0, 8, H, M.stone[1]); R(g, -2, 0, 2, H, M.stone[3]); } }
     for (const id in d.props) drawProp(g, t, w, id, c);
     const order = w.cast.map((cc, ix) => ({ cc, ix })).filter((e) => !(o.hideHero && e.cc.id === 'hero')).sort((a, b) => a.cc.x0 - b.cc.x0);
-    for (const { cc } of order) drawCast(g, cc.who, castState(w, cc, t));
+    for (const { cc } of order) drawCastX(g, cc.who, castState(w, cc, t));
   });
   lay(L.f, cam, k3, (g) => {
     if (d.fore) d.fore(g, t, c);
@@ -60,7 +76,7 @@ function drawWorld(i, t, o) {
     if (STYLE.atmos === 'rain') rain(g, t, 36, 5, M.steel[3]);
     else if (STYLE.atmos === 'embers') embers(g, t, 20, 9, 400);
     else if (STYLE.atmos === 'smoke') dust(g, t, 22, 4, M.steel[3], 3, 60, 360);
-  });
+  }, dv * 0.6);
   lay(L.u, cam, 1, (g) => worldUI(g, t, w));
   for (const k in L) L[k].restore();
 }
@@ -96,7 +112,7 @@ function frameSingle(t) {
       s = { ...s, mv: TOWER ? 0 : 1, dir: TOWER ? s.dir : (bx >= ax ? 1 : -1), ph: gx / (9 * hc.u), mood: TOWER ? 's' : s.mood, fa: TOWER ? 170 : s.fa, ba: TOWER ? -170 : s.ba };
     }
     s.x = gx - cam.x; s.y = gy - cam.y;
-    for (const k of ['m']) { L[k].save(); const g = L[k]; drawCast(g, hc.who, s); L[k].restore(); }
+    for (const k of ['m']) { L[k].save(); const g = L[k]; drawCastX(g, hc.who, s); L[k].restore(); }
   }
 }
 function frameMulti(t) {
@@ -171,14 +187,17 @@ function overlays(t) {
     stampEl.style.opacity = out.toFixed(2);
   } else stampEl.style.display = 'none';
   let fl = 0;
-  for (const f of FLASH) { const dt = t - f; if (dt >= 0 && dt < 0.12) fl = Math.max(fl, 0.5 * (1 - dt / 0.12)); }
+  for (const f of FLASH) { const dt = t - f; if (dt >= 0 && dt < FLASH_LEN) fl = Math.max(fl, 0.5 * (1 - dt / FLASH_LEN)); } // under 2 frames, never above half white
   flashEl.style.opacity = fl.toFixed(2);
   // camera push (CSS zoom of the stage; whole canvases scale together)
   const wi = worldAt(t); let z = { z: 1, ox: W / 2, oy: 280 };
   if (!SINGLE) { const zz = zoomAt(WORLDS[wi], t); z = { z: zz.z, ox: zz.ox - camAt(WORLDS[wi], t), oy: zz.oy }; }
   else { const zz = zoomAt(WORLDS[wi], t); z = { z: zz.z, ox: zz.ox, oy: zz.oy }; }
-  stageEl.style.transformOrigin = (z.ox * 4).toFixed(1) + 'px ' + (z.oy * 4).toFixed(1) + 'px';
-  stageEl.style.transform = z.z > 1.001 ? 'scale(' + z.z.toFixed(4) + ')' : 'none';
+  // crisp zoom: a quarter step makes every art pixel a whole number of screen px (4 x 1.25 = 5, 6, 7, 8) and the whole-logical-px
+  // origin keeps the grid on whole screen px, so edges stay sharp (a smooth scale would resample the pixelated canvases)
+  const zq = Math.round(z.z * 4) / 4;
+  stageEl.style.transformOrigin = (Math.round(z.ox) * 4) + 'px ' + (Math.round(z.oy) * 4) + 'px';
+  stageEl.style.transform = zq > 1 ? 'scale(' + zq.toFixed(2) + ')' : 'none';
   brand(t); hud(t);
 }
 
@@ -209,9 +228,10 @@ function brand(t) {
   pillEl.style.transform = 'scale(' + (t >= fa && t < fa + 0.3 ? 1 + 0.12 * Math.sin(((t - fa) / 0.3) * Math.PI) : 1).toFixed(3) + ')';
 }
 function hud(t) {
-  const g = $('ch').getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, W, H);
+  const g = $('ch').getContext('2d'); g.imageSmoothingEnabled = false;
+  g.save(); if (SS > 1) g.scale(SS, SS); g.clearRect(0, 0, W, H); g.restore();
   const hv = SPEC.hud; if (!hv.length) return;
-  g.save();
+  g.save(); if (SS > 1) g.scale(SS, SS);
   let prog = null, cnt = null;
   const pk = [], ck = [];
   for (const h of hv) { if (h.hud === 'progress') { pk.push([h.t - 0.001, pk.length ? pk[pk.length - 1][1] : 0], [h.t + 0.5, clamp(h.value)]); if (t >= h.t) prog = h; } else if (h.hud === 'counter') { ck.push([h.t - 0.001, ck.length ? ck[ck.length - 1][1] : 0], [h.t + 0.4, h.value]); if (t >= h.t) cnt = h; } }

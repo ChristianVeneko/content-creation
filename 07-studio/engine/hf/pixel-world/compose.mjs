@@ -6,6 +6,7 @@ import { payloadSchema } from "./schema.mjs";
 import { resolvePayload } from "./resolve.mjs";
 import { normalizePayload, styleAdvice } from "./normalize.mjs";
 import { ZONES } from "./layout.mjs";
+import { buildFormatAudio, voiceEnvelope } from "./audio.mjs";
 
 const FONTS = ["PressStart2P-Regular.ttf", "PixelifySans-Variable.ttf"];
 const hexToRgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; };
@@ -49,14 +50,26 @@ export function buildHtml({ data, style }) {
     .replace("/*__JS__*/", () => js);
 }
 
-/** @returns {Promise<{entry:string, sfx:Array<{at:number,kind:string}>, durationSec:number, warnings:string[]}>} */
-export async function compose({ spec, words, durationSec, outDir, assetsDir, captions } = {}) {
+/**
+ * `voicePath` (optional, backward compatible): the narration file; its 30 fps loudness envelope drives the mouths.
+ * `envelope` (optional): a precomputed envelope that wins over `voicePath`. Without either, the mouth follows word spans.
+ * @returns {Promise<{entry:string, sfx:Array<{at:number,kind:string}>, durationSec:number, warnings:string[],
+ *   audio: {music?: object, sfx?: object, info: object}, envelope: number[]|null}>}
+ */
+export async function compose({ spec, words, durationSec, outDir, assetsDir, captions, voicePath, envelope, quality } = {}) {
   if (!outDir) throw new Error("pixel-world compose: outDir is required");
   const raw = spec?.hf ?? spec ?? {};
   const parsed = payloadSchema.safeParse(normalizePayload(raw));
   if (!parsed.success) throw new Error(`pixel-world payload is invalid:\n${parsed.error.issues.map((i) => `  - hf.${i.path.join(".") || "(root)"}: ${i.message}`).join("\n")}`);
   const mode = spec?.mode === "single" ? "single" : "multi";
-  const { data, sfx, warnings, durationSec: dur, style } = resolvePayload({ payload: parsed.data, words, durationSec: durationSec ?? spec?.durationSec, mode, captionsEnabled: captions?.enabled !== false });
+  const { data, sfx, warnings, durationSec: dur, style } = resolvePayload({ payload: parsed.data, words, durationSec: durationSec ?? spec?.durationSec, mode, captionsEnabled: captions?.enabled !== false, quality });
+  let env = Array.isArray(envelope) && envelope.length ? envelope : null;
+  if (!env && voicePath) {
+    env = await voiceEnvelope(voicePath, dur);
+    if (!env) warnings.push("lip-sync: the voice file could not be decoded; the mouth follows the word spans");
+  }
+  if (env) data.env = env;
+  const audio = buildFormatAudio({ data, style, spec: spec ?? {}, durationSec: dur });
   const topic = [spec?.title, spec?.topic, spec?.hook, ...(words ?? []).map((w) => w.text)].filter((x) => typeof x === "string").join(" ");
   warnings.unshift(...styleAdvice(raw, topic));
   const root = pathResolve(outDir);
@@ -66,6 +79,6 @@ export async function compose({ spec, words, durationSec, outDir, assetsDir, cap
   const proj = (name, obj) => { const p = join(root, name); if (!existsSync(p)) writeFileSync(p, JSON.stringify(obj, null, 2) + "\n"); };
   proj("hyperframes.json", { $schema: "https://hyperframes.heygen.com/schema/hyperframes.json", registry: "https://raw.githubusercontent.com/heygen-com/hyperframes/main/registry", paths: { blocks: "compositions", components: "compositions/components", assets: "assets" }, media: { autoProxy: true } });
   proj("meta.json", { id: "pixel-world", name: "pixel-world", createdAt: "2026-01-01T00:00:00.000Z" });
-  return { entry: "index.html", sfx, durationSec: dur, warnings };
+  return { entry: "index.html", sfx, durationSec: dur, warnings, audio, envelope: env };
 }
 export { dirname };

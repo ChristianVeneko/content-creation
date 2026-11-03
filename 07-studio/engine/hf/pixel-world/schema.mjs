@@ -1,6 +1,6 @@
 // zod 4 schema of `spec.hf` for the pixel-world format. Enums are closed and every failure names the allowed values.
 import { z } from "zod";
-import { STYLE_IDS } from "./styles.mjs";
+import { STYLE_IDS, PIXEL_SCALES } from "./styles.mjs";
 import { BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, ANCHORS, scenarioIds, heroIds, castIds, getScenario, worldProps, propKinds, workshopProps, WORKSHOP_THEMES, WORKSHOP_MAX_PROPS } from "./catalog.mjs";
 
 const preview = (list) => (list.length > 14 ? `${list.slice(0, 14).join(", ")}, ... (${list.length} total)` : list.join(", "));
@@ -89,6 +89,7 @@ export const payloadSchema = z.object({
   hero: closedEnum(heroIds(), "hero").default("hoodie"),
   layout: closedEnum(LAYOUTS, "layout").default("strip"),
   flash: z.boolean().default(false),
+  pixelScale: closedEnum(PIXEL_SCALES, "pixelScale").default("standard"),
   brand: z.object({ handle: z.string().min(1).max(24), follow: wordRef.optional() }).optional(),
   worlds: z.array(worldSchema).min(1, "at least one world is needed").max(8, "at most 8 worlds"),
 });

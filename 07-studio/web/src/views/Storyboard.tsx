@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { JobDetail, Scene, VideoSpec, VisualType } from "../../shared/types.ts";
-import { applyMusicOptions, musicOptionsFromSpec } from "../../shared/music.ts";
+import { applyMusicOptions, formatMusicAvailable, musicOptionsFromSpec } from "../../shared/music.ts";
 import { Frame } from "../components/Frame.tsx";
 import { CAPTION_LABEL, CaptionPanel, type CaptionPanelChange } from "../components/CaptionPanel.tsx";
 import { MusicPanel } from "../components/MusicPanel.tsx";
@@ -28,6 +28,7 @@ function musicSummary(spec: VideoSpec): string {
   const m = spec.music;
   if (m?.provider === "none") return "Sin música";
   if (m?.provider === "elevenlabs") return "ElevenLabs a medida";
+  if (m?.provider === "format") return "Chiptune del formato";
   if (m?.track && m.track !== "auto") return "Pista elegida";
   if (m?.mood && m.mood !== "auto") return "Biblioteca · estilo elegido";
   return "Biblioteca · automática";
@@ -166,6 +167,7 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
             value={musicOptionsFromSpec(spec)}
             onChange={(m) => update(applyMusicOptions(spec, m))}
             disabled={state !== "idle"}
+            formatMusic={formatMusicAvailable(spec.template)}
           />
         </div>
       </details>

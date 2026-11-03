@@ -123,3 +123,25 @@ test("the spec writer repairs a bad format payload once, with the engine's preci
   assert.equal(res.spec.captions?.enabled, true);
   assert.equal(res.spec.hf?.style, "gameboy");
 });
+
+test("pixel quality: written to spec.hf.pixelScale for pixel-world only, validated, repaired and prompted", () => {
+  const base: VideoSpec = { version: 1, title: "T", template: "pixel-world", language: "es", format: { width: 1080, height: 1920, fps: 30 }, theme: { palette: { bg: ["#000000"], text: "#fff", accent: "#f00" }, font: "x", captionStyle: "clean" }, scenes: [], hf: { style: "neo", worlds: [] } } as unknown as VideoSpec;
+  const none = applyHfOptions(base, defaultHfOptions(hf));
+  assert.equal(isObjHasKey(none.hf, "pixelScale"), false, "absent when the user did not choose");
+  for (const px of ["chunky", "standard", "fine"] as const) {
+    const spec = applyHfOptions(base, { ...defaultHfOptions(hf), pixelScale: px });
+    assert.deepEqual(spec.hf, { style: "gameboy", worlds: [], pixelScale: px }, "the model's payload is kept and the choice overrides what it wrote");
+  }
+  const overridden = applyHfOptions({ ...base, hf: { style: "neo", pixelScale: "fine" } } as unknown as VideoSpec, { ...defaultHfOptions(hf), pixelScale: "standard" });
+  assert.equal((overridden.hf as Record<string, unknown>).pixelScale, "standard");
+  const other = applyHfOptions({ ...base, template: "flat-2d" } as unknown as VideoSpec, { ...defaultHfOptions(hf), pixelScale: "fine" });
+  assert.equal(isObjHasKey(other.hf, "pixelScale"), false, "other formats never get the field");
+  assert.match(hfOptionsIssue({ mode: "multi", pixelScale: "ultra" }, hf) ?? "", /Calidad de píxel inválida/);
+  assert.equal(hfOptionsIssue({ mode: "multi", pixelScale: "fine" }, hf), null);
+  assert.equal(resolveHfOptions({ pixelScale: "fine" }, hf).pixelScale, "fine");
+  assert.equal("pixelScale" in resolveHfOptions({ pixelScale: "fine" }, { ...hf, id: "flat-2d" }), false);
+  assert.equal("pixelScale" in resolveHfOptions({ pixelScale: "nope" as never }, hf), false);
+  assert.ok(hfPromptLines({ ...defaultHfOptions(hf), pixelScale: "fine" }, hf).some((l) => /pixelScale.*"fine"/.test(l)));
+  assert.equal(hfPromptLines({ ...defaultHfOptions(hf), pixelScale: "standard" }, hf).some((l) => /pixelScale/.test(l)), false);
+});
+const isObjHasKey = (v: unknown, k: string): boolean => Boolean(v) && typeof v === "object" && k in (v as object);

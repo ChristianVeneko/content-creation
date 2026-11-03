@@ -10,7 +10,16 @@ defHero({ id: 'wizard', name: 'Wizard', about: 'Tall pointed hat, long purple ro
 defHero({ id: 'astro', name: 'Astronaut', about: 'White suit, glass helmet dome and an orange chest pack.', kind: 'human', skin: M.skin, hair: M.wood, hairDark: '#3a2418', hairStyle: 'short', top: M.white, bottom: M.white, shoe: M.steel, hat: 'helmet', hatRamp: M.white, accent: M.orange });
 defHero({ id: 'robot', name: 'Robo-buddy', about: 'Boxy steel robot with a visor screen, antenna and tube legs.', kind: 'robot', top: M.steel, bottom: M.steel, shoe: M.stone, hat: 'antenna', accent: M.teal });
 
+/* Mouth level 0..2. With SPEC.env (30 fps voice loudness envelope, 0..1) the mouth follows the real voice, a frame
+ * of hold smoothing keeps it from flickering; without it the mouth cycles while a word span is active. */
 function talkLevel(t) {
+  const env = SPEC.env;
+  if (env && env.length) {
+    const i = Math.floor(t * 30);
+    if (i < 0 || i >= env.length) return 0;
+    const v = Math.max(env[i], (i > 0 ? env[i - 1] : 0) * 0.7);
+    return v < 0.12 ? 0 : v < 0.42 ? 1 : 2;
+  }
   const ws = SPEC.words;
   let lo = 0, hi = ws.length - 1, hit = -1;
   while (lo <= hi) { const mid = (lo + hi) >> 1; if (ws[mid].start <= t) { hit = mid; lo = mid + 1; } else hi = mid - 1; }

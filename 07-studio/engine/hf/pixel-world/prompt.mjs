@@ -1,6 +1,8 @@
 // Spec-writer guidance for LLM providers: generated from the catalog so it always matches what the runtime can draw.
-import { STYLE_GUIDE } from "./styles.mjs";
+import { STYLE_GUIDE, PIXEL_SCALE_DOCS } from "./styles.mjs";
 import { loadCatalog, BEAT_DOCS, BEAT_KINDS, EMOTES, TRANSITIONS, WORKSHOP_THEMES, WORKSHOP_MAX_PROPS } from "./catalog.mjs";
+
+const PIXEL_SCALES_TEXT = Object.entries(PIXEL_SCALE_DOCS).map(([k, v]) => `"${k}" = ${v}`).join(" ");
 
 export function buildPromptSection() {
   const cat = loadCatalog();
@@ -14,30 +16,33 @@ export function buildPromptSection() {
   const example = {
     style: "pixel-snes-16bit", hero: "hoodie", brand: { handle: "@canal", follow: { word: "Sigueme" } },
     worlds: [
-      { scenario: "phone-workshop", cast: [{ who: "hero", at: "left", size: "L" }, { who: "cat", at: "right", size: "M" }], beats: [
+      { scenario: "phone-workshop", cast: [{ who: "hero", at: "left" }, { who: "cat", at: "right" }], beats: [
         { on: { word: "celular" }, do: "light", target: "phone" }, { on: { word: "celular" }, do: "hero-stamp", text: "CELULAR", color: "teal" },
         { on: { word: "calienta" }, do: "pulse", target: "phone" }, { on: { word: "calienta" }, do: "emote", who: "hero", symbol: "!" },
         { on: { word: "procesador" }, do: "open", target: "phone" }, { on: { word: "procesador" }, do: "label", target: "chip", text: "CPU", color: "yellow" },
         { on: { word: "procesador" }, do: "fill", target: "chip", value: 0.4 }, { on: { word: "trabaja" }, do: "point", who: "hero", target: "chip" },
         { on: { word: "trabaja" }, do: "emote", who: "cat", symbol: "dots" }, { on: { word: "parar" }, do: "fill", target: "chip", value: 0.9 },
-        { on: { word: "parar" }, do: "shake", amp: 3 }, { on: { word: "parar" }, do: "progress", value: 0.9, label: "CALOR" },
+        { on: { word: "parar" }, do: "shake", amp: 3 }, { on: { word: "parar" }, do: "hero-stamp", text: "PARAR", color: "red" }, { on: { word: "parar" }, do: "progress", value: 0.9, label: "CALOR" },
         { on: { word: "app" }, do: "react", who: "hero", symbol: "?" }, { on: { word: "calculos" }, do: "radial-burst", target: "chip" },
-        { on: { word: "calculos" }, do: "push", target: "chip", amount: 1.2 }, { on: { word: "bateria" }, do: "fill", target: "battery", value: 0.3 } ] },
-      { scenario: "workshop-stage", theme: "bench", transition: "tiles", cast: [{ who: "hero", at: "left", size: "L" }],
+        { on: { word: "calculos" }, do: "push", target: "chip", amount: 1.25 }, { on: { word: "calculos" }, do: "shake", amp: 2 }, { on: { word: "bateria" }, do: "fill", target: "battery", value: 0.3 },
+        { on: { word: "abre" }, do: "shake", amp: 2 }, { on: { word: "abre" }, do: "emote", who: "cat", symbol: "star" } ] },
+      { scenario: "workshop-stage", theme: "bench", transition: "tiles", cast: [{ who: "hero", at: "left" }],
         props: [{ kind: "battery", id: "battery", at: "left" }, { kind: "thermometer", id: "thermo", at: "center" }, { kind: "flame", id: "flame", at: "right" }, { kind: "fan", id: "fan", row: "high", at: 0.8 }],
         beats: [
           { on: { word: "bateria" }, do: "fill", target: "battery", value: 0.8 }, { on: { word: "bateria" }, do: "pulse", target: "battery" },
           { on: { word: "energia" }, do: "light", target: "battery" }, { on: { word: "energia" }, do: "hero-stamp", text: "ENERGIA", color: "yellow" },
           { on: { word: "forma" }, do: "walk", who: "hero", to: "thermo" }, { on: { word: "calor" }, do: "fill", target: "thermo", value: 1 },
           { on: { word: "calor" }, do: "light", target: "flame" }, { on: { word: "calor" }, do: "shake", amp: 4 },
-          { on: { word: "calor" }, do: "emote", who: "hero", symbol: "!" }, { on: { word: "calor" }, do: "counter", value: 45, label: "GRADOS" } ] },
+          { on: { word: "calor" }, do: "hero-stamp", text: "CALOR", color: "orange" }, { on: { word: "calor" }, do: "radial-burst", target: "flame" },
+          { on: { word: "calor" }, do: "emote", who: "hero", symbol: "!" }, { on: { word: "calor" }, do: "counter", value: 45, label: "GRADOS" },
+          { on: { word: "sube" }, do: "shake", amp: 3 }, { on: { word: "grados" }, do: "hero-stamp", text: "45 GRADOS", color: "red" } ] },
     ],
   };
   return `Format \`pixel-world\`: animated pixel-art worlds (HyperFrames canvas). The picture is procedural and data-driven, so you write ONLY a JSON payload in \`spec.hf\`; no code. The narration text is yours to write in the video language; the payload is language-agnostic (every word in \`on.word\` must be a word that is actually spoken).
 
 Modes (\`spec.mode\`): "multi" (default) = several worlds joined by transitions; "single" = one continuous level, the camera travels from world to world along a path, no cuts (\`layout\`: "strip" side-scroll, "tower" top-to-bottom). Every style works in both modes.
 
-Payload: { "style": <style>, "hero": <hero>, "layout"?: "strip"|"tower", "flash"?: false, "brand"?: { "handle": "@name", "follow"?: { "word": "..." } }, "worlds": [ { "scenario": <scenario>, "from"?: { "word": "..", "n"?: 1 } | seconds, "transition"?: ${TRANSITIONS.join("|")}, "time"?: day|dusk|night, "cast"?: [ { "who": "hero"|<npc>, "at"?: left|center|right|<prop>, "size"?: S|M|L } ], "beats": [ { "on": { "word": "..", "n"?: 1 }, "do": <beat kind>, ...fields } ] } ] }
+Payload: { "style": <style>, "hero": <hero>, "layout"?: "strip"|"tower", "flash"?: false, "pixelScale"?: "chunky"|"standard"|"fine", "brand"?: { "handle": "@name", "follow"?: { "word": "..." } }, "worlds": [ { "scenario": <scenario>, "from"?: { "word": "..", "n"?: 1 } | seconds, "transition"?: ${TRANSITIONS.join("|")}, "time"?: day|dusk|night, "cast"?: [ { "who": "hero"|<npc>, "at"?: left|center|right|<prop>, "size"?: S|M|L } ], "beats": [ { "on": { "word": "..", "n"?: 1 }, "do": <beat kind>, ...fields } ] } ] }
 - \`on.word\` binds a beat to the n-th occurrence (n starts at 1) of a spoken word; accents and punctuation are ignored. Do not invent words that are not in the narration.
 - Worlds without \`from\` are spaced evenly. Give \`from\` on the word where the new idea starts.
 - Captions are drawn by the format itself, never add caption text.
@@ -61,11 +66,14 @@ Emote symbols: ${EMOTES.join(" ")}. Colours: red yellow green teal blue purple o
 Rules:
 - Hook in the first 2 seconds: first beat on the first sentence (a hero-stamp or a prop reaction), never an empty start.
 - BEAT DENSITY: at least one beat every 2 s of each world, aim for one per 1.5 s, several beats on the same strong word are fine (prop change + label + emote). The engine adds ambient reactions when a world is under 0.5 beats/s, but written beats are always better. 8-10 s per world; 3-4 worlds per 30 s video (single mode: the same 3-4 stations).
-- Cast: the hero is large by default; use size M or L for anyone on screen (S only for a tiny sidekick). Put the action on props in the middle of the frame; the lower third is dressed by the engine, never place text there.
+- Cast: the hero is size M by default; leave \`size\` out. Use L only for a deliberate close-up of a lone hero with almost no props, S for a tiny sidekick. A hero at L covers 28 % of the frame and hides the props, so it is the exception. Put the action on props in the middle of the frame; the lower third is dressed by the engine, never place text there.
 - The HUD (\`progress\`, \`counter\`) sits under the caption band; labels are short (CALOR, CARGA) and never repeat the caption words.
 - Literal, drawable metaphors: a token is a coin/tile, memory is a backpack, a server is a kitchen. One idea per sentence; maximum one number per scene.
-- Vary the beat kinds (a prop change, an emphasis, a camera move, an emote); never the same kind three times in a row. Use shake and hero-stamp only on the 4-6 strongest words.
-- Keep \`flash\` off. No sources or URLs in on-screen text. Mark uncertain facts with [COMPROBAR] in the narration notes, not in the payload.
+- PUNCH (this is what makes the video feel alive): in every 10 s of narration put a \`hero-stamp\` or a \`shake\` on 8-12 of the strongest words in total: the hook word (stamp it in the first 2 seconds), every impact word, every number (stamp it with the number, \`"45 GRADOS"\`) and the payoff. About 0.7 punch events per second (hero-stamp, shake, radial-burst, emote) is the target; the engine adds shakes to stamps, bursts and pushes and pads weak worlds, but beats you write are always better. Stamps need 1.6 s between them; \`text\` is at most 11 characters.
+- Vary the beat kinds (a prop change, an emphasis, a camera move, an emote); never the same kind three times in a row. Use \`push\` on 1-2 impact beats per world; the camera also drifts slowly by itself.
+- \`flash\` (a white blink under 2 frames) is a photosensitivity risk and stays OFF unless the brief asks for a high-energy or hype video; then set \`"flash": true\` and write at most 3 \`flash\` beats per 10 s (the engine drops the rest, and any before 0.5 s). Never use it on a calm explainer.
+- \`pixelScale\` is the pixel quality; leave it out (standard) unless the user or the topic asks: ${PIXEL_SCALES_TEXT}
+- No sources or URLs in on-screen text. Mark uncertain facts with [COMPROBAR] in the narration notes, not in the payload.
 - Text fields (\`text\`, \`label\`) are 1-3 words in the video language, at most 16 characters per chip.
 
 Example payload (language of the words is Spanish here):

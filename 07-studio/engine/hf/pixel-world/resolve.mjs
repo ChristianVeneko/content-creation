@@ -1,8 +1,8 @@
 // Resolves a validated payload against the narration: world windows, beat times (bound to words), caption groups, sfx cues.
 // Pure and deterministic: the same inputs always give the same output.
 import { getScenario, PROP_ACTS, worldProps, workshopProps } from "./catalog.mjs";
-import { densify, DENSITY_MIN_PER_SEC } from "./normalize.mjs";
-import { getStyle } from "./styles.mjs";
+import { densify, DENSITY_MIN_PER_SEC, punctuate, punchLoad, deriveShakes, capFlashes, PUNCH_MIN_PER_SEC, FLASH_MAX_PER_10S } from "./normalize.mjs";
+import { getStyle, pixelGrid } from "./styles.mjs";
 
 /** Smallest visible change of a progress bar or a prop fill between two consecutive values (12 % of its length). */
 export const MIN_VISIBLE_DELTA = 0.12;
@@ -79,15 +79,30 @@ export function captionGroups(words) {
 const SFX_OF = { fill: "blip", open: "pop", close: "click", light: "blip", dim: "click", burst: "hit", recolor: "pop", coins: "coin", chop: "hit", stamp: "stamp", pulse: "pop", "hero-stamp": "stamp", x2: "coin", shake: "hit", "radial-burst": "pop", emote: "blip", label: "pop", pan: "whoosh", push: "whoosh", react: "blip", jump: "pop", cheer: "coin", progress: "blip", counter: "blip", follow: "click" };
 
 /**
+ * Seeded camera drift of a world: [amplitude in logical px, period in s, phase in rad]. The runtime turns it into a slow parallax
+ * sway of the far, back and foreground layers, so the camera is never idle for more than a couple of seconds.
+ */
+export function driftOf(wi, n, styleId = "") {
+  let h = 2166136261 ^ (wi * 7919 + n * 104729);
+  for (const c of String(styleId)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  const r = (k) => { const x = Math.sin((h + k * 977) * 12.9898) * 43758.5453; return x - Math.floor(x); };
+  return [+(4 + r(1) * 3).toFixed(2), +(6 + r(2) * 4).toFixed(2), +(r(3) * Math.PI * 2).toFixed(3)];
+}
+
+/**
  * @returns {{ data: object, sfx: Array<{at:number,kind:string}>, warnings: string[], durationSec: number }}
  */
-export function resolvePayload({ payload, words, durationSec, mode = "multi", captionsEnabled = true }) {
+export function resolvePayload({ payload, words, durationSec, mode = "multi", captionsEnabled = true, quality }) {
   const warnings = [];
   const ws = (words ?? []).filter((w) => w && typeof w.text === "string").map((w) => ({ text: w.text, start: +w.start, end: +w.end })).filter((w) => Number.isFinite(w.start) && Number.isFinite(w.end));
   const lastEnd = ws.length ? ws[ws.length - 1].end : 0;
   const dur = +(durationSec > 0 ? durationSec : lastEnd > 0 ? lastEnd + 0.6 : 20).toFixed(3);
-  const style = getStyle(payload.style);
+  const baseStyle = getStyle(payload.style);
+  const grid = pixelGrid(baseStyle, payload.pixelScale, quality);
+  if (payload.pixelScale && payload.pixelScale !== "standard" && grid.scale === "standard") warnings.push(`pixelScale "${payload.pixelScale}" ignored: draft quality always renders standard`);
+  const style = grid.px === baseStyle.px ? baseStyle : { ...baseStyle, px: grid.px };
   const n = payload.worlds.length;
+  const flashRefs = [];
 
   // world windows: explicit `from` where given, even split elsewhere
   const starts = new Array(n).fill(null); starts[0] = 0;
@@ -132,22 +147,38 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       beats.push(...dens.map((d, k) => ({ ...d, _i: -1 - k })));
       warnings.push(`world ${wi + 1}: ${before.toFixed(2)} beats/s is below ${DENSITY_MIN_PER_SEC}; added ${dens.length} ambient reaction beat(s) (${dens.map((d) => `${d.do}@${d.t.toFixed(1)}s`).join(", ")})`);
     }
+    const pun = punctuate({ t0, t1, beats, words: ws, propIds: worldProps(w).map((p) => p.id), castIds: (w.cast ?? [{ who: "hero" }]).map((c) => c.who), flash: !!payload.flash, hook: wi === 0 });
+    if (pun.length) {
+      const before = punchLoad(beats, !!payload.flash) / (t1 - t0);
+      beats.push(...pun.map((d, k) => ({ ...d, _i: -100 - k })));
+      warnings.push(`world ${wi + 1}: ${before.toFixed(2)} punch events/s (stamp, shake, burst, flash, emote) is below ${PUNCH_MIN_PER_SEC}; added ${pun.length} bound to strong words (${pun.map((d) => `${d.do}@${d.t.toFixed(1)}s`).join(", ")})`);
+    }
+    const shk = deriveShakes(beats);
+    if (shk.length) beats.push(...shk.map((d, k) => ({ ...d, _i: -200 - k })));
     const out = [];
     for (const b of beats) {
       const { _i, on, ...rest } = b;
       if (b.do === "flash" && !payload.flash) { warnings.push(`world ${wi + 1} beat ${_i + 1}: \`flash\` ignored because the top-level \`flash\` option is off (default)`); continue; }
       if (b.do === "progress" || b.do === "counter") { hud.push({ t: b.t, hud: b.do, value: b.value, label: b.label ?? b.text ?? null }); }
       else if (b.do === "follow") { /* handled by the brand pill */ }
-      else out.push(rest);
+      else { out.push(rest); if (b.do === "flash") flashRefs.push({ out, rest, t: b.t, wi }); }
       if (SFX_OF[b.do] && !b.ambient) sfx.push({ at: b.t, kind: SFX_OF[b.do] });
     }
     const byTarget = {};
     for (const b of out) if (b.do === "fill" && typeof b.target === "string") (byTarget[b.target] ??= []).push(b);
     for (const [id, list] of Object.entries(byTarget)) warnings.push(...nudgeSeries(list, `world ${wi + 1} fill of ${id}: the nudged value is`).map((m) => m.replace(": the nudged value is", ": fill")));
     if (wi > 0) sfx.push({ at: +(t0 - 0.5).toFixed(3), kind: "whoosh" });
-    return { sc: w.scenario, t0, t1, tr: w.transition ?? defaultTr[(wi - 1 + 4) % 4], time: w.time ?? null, cast: w.cast ?? null, pl: sc.dynamic ? workshopProps(w.props) : undefined, th: sc.dynamic ? w.theme ?? "bench" : undefined, beats: out, _props: sc.props.length };
+    return { sc: w.scenario, t0, t1, dr: driftOf(wi, n, payload.style), tr: w.transition ?? defaultTr[(wi - 1 + 4) % 4], time: w.time ?? null, cast: w.cast ?? null, pl: sc.dynamic ? workshopProps(w.props) : undefined, th: sc.dynamic ? w.theme ?? "bench" : undefined, beats: out, _props: sc.props.length };
   });
   worlds.forEach((w) => delete w._props);
+  if (flashRefs.length) {
+    const { dropped } = capFlashes(flashRefs.map((f) => f.t));
+    for (const t of dropped) {
+      const f = flashRefs.find((r) => r.t === t && r.out.includes(r.rest)); if (!f) continue;
+      f.out.splice(f.out.indexOf(f.rest), 1);
+      warnings.push(`world ${f.wi + 1}: flash at ${t.toFixed(2)} s dropped (photosensitivity guard: none before 0.5 s, at most ${FLASH_MAX_PER_10S} per 10 s, 0.5 s apart)`);
+    }
+  }
   warnings.push(...nudgeSeries(hud.filter((h) => h.hud === "progress"), "progress beat"));
 
   let brand = null;
@@ -159,7 +190,7 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
   sfx.sort((a, b) => a.at - b.at || a.kind.localeCompare(b.kind));
   const dedup = []; for (const s of sfx) if (!dedup.some((d) => d.kind === s.kind && Math.abs(d.at - s.at) < 0.06)) dedup.push({ at: +s.at.toFixed(3), kind: s.kind });
   return {
-    data: { dur, mode, layout: payload.layout, hero: payload.hero, flash: !!payload.flash, capsDefault: !!captionsEnabled, brand, words: ws, caps: captionGroups(ws), hud, worlds },
+    data: { dur, mode, layout: payload.layout, hero: payload.hero, flash: !!payload.flash, pixelScale: grid.scale, ss: grid.ss, capsDefault: !!captionsEnabled, brand, words: ws, caps: captionGroups(ws), hud, worlds },
     sfx: dedup, warnings, durationSec: dur, style,
   };
 }

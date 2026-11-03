@@ -162,7 +162,7 @@ export interface HfEntry {
   palette?: string[];
 }
 
-export type MusicProvider = "library" | "elevenlabs" | "none";
+export type MusicProvider = "library" | "elevenlabs" | "format" | "none";
 
 /** `spec.music` (engine contract, see engine/spec.schema.json). */
 export interface MusicSpec {
@@ -183,8 +183,9 @@ export interface MusicSpec {
 /** Music + SFX choices made in the UI (Create options or the storyboard). */
 export interface MusicOptions {
   enabled: boolean;
-  provider: "library" | "elevenlabs";
-  /** Mood id or "auto". */
+  /** "format": the HyperFrames format synthesizes its own chiptune (pixel-world only). */
+  provider: "library" | "elevenlabs" | "format";
+  /** Mood id or "auto" (with provider "format": a format mood id or "auto"). */
   mood: string;
   /** Specific track id, or "" for automatic. */
   track: string;

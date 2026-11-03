@@ -167,3 +167,141 @@ test("compose warnings are formatted for the build log, capped and de-duplicated
   assert.equal(lines.length, 11);
   assert.equal(lines[10], "Compose warning: 20 more not shown");
 });
+
+// ---------- module-provided audio (compose() -> { audio }): chiptune music + pixel SFX instead of the library ----------
+const { encodeWav } = await import("../hf/pixel-world/audio-dsp.mjs");
+const { decode, activeLoudness, windowRms } = await import("../lib/audio-bed.mjs");
+
+/** Speech-like fake voice: a 150 Hz buzz in 4 Hz syllables, `sec` seconds, written by the fake synthesizer. */
+function fakeVoiceDeps(sec = 6) {
+  return {
+    synthesize: async ({ texts, dir }) => texts.map((_, i) => {
+      const file = join(dir, `raw-${i}.wav`);
+      const n = Math.floor(sec * 16000), x = new Float32Array(n);
+      for (let k = 0; k < n; k++) { const t = k / 16000; x[k] = 0.3 * Math.sin(2 * Math.PI * 150 * t) * Math.max(0, Math.sin(2 * Math.PI * 4 * t)); }
+      writeFileSync(file, encodeWav([x], 16000));
+      return file;
+    }),
+    transcribe: async (_file, _lang) => {
+      const text = "Un commit guarda en tu equipo. Despues push lo envia a la nube. Asi nadie pierde nada nunca mas.".split(" ");
+      return text.map((t, i) => ({ text: t, startMs: 300 + i * 450, endMs: 650 + i * 450 }));
+    },
+  };
+}
+const pixelSpec = (over = {}) => ({
+  version: 1,
+  title: "Chip audio",
+  template: "pixel-world",
+  mode: "multi",
+  voice: { provider: "kokoro" },
+  sfx: { enabled: true, volume: 1 },
+  hf: { style: "pixel-snes-16bit", hero: "hoodie", worlds: [
+    { scenario: "factory", beats: [{ on: { word: "commit" }, do: "emote", symbol: "heart" }, { on: { word: "guarda" }, do: "hero-stamp", text: "SAVE" }] },
+    { scenario: "factory", beats: [{ on: { word: "nube" }, do: "light", target: "belt" }] },
+  ] },
+  scenes: [
+    { id: "a", narration: "Un commit guarda en tu equipo.", onScreenText: "COMMIT" },
+    { id: "b", narration: "Despues push lo envia a la nube.", onScreenText: "PUSH" },
+    { id: "c", narration: "Asi nadie pierde nada nunca mas.", onScreenText: "LISTO" },
+  ],
+  ...over,
+});
+const spies = () => { const seen = { music: [], kit: 0 }; return { seen, deps: { ...fakeVoiceDeps(), resolveMusic: async (spec) => { seen.music.push({ ...spec.music }); return { track: null, note: "spy" }; }, loadKit: async () => { seen.kit++; return { pools: {}, samples: {} }; } } }; };
+const loudnessOf = (file) => { const r = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-af", "ebur128", "-f", "null", "-"], { encoding: "utf8" }); const m = [...r.stderr.matchAll(/I:\s+(-?[\d.]+) LUFS/g)].pop(); return Number(m[1]); };
+const messages = (logs) => logs.map((l) => l.message);
+
+test("provider format (pixel-world default): the route uses the module's chiptune + pixel SFX and never the library or the SFX kit; -14 LUFS", async () => {
+  const s = spies();
+  const { dir, out, logs } = await buildWith(pixelSpec({ music: { provider: "format", mood: "adventure", seed: 4 } }), { quality: "draft", deps: s.deps });
+  assert.deepEqual(s.seen.music, [], "resolveMusic is not called");
+  assert.equal(s.seen.kit, 0, "loadKit is not called");
+  const msgs = messages(logs);
+  assert.ok(msgs.some((m) => /^Music: format chiptune \(Aventura · C major · 118 BPM · seed 4\), -17 dB under the voice, duck 3\.5 dB; no credit needed/.test(m)), msgs.join("\n"));
+  assert.ok(msgs.some((m) => /^Format audio bed: \d+ pixel SFX \+ chiptune music/.test(m)));
+  const lufs = loudnessOf(join(out, "video.mp4"));
+  assert.ok(Math.abs(lufs + 14) <= 1, `loudness ${lufs}`);
+  assert.ok(!JSON.parse(readFileSync(join(out, "spec.json"), "utf8")).credits, "generated in code: no CC BY credit");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("the default of pixel-world (no music in the spec) is the format chiptune; auto mood follows the style", async () => {
+  const s = spies();
+  const { dir, logs } = await buildWith(pixelSpec(), { quality: "draft", deps: s.deps });
+  assert.deepEqual(s.seen.music, []);
+  assert.ok(messages(logs).some((m) => /Music: format chiptune \(Aventura/.test(m)), "snes style -> adventure");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("the user's choice is respected: library and none skip the chiptune (pixel SFX stay), library goes through resolveMusic", async () => {
+  const lib = spies();
+  const a = await buildWith(pixelSpec({ music: { provider: "library", mood: "tech-lofi" } }), { quality: "draft", deps: lib.deps });
+  assert.equal(lib.seen.music.length, 1);
+  assert.equal(lib.seen.music[0].provider, "library");
+  assert.equal(lib.seen.kit, 0, "the module's pixel SFX replace the SFX kit");
+  assert.ok(!messages(a.logs).some((m) => /format chiptune/.test(m)));
+  assert.ok(messages(a.logs).some((m) => /^Format audio bed: \d+ pixel SFX \(voice/.test(m)));
+  const none = spies();
+  const b = await buildWith(pixelSpec({ music: { provider: "none" } }), { quality: "draft", deps: none.deps });
+  assert.deepEqual(none.seen.music, []);
+  assert.ok(!messages(b.logs).some((m) => /format chiptune/.test(m)));
+  const off = spies();
+  const c = await buildWith(pixelSpec({ music: { provider: "none" }, sfx: { enabled: false, volume: 1 } }), { quality: "draft", deps: off.deps });
+  assert.ok(!messages(c.logs).some((m) => /Format audio bed/.test(m)), "sfx disabled: nothing from the module");
+  for (const r of [a, b, c]) rmSync(r.dir, { recursive: true, force: true });
+});
+
+test("fallback: a format that returns no audio and asks for provider format gets the library (mood auto), never an error", async () => {
+  const s = spies();
+  const { dir, logs } = await buildWith(specObj({ voice: { provider: "kokoro" }, music: { provider: "format", mood: "adventure", seed: 2 } }), { quality: "draft", deps: s.deps });
+  assert.equal(s.seen.music.length, 1);
+  assert.equal(s.seen.music[0].provider, "library");
+  assert.equal(s.seen.music[0].mood, "auto");
+  assert.equal(s.seen.music[0].seed, undefined);
+  assert.ok(messages(logs).some((m) => /returned no music; using the library instead/.test(m)));
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("mixFormatBed: music sits 17 dB under the voice with a shallow duck (<= 4 dB), SFX land at their times, no inaudible bed", async () => {
+  const { mixFormatBed } = await import("../lib/build-hf.mjs");
+  const { renderMusic } = await import("../hf/pixel-world/audio-music.mjs");
+  const { sfxWav } = await import("../hf/pixel-world/audio-sfx.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "hf-fmtbed-"));
+  try {
+    // voice: speaking for the first 4 s, silent for the last 4 s
+    const n = 8 * 16000, x = new Float32Array(n);
+    for (let k = 0; k < 4 * 16000; k++) { const t = k / 16000; x[k] = 0.3 * Math.sin(2 * Math.PI * 150 * t) * (0.6 + 0.4 * Math.sin(2 * Math.PI * 3 * t)); }
+    const voice = join(dir, "voice.wav");
+    writeFileSync(voice, encodeWav([x], 16000));
+    const caps = [{ text: "x", startMs: 0, endMs: 4000 }];
+    const music = { wavBuffer: renderMusic({ mood: "calm", style: "pixel-dusk-lowres", seed: 1, durationSec: 8 }).wav, gainDb: -17, duck: 3.5 };
+    const sfx = { events: [{ at: 6, buffer: sfxWav("coin"), gainDb: 0 }] };
+    const out = join(dir, "bed.wav");
+    const stats = await mixFormatBed({ audio: { music }, sfxVolume: 1, narration: voice, captions: caps, totalSec: 8, out, dir: join(dir, "w") });
+    assert.equal(stats.events, 0);
+    const flat = join(dir, "flat.wav");
+    await mixFormatBed({ audio: { music: { ...music, duck: 0 } }, sfxVolume: 1, narration: voice, captions: caps, totalSec: 8, out: flat, dir: join(dir, "w") });
+    const bed = await decode(out), noDuck = await decode(flat), v = await decode(voice);
+    const voiceDb = activeLoudness(v);
+    const win = (a, from, to) => { const w = windowRms(a.subarray(Math.floor(from * 48000) * 2, Math.floor(to * 48000) * 2), 0.05); return 10 * Math.log10(w.reduce((s, d) => s + 10 ** (d / 10), 0) / w.length); };
+    const level = win(noDuck, 1, 3.5) - voiceDb;
+    assert.ok(level < -14 && level > -20, `music ${level.toFixed(1)} dB vs the voice (target -17)`);
+    const dip = win(noDuck, 1, 3.5) - win(bed, 1, 3.5);
+    assert.ok(dip > 3 && dip <= 4, `duck dip while speaking ${dip.toFixed(2)} dB (shallow: 3.5)`);
+    assert.ok(Math.abs(win(noDuck, 5.2, 6.5) - win(bed, 5.2, 6.5)) < 0.3, "no dip in the pauses");
+    // sfx: the coin at 6 s is audible and nothing else is added at 6 s without it
+    const withSfx = join(dir, "bed2.wav");
+    const st2 = await mixFormatBed({ audio: { music, sfx }, sfxVolume: 1, narration: voice, captions: caps, totalSec: 8, out: withSfx, dir: join(dir, "w") });
+    assert.equal(st2.events, 1);
+    const bed2 = await decode(withSfx);
+    const peak = (a, f, t) => Math.max(...a.subarray(Math.floor(f * 48000) * 2, Math.floor(t * 48000) * 2).map(Math.abs));
+    assert.ok(peak(bed2, 6, 6.25) > peak(bed, 6, 6.25) * 1.15, "the SFX stands out of the music");
+    assert.equal(peak(bed2, 2, 3), peak(bed, 2, 3), "elsewhere identical");
+    // a sound passed as a file path works too, and a bad item is a clear error
+    const wav = join(dir, "s.wav");
+    writeFileSync(wav, sfxWav("ping"));
+    assert.equal((await mixFormatBed({ audio: { sfx: { events: [{ at: 1, path: wav }] } }, sfxVolume: 1, narration: voice, captions: caps, totalSec: 8, out: join(dir, "p.wav"), dir: join(dir, "w") })).events, 1);
+    await assert.rejects(mixFormatBed({ audio: { sfx: { events: [{ at: 1 }] } }, sfxVolume: 1, narration: voice, captions: caps, totalSec: 8, out: join(dir, "q.wav"), dir: join(dir, "w") }), /path or a WAV buffer/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

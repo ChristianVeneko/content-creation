@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createApp } from "../server/app.ts";
 import { readConfig } from "../server/config.ts";
 import { applyOptions } from "../server/specGen.ts";
-import { DEFAULT_MUSIC, applyMusicOptions, musicDuckedDb, musicLevelDb, musicOptionsFromSpec, sfxLevelDb } from "../shared/music.ts";
+import { DEFAULT_MUSIC, FORMAT_DUCK_DB, FORMAT_MOODS, applyMusicOptions, formatMusicAvailable, formatMusicLevelDb, musicDuckedDb, musicForTemplate, musicLevelDb, musicOptionsFromSpec, sfxLevelDb } from "../shared/music.ts";
 import type { GenerateOptions, VideoSpec } from "../shared/types.ts";
 type Json = any;
 
@@ -98,4 +98,36 @@ test("without music options the model's spec is left alone (older clients)", () 
   const spec = applyOptions({ ...structuredClone(base), music: { volume: 0.1 } }, "illustrated", opts);
   assert.deepEqual(spec.music, { volume: 0.1 });
   assert.equal(spec.sfx, undefined);
+});
+
+test("format chiptune: only formats that make their own music get provider format; moods, levels and fallbacks", () => {
+  const pixel = { template: "pixel-world", scenes: [] } as unknown as VideoSpec;
+  const kinetic = { template: "kinetic-type", scenes: [] } as unknown as VideoSpec;
+  assert.ok(formatMusicAvailable("pixel-world") && !formatMusicAvailable("kinetic-type") && !formatMusicAvailable(undefined));
+  assert.deepEqual(FORMAT_MOODS.map((m) => m.id), ["adventure", "calm", "tense", "playful", "mystery"]);
+  const fmt = { ...DEFAULT_MUSIC, provider: "format" as const, mood: "tense" };
+  const m = applyMusicOptions(pixel, fmt).music;
+  assert.deepEqual({ provider: m?.provider, mood: m?.mood, duck: m?.duck, track: m?.track, prompt: m?.prompt }, { provider: "format", mood: "tense", duck: true, track: undefined, prompt: undefined });
+  assert.equal(applyMusicOptions(pixel, { ...fmt, mood: "tech-lofi", track: "x" }).music?.mood, "auto", "a library mood is not a format mood");
+  const other = applyMusicOptions(kinetic, fmt).music;
+  assert.equal(other?.provider, "library", "other templates never get provider format");
+  assert.equal(other?.mood, "auto");
+  assert.equal(applyMusicOptions(pixel, { ...DEFAULT_MUSIC, mood: "adventure" }).music?.mood, "auto", "switching back to the library clears a format mood");
+  assert.equal(applyMusicOptions(pixel, { ...fmt, enabled: false }).music?.provider, "none", "none is respected");
+  assert.equal(applyMusicOptions(pixel, { ...DEFAULT_MUSIC, mood: "upbeat-fun" }).music?.mood, "upbeat-fun", "library keeps working");
+  assert.equal(musicOptionsFromSpec({ music: { provider: "format", mood: "calm", volume: 0.12 } } as unknown as VideoSpec).provider, "format");
+  assert.equal(formatMusicLevelDb(0.12), -17);
+  assert.equal(formatMusicLevelDb(0.24), -11);
+  assert.ok(FORMAT_DUCK_DB <= 4);
+});
+
+test("musicForTemplate: the chiptune is the default of formats that make their own music, the user's other choices are kept", () => {
+  assert.equal(musicForTemplate(DEFAULT_MUSIC, "pixel-world").provider, "format");
+  assert.equal(musicForTemplate(DEFAULT_MUSIC, "kinetic-type").provider, "library");
+  const picked = { ...DEFAULT_MUSIC, mood: "upbeat-fun" };
+  assert.equal(musicForTemplate(picked, "pixel-world"), picked, "a library choice is respected");
+  const el = { ...DEFAULT_MUSIC, provider: "elevenlabs" as const };
+  assert.equal(musicForTemplate(el, "pixel-world"), el);
+  const back = musicForTemplate({ ...DEFAULT_MUSIC, provider: "format", mood: "calm" }, "flat-2d");
+  assert.deepEqual({ p: back.provider, m: back.mood }, { p: "library", m: "auto" });
 });

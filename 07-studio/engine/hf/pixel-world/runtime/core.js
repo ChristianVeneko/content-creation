@@ -3,12 +3,15 @@
  * Colours are written as MASTER hex values (see M below) and remapped to the style palette by col(). */
 'use strict';
 const W = 270, H = 480;
-const PX = STYLE.px || 1;
+const PX = STYLE.px || 1; // logical text/HUD grid: 1, or 2 for the chunky styles
+const SS = SPEC.ss || 1; // supersample factor of the canvases (1, or 2 for pixelScale "fine": 540x960 canvases drawn under one scale(SS))
+let G = PX / SS; // geometry grid in the current local units: every helper rounds to it (1/SS of a logical px in fine)
+let LS = SS; // canvas px per local unit (the cast is drawn under scale(1/SS), where it is 1)
 const $ = (id) => document.getElementById(id);
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const pr = (t, t0, d) => clamp((t - t0) / d);
 const lerp = (a, b, k) => a + (b - a) * k;
-const snap = (v) => Math.round(v / PX) * PX;
+const snap = (v) => Math.round(v / G) * G;
 const EA = {
   out: (x) => 1 - Math.pow(1 - x, 3),
   out4: (x) => 1 - Math.pow(1 - x, 4),
@@ -92,12 +95,18 @@ let TONE = 0; // current recolor tone (set around prop draws)
 const colCache = new Map();
 const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
 const bayerCache = {};
+/* a repeating pattern whose cells are PX canvas px wide in every local scale (the tile is counter-scaled by 1/LS) */
+function mkPattern(c) {
+  const pt = L.m.createPattern(c, 'repeat');
+  if (LS !== 1 && pt && typeof pt.setTransform === 'function' && typeof DOMMatrix !== 'undefined') pt.setTransform(new DOMMatrix([1 / LS, 0, 0, 1 / LS, 0, 0]));
+  return pt;
+}
 function bayerPat(lo, hi, level) {
-  const k = lo + hi + level;
+  const k = lo + hi + level + '|' + LS;
   if (!bayerCache[k]) {
     const c = document.createElement('canvas'); c.width = c.height = 4 * PX; const p = c.getContext('2d');
     for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) { p.fillStyle = BAYER[y][x] < level ? hi : lo; p.fillRect(x * PX, y * PX, PX, PX); }
-    bayerCache[k] = L.m.createPattern(c, 'repeat');
+    bayerCache[k] = mkPattern(c);
   }
   return bayerCache[k];
 }
@@ -115,7 +124,7 @@ function nearest(r, g, b) {
 function col(c) {
   if (c && c.raw) return c.raw; // { raw: '#rrggbb' } bypasses the palette remap (used for functional, readability-critical colours)
   if (typeof c !== 'string' || c.charAt(0) !== '#') return c;
-  const key = c + '|' + TONE;
+  const key = c + '|' + TONE + '|' + LS;
   let v = colCache.get(key);
   if (v !== undefined) return v;
   let [r, g, b] = hex2rgb(c);
@@ -132,31 +141,32 @@ function col(c) {
 }
 
 /* ---------------- canvases ---------------- */
+if (SS > 1) for (const id of ['cb', 'cm', 'cf', 'cu', 'ch']) { const cv = $(id); cv.width = W * SS; cv.height = H * SS; } // resets the contexts: do it before getContext
 const L = { b: $('cb').getContext('2d'), m: $('cm').getContext('2d'), f: $('cf').getContext('2d'), u: $('cu').getContext('2d') };
-for (const k in L) L[k].imageSmoothingEnabled = false;
+for (const k in L) { L[k].imageSmoothingEnabled = false; if (SS > 1) L[k].scale(SS, SS); }
 
 /* ---------------- drawing primitives (all snapped to the style pixel grid) ---------------- */
 function R(g, x, y, w, h, c) {
   let x0 = snap(x), y0 = snap(y), x1 = snap(x + w), y1 = snap(y + h);
-  if (w > 0 && x1 <= x0) x1 = x0 + PX;
-  if (h > 0 && y1 <= y0) y1 = y0 + PX;
+  if (w > 0 && x1 <= x0) x1 = x0 + G;
+  if (h > 0 && y1 <= y0) y1 = y0 + G;
   g.fillStyle = col(c); g.fillRect(x0, y0, x1 - x0, y1 - y0);
 }
 function disc(g, cx, cy, r, c) {
   g.fillStyle = col(c); cx = snap(cx); cy = snap(cy);
-  for (let dy = -r; dy <= r; dy += PX) { const dx = Math.floor(Math.sqrt(Math.max(0, r * r + r * 0.6 - dy * dy)) / PX) * PX; g.fillRect(cx - dx, cy + dy, dx * 2 + PX, PX); }
+  for (let dy = -r; dy <= r; dy += G) { const dx = Math.floor(Math.sqrt(Math.max(0, r * r + r * 0.6 - dy * dy)) / G) * G; g.fillRect(cx - dx, cy + dy, dx * 2 + G, G); }
 }
 function ring(g, cx, cy, r, c, w = 1) { disc(g, cx, cy, r, c); }
 function line(g, x0, y0, x1, y1, w, c) {
-  g.fillStyle = col(c); w = Math.max(PX, snap(w));
+  g.fillStyle = col(c); w = Math.max(G, snap(w));
   const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0), 1);
-  const step = Math.max(1, PX);
+  const step = Math.max(1, G);
   for (let i = 0; i <= n; i += step) { const f = i / n; g.fillRect(snap(x0 + (x1 - x0) * f - w / 2), snap(y0 + (y1 - y0) * f - w / 2), w, w); }
 }
 const patC = {};
 /* 4x4 dither tile of two final (already remapped) colours, as a repeating canvas pattern */
 function patRaw(a, b, kind = 0) {
-  const k = a + b + kind;
+  const k = a + b + kind + '|' + LS;
   if (!patC[k]) {
     const c = document.createElement('canvas'); c.width = c.height = 4 * PX; const p = c.getContext('2d');
     p.fillStyle = a; p.fillRect(0, 0, 4 * PX, 4 * PX); p.fillStyle = b;
@@ -165,7 +175,7 @@ function patRaw(a, b, kind = 0) {
     else if (kind === 1) { cell(0, 0); cell(2, 2); }
     else if (kind === 2) { for (let x = 0; x < 4; x++) { cell(x, 0); cell(x, 2); } }
     else { for (let y = 0; y < 4; y++) { cell(0, y); cell(2, y); } }
-    patC[k] = L.m.createPattern(c, 'repeat');
+    patC[k] = mkPattern(c);
   }
   return patC[k];
 }
@@ -196,7 +206,7 @@ const txtW = (s, sz) => s.length * Math.max(PX, Math.round(sz / 8 / PX) * PX) * 
 function glow(g, x, y, r, c, a = 0.5) {
   const k = STYLE.glow == null ? 1 : STYLE.glow; if (k <= 0) return;
   g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = Math.min(1, (a * k) / 3);
-  for (let i = 0; i < 4; i++) disc(g, x, y, Math.max(PX, Math.round(r * (1 - i * 0.24))), c);
+  for (let i = 0; i < 4; i++) disc(g, x, y, Math.max(G, Math.round(r * (1 - i * 0.24))), c);
   g.restore();
 }
 function alpha(g, a, fn) { g.save(); g.globalAlpha = clamp(a); fn(); g.restore(); }
@@ -215,7 +225,7 @@ function ball(g, cx, cy, r, ramp) {
   if (STYLE.shade === 'bevel' && r >= 3) { disc(g, cx - r * 0.25, cy - r * 0.25, Math.max(1, Math.round(r * 0.55)), ramp[3]); R(g, cx - r * 0.45, cy - r * 0.55, Math.max(1, r * 0.3), Math.max(1, r * 0.2), ramp[4]); }
 }
 /* camera/layer helper: horizontal parallax; cam is in world px, k the layer factor */
-function lay(g, cam, k, fn) { g.save(); g.translate(-snap(cam * k), 0); fn(g); g.restore(); }
+function lay(g, cam, k, fn, dx = 0) { g.save(); g.translate(-snap(cam * k + dx), 0); fn(g); g.restore(); }
 /* definition registries (also read by the node side to list scenarios, props, heroes and npcs) */
 const SC = {}, HEROES = {}, NPCS = {};
 function defScenario(d) { SC[d.id] = d; }

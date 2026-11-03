@@ -10,6 +10,9 @@ import {
   HF_MODE_CHOICES,
   HF_PACES,
   HF_PACE_LABEL,
+  HF_PIXEL_CHOICES,
+  HF_PIXEL_DRAFT_NOTE,
+  HF_PIXEL_FORMAT,
   HF_QUALITY_CHOICES,
   hfModesOf,
   type HfOptions,
@@ -69,6 +72,14 @@ export function HfPanel(props: { template: TemplateInfo; value: HfOptions; onCha
 
       <Segmented label="Calidad del render" value={v.quality} options={HF_QUALITY_CHOICES.map(({ value, label }) => ({ value, label }))} onChange={(quality) => props.onChange({ quality })} />
       <p className="length-note">{HF_QUALITY_CHOICES.find((q) => q.value === v.quality)?.hint}</p>
+
+      {t.id === HF_PIXEL_FORMAT && (
+        <>
+          <Segmented label="Calidad de píxel" value={v.pixelScale ?? "standard"} options={HF_PIXEL_CHOICES.map(({ value, label }) => ({ value, label }))} onChange={(pixelScale) => props.onChange({ pixelScale })} />
+          <p className="length-note" data-testid="hf-pixel-hint">{HF_PIXEL_CHOICES.find((p) => p.value === (v.pixelScale ?? "standard"))?.hint}</p>
+          {v.quality === "draft" && (v.pixelScale ?? "standard") !== "standard" && <p className="length-note" data-testid="hf-pixel-draft">{HF_PIXEL_DRAFT_NOTE}</p>}
+        </>
+      )}
 
       <details className="hf-advanced">
         <summary>Avanzado</summary>

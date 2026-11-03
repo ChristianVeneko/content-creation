@@ -19,9 +19,10 @@ export const meta = {
     { id: "hero", name: "Hero", about: "Cast design that narrates: hoodie, capgirl, wizard, astro, robot." },
     { id: "layout", name: "Single-mode path", about: "strip (side-scroll) or tower (top to bottom); only used when mode is single." },
     { id: "brand", name: "Brand pill", about: "Avatar + handle pill with an optional fake follow click on a spoken word." },
+    { id: "pixelScale", name: "Pixel quality", about: "chunky (big pixels), standard (default) or fine (double resolution, about a third slower); draft renders always use standard." },
     { id: "flash", name: "White flash", about: "Beat `flash` is ignored unless this is true (off by default, photosensitivity)." },
   ],
-  defaults: { captions: { enabled: true }, hf: { style: "pixel-snes-16bit", hero: "hoodie", worlds: [{ scenario: "factory", beats: [] }] } },
+  defaults: { captions: { enabled: true }, music: { provider: "format", mood: "auto", duck: true }, hf: { style: "pixel-snes-16bit", hero: "hoodie", worlds: [{ scenario: "factory", beats: [] }] } },
   preview: { style: "pixel", gradient: ["#1a1c2c", "#5d275d"], accent: "#ffcd75" },
 };
 export { payloadSchema };

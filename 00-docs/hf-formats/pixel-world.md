@@ -21,6 +21,18 @@ Animated pixel-art worlds driven by a JSON payload (`spec.hf`), no coding agent 
 - **Foreground silhouettes**: styles without blur use dithered palette-dark tones instead of black blocks.
 - **Beat feedback**: progress bars and prop fills move at least 12 % per beat (nudged values are reported in warnings); progress/counter beats pop (halo, chip flip) and prop fills get a derived pulse.
 
+## Pixel quality (`hf.pixelScale`)
+
+`pixelScale` is a payload field (default `standard`) that the user picks in the web panel ("Calidad de píxel") or the model sets when asked. The logical canvas stays 270x480 and every preset divides 1080x1920 exactly:
+
+| value | grid | canvases | art pixel | notes |
+|---|---|---|---|---|
+| `chunky` | 2 logical px | 270x480 | 8 screen px | exposes the `px` of the 2x styles to every style; the cheapest render |
+| `standard` | the style's own `px` (1, or 2 for Game Boy, PICO-8, C64, 1-bit, Virtual Boy) | 270x480 | 4 (or 8) screen px | today's look |
+| `fine` | 1/2 logical px | 540x960, one `scale(2)` per layer | 2 screen px | geometry rounds to 1/SS in `R`, `disc`, `line`, `snap`; the cast is drawn under `scale(1/SS)` with its measures times SS (twice the pixels); dither patterns keep their cell size in canvas px; measured on a 55 s video: 39 s to render against 30 s for `standard` and `chunky`, and a file about 1.5x larger |
+
+Text, HUD zones and DOM captions stay on the logical grid in every preset (`style.px` is forced to 1 for `fine`, 2 for `chunky`), so the layout never changes; `draft` render quality always renders `standard`. `resolvePayload` writes the effective grid into `data.pixelScale` / `data.ss` and returns a style with the effective `px`; the runtime reads `SPEC.ss` (core.js `SS`, `G`, `LS`). Tests: every style x every pixelScale x both modes composes, draws, keeps the HUD labels inside their boxes and keeps the scenario layout identical.
+
 ## Styles
 
 | id | look | palette source |
@@ -131,11 +143,25 @@ A bench scene whose props come from the payload: `{ "scenario": "workshop-stage"
 All scenarios, including the old ones, get the same lower-third dressing (see Frame zones).
 
 
+## Audio (own chiptune and pixel SFX, U14)
+
+pixel-world synthesizes its own sound in code (`audio.mjs`, split into `audio-dsp`, `audio-music`, `audio-sfx`, `audio-cues`, `audio-env`) and hands it to the engine through `compose() -> { audio }`. No library track, no SFX kit sample and no CC BY credit are involved.
+
+- **Music** (`music.provider: "format"`, the default of this format through `meta.defaults`): seeded chiptune with triangle/saw/square bass, pulse arpeggio and lead, noise hats and snare, sine kick. Moods (`music.mood`): `adventure` (C major, 118 BPM), `calm` (A minor, 80), `tense` (D minor, 132), `playful` (F major, 108), `mystery` (E dorian, 92); `auto` takes the style's default (`STYLE_FLAVOUR`: gameboy is a 2-channel DMG sound, snes/dusk/vaporwave add pad, echo and stereo, 1-bit and virtual-red are bit-crushed, c64 uses PWM and saw bass). `music.seed` picks the progression, arpeggio shapes and melody (default: hash of the title, so each video has its own tune; same seed = byte-identical WAV). Length is exactly the video duration: a one-bar intro without drums, a held tonic chord and a fade at the end. 2.6 kHz low-pass.
+- **Levels**: music 17 dB under the voice (at `music.volume` 0.12; each doubling +6 dB) with a shallow 3.5 dB duck while words are spoken (`music.duck: false` turns it off). The final mix is normalized to -14 LUFS by the engine.
+- **SFX**: 24 synthesized voices (pop, blip, ping, coin, thud, burst, slash, stamp, hit, whoosh / whooshUp / whooshDown, tick, rise, fall, step, jump, powerup, error, transition, flip, poof, buzz, select). `audio-cues.mjs` maps the RESOLVED beats to sounds, each bound to the word start of its beat: `fill` = three rising blips, `light` = ping, `pulse` = tick, `hero-stamp` = stamp + coin, `coins` = up to 3 coins, `x2` = two coins, `push` = whoosh up, `pan` = whoosh, `jump` = jump + fall, `cheer` = power-up, `walk` = footsteps, `emote`/`react` = blip or ping by symbol (cross = error), world transitions by type (slide whoosh, tiles chip run, iris whoosh down, down fall) plus a landing blip, HUD progress/counter blips and the brand follow click. `flash` and ambient reaction beats stay silent. They play unless `sfx.enabled` is false, even when the user picks library or no music.
+- **User choice is respected**: `music.provider` `library`, `elevenlabs` and `none` go through the engine's normal path (a format that returns no music falls back to the library). The web offers "Chiptune del formato" with the moods for this format only.
+- **Lip-sync**: `compose()` also takes `voicePath`; it computes the voice loudness envelope (30 fps, one value per frame, normalized to the 95th percentile) into `SPEC.env` and `talkLevel` (`runtime/cast.js`) opens the mouth from it (closed under 0.12, half under 0.42, open above). Without a voice file the mouth falls back to the word spans.
+
 ## Quality rules (built into the runtime)
 
 - **Fill the frame.** `runtime/floor.js` dresses the lower third of every world: a floor pattern (tiles, planks, grass, sand, metal grating, carpet, circuit traces, water), floor markings, scattered debris and blurred foreground silhouettes in the bottom corners plus one hanging element at the top edge. A scenario may declare `floor: [kind, ramp, [fg...]]`. Tests render every scenario in the headless sandbox and require non-empty thirds and a minimum of non-flat cells in the bottom third (about 20 % or more; before this pass several scenarios were at 5-15 %).
-- **Cast size.** The hero defaults to size L when alone in a world and M otherwise; NPCs default to M. S is only used when written.
+- **Cast size.** Everyone defaults to size M (86 px, 18 % of the frame; the hand-made reference hero is about 72 px). L (134 px, 28 %) and S exist only when the payload writes `size`; a hero at L hides the props, so the prompt keeps it for a lone-hero close-up. Older payloads that wrote `size: "L"` keep working. A defaulted size may still shrink to S to clear a targeted prop.
 - **Contrast.** Stamps pick a fill with a WCAG contrast of at least 4.5 against their ink stroke, else become a boxed banner using the best palette pair (`runtime/contrast.js`, shared by the browser and the tests). Label chips pick the fill/ink pair the same way; chip heights follow the style grid, so chunky styles (px 2) no longer clip the text.
+- **Punch (U15).** `punctuate()` in `normalize.mjs` (called by `resolvePayload` after `densify`) raises a world below 0.6 punch events per second (hero-stamp, shake, burst, radial-burst, flash when enabled, x2 = 1 each, emote = 0.5) towards about 0.75, bound to strong spoken words (numbers first, then long words; stamps 1.6 s apart, at most 11 characters, the first world always stamps its hook word in the first 2.5 s). `deriveShakes()` adds a small silent shake to every stamp, burst, radial burst and push that has none within 0.3 s. Existing beats are never changed and every addition is a warning. The prompt asks the model for 8-12 stamps/shakes on the strongest words per video.
+- **Flash guard.** `flash` stays opt-in (`hf.flash: true`). Written or auto flashes are capped by `capFlashes()`: none before 0.5 s, at most 3 per 10 s window, 0.5 s apart; each flash is under 2 frames (0.06 s) and never above 50 % white, white only (no red/white strobing).
+- **Camera life.** Every world drifts: a seeded triangle sway (4-7 logical px, 6-10 s period) of the far, back and foreground layers around the focal plane (props and cast), so the layers together never rest for 2 s. Impact beats (hero-stamp, burst, radial-burst) punch the camera in by a quarter step for about 0.4 s (at most one per 1.8 s, never over a written `push`). The stage zoom is quantised to quarter steps (4 x 1.25 = 5 screen px per art pixel, 1.5, 1.75, 2) on a whole-logical-pixel origin, so pixel edges stay sharp (a smooth CSS scale would resample the pixelated canvases).
+- **Motion kit** (`runtime/fx.js`): `dropIn` (bounce-in of the cast when its world appears), `hitSquash` (the hero squashes then stretches on every stamp, shake and burst), `flicker` (stepped light flicker on lit props), `chips` (shards on `chop`), `gain` (tokens flying on parabolas into a prop on `fill`), `toss` (coins thrown out with gravity and a damped bounce on `coins`), plus the older `fly`, `burst`, `sparkle`. All closed-form functions of time.
 - **Beat density.** `densify()` in `normalize.mjs` (called by `resolvePayload`, because it needs the word timings) adds ambient reaction beats (hero `react`, prop `pulse`, `emote`, `jump`) on spoken words when a world has fewer than 0.5 beats per second. Existing beats are never changed, ambient beats are silent (no SFX) and every addition is listed in `warnings`.
 - **Scenario fit.** Topic tags and a NOT-for list in the prompt table; the normalizer maps free text (`"smartphone heat"`, `"firewall security"`) to the scenario whose id/name/topics match best (id and name words weigh more than topic tags).
 

@@ -5,14 +5,16 @@
 // or calls lib/captions.mjs, the Remotion renderer, the Blender caption layer or any ffmpeg filter on the video:
 // the final mux copies the video stream. `captions.enabled=false` renders the composition with captions off.
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
 import { isAbsolute, join, relative, resolve } from "node:path";
 import { getHfFormat, parseHfPayload } from "../hf/registry.mjs";
 import { CC_ROOT, PYTHON, TRANSCRIBE_PY } from "./env.mjs";
-import { SFX_KIT, buildBed, loadKit } from "./audio-bed.mjs";
+import { SFX_KIT, SR, analyzeSound, activeLoudness, buildBed, decode, loadKit, mixInto, musicGainDb, speechIntervals, windowRms, writeWav } from "./audio-bed.mjs";
 import { scheduleSfx } from "./illustrated.mjs";
 import { mixAtOffsets, normalizeSpeech, run } from "./media.mjs";
 import { musicDuckedLevelDb, musicLevelDb, resolveMusic } from "./music.mjs";
+import { FORMAT_MOODS as FORMAT_MOOD_IDS } from "./spec.mjs";
 import { alignToScript, computeTimeline, syntheticCaptions } from "./timeline.mjs";
 import { effectiveProvider, synthesize } from "./tts.mjs";
 import { pickVoice, trendingVoices } from "./voices.mjs";
@@ -131,6 +133,65 @@ export function sfxBeats(cues, root) {
     } else warnings.push(`sfx kind "${c.kind}" is unknown; cue at ${c.at}s skipped`);
   }
   return { beats, custom, warnings };
+}
+
+/** Where a format's own SFX sit: the loudest 50 ms of each sound lands this far under the voice's loud windows (dB). */
+export const FORMAT_SFX_UNDER_PEAK_DB = 8;
+const lin = (d) => 10 ** (d / 20);
+const dbOf = (x) => 20 * Math.log10(Math.max(1e-9, x));
+
+/** Decode a module-provided sound ({path} or {wavBuffer|buffer}) to 48 kHz stereo float; buffers are staged as files in `dir`. */
+async function decodeProvided(item, dir) {
+  if (item.path) return decode(item.path);
+  const buf = item.wavBuffer ?? item.buffer;
+  if (!Buffer.isBuffer(buf)) throw new Error("module audio needs a path or a WAV buffer");
+  const file = join(dir, `fmt-${createHash("sha1").update(buf).digest("hex").slice(0, 12)}.wav`);
+  if (!existsSync(file)) writeFileSync(file, buf);
+  return decode(file);
+}
+
+/**
+ * Mix the audio a format module returned from compose(): `{ music?: {path|wavBuffer, gainDb, duck}, sfx?: {events:
+ * [{at, path|buffer, gainDb}]} }`. Music `gainDb` is its level against the voice's loudness (negative = under) and
+ * `duck` the dip in dB while words are spoken (0/false = none, true = 3.5); SFX `gainDb` is a trim around the
+ * "FORMAT_SFX_UNDER_PEAK_DB under the voice peaks" reference scaled by `sfxVolume`. Returns the stats of the bed.
+ * @param {{audio: object, sfxVolume: number, narration: string|null, captions: object[], totalSec: number, out: string, dir: string}} o
+ */
+export async function mixFormatBed({ audio, sfxVolume = 1, narration, captions = [], totalSec, out, dir }) {
+  mkdirSync(dir, { recursive: true });
+  const total = Math.ceil(totalSec * SR) * 2;
+  const bed = new Float32Array(total);
+  const voice = narration ? await decode(narration) : null;
+  const voiceDb = (voice && activeLoudness(voice)) ?? -20;
+  const loud = voice ? windowRms(voice, 0.05).filter((v) => v > -45).sort((x, y) => x - y) : [];
+  const voicePeakDb = loud.length ? loud[Math.min(loud.length - 1, Math.floor(0.95 * loud.length))] : voiceDb + 4;
+  let events = 0;
+  let musicDb = null;
+  if (audio.sfx?.events?.length && sfxVolume > 0) {
+    const analyzed = new Map();
+    for (const e of audio.sfx.events) {
+      const key = e.path ?? e.buffer;
+      if (!analyzed.has(key)) { const x = await decodeProvided(e, dir); analyzed.set(key, { x, ...analyzeSound(x) }); }
+      const s = analyzed.get(key);
+      mixInto(bed, s.x, e.at, lin(voicePeakDb - FORMAT_SFX_UNDER_PEAK_DB + dbOf(sfxVolume) + (e.gainDb ?? 0) - s.activeDb), 1);
+      events++;
+    }
+  }
+  if (audio.music) {
+    const mx = await decodeProvided(audio.music, dir);
+    musicDb = activeLoudness(mx, -60) ?? -20;
+    const base = voiceDb + (audio.music.gainDb ?? -17) - musicDb;
+    const duckDb = audio.music.duck === true ? 3.5 : Number(audio.music.duck) || 0;
+    const intervals = duckDb > 0 ? speechIntervals(captions, 0.45) : [];
+    const frames = Math.min(total / 2, mx.length / 2);
+    const step = 480;
+    for (let f = 0; f < frames; f += step) {
+      const g = lin(base + musicGainDb(f / SR, intervals, totalSec, duckDb, { fadeIn: 0.25, fadeOut: 1.2 }));
+      for (let k = f; k < Math.min(frames, f + step); k++) { bed[k * 2] += g * mx[k * 2]; bed[k * 2 + 1] += g * mx[k * 2 + 1]; }
+    }
+  }
+  writeWav(out, bed);
+  return { events, voiceDb: Math.round(voiceDb * 10) / 10, musicDb: musicDb === null ? null : Math.round(musicDb * 10) / 10 };
 }
 
 const SCAFFOLD = {
@@ -272,6 +333,8 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
       outDir: hfDir,
       assetsDir,
       captions: { enabled: Boolean(spec.captions.enabled) },
+      quality,
+      voicePath: narrationFile ?? undefined,
       scenes: spec.scenes.map((s, i) => ({ id: s.id, startSec: r3(timeline.scenes[i].from / fps), endSec: r3((timeline.scenes[i].from + timeline.scenes[i].durationInFrames) / fps), speechStartSec: r3(timeline.scenes[i].speechStartMs / 1000), speechSec: r3(timeline.scenes[i].speechSec) })),
     });
   } catch (e) {
@@ -287,18 +350,29 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
 
   // ---------- audio: SFX cues (module) + music (library / ElevenLabs / file) + voice, one -14 LUFS mix ----------
   const specFiles = (p) => resolveAssetPath(p, specDir);
-  const m = spec.music;
+  const fmtAudio = composed.audio && typeof composed.audio === "object" ? composed.audio : null;
+  let m = spec.music;
+  // provider "format": the format's own chiptune. When the module returned none, fall back to the library (never fails).
+  const formatMusic = m.provider === "format" && fmtAudio?.music ? fmtAudio.music : null;
+  if (m.provider === "format" && !formatMusic) {
+    log(step, "running", `Format "${spec.template}" returned no music; using the library instead`, 0.457);
+    m = { ...m, provider: "library", mood: FORMAT_MOOD_IDS.includes(m.mood) ? "auto" : m.mood };
+    delete m.seed;
+    spec = { ...spec, music: m };
+  }
   const wantsMusic = m.provider === "none" ? false : Boolean(m.provider || m.mood || m.track || (m.file && (m.duck || spec.sfx.enabled)));
   let track = null;
-  if (wantsMusic && !(m.file && /^https?:\/\//i.test(m.file))) {
+  if (wantsMusic && !formatMusic && !(m.file && /^https?:\/\//i.test(m.file))) {
     const r = await d.resolveMusic(spec, { totalSec, resolveFile: specFiles, log: (msg) => log(step, "running", msg, 0.458) });
     track = r.track;
     if (track?.credit) spec.credits = [...(spec.credits ?? []), track.credit];
     log(step, "running", r.note ?? "No music", 0.459);
   }
+  if (formatMusic) log(step, "running", `Music: format chiptune (${formatMusic.note ?? formatMusic.id ?? "generated in code"}), ${formatMusic.gainDb} dB under the voice, duck ${formatMusic.duck === false || !formatMusic.duck ? "off" : `${formatMusic.duck === true ? 3.5 : formatMusic.duck} dB`}; no credit needed`, 0.459);
+  const fmtSfx = spec.sfx.enabled && fmtAudio?.sfx?.events?.length ? fmtAudio.sfx : null;
   let events = [];
   let samples = {};
-  if (spec.sfx.enabled && composed.sfx?.length) {
+  if (spec.sfx.enabled && !fmtSfx && composed.sfx?.length) {
     const { beats, custom, warnings } = sfxBeats(composed.sfx, join(CC_ROOT, "03-assets", "sfx"));
     for (const w of warnings) log(step, "running", w, 0.46);
     const kit = await d.loadKit({ ...SFX_KIT, ...custom });
@@ -307,6 +381,7 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
   }
   const mixInputs = [];
   if (narrationFile) mixInputs.push(narrationFile);
+  const speechCaps = () => (caps.length ? caps : syntheticCaptions(spec.scenes, timeline));
   if (events.length || track) {
     const bedFile = join(work, "audio", "bed.wav");
     const stats = await buildBed({
@@ -316,7 +391,7 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
       music: track,
       musicVolume: m.volume,
       duck: m.duck !== false && Boolean(track),
-      captions: caps.length ? caps : syntheticCaptions(spec.scenes, timeline),
+      captions: speechCaps(),
       narration: narrationFile,
       totalSec,
       out: bedFile,
@@ -324,6 +399,12 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
     mixInputs.push(bedFile);
     const levels = track ? `, music ${track.id} at ${musicLevelDb(m.volume)} dB (${musicDuckedLevelDb(m.volume)} dB under speech)` : "";
     log(step, "running", `Audio bed: ${stats.events} SFX${levels}`, 0.465);
+  }
+  if (formatMusic || fmtSfx) {
+    const fmtBed = join(work, "audio", "format-bed.wav");
+    const stats = await mixFormatBed({ audio: { music: formatMusic, sfx: fmtSfx }, sfxVolume: spec.sfx.volume, narration: narrationFile, captions: speechCaps(), totalSec, out: fmtBed, dir: join(work, "audio", "format") });
+    mixInputs.push(fmtBed);
+    log(step, "running", `Format audio bed: ${stats.events} pixel SFX${formatMusic ? " + chiptune music" : ""} (voice ${stats.voiceDb} dB)`, 0.466);
   }
   const rawMix = join(work, "audio", "mix.wav");
   const dur = totalSec.toFixed(3);

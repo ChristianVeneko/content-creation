@@ -2284,16 +2284,17 @@
       "type": "object",
       "properties": {
         "provider": {
-          "description": "\"library\" (default: curated CC0/CC BY tracks by mood), \"elevenlabs\" (generated per video, opt-in, spends credits; falls back to the library), \"none\" (no music)",
+          "description": "\"library\" (default: curated CC0/CC BY tracks by mood), \"elevenlabs\" (generated per video, opt-in, spends credits; falls back to the library), \"format\" (HyperFrames formats only: the format synthesizes its own music in code, no credit needed; default of pixel-world), \"none\" (no music)",
           "type": "string",
           "enum": [
             "library",
             "elevenlabs",
-            "none"
+            "none",
+            "format"
           ]
         },
         "mood": {
-          "description": "Library mood, or \"auto\" (picked from tone, topic keywords and template)",
+          "description": "Library mood, or \"auto\" (picked from tone, topic keywords and template). With provider \"format\": the format mood (pixel-world: adventure, calm, tense, playful, mystery) or \"auto\" (the style decides)",
           "type": "string",
           "enum": [
             "tech-lofi",
@@ -2303,8 +2304,19 @@
             "minimal-ambient",
             "upbeat-fun",
             "corporate-happy",
-            "auto"
+            "auto",
+            "adventure",
+            "calm",
+            "tense",
+            "playful",
+            "mystery"
           ]
+        },
+        "seed": {
+          "description": "Provider \"format\" only: seed of the generated music (default: derived from the title, so each video has its own tune)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
         },
         "track": {
           "description": "Library track id (03-assets/music/library.json) or \"auto\"",

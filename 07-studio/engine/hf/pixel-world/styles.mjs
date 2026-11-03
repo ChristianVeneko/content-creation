@@ -43,6 +43,29 @@ export const STYLES = [
 export const STYLE_IDS = STYLES.map((s) => s.id);
 export const getStyle = (id) => STYLES.find((s) => s.id === id);
 
+// Pixel quality (`hf.pixelScale`). The logical canvas is 270x480 and every preset divides 1080x1920 exactly:
+//   chunky   grid step 2 logical px   (8 screen px per art pixel; 135x240 effective)
+//   standard the style's own grid     (4 screen px, or 8 for the 2x styles); today's look
+//   fine     540x960 canvases, grid step 1/2 logical px (2 screen px per art pixel), supersample factor 2
+// Text, HUD zones and DOM captions stay on the logical grid in every preset (the layout never changes).
+export const PIXEL_SCALES = ["chunky", "standard", "fine"];
+export const PIXEL_SCALE_DOCS = {
+  chunky: "Big blocky pixels (8 screen px): retro, handheld and very readable; the cheapest to render.",
+  standard: "The style's own pixel size (4 screen px, 8 for the Game Boy, PICO-8, C64, 1-bit and Virtual Boy looks). Default.",
+  fine: "Half-size pixels (2 screen px) for detailed art and smooth motion; renders about 1.3x slower and the file is about 1.5x larger (measured on a 55 s video).",
+};
+/**
+ * Effective grid of a style at a pixel scale: `px` is the logical text/HUD grid (1 or 2), `ss` the supersample factor of the
+ * canvases (1 or 2). `draft` quality always renders `standard` (speed first). Pure.
+ * @returns {{ scale: "chunky"|"standard"|"fine", px: number, ss: number }}
+ */
+export function pixelGrid(style, scale = "standard", quality) {
+  const sc = quality === "draft" || !PIXEL_SCALES.includes(scale) ? "standard" : scale;
+  if (sc === "chunky") return { scale: sc, px: 2, ss: 1 };
+  if (sc === "fine") return { scale: sc, px: 1, ss: 2 };
+  return { scale: sc, px: style?.px || 1, ss: 1 };
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Style guide: what each style is good for. Shown to the spec-writer (prompt table) and used by the style advisor.
 // `retroOnly` styles are monochrome or near-monochrome: they only suit topics that ask for retro/handheld looks.
