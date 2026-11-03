@@ -501,6 +501,7 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
         // the render engine only exists for 3D formats (the engine rejects it elsewhere)
         options: isHf || !is3dTemplate(template) ? { ...options, renderer: undefined } : options,
         validate: validateSpec,
+        onRejected: (attempt, error) => log.warn("spec.rejected", { provider: body.provider, model, template: templateId, attempt, error: error.slice(0, 1500) }),
       });
       const title = spec.title ?? body.prompt.slice(0, 60);
       let id: string;

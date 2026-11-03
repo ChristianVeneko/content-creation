@@ -147,6 +147,8 @@ export async function generateValidSpec(args: {
   options: GenerateOptions;
   validate: Validator;
   maxAttempts?: number;
+  /** Called for every rejected attempt (invalid JSON, failed validation, cited source) so the server can log it. */
+  onRejected?: (attempt: number, error: string) => void;
 }): Promise<GenerateResult> {
   const maxAttempts = args.maxAttempts ?? 3;
   let user = args.user;
@@ -166,6 +168,7 @@ export async function generateValidSpec(args: {
     } catch (err) {
       lastError = `The output was not valid JSON: ${(err as Error).message}`;
     }
+    args.onRejected?.(attempt, lastError);
     user =
       `${args.user}\n\nYour previous answer was rejected. ${lastError}\n` +
       `Previous answer:\n${lastOutput.slice(0, 6000)}\n\nReturn ONLY the corrected VideoSpec JSON object.`;

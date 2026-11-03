@@ -109,3 +109,17 @@ test("applyOptions writes Blender as the user's render engine and never keeps on
   const remotion = applyOptions(structuredClone(goodSpec), "moody-night", { ...options, renderer: "remotion" });
   assert.equal("renderer" in remotion.theme, false, "remotion is the default and stays omitted");
 });
+
+test("onRejected reports every rejected attempt with its error, so the server can log what the model got wrong", async () => {
+  const { provider } = scripted([JSON.stringify({ ...goodSpec, scenes: [] }), "no json here", JSON.stringify(goodSpec)]);
+  const seen: { attempt: number; error: string }[] = [];
+  const res = await generateValidSpec({
+    provider, system: "S", user: "U", templateId: "t", options, validate: validateScenes,
+    onRejected: (attempt, error) => seen.push({ attempt, error }),
+  });
+  assert.equal(res.attempts, 3);
+  assert.equal(seen.length, 2);
+  assert.deepEqual(seen.map((s) => s.attempt), [1, 2]);
+  assert.match(seen[0].error, /scenes must be a non-empty array/);
+  assert.match(seen[1].error, /not valid JSON/);
+});
