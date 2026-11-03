@@ -183,3 +183,57 @@ function toss(t, t0, x, y, vx, vy, gy, life = 1.5) {
   const q = dt - tl;
   return [x + vx * (tl + Math.min(q, 0.35) * 0.4), gy - Math.abs(Math.sin(q * 11)) * 9 * Math.exp(-q * 4.5), dt / life];
 }
+
+/* ---------------- MECHANISM KIT: objects that travel, change state, pile up (closed form, pure functions of t) ---------------- */
+const EASE_OF = { linear: EA.lin, in: EA.in, out: EA.out, inout: EA.io };
+/* position at eased progress p (0-1) on a route from (x0,y0) to (x1,y1): kind line | arc (parabola of height h) | bezier (S-curve of height h) */
+function pathAt(kind, p, x0, y0, x1, y1, h) {
+  if (kind === 'arc') return [lerp(x0, x1, p), lerp(y0, y1, p) - 4 * h * p * (1 - p)];
+  if (kind === 'bezier') {
+    const c0x = x0 + (x1 - x0) * 0.15, c0y = y0 - h * 1.35, c1x = x0 + (x1 - x0) * 0.85, c1y = y1 - h * 1.35, u = 1 - p;
+    return [u * u * u * x0 + 3 * u * u * p * c0x + 3 * u * p * p * c1x + p * p * p * x1, u * u * u * y0 + 3 * u * u * p * c0y + 3 * u * p * p * c1y + p * p * p * y1];
+  }
+  return [lerp(x0, x1, p), lerp(y0, y1, p)];
+}
+/* arc height of a route: grows with the distance, 18-70 px */
+const arcHeight = (x0, x1) => clamp(Math.abs(x1 - x0) * 0.35 + 14, 18, 70);
+/* a small puff of dust where something vanishes */
+function puffAt(g, t, t0, x, y, seed = 1) {
+  const dt = t - t0; if (dt < 0 || dt > 0.45) return;
+  g.save();
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2 + hs(i + seed), r = 3 + EA.out(dt / 0.45) * 9;
+    g.globalAlpha = 1 - dt / 0.45;
+    disc(g, x + Math.cos(a) * r, y + Math.sin(a) * r * 0.8 - dt * 6, 2 + (i % 2), '#ffffff');
+  }
+  g.restore();
+}
+/* pixel object drawn around its centre (cx, cy). o: { sc: scale, sx: width factor (spin), state, k: colour index, text } */
+function itemSprite(g, kind, cx, cy, o = {}) {
+  const S = (o.sc == null ? 1 : o.sc) * 1.5, sx = o.sx == null ? 1 : o.sx; if (S <= 0.02) return;
+  const Q = (ox, oy, w, h, c) => R(g, cx + ox * S * sx, cy + oy * S, Math.max(1, w * S * sx), Math.max(1, h * S), c);
+  const ol = (w, h) => Q(-w / 2 - 1, -h / 2 - 1, w + 2, h + 2, INK);
+  const st = o.state || 'closed', rp = M[TOKR[(((o.k | 0) % 6) + 6) % 6]];
+  if (kind === 'coin') { ol(10, 10); Q(-4, -5, 8, 10, M.gold[3]); Q(-5, -4, 10, 8, M.gold[3]); Q(-1, -3, 2, 6, M.gold[1]); Q(-3, -4, 2, 2, M.gold[4]); return; }
+  if (kind === 'letter') { ol(16, 11); Q(-8, -5, 16, 10, M.white[3]); Q(-8, -5, 16, 1, M.white[1]); for (let i = 0; i < 4; i++) { Q(-7 + i * 2, -5 + i, 2, 1, M.steel[2]); Q(5 - i * 2, -5 + i, 2, 1, M.steel[2]); } Q(-1, 0, 3, 3, M.red[2]); return; }
+  if (kind === 'msg') { ol(16, 11); Q(-8, -6, 16, 10, M.white[3]); Q(-7, -5, 14, 8, M.white[4]); Q(-5, 4, 3, 3, INK); Q(-4, 3, 2, 2, M.white[3]); Q(-5, -3, 8, 1, M.steel[2]); Q(-5, -1, 10, 1, M.steel[2]); Q(-5, 1, 6, 1, M.steel[2]); return; }
+  if (kind === 'dish') { ol(16, 10); Q(-8, 1, 16, 3, M.white[3]); Q(-7, 4, 14, 1, M.white[1]); Q(-5, -4, 10, 5, M.orange[2]); Q(-3, -5, 6, 1, M.orange[3]); Q(-1, -7, 2, 2, M.white[3]); return; }
+  if (kind === 'crate') { ol(14, 14); Q(-7, -7, 14, 14, M.wood[2]); Q(-7, -7, 14, 2, M.wood[3]); Q(-7, 5, 14, 2, M.wood[1]); for (let i = 0; i < 5; i++) { Q(-5 + i * 2, -5 + i * 2, 2, 2, M.wood[1]); Q(3 - i * 2, -5 + i * 2, 2, 2, M.wood[1]); } return; }
+  if (kind === 'commit') { ol(12, 12); Q(-5, -6, 10, 12, rp[2]); Q(-6, -5, 12, 10, rp[2]); Q(-4, -5, 6, 2, rp[3]); Q(-2, -2, 4, 4, M.white[4]); return; }
+  if (kind === 'tile') { ol(14, 12); Q(-7, -6, 14, 12, rp[2]); Q(-7, -6, 14, 2, rp[3]); Q(-7, 4, 14, 2, rp[1]); Q(-2, -2, 4, 4, rp[4]); return; }
+  /* box (parcel): states open closed taped labelled; empty/full read as open/closed */
+  const open = st === 'open' || st === 'empty';
+  ol(14, 12); Q(-7, -4, 14, 10, M.wood[2]); Q(-7, -4, 14, 2, M.wood[3]); Q(-7, 4, 14, 2, M.wood[1]);
+  if (open) { Q(-8, -8, 4, 5, M.wood[3]); Q(4, -8, 4, 5, M.wood[3]); Q(-6, -3, 12, 2, INK); } else { Q(-7, -6, 14, 3, M.wood[3]); Q(-7, -4, 14, 1, M.wood[1]); }
+  if (st === 'taped' || st === 'labelled' || st === 'full') { Q(-1, -6, 3, 12, M.sand[3]); Q(-7, -1, 14, 2, M.sand[3]); }
+  if (st === 'labelled') { Q(-5, 0, 7, 5, M.white[4]); Q(-4, 1, 5, 1, M.steel[2]); Q(-4, 3, 3, 1, M.steel[2]); }
+}
+/* big check (green) or cross (red) mark of 14 px, pop-in p 0-1 */
+function markSprite(g, cx, cy, ok, p) {
+  const S = EA.back(clamp(p)); if (S <= 0.05) return;
+  const d = Math.round(7 * S), c = ok ? M.green[3] : M.red[3], dk = ok ? M.green[0] : M.red[0];
+  disc(g, cx, cy, d + 2, INK); disc(g, cx, cy, d, dk);
+  const u = Math.max(1, Math.round(S * 2));
+  if (ok) { for (let i = 0; i < 3; i++) R(g, cx - 4 * S + i * u * 1.5, cy + i * u - 1, u * 2, u * 2, c); for (let i = 0; i < 5; i++) R(g, cx - 1 * S + i * u * 1.5, cy + 2 - i * u, u * 2, u * 2, c); }
+  else for (let i = -3; i <= 3; i++) { R(g, cx + i * u, cy + i * u, u * 2, u * 2, c); R(g, cx + i * u, cy - i * u, u * 2, u * 2, c); }
+}

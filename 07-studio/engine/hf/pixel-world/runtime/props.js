@@ -5,6 +5,7 @@
 'use strict';
 const PL = {};
 function defProp(kind, d) { PL[kind] = d; }
+const hl = (g, x, y) => R(g, x, y, 1, 1, M.white[4]); // the single highlight pixel of a surface (shared drawing language)
 const fireRamp = (v) => (v > 0.66 ? M.red : v > 0.33 ? M.orange : M.green);
 const heatRamp = (v) => (v > 0.7 ? M.fire : v > 0.4 ? M.orange : M.teal);
 
@@ -76,8 +77,9 @@ defProp('router', { about: 'wifi router with antennas and blinking LEDs', w: 34,
 defProp('wifi', { about: 'wifi symbol of arcs; fill lights more arcs', w: 30, h: 24, row: 'high', fills: true,
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s), cx = x + Q(15), cy = y + Q(22), n = 1 + Math.round(S.fill * 2) + (S.lit > 0.2 ? 0 : 0);
-    disc(g, cx, cy, Math.max(1, Q(2)), M.teal[3]);
-    for (let k = 1; k <= 3; k++) { const on = k <= n, r = Q(k * 6); for (let a = -0.75; a <= 0.75; a += 0.09) R(g, cx + Math.sin(a) * r, cy - Math.cos(a) * r, Math.max(1, Q(1.8)), Math.max(1, Q(1.8)), on ? M.teal[3 - (Math.floor(t * 3) % 2 && k === n ? 1 : 0)] : M.dark[3]); }
+    const sz = Math.max(2, Q(2.4));
+    disc(g, cx, cy, Math.max(2, Q(3)) + 1, INK); disc(g, cx, cy, Math.max(2, Q(3)), M.teal[3]);
+    for (const pass of [0, 1]) for (let k = 1; k <= 3; k++) { const on = k <= n, r = Q(k * 6); for (let a = -0.75; a <= 0.75; a += 0.09) { const px = cx + Math.sin(a) * r, py = cy - Math.cos(a) * r; if (pass === 0) R(g, px - 1, py - 1, sz + 2, sz + 2, INK); else R(g, px, py, sz, sz, on ? M.teal[3 - (Math.floor(t * 3) % 2 && k === n ? 1 : 0)] : M.dark[3]); } }
   } });
 defProp('cloud', { about: 'cloud; fill shows an upload bar, light makes it glow', w: 44, h: 28, row: 'high', fills: true,
   draw(g, t, S, x, y, s) {
@@ -103,11 +105,11 @@ defProp('bug', { about: 'software bug: a beetle with legs that crawl', w: 22, h:
     x += dx; for (let i = 0; i < 3; i++) { R(g, x + Q(2) + i * Q(6), y + Q(13) + (k ^ (i & 1)), Q(2), Q(4), INK); R(g, x + Q(2) + i * Q(6), y + Q(2) - (k ^ (i & 1)), Q(2), Q(3), INK); }
     ball(g, x + Q(11), y + Q(9), Q(7), M.red); R(g, x + Q(10), y + Q(3), Q(2), Q(12), INK); R(g, x + Q(4), y + Q(7), Q(2), Q(2), M.white[4]); R(g, x + Q(15), y + Q(7), Q(2), Q(2), M.white[4]);
   } });
-defProp('coin', { about: 'spinning coin; pulse or coins make it hop', w: 18, h: 18, row: 'bench',
+defProp('coin', { about: 'spinning gold coin (a squashed disc with a rim and a highlight); pulse or coins make it hop', w: 18, h: 18, row: 'bench',
   draw(g, t, S, x, y, s) {
-    const Q = (n) => Math.round(n * s), sq = Math.abs(Math.cos(t * 3 + x)), w = Math.max(2, Math.round(Q(14) * Math.max(0.15, sq)));
-    R(g, x + Q(9) - w / 2 - 1, y + Q(2) - 1, w + 2, Q(14) + 2, INK); R(g, x + Q(9) - w / 2, y + Q(2), w, Q(14), M.gold[2]); R(g, x + Q(9) - w / 2, y + Q(2), Math.max(1, w * 0.3), Q(14), M.gold[4]);
-    if (sq > 0.6) txt(g, '$', x + Q(9), y + Q(5), Math.max(8, Q(8)), M.gold[0], 'center');
+    const Q = (n) => Math.round(n * s), sq = Math.max(0.2, Math.abs(Math.cos(t * 3 + x))), r = Q(8), cx = x + Q(9), cy = y + Q(9);
+    for (let dy = -r - 1; dy <= r + 1; dy++) { const o = Math.round(Math.sqrt(Math.max(0, (r + 1) * (r + 1) - dy * dy)) * sq), i = Math.round(Math.sqrt(Math.max(0, r * r - dy * dy)) * sq); R(g, cx - o, cy + dy, o * 2, 1, INK); if (i > 0) R(g, cx - i, cy + dy, i * 2, 1, dy < -r * 0.45 ? M.gold[3] : dy > r * 0.45 ? M.gold[1] : M.gold[2]); }
+    if (sq > 0.6) txt(g, '$', cx, cy - Math.round(r * 0.45), Math.max(8, Q(8)), M.gold[0], 'center'); else R(g, cx - 1, cy - r + 1, 1, Math.max(1, r - 1), M.gold[4]);
   } });
 defProp('barchart', { about: 'bar chart on a board; fill raises the bars', w: 36, h: 30, row: 'high', fills: true,
   draw(g, t, S, x, y, s) {
@@ -117,13 +119,14 @@ defProp('barchart', { about: 'bar chart on a board; fill raises the bars', w: 36
 defProp('flame', { about: 'flame; fill grows it, it flickers', w: 20, h: 28, row: 'floor', fills: true,
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s), v = 0.45 + 0.55 * clamp(S.fill + S.lit), f = Math.floor(t * 12 + x), j = hs(f) > 0.5 ? 1 : 0, H = Q(26) * v, b = y + Q(28);
+    R(g, x + Q(3) - 1, b - H * 0.7 - 1, Q(14) + 2, H * 0.7 + 2, INK); R(g, x + Q(5) - 1, b - H - 1, Q(10) - j + 2, H * 0.3 + 2, INK);
     R(g, x + Q(3), b - H * 0.7, Q(14), H * 0.7, M.fire[1]); R(g, x + Q(5), b - H, Q(10) - j, H, M.fire[2]); R(g, x + Q(7), b - H * 0.8 - j, Q(6), H * 0.7, M.fire[3]); R(g, x + Q(8), b - H * 0.4, Q(4), H * 0.35, M.fire[4]);
     glow(g, x + Q(10), b - H * 0.4, Q(24) * v, M.orange[3], 0.4);
   } });
 defProp('snowflake', { about: 'snowflake for cold and cooling; light makes it sparkle', w: 24, h: 24, row: 'high',
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s), cx = x + Q(12), cy = y + Q(12) + Math.round(Math.sin(t * 1.4 + x) * 2);
-    for (let a = 0; a < 6; a++) { const k = a * Math.PI / 3 + t * 0.3; for (let r = 1; r <= 11; r += 2) R(g, cx + Math.cos(k) * Q(r), cy + Math.sin(k) * Q(r), Math.max(2, Q(2.4)), Math.max(2, Q(2.4)), r > 7 ? M.teal[4] : M.teal[3]); }
+    for (const pass of [0, 1]) for (let a = 0; a < 6; a++) { const k = a * Math.PI / 3 + t * 0.3; for (let r = 1; r <= 11; r += 2) { const px = cx + Math.cos(k) * Q(r), py = cy + Math.sin(k) * Q(r), z = Math.max(3, Q(3)); if (pass === 0) R(g, px - 1, py - 1, z + 2, z + 2, INK); else R(g, px, py, z, z, r > 7 ? M.teal[4] : M.teal[3]); } }
     disc(g, cx, cy, Math.max(1, Q(2)), '#ffffff'); if (S.lit > 0.1) glow(g, cx, cy, Q(18), M.teal[4], 0.35);
   } });
 defProp('plug', { about: 'electric plug; open pulls it away from the wall, light sparks it', w: 18, h: 30, row: 'floor', opens: true,
@@ -152,7 +155,7 @@ defProp('bolt', { about: 'lightning bolt for power and charging; pulses', w: 16,
     glow(g, x + Q(8), y + Q(13), Q(20), M.yellow[3], 0.4 + 0.3 * S.lit);
   } });
 defProp('gear', { about: 'turning gear; fill speeds it up', w: 28, h: 28, row: 'high', fills: true,
-  draw(g, t, S, x, y, s) { const Q = (n) => Math.round(n * s); gear(g, x + Q(14), y + Q(14), Q(10), 8, t * (0.8 + S.fill * 3 + S.lit), M.gold); } });
+  draw(g, t, S, x, y, s) { const Q = (n) => Math.round(n * s); disc(g, x + Q(14), y + Q(14), Q(13), INK); gear(g, x + Q(14), y + Q(14), Q(10), 8, t * (0.8 + S.fill * 3 + S.lit), M.gold); hl(g, x + Q(8), y + Q(8)); } });
 defProp('server', { about: 'server rack with blinking LEDs; fill heats it', w: 24, h: 42, row: 'floor', fills: true,
   draw(g, t, S, x, y, s) {
     const Q = (n) => Math.round(n * s); box(g, x, y, Q(24), Q(42), M.steel);

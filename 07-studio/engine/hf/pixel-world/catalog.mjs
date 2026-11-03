@@ -52,6 +52,8 @@ export const BEAT_DOCS = {
 };
 
 let cache = null;
+/** Prop library files in load order: props.js first, then props-*.js (alphabetical). */
+const propFiles = () => ["props.js", ...readdirSync(RUNTIME_DIR).filter((f) => /^props-.*\.js$/.test(f)).sort()];
 // Evaluates runtime files in one vm context with stubs (their top level only registers definitions). Returns the registries.
 function evalFiles(files) {
   const defs = { scenarios: [], heroes: [], npcs: [] };
@@ -68,7 +70,7 @@ function evalFiles(files) {
 export function loadCatalog() {
   if (cache) return cache;
   const scenFiles = readdirSync(RUNTIME_DIR).filter((f) => /^scenarios-.*\.js$/.test(f)).sort();
-  const sc = evalFiles(["props.js", ...scenFiles]);
+  const sc = evalFiles([...propFiles(), ...scenFiles]);
   const cast = evalFiles(["cast.js"]);
   const scenarios = sc.scenarios.map((d) => {
     const legacy = LEGACY_TOPICS[d.id] ?? {};
@@ -98,7 +100,7 @@ export const castIds = () => ["hero", ...heroIds(), ...npcIds()];
 /** Runtime sources in load order (the data prelude is prepended by compose). */
 export function runtimeFiles() {
   const scen = readdirSync(RUNTIME_DIR).filter((f) => /^scenarios-.*\.js$/.test(f)).sort();
-  return ["core.js", "contrast.js", "fx.js", "kit.js", "hud.js", "floor.js", "cast.js", "props.js", ...scen, "beats.js", "main.js"];
+  return ["core.js", "contrast.js", "fx.js", "kit.js", "hud.js", "floor.js", "cast.js", ...propFiles(), ...scen, "ambient.js", "beats.js", "main.js"];
 }
 
 export const propKinds = () => loadCatalog().propLib.map((p) => p.kind);

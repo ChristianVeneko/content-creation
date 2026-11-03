@@ -3,6 +3,7 @@
 import { getScenario, PROP_ACTS, worldProps, workshopProps } from "./catalog.mjs";
 import { densify, DENSITY_MIN_PER_SEC, punctuate, punchLoad, deriveShakes, capFlashes, PUNCH_MIN_PER_SEC, FLASH_MAX_PER_10S } from "./normalize.mjs";
 import { getStyle, pixelGrid } from "./styles.mjs";
+import { splitSentences, coverageReport, coverageWarnings, interactPunctuate, foreignProps } from "./coverage.mjs";
 
 /** Smallest visible change of a progress bar or a prop fill between two consecutive values (12 % of its length). */
 export const MIN_VISIBLE_DELTA = 0.12;
@@ -76,7 +77,7 @@ export function captionGroups(words) {
   });
 }
 
-const SFX_OF = { fill: "blip", open: "pop", close: "click", light: "blip", dim: "click", burst: "hit", recolor: "pop", coins: "coin", chop: "hit", stamp: "stamp", pulse: "pop", "hero-stamp": "stamp", x2: "coin", shake: "hit", "radial-burst": "pop", emote: "blip", label: "pop", pan: "whoosh", push: "whoosh", react: "blip", jump: "pop", cheer: "coin", progress: "blip", counter: "blip", follow: "click" };
+const SFX_OF = { fill: "blip", open: "pop", close: "click", light: "blip", dim: "click", burst: "hit", recolor: "pop", coins: "coin", chop: "hit", stamp: "stamp", pulse: "pop", transform: "pop", spawn: "pop", stack: "pop", vanish: "pop", count: "blip", compare: "coin", carry: "click", reject: "hit", travel: "whoosh", "hero-stamp": "stamp", x2: "coin", shake: "hit", "radial-burst": "pop", emote: "blip", label: "pop", pan: "whoosh", push: "whoosh", react: "blip", jump: "pop", cheer: "coin", progress: "blip", counter: "blip", follow: "click" };
 
 /**
  * Seeded camera drift of a world: [amplitude in logical px, period in s, phase in rad]. The runtime turns it into a slow parallax
@@ -122,6 +123,7 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
   for (let k = 1; k < n; k++) if (starts[k] < starts[k - 1] + 2) { starts[k] = Math.min(dur - 0.5, starts[k - 1] + 2); warnings.push(`world ${k + 1} starts less than 2 s after the previous world; moved to ${starts[k].toFixed(2)} s`); }
 
   const sfx = [], hud = [];
+  const sentences = splitSentences(ws), capG = captionGroups(ws), writtenBeats = [], allBeats = [], addedInteract = [];
   const defaultTr = ["slide", "tiles", "iris", "down"];
   const worlds = payload.worlds.map((w, wi) => {
     const t0 = +starts[wi].toFixed(3), t1 = +(wi + 1 < n ? starts[wi + 1] : dur).toFixed(3);
@@ -141,13 +143,21 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       if (b.t < t0 || b.t > t1 - 0.05) { if (b.t < t0 - 0.01 || b.t > t1) warnings.push(`world ${wi + 1} beat ${b._i + 1} (${b.do}) lands outside its world (${b.t.toFixed(2)} s); clamped into ${t0.toFixed(1)}-${t1.toFixed(1)} s`); b.t = Math.min(Math.max(b.t, t0), t1 - 0.05); }
       b.t = +b.t.toFixed(3);
     }
+    writtenBeats.push(...beats.map((b) => ({ t: b.t, do: b.do })));
+    const propsOrdered = worldProps(w).slice().sort((a, b) => Math.abs((a.x ?? 135) + (a.w ?? 0) / 2 - 135) - Math.abs((b.x ?? 135) + (b.w ?? 0) / 2 - 135)).map((p) => p.id);
+    const inter = interactPunctuate({ sentences, beats, propIds: propsOrdered, t0, t1 });
+    if (inter.length) {
+      beats.push(...inter.map((d, k) => ({ ...d, _i: -300 - k })));
+      addedInteract.push(...inter.filter((d) => d.do === "travel"));
+      warnings.push(`world ${wi + 1}: ${inter.length / 2} sentence(s) had no interaction; added a pulse and a travelling token on ${inter.filter((d) => d.do === "travel").map((d) => `${d.to}@${d.t.toFixed(1)}s`).join(", ")}`);
+    }
     const dens = densify({ t0, t1, beats, words: ws, propIds: worldProps(w).map((p) => p.id), castIds: (w.cast ?? [{ who: "hero" }]).map((c) => c.who) });
     if (dens.length) {
       const before = beats.length / (t1 - t0);
       beats.push(...dens.map((d, k) => ({ ...d, _i: -1 - k })));
       warnings.push(`world ${wi + 1}: ${before.toFixed(2)} beats/s is below ${DENSITY_MIN_PER_SEC}; added ${dens.length} ambient reaction beat(s) (${dens.map((d) => `${d.do}@${d.t.toFixed(1)}s`).join(", ")})`);
     }
-    const pun = punctuate({ t0, t1, beats, words: ws, propIds: worldProps(w).map((p) => p.id), castIds: (w.cast ?? [{ who: "hero" }]).map((c) => c.who), flash: !!payload.flash, hook: wi === 0 });
+    const pun = punctuate({ t0, t1, beats, words: ws, propIds: worldProps(w).map((p) => p.id), castIds: (w.cast ?? [{ who: "hero" }]).map((c) => c.who), flash: !!payload.flash, hook: wi === 0, groups: capG });
     if (pun.length) {
       const before = punchLoad(beats, !!payload.flash) / (t1 - t0);
       beats.push(...pun.map((d, k) => ({ ...d, _i: -100 - k })));
@@ -163,6 +173,8 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       else if (b.do === "follow") { /* handled by the brand pill */ }
       else { out.push(rest); if (b.do === "flash") flashRefs.push({ out, rest, t: b.t, wi }); }
       if (SFX_OF[b.do] && !b.ambient) sfx.push({ at: b.t, kind: SFX_OF[b.do] });
+      if (b.do === "travel") sfx.push({ at: +(b.t + (b.dur ?? 0.9)).toFixed(3), kind: b.land === "slam" ? "hit" : b.land === "none" ? "click" : b.land === "burst" ? "coin" : "pop" });
+      allBeats.push({ t: b.t, do: b.do, target: b.target, auto: !!b.auto || !!b.ambient });
     }
     const byTarget = {};
     for (const b of out) if (b.do === "fill" && typeof b.target === "string") (byTarget[b.target] ??= []).push(b);
@@ -179,6 +191,9 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
       warnings.push(`world ${f.wi + 1}: flash at ${t.toFixed(2)} s dropped (photosensitivity guard: none before 0.5 s, at most ${FLASH_MAX_PER_10S} per 10 s, 0.5 s apart)`);
     }
   }
+  const covWritten = coverageReport({ words: ws, beats: writtenBeats }), covFinal = coverageReport({ words: ws, beats: allBeats, countAuto: true });
+  warnings.push(...coverageWarnings(covWritten).map((m) => m + (covFinal.sentences[+m.match(/sentence (\d+)/)[1] - 1]?.ok ? " [fixed by an automatic interaction]" : "")));
+  warnings.push(...foreignProps(worlds, (w) => { const sc = getScenario(w.sc); return sc?.dynamic ? workshopProps(w.pl).map((p) => p.id) : (sc?.props ?? []).map((p) => p.id); }));
   warnings.push(...nudgeSeries(hud.filter((h) => h.hud === "progress"), "progress beat"));
 
   let brand = null;
@@ -190,8 +205,8 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
   sfx.sort((a, b) => a.at - b.at || a.kind.localeCompare(b.kind));
   const dedup = []; for (const s of sfx) if (!dedup.some((d) => d.kind === s.kind && Math.abs(d.at - s.at) < 0.06)) dedup.push({ at: +s.at.toFixed(3), kind: s.kind });
   return {
-    data: { dur, mode, layout: payload.layout, hero: payload.hero, flash: !!payload.flash, pixelScale: grid.scale, ss: grid.ss, capsDefault: !!captionsEnabled, brand, words: ws, caps: captionGroups(ws), hud, worlds },
-    sfx: dedup, warnings, durationSec: dur, style,
+    data: { dur, mode, ambient: payload.ambient ?? "normal", layout: payload.layout, hero: payload.hero, flash: !!payload.flash, pixelScale: grid.scale, ss: grid.ss, capsDefault: !!captionsEnabled, brand, words: ws, caps: captionGroups(ws), hud, worlds },
+    sfx: dedup, warnings, durationSec: dur, style, coverage: { written: covWritten, final: covFinal },
   };
 }
 export { PROP_ACTS };

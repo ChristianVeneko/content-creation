@@ -1,6 +1,7 @@
 // Lenient authoring: maps the slips an LLM makes in the payload to valid values without dropping content.
 // Anything it cannot map is left untouched so the schema reports a precise error instead of guessing.
-import { loadCatalog, BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, getScenario, worldProps, WORKSHOP_ID, WORKSHOP_THEMES } from "./catalog.mjs";
+import { ALL_KINDS as BEAT_KINDS, ITEMS, PATHS, EASES, LANDS, ITEM_STATES, STACK_LAYOUTS, AMBIENT_LEVELS } from "./schema.mjs";
+import { loadCatalog, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, getScenario, worldProps, WORKSHOP_ID, WORKSHOP_THEMES } from "./catalog.mjs";
 import { STYLES, STYLE_GUIDE, RETRO_RE, recommendStyles, PIXEL_SCALES } from "./styles.mjs";
 
 const flat = (s) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
@@ -39,6 +40,14 @@ const DO_ALIASES = {
 };
 const EMOTE_ALIASES = { question: "?", "question mark": "?", exclamation: "!", "exclamation mark": "!", surprise: "!", love: "heart", like: "heart", lightbulb: "idea", bulb: "idea", thinking: "dots", ellipsis: "dots", ok: "check", yes: "check", tick: "check", no: "cross", x: "cross", wrong: "cross", sleep: "zzz", money: "coin", music: "note", sparkle: "star" };
 const COLOR_ALIASES = { cyan: "teal", aqua: "teal", violet: "purple", magenta: "pink", grey: "white", gray: "white", black: "blue", brown: "orange", lime: "green", amber: "orange", crimson: "red" };
+const MECH_DO_ALIASES = { send: "travel", fly: "travel", ship: "travel", deliver: "travel", throw: "travel", "move item": "travel", move_item: "travel", morph: "transform", change: "transform", swap: "transform", "change state": "transform", appear: "spawn", add: "spawn", create: "spawn", pile: "stack", remove: "vanish", delete: "vanish", poof: "vanish", disappear: "vanish", tally: "count", "count up": "count", versus: "compare", vs: "compare", "pick up": "carry", bring: "carry", deliver_by_hand: "carry", block: "reject", blocked: "reject", deny: "reject", refuse: "reject" };
+const ITEM_ALIASES = { package: "box", parcel: "box", paquete: "box", caja: "box", mail: "letter", envelope: "letter", sobre: "letter", carta: "letter", message: "msg", bubble: "msg", mensaje: "msg", order: "msg", slip: "msg", ticket: "msg", plate: "dish", food: "dish", meal: "dish", plato: "dish", block: "tile", token: "tile", brick: "tile", crates: "crate", node: "commit", snapshot: "commit", dot: "commit", money: "coin" };
+const PATH_ALIASES = { straight: "line", linear: "line", parabola: "arc", parabolic: "arc", curve: "bezier", curved: "bezier", spline: "bezier", jump: "arc" };
+const EASE_ALIASES = { lin: "linear", io: "inout", "ease in out": "inout", smooth: "inout", ease: "inout", "ease in": "in", "ease out": "out", fast: "out", slow: "in" };
+const LAND_ALIASES = { explode: "burst", sparks: "burst", sparkle: "burst", pop: "burst", bump: "bounce", hop: "bounce", door: "slam", "door slam": "slam", slam: "slam", thud: "slam", plus: "tick", counter: "tick", count: "tick", nothing: "none", off: "none" };
+const STATE_ALIASES = { sealed: "closed", shut: "closed", close: "closed", taped: "taped", tape: "taped", wrapped: "taped", labeled: "labelled", label: "labelled", tagged: "labelled", addressed: "labelled", opened: "open", flag: "flag-up", "flag up": "flag-up", "flag down": "flag-down", raised: "flag-up", lowered: "flag-down", flagup: "flag-up", flagdown: "flag-down", loaded: "full", filled: "full", ready: "full", blank: "empty", hollow: "empty" };
+const LAYOUT_ALIASES2 = { line: "row", horizontal: "row", queue: "row", heap: "pile", stack: "pile", column: "pile", vertical: "pile" };
+const AMBIENT_ALIASES = { low: "calm", quiet: "calm", still: "calm", default: "normal", medium: "normal", high: "lively", busy: "lively", active: "lively" };
 const TR_ALIASES = { wipe: "tiles", tile: "tiles", mosaic: "tiles", circle: "iris", round: "iris", push: "slide", pan: "slide", scroll: "slide", drop: "down", fall: "down", vertical: "down", "slide down": "down" };
 const TIME_ALIASES = { sunset: "dusk", evening: "dusk", sunrise: "dusk", twilight: "dusk", nightfall: "night", dark: "night", midnight: "night", morning: "day", noon: "day", afternoon: "day", light: "day", daytime: "day" };
 const PROP_KIND_ALIASES = { battery: "battery", cell: "battery", celular: "phone", smartphone: "phone", mobile: "phone", cpu: "chip", processor: "chip", ventilador: "fan", wire: "cable", usb: "cable", lightning: "bolt", thunder: "bolt", lock: "padlock", virus: "bug", fire: "flame", heat: "flame", cold: "snowflake", ice: "snowflake", monitor: "screen", display: "screen", chart: "barchart", graph: "barchart", gauge: "gauge", dial: "gauge", temperature: "thermometer", search: "magnifier", lens: "magnifier", money: "coin", cog: "gear", rack: "server", db: "database", idea: "bulb", light: "bulb", wireless: "wifi" };
@@ -60,14 +69,19 @@ function normBeat(b, w, heroId, castIds) {
   if (o.n !== undefined && isObj(o.on) && o.on.n === undefined) { o.on.n = Math.max(1, Math.round(+o.n) || 1); delete o.n; }
   // kind
   const kind = o.do ?? o.kind ?? o.type ?? o.action; delete o.kind; delete o.type; delete o.action;
-  if (kind !== undefined) { const k = flat(kind); o.do = BEAT_KINDS.includes(String(kind)) ? kind : BEAT_KINDS.includes(k) ? k : BEAT_KINDS.includes(k.replace(/ /g, "-")) ? k.replace(/ /g, "-") : DO_ALIASES[k] ?? kind; }
+  if (kind !== undefined) { const k = flat(kind); o.do = BEAT_KINDS.includes(String(kind)) ? kind : BEAT_KINDS.includes(k) ? k : BEAT_KINDS.includes(k.replace(/ /g, "-")) ? k.replace(/ /g, "-") : DO_ALIASES[k] ?? MECH_DO_ALIASES[k] ?? kind; }
   const props = worldProps(w);
   if (typeof o.target === "string" && props.length && !props.some((p) => p.id === o.target)) {
     const near = nearest(o.target, props.map((p) => ({ id: p.id, name: p.id.replace(/-/g, " "), keywords: toks(p.about) })));
     if (near) o.target = near;
   }
   if (o.target === undefined && props.length && PROP_ACTS.includes(o.do)) o.target = props[0].id;
-  if (typeof o.to === "string") { const to = flat(o.to); if (["left", "center", "right"].includes(to)) o.to = to; else if (!props.some((p) => p.id === o.to)) { const near = nearest(o.to, props.map((p) => ({ id: p.id, name: p.id, keywords: toks(p.about) }))); if (near) o.to = near; } }
+  const alias = (f, list, map) => { if (typeof o[f] === "string" && !list.includes(o[f])) { const k = flat(o[f]); o[f] = list.includes(k) ? k : map[k] ?? map[k.replace(/ /g, "")] ?? o[f]; } };
+  alias("item", ITEMS, ITEM_ALIASES); alias("path", PATHS, PATH_ALIASES); alias("ease", EASES, EASE_ALIASES); alias("land", LANDS, LAND_ALIASES); alias("state", ITEM_STATES, STATE_ALIASES); alias("layout", STACK_LAYOUTS, LAYOUT_ALIASES2);
+  for (const f of ["trail", "spin"]) if (o[f] !== undefined && typeof o[f] !== "boolean") o[f] = o[f] === "true" || o[f] === 1;
+  if (o.do === "stack" && o.layout === undefined) o.layout = "pile";
+  if (typeof o.to === "string" && flat(o.to) === "hero") o.to = "hero";
+  else if (typeof o.to === "string") { const to = flat(o.to); if (["left", "center", "right"].includes(to)) o.to = to; else if (!props.some((p) => p.id === o.to)) { const near = nearest(o.to, props.map((p) => ({ id: p.id, name: p.id, keywords: toks(p.about) }))); if (near) o.to = near; } }
   if (typeof o.who === "string") { const k = flat(o.who); if (k === flat(heroId) || ["hero", "main", "narrator", "player", "character"].includes(k)) o.who = "hero"; else if (!castIds.includes(o.who)) { const near = nearest(o.who, castIds.map((id) => ({ id, name: id }))); if (near) o.who = near; } }
   if (typeof o.symbol === "string" && !EMOTES.includes(o.symbol)) { const k = flat(o.symbol); o.symbol = EMOTE_ALIASES[k] ?? (EMOTES.includes(k) ? k : o.symbol); }
   if (o.symbol === undefined && typeof o.emoji === "string") { o.symbol = EMOTE_ALIASES[flat(o.emoji)] ?? (EMOTES.includes(o.emoji) ? o.emoji : undefined); delete o.emoji; if (o.symbol === undefined) delete o.symbol; }
@@ -96,6 +110,7 @@ export function normalizePayload(hf) {
   if (typeof out.hero === "string") { const k = flat(out.hero); out.hero = cat.heroes.some((h) => h.id === out.hero) ? out.hero : nearest(k, cat.heroes.map((h) => ({ id: h.id, name: h.name, keywords: toks(h.about) })), { kid: "hoodie", boy: "hoodie", girl: "capgirl", cap: "capgirl", mage: "wizard", witch: "wizard", astronaut: "astro", space: "astro", bot: "robot", droid: "robot" }) ?? out.hero; }
   if (typeof out.layout === "string") out.layout = pickList(out.layout, LAYOUTS, LAYOUT_ALIASES);
   if (typeof out.pixelScale === "string") out.pixelScale = pickList(out.pixelScale, PIXEL_SCALES, PIXEL_SCALE_ALIASES);
+  if (typeof out.ambient === "string") out.ambient = pickList(out.ambient, AMBIENT_LEVELS, AMBIENT_ALIASES);
   if (out.flash !== undefined && typeof out.flash !== "boolean") out.flash = out.flash === "true" || out.flash === 1;
   if (isObj(out.brand)) { out.brand = { ...out.brand }; if (typeof out.brand.handle === "string" && out.brand.handle && !out.brand.handle.startsWith("@")) out.brand.handle = "@" + out.brand.handle; if (typeof out.brand.follow === "string") out.brand.follow = { word: out.brand.follow }; if (out.brand.follow === true) delete out.brand.follow; }
   else if (typeof out.brand === "string") out.brand = { handle: out.brand.startsWith("@") ? out.brand : "@" + out.brand };
@@ -207,7 +222,7 @@ const clean = (s) => String(s ?? "").replace(/[^\p{L}\p{N}]/gu, "");
  * `hook`: true for the first world, which also gets a stamp on its first strong word (hook in the first 2.5 s).
  * @returns {Array<object>} beats to add (`auto: true`), sorted by time
  */
-export function punctuate({ t0, t1, beats, words, propIds = [], castIds = ["hero"], flash = false, hook = false }) {
+export function punctuate({ t0, t1, beats, words, propIds = [], castIds = ["hero"], flash = false, hook = false, groups = [] }) {
   const span = t1 - t0;
   if (!(span > 0)) return [];
   const load = punchLoad(beats, flash), rate = load / span;
@@ -225,7 +240,7 @@ export function punctuate({ t0, t1, beats, words, propIds = [], castIds = ["hero
   let ki = 0, pi = 0, ci = 0;
   const make = (cand, kind) => {
     const word = clean(cand.w.text), b = { t: +cand.w.start.toFixed(3), do: kind, on: { word, n: cand.n }, auto: true };
-    if (kind === "hero-stamp") { b.text = word.toUpperCase(); b.color = STAMP_COLORS[ci++ % STAMP_COLORS.length]; }
+    if (kind === "hero-stamp") { b.text = (stampWord(cand) ?? word).toUpperCase(); b.color = STAMP_COLORS[ci++ % STAMP_COLORS.length]; }
     else if (kind === "shake") b.amp = 3;
     else if (kind === "radial-burst") { if (propIds.length) b.target = propIds[pi++ % propIds.length]; }
     else if (kind === "emote") { b.who = others.length ? others[ci % others.length] : "hero"; b.symbol = ["!", "star", "idea", "heart"][ci++ % 4]; }
@@ -241,7 +256,14 @@ export function punctuate({ t0, t1, beats, words, propIds = [], castIds = ["hero
     free.sort((a, b) => Math.abs(a.w.start - gap.mid) - Math.abs(b.w.start - gap.mid) || b.score - a.score);
     return free[0];
   };
-  const stampOk = (c) => clean(c.w.text).length >= 3 && clean(c.w.text).length <= STAMP_MAX_CHARS && stampT.every((t) => Math.abs(t - c.w.start) >= STAMP_GAP);
+  // an automatic stamp never repeats a word of the caption on screen: it echoes the strongest concept word of the previous caption group
+  const stampWord = (c) => {
+    if (!groups.length) return clean(c.w.text);
+    const gi = groups.findIndex((g) => c.w.start >= g.t0 - 0.02 && c.w.start < g.tEnd), cur = new Set((groups[gi]?.words ?? []).map((x) => nw(x.d)));
+    const pool = (groups[gi - 1]?.words ?? []).map((x) => clean(x.d)).filter((x) => x.length >= 3 && x.length <= STAMP_MAX_CHARS && !cur.has(nw(x)) && !SKIP_WORDS.has(nw(x)));
+    return pool.sort((a, b) => b.length - a.length)[0] ?? null;
+  };
+  const stampOk = (c) => stampWord(c) !== null && stampT.every((t) => Math.abs(t - c.w.start) >= STAMP_GAP);
   if (needHook) {
     const first = strong.filter((c) => c.w.start < t0 + 2.5 && stampOk(c) && punchT.every((t) => Math.abs(t - c.w.start) >= 0.45)).sort((a, b) => b.score - a.score || a.w.start - b.w.start)[0];
     if (first) { const b = make(first, "hero-stamp"); added.push(b); punchT.push(b.t); stampT.push(b.t); need--; }

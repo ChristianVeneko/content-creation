@@ -2,7 +2,7 @@
 
 Animated pixel-art worlds driven by a JSON payload (`spec.hf`), no coding agent in the loop. Module: `07-studio/engine/hf/pixel-world/`. Generalizes the hand-made project `04-projects/2026-11-03-pixel-que-es-un-token-en-la-ia/`.
 
-14 styles, 43 scenarios (12 of them tech-oriented, plus the composable `workshop-stage`), 28 library props, 5 hero designs, 5 NPC creatures, 28 beat kinds. Modes: `multi` (worlds joined by transitions, default) and `single` (one continuous level, the camera travels between stations; `layout` strip or tower).
+14 styles, 51 scenarios (12 of them tech-oriented, 8 developer-tooling, plus the composable `workshop-stage`), 48 library props, 5 hero designs, 5 NPC creatures, 28 beat kinds. Modes: `multi` (worlds joined by transitions, default) and `single` (one continuous level, the camera travels between stations; `layout` strip or tower).
 
 ## How it works
 
@@ -107,7 +107,7 @@ Provenance: **verified** = hex fetched from lospec.com during the style research
 
 A bench scene whose props come from the payload: `{ "scenario": "workshop-stage", "theme": "bench|sky|grid|night-city", "props": [ { "kind": <library kind>, "id"?: "my-id", "at"?: left|center|right|0-1, "size"?: S|M|L, "row"?: floor|bench|high } ] }` (1-8 props). Ids default to the kind (`battery`, `battery-2`); beats target those ids. Rows: `floor` (stands on the ground), `bench` (sits on the table), `high` (floats in the upper wall). Style tokens still remap every colour. Beats drive the prop states: `fill` 0-1, `open`, `light`/`dim`, `pulse`, `burst`, `recolor`, `coins`, `stamp`.
 
-### Prop library (28 procedural props, `runtime/props.js`)
+### Prop library (48 procedural props: 28 in `runtime/props.js`, 20 developer props in `runtime/props-tech.js`)
 
 | kind | row | states | about |
 |---|---|---|---|
@@ -139,6 +139,49 @@ A bench scene whose props come from the payload: `{ "scenario": "workshop-stage"
 | `bulb` | high | light pulse | idea bulb; light turns it on |
 | `clock` | high | fill light pulse | wall clock; fill sweeps the minute hand |
 | `database` | floor | fill light pulse | database cylinder; fill lights its layers |
+| `package` | floor | open fill(taped) light(label) pulse | cardboard package: open shows the inside, fill tapes it shut, light sticks a shipping label |
+| `mailbox` | floor | open(flag up) fill(letters) light pulse | mailbox on a post: open raises the flag, fill pushes letters out of the slot |
+| `remote-server` | floor | fill(upload bar + received counter) light pulse | remote server rack: blinking lights, uploading bar, received counter |
+| `commit-nodes` | bench | fill(nodes appear) light(newest highlighted) pulse | row of commit nodes joined by arrows |
+| `branch-graph` | high | fill(grows, branches, merges) light pulse | main line plus a feature branch that merges back |
+| `terminal` | bench | fill(typed lines) light pulse | terminal window with a blinking cursor |
+| `editor` | bench | light(scrolls faster) pulse | code editor window whose coloured lines scroll |
+| `laptop` | bench | open(error) light(success) fill(loading bar) pulse | laptop whose screen shows code, an error or success |
+| `pr-card` | high | fill(approved) light(merged) pulse | pull-request card: open, approved, merged |
+| `key` | floor | light(shine) pulse | golden key that glints |
+| `ci-tube` | bench | fill(liquid) light(green check) pulse | test tube for tests / CI |
+| `crate-stack` | floor | fill(more crates) light(top highlighted) pulse | stack or queue of crates |
+| `sign-post` | floor | fill(TODO, DOING, DONE) pulse | signpost with a text board |
+| `ghost` | floor | open(fades out: missing) light(red) pulse | ghost for something missing or not sent |
+| `trash` | floor | open(lid) fill(rubbish) pulse | trash bin |
+| `folder` | bench | open(fans papers) fill(more papers) pulse | file folder |
+| `ticket-board` | high | fill(ticket moves TODO to DOING to DONE) light pulse | kanban board |
+| `order-slip` | high | fill(ticked lines) light(sways) pulse | kitchen order slip on a rail |
+| `ci-belt` | floor | light(green checks, else red crosses) pulse | conveyor with a check gate |
+| `deploy-pad` | floor | fill(lift-off with flame) light(beacon) pulse | rocket on a launch pad |
+
+**Drawing language (all 48 props).** One 1 px ink outline (`box` / `ball`, or an ink pass behind thin parts such as wifi arcs), a 3-step ramp from the style palette (dark `[1]`, mid `[2]`, light `[3]`), one white highlight pixel per large surface, every measure through `Q(n) = round(n * s)` so art stays on the pixel grid, colours only from master ramps (never fixed hex) so every style remaps them. Silhouette first: a prop must read as a filled shape before any detail.
+
+**Scale table.** Natural sizes are 14-54 px tall. At the workshop-stage scale `s = 2` a library prop is 20-130 % of the hero's height (hero M = 86 px: 28-108 px); a scenario may use `s = 3` for its landmark prop; no developer-scenario prop is taller than 2x the hero. The hero is never scaled to fit props: props move or shrink, the hero stays M (see Cast).
+
+### Developer-tooling scenarios (`runtime/scenarios-g.js`)
+
+| id | suits topics | props (targets) |
+|---|---|---|
+| `git-desk` | git, commit, branches, merge, version control | graph, nodes, laptop, folder, terminal |
+| `server-room` | remote server, push, upload, cloud storage, hosting | remote, rack-a, rack-b, uplink, router |
+| `review-room` | code review, pull request, approval, feedback | pr, editor, glass, bug, shield |
+| `terminal-cave` | command line, shell, commands, permissions and keys | terminal, keyboard, key, bug |
+| `ci-pipeline` | continuous integration, automated tests, build, quality gate | belt, tube-a, tube-b, gear, screen |
+| `ticket-board-office` | kanban, ticket board, sprint, backlog, queue of work | board, sign, queue, bulb |
+| `api-kitchen` | api, requests and responses, orders, client and server | slip-a, slip-b, stove, pass, phone |
+| `deploy-pad` | deploy, release, shipping to production, going live | pad, sign, mail, pr |
+
+### Ambient life (`runtime/ambient.js`)
+
+Every scenario (and `workshop-stage`) gets 2-4 looping animations that run between beats, independent of the narration: a belt-style service lane on the floor with moving items (crates, packets, coins or checked boxes by topic), a bystander walking the floor, steam, wall torches, neon tube flicker, a blinking LED rail, a scrolling ticker, birds, and breathing foreground bushes. They are pure functions of time and a per-scenario seed, drawn in the floor band (y > 380) or at the far edges, never on the HUD canvas. Intensity: `hf.ambient = "calm" | "normal" | "lively"` (default `normal`; runtime reads `SPEC.ambient`), scaling counts, speeds and sway.
+
+Measured with the near-static metric (mean absolute difference of consecutive 135x240 gray frames below 0.3, software rasteriser, first 20 s of the `pixel-fluid-proof` build, same beats): ambient off 30.2 %, calm 25.5 %, normal 19.7 %, lively 10.9 %. Tool: `04-projects/pixel-props-audit/motion.mjs`.
 
 All scenarios, including the old ones, get the same lower-third dressing (see Frame zones).
 
@@ -170,6 +213,25 @@ pixel-world synthesizes its own sound in code (`audio.mjs`, split into `audio-ds
 Heroes (`hero` and `cast[].who`): `hoodie` (Round-headed kid in an orange hoodie, dark hair, white sneakers.); `capgirl` (Teal jacket, red cap and a ponytail; slimmer silhouette.); `wizard` (Tall pointed hat, long purple robe and a white beard.); `astro` (White suit, glass helmet dome and an orange chest pack.); `robot` (Boxy steel robot with a visor screen, antenna and tube legs.).
 NPCs: `cat` (Sitting cat with a wagging tail that blinks and hops.); `slime` (Bouncing blob with two eyes; squashes on every landing.); `drone` (Hovering helper bot with spinning rotors and a blinking light.); `ghost` (Friendly floating ghost that sways and fades its tail.); `bug` (Literal beetle that scuttles side to side on six legs.).
 Clips: idle, blink, talk (mouth follows the word spans), walk, react (? ! lit eyes), point, jump, cheer. Sizes S/M/L = 12/18/28 % of the frame height; figures are drawn natively at each size (more pixels, never scaled).
+
+## Mechanism beats and sentence coverage (U16b)
+
+The story is told literally: every narrated sentence needs something drawn that changes and an interaction. New beat kinds (all bound to words with `on: {word, n?}`, closed enums, precise validation; code in `runtime/beats.js` and `runtime/fx.js`, pure functions of time):
+
+| kind | fields | effect |
+|---|---|---|
+| `travel` | `target` (origin prop) or `who`, `to` (prop, `hero`, left/center/right), `item`, `path` line/arc/bezier, `ease`, `trail`, `spin`, `land` burst/bounce/slam/tick/none, `dur`, `text` | an object flies A to B; the destination lights up and hops; `slam` shakes the screen; `tick` floats +1 |
+| `transform` | `target`, `state` (open closed taped labelled empty full flag-up flag-down), optional `item`, `text` | the prop shows a state; with `item` a parcel sits on it and changes state (a travel from that prop takes it away) |
+| `spawn` / `stack` | `target`, `count` 1-12, `item`, `layout` row/pile | objects pop in one by one and keep piling up |
+| `vanish` | `target` | everything spawned on the prop disappears with a puff |
+| `count` | `target`, `value`, `label` | counter chip that ticks to `value` with a bump |
+| `compare` | `target`, `to`, `symbol` check/cross, `dur` | check on one prop, cross on the other |
+| `carry` | `who`, `target`, `to`, `item` | walk to the prop, pick up, walk, put down; the destination reacts |
+| `reject` | `target`, `who`, `item` | an item is thrown at the prop and bounces back with a cross and a shake |
+
+Items: box letter coin tile dish msg crate commit. `hf.ambient` (calm|normal|lively, default normal) is validated here and consumed by the ambient animations.
+
+Sentence coverage (`hf/pixel-world/coverage.mjs`, pure): `splitSentences(words)`, `coverageReport({words, beats})` and `interactPunctuate`. A sentence passes when its time span holds a drawn change AND an interaction (mechanism kinds or a prop action fill/open/close/light/dim/burst/recolor/coins/chop/stamp; a pulse is only emphasis; stamps, labels and emotes alone are reported as "covered only by stamps/labels"). `resolvePayload` reports each failing sentence as a warning (`coverage: sentence N ...`) and returns `coverage.written` and `coverage.final`. When a sentence has no interaction and the world has props, the engine adds a pulse plus a token travelling from the hero to the nearest prop (`auto`, reported as a warning, never changing written beats). Automatic stamps echo the strongest concept word of the previous caption group, never a word of the caption on screen; a punch-in or push never crops the hero at the frame edge.
 
 ## Beat kinds (`do`)
 

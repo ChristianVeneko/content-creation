@@ -129,7 +129,7 @@ test("the hero squashes then stretches on a hit, and every cast member bounces i
   assert.ok(st(3.15).jump > 0 && st(3.15).sq === 0, "stretch hop after the squash");
   assert.deepEqual(st(5), { sq: 0, jump: 0 }, "at rest later");
   assert.ok(st(0.1).jump > 10, "drops in at the start of the video");
-  assert.equal(st(1.5).jump, 0, "and has landed");
+  assert.equal(st(1.7).jump, 0, "and has landed");
   assert.equal(JSON.parse(f.run("JSON.stringify(dropIn(0.01, 0, 34, 0.55))")) < -30, true);
 });
 

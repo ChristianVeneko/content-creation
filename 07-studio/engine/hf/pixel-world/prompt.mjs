@@ -1,5 +1,6 @@
 // Spec-writer guidance for LLM providers: generated from the catalog so it always matches what the runtime can draw.
 import { STYLE_GUIDE, PIXEL_SCALE_DOCS } from "./styles.mjs";
+import { MECH_KINDS, MECH_DOCS, ITEMS, PATHS, EASES, LANDS, ITEM_STATES, STACK_LAYOUTS, AMBIENT_LEVELS } from "./schema.mjs";
 import { loadCatalog, BEAT_DOCS, BEAT_KINDS, EMOTES, TRANSITIONS, WORKSHOP_THEMES, WORKSHOP_MAX_PROPS } from "./catalog.mjs";
 
 const PIXEL_SCALES_TEXT = Object.entries(PIXEL_SCALE_DOCS).map(([k, v]) => `"${k}" = ${v}`).join(" ");
@@ -12,6 +13,7 @@ export function buildPromptSection() {
   const ws = cat.scenarios.find((s) => s.dynamic);
   const lib = cat.propLib.map((p) => `- ${p.kind} (${p.row}${p.fills ? ", fill" : ""}${p.opens ? ", open" : ""}): ${p.about}`).join("\n");
   const kinds = BEAT_KINDS.map((k) => `- ${k}: ${BEAT_DOCS[k]}`).join("\n");
+  const mech = MECH_KINDS.map((k) => `- ${k}: ${MECH_DOCS[k]}`).join("\n");
   const heroes = cat.heroes.map((h) => `${h.id} (${h.about})`).join("; ");
   const example = {
     style: "pixel-snes-16bit", hero: "hoodie", brand: { handle: "@canal", follow: { word: "Sigueme" } },
@@ -36,6 +38,13 @@ export function buildPromptSection() {
           { on: { word: "calor" }, do: "hero-stamp", text: "CALOR", color: "orange" }, { on: { word: "calor" }, do: "radial-burst", target: "flame" },
           { on: { word: "calor" }, do: "emote", who: "hero", symbol: "!" }, { on: { word: "calor" }, do: "counter", value: 45, label: "GRADOS" },
           { on: { word: "sube" }, do: "shake", amp: 3 }, { on: { word: "grados" }, do: "hero-stamp", text: "45 GRADOS", color: "red" } ] },
+      { scenario: "post-office", beats: [
+        { on: { word: "caja" }, do: "transform", target: "parcel", item: "box", state: "open" }, { on: { word: "cierras" }, do: "transform", target: "parcel", state: "closed" },
+        { on: { word: "etiqueta" }, do: "transform", target: "parcel", state: "labelled", text: "PARA: EQUIPO" },
+        { on: { word: "viaja" }, do: "travel", target: "parcel", to: "mailbox", item: "box", state: "labelled", path: "arc", trail: true, spin: true, land: "slam", text: "PUSH" },
+        { on: { word: "viaja" }, do: "transform", target: "mailbox", state: "flag-up" }, { on: { word: "llega" }, do: "count", target: "mailbox", value: 1, label: "RECIBIDO" },
+        { on: { word: "caja" }, do: "hero-stamp", text: "CERRADA", color: "teal" }, { on: { word: "viaja" }, do: "shake", amp: 3 }, { on: { word: "llega" }, do: "light", target: "mailbox" },
+        { on: { word: "llega" }, do: "emote", who: "hero", symbol: "check" } ] },
     ],
   };
   return `Format \`pixel-world\`: animated pixel-art worlds (HyperFrames canvas). The picture is procedural and data-driven, so you write ONLY a JSON payload in \`spec.hf\`; no code. The narration text is yours to write in the video language; the payload is language-agnostic (every word in \`on.word\` must be a word that is actually spoken).
@@ -61,10 +70,19 @@ ${lib}
 
 Beat kinds (\`do\`):
 ${kinds}
+Mechanism beats (the story told literally: things MOVE and CHANGE, they are not only labelled). Items: ${ITEMS.join(" ")}; \`path\`: ${PATHS.join("|")}; \`ease\`: ${EASES.join("|")}; \`land\`: ${LANDS.join("|")}; \`state\`: ${ITEM_STATES.join("|")}; \`layout\`: ${STACK_LAYOUTS.join("|")}; \`trail\`/\`spin\`: true. Origin and destination are props of the scenario, \`hero\`, or left|center|right:
+${mech}
 Emote symbols: ${EMOTES.join(" ")}. Colours: red yellow green teal blue purple orange pink white gold.
+
+PLAN FIRST (write this checklist in your head, one line per narrated sentence, BEFORE the payload): sentence -> the ONE drawable noun -> what is drawn (prop and state) -> what moves, from where to where -> which prop changes state. Every sentence needs at least one drawn change AND one interaction beat (travel, transform, spawn, stack, vanish, count, compare, carry, reject or a prop action fill/open/close/light/dim/burst/recolor/coins/chop/stamp) inside its own seconds; stamps, labels and emotes alone do not count. The engine lints this and reports every sentence that fails ("coverage: sentence N ...").
+LITERAL METAPHOR: one drawable noun per sentence; abstract ideas become objects. Commit = a box that closes (transform open -> closed -> labelled) and stays on the desk; push = that box travelling (arc, trail, land slam) to the mailbox/cloud, whose flag goes up; merge = two rails/pieces joining (travel both to the same prop); API = restaurant (a msg order slip travels to the kitchen, a dish travels back); cache = a shelf that fills (spawn tiles); error = reject at a gate. Use only props of the chosen scenario (or compose them with workshop-stage); the destination of a travel is always a prop that exists.
+CONSISTENCY: one hero, one palette (one style), one scale (hero M, props as listed); the same noun keeps the same item and prop for the whole video (the box that was closed is the box that travels). Never repeat in a stamp or label a word that the caption is already showing; pick the concept word.
+WORKED EXAMPLE, "commit vs push" (post-office: board, parcel, mailbox, chute): "Guardas tus cambios: commit." -> transform parcel (item box, open) on "Guardas", transform closed on "commit", label "COMMIT". "Pero nadie los ve." -> count on mailbox value 0 label "REMOTO" and compare parcel vs mailbox. "Con push los envias." -> travel parcel -> mailbox (arc, trail, spin, land slam) on "push", transform mailbox flag-up on "envias", count mailbox 1. "Cada commit se acumula." -> spawn board 3 commit items (pile).
+WORKED EXAMPLE, "an API is a restaurant" (kitchen: rail, stove, window, pot; hero at left): "Tu pides un plato." -> travel from hero to window item msg (order slip, bezier) on "pides"; "La cocina lo prepara." -> light stove, fill pot, spawn pot 1 dish; "Y te lo devuelve." -> travel from window to hero item dish (arc, land bounce), count window 1 label "PEDIDOS".
 
 Rules:
 - Hook in the first 2 seconds: first beat on the first sentence (a hero-stamp or a prop reaction), never an empty start.
+- Interaction density: at least one mechanism beat per sentence; travel/carry on the verbs (envia, lleva, manda, sube), transform on the verbs that change state (cierra, abre, etiqueta, activa), spawn/stack on plurals and "cada", reject on "no puede/bloquea/error". Do not use \`ambient\` unless asked: ${AMBIENT_LEVELS.join("|")} (default normal) is a user setting.
 - BEAT DENSITY: at least one beat every 2 s of each world, aim for one per 1.5 s, several beats on the same strong word are fine (prop change + label + emote). The engine adds ambient reactions when a world is under 0.5 beats/s, but written beats are always better. 8-10 s per world; 3-4 worlds per 30 s video (single mode: the same 3-4 stations).
 - Cast: the hero is size M by default; leave \`size\` out. Use L only for a deliberate close-up of a lone hero with almost no props, S for a tiny sidekick. A hero at L covers 28 % of the frame and hides the props, so it is the exception. Put the action on props in the middle of the frame; the lower third is dressed by the engine, never place text there.
 - The HUD (\`progress\`, \`counter\`) sits under the caption band; labels are short (CALOR, CARGA) and never repeat the caption words.
