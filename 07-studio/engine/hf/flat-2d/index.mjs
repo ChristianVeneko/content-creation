@@ -4,6 +4,7 @@ import { SETTINGS, SETTING_IDS } from "./settings/index.mjs";
 import { payloadSchema as schema } from "./schema.mjs";
 import { normalize as norm } from "./normalize.mjs";
 import { promptSection as prompt } from "./prompt.mjs";
+import { EXAMPLE_PAYLOAD } from "./example.mjs";
 
 export const meta = {
   id: "flat-2d",
@@ -12,6 +13,7 @@ export const meta = {
   modes: ["single", "multi"],
   styles: STYLE_IDS.map((id) => ({ id, name: STYLES[id].name, about: STYLES[id].about })),
   settings: SETTING_IDS.map((id) => ({ id, name: SETTINGS[id].name, about: SETTINGS[id].about })),
+  defaults: { captions: { enabled: true }, hf: EXAMPLE_PAYLOAD },
 };
 export const payloadSchema = schema;
 export const promptSection = prompt;

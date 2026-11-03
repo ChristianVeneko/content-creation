@@ -49,7 +49,8 @@ test("optional accents stay absent when the palette has none", () => {
 });
 
 test("every template with every palette preset resolves to a readable palette", () => {
-  const templates = listTemplates();
+  // HyperFrames formats carry their own styles instead of a theme palette
+  const templates = listTemplates().filter((t) => t.engine !== "hyperframes");
   assert.ok(templates.length >= 40);
   for (const t of templates) {
     // the template's own palette: designed fills keep their colors, but the text must read and nothing is altered
