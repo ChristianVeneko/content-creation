@@ -1,6 +1,6 @@
 # SDD: Video engine rework (animated worlds, not static scenes)
 
-Status: DRAFT for approval. Date: 2026-11-02. Branch to create on approval: `feat/video-engine-rework` (from `feat/process-explainer`).
+Status: IN PROGRESS (units U1-U8 on `feat/video-engine-rework`; see `odd/tasks/video-engine-rework.md`). Date: 2026-11-02. Branch to create on approval: `feat/video-engine-rework` (from `feat/process-explainer`).
 Tracking doc: `odd/tasks/video-engine-rework.md`. Nothing in this document has been executed; no file was deleted.
 
 ## 1. Problem
@@ -36,7 +36,11 @@ Non-goals
 - No new fake-3D "spawn and sit" scenes. No paid AI generation unless the user opts in per video.
 - No change to captions/voice/music subsystems except where the new engine needs word-timing events.
 
-## 4. Scope decisions (ASSUMPTIONS to confirm, see section 12)
+## 4. Scope decisions
+
+UPDATE 2026-11-02 (user): the 20 illustrated-2d templates are NOT deleted ("eliminarlas esas 20 esta forzado pero si se pueden sacar mejores resultados pues hazle un rework"); they are reworked or replaced only where the new formats are clearly better. Pixel and flat 2D now ship as HyperFrames format modules (`pixel-world`, `flat-2d`) driven by the API path; the old pixel templates and the 12 extra 3D looks stay untouched until a replacement passes the standard tests and the user approves removing them. The assumptions below (A1-A3 deletions) are therefore SUSPENDED, not executed.
+
+Original reading of the request (kept for the record):
 
 Reading of the user's request ("dejame ... explicativo/tutorial, datos y gráfica, historia cinematográfica, producto escaparate, todo de pixel arcade, eliminalo" and "en mundos 3D deja solo [6 looks]"):
 
@@ -170,6 +174,18 @@ Web dashboard changes (Create and Storyboard views, `07-studio/web/src/views/*`,
 ### 7.8 Verification status of the `hyperframes` commands (checked 2026-11-02)
 
 Confirmed in the local skills: `lint`, `check --json`, `snapshot`, `render --quality draft|looks|delivery`, `tts` (Kokoro), `transcribe` (Parakeet or whisper). Confirmed in the public README: `render`, `skills` (`skills update` for agents), `init`, `preview`, `add`, `catalog`. NOT confirmed anywhere: `npx hyperframes doctor`, and the `--model large-v3` and `--language es` options of `transcribe`. The package is not installed in this repo (`npx hyperframes@0.9.6` would be downloaded). P2 starts with an install-and-`--help` check inside `05-tools/` (no global install) and the flows that depend on those commands are adjusted to what the CLI really offers.
+
+### 7.9 3D plan (six looks) - after the pilot
+
+What the codebase already has: six Remotion + three.js looks (clay-diorama, iso-toon, neon-glass, pedestal, paper-world, toy-blocks), 26 CC0 GLB models and 2 HDRIs in `03-assets/3d/` (licenses in `licenses.json`), a stage/builders stack whose models are mostly primitive. Facts that shape the plan: HyperFrames renders three.js through its seek contract (the scene is a pure function of time; the `hyperframes` skill's `types/3d.md` describes `hf-seek`, precomputed simulations and `window.__hf.buildReady`); headless WebGL needs GPU flags (ANGLE/Metal on macOS) or it falls back to a very slow software renderer; Kenney downloads sit behind a JS page (not fetchable headlessly) and Quaternius packs are FBX/Blend (convert to GLB via the Blender MCP).
+
+Plan (no code written yet):
+1. Spike (half day, read-only on templates): render one clay-diorama scene through HyperFrames-hosted three.js and through the current Remotion path; compare render time, determinism and look. Decide the host (default stays Remotion if HyperFrames is not clearly better or equal).
+2. A `three-looks` format module with the same contract as `pixel-world` and `flat-2d`: the six looks become STYLES (lighting rig, materials, background/HDRI, post-processing, camera language) and the payload describes scenes made of real assets + procedural helpers, camera shots, and word-bound beats; own captions (no engine overlay).
+3. Asset pipeline: curated kit of CC0 glTF (Quaternius, Kenney, Poly Haven, Poly Pizza CC0 only) with skeletal clips (idle/walk/wave/react) played by `AnimationMixer` sampled at seek time; Mixamo clips only for personal use (verify terms); every asset recorded in `licenses.json`. The user downloads the packs that cannot be fetched headlessly; conversions go through the Blender MCP.
+4. Quality rules (same linter metrics as the 2D formats): one world or camera setup per 6-10 s, a prop interaction bound to a word per scene, character at least 18 % of the frame height, camera never idle for more than 2 s, no scene reused with the same props twice in a row.
+5. Standard tests: one video per look (six), 30-45 s each, built through the API path with Kokoro, graded by the same acceptance list A1-A8.
+6. Only after the new module passes, retire the old Remotion 3D looks (user approval first), then the 12 extra looks and the Blender renderer.
 
 ## 8. Formats after the rework
 
