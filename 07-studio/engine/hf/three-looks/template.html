@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=1080, height=1920" />
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
-<script src="assets/three-bundle.js"></script>
+<script src="assets/__BUNDLE__"></script>
 <style>
 @font-face { font-family: "Baloo2"; src: url('assets/fonts/Baloo2-Variable.ttf'); font-weight: 400 800; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -12,6 +12,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: __BG__
 #root { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: __BG__; }
 canvas#gl { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
 #vig { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; background: radial-gradient(ellipse at 50% 42%, rgba(0,0,0,0) 62%, rgba(60,36,20,0.16) 100%); }
+#leaders { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
 #labels, #stamps { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
 .tag { position: absolute; display: none; padding: 6px 30px 10px; font: 800 __LABELPX__px/1.05 "Baloo2", sans-serif; color: __TAGINK__; background: __TAGBG__; border: 6px solid __TAGBORDER__; border-radius: 40px; box-shadow: 0 10px 0 rgba(74,58,46,0.28); white-space: nowrap; transform-origin: 50% 100%; }
 .stamp { position: absolute; left: 540px; top: __STAMPY__px; display: none; padding: 6px 46px 14px; font: 800 __STAMPPX__px/1.0 "Baloo2", sans-serif; color: #fffaf0; border: 8px solid __TAGBORDER__; border-radius: 56px; box-shadow: 0 16px 0 rgba(74,58,46,0.3); -webkit-text-stroke: 0; text-shadow: 0 6px 0 rgba(74,58,46,0.35); white-space: nowrap; max-width: 960px; }
@@ -19,17 +20,16 @@ canvas#gl { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; 
 .cg { display: none; line-height: 1.12; }
 .cw { display: inline-block; font: 800 __CAPPX__px "Baloo2", sans-serif; color: __CAPFG__; padding: 2px 16px 8px; margin: 0 2px 6px; border-radius: 28px; -webkit-text-stroke: 9px __CAPINK__; paint-order: stroke fill; text-shadow: 0 6px 0 rgba(74,58,46,0.3); }
 .cw.on { background: __CAPHI__; color: __CAPHIINK__; -webkit-text-stroke: 0; text-shadow: none; box-shadow: 0 6px 0 __CAPINK__; transform: translateY(-2px); }
-#wipe { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: none; pointer-events: none; }
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="main" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
   <canvas id="gl" width="1080" height="1920" data-layout-allow-overflow></canvas>
   <div id="vig"></div>
+  <svg id="leaders" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
   <div id="labels"></div>
   <div id="stamps"></div>
   <div id="caps"></div>
-  <div id="wipe"></div>
 </div>
 <script>
 /*__JS__*/

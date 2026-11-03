@@ -32,13 +32,9 @@ const v3 = (a) => [a[0], a[1], a[2]];
 const mixV3 = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u)];
 const hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 
-/* Spec is injected by the composition prelude: SPEC (resolved data), CAT (catalog subset), STYLE, ZONES, ASSET (id -> url). */
-const GLTF = new T.GLTFLoader();
-const MODEL_CACHE = {};
-function loadModel(id) {
-  if (!MODEL_CACHE[id]) MODEL_CACHE[id] = new Promise((res, rej) => GLTF.load(ASSET.models[id], res, undefined, (e) => rej(new Error('model ' + id + ': ' + (e && e.message || e)))));
-  return MODEL_CACHE[id];
-}
+/* Spec is injected by the composition prelude: SPEC (resolved data), STYLE, ZONES (and STOCK only with `stock: true`). Nothing is loaded from files:
+   every model is built from parts (kit.js, parts.js). */
+const MODEL_FREE = true;
 function boundsOf(o, precise) { o.updateMatrixWorld(true); return new T.Box3().setFromObject(o, !!precise); }
 
 const FW = 1080, FH = 1920;
@@ -49,5 +45,5 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
 renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = STYLE.light.exposure;
 renderer.outputColorSpace = T.SRGBColorSpace;
 const scene = new T.Scene();
-const cam = new T.PerspectiveCamera(32, FW / FH, 0.1, 120);
+const cam = new T.PerspectiveCamera(32, FW / FH, 0.1, 160);
 window.__GLINFO = (() => { try { const gl = renderer.getContext(), d = gl.getExtension('WEBGL_debug_renderer_info'); return d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER); } catch (e) { return 'unknown'; } })();

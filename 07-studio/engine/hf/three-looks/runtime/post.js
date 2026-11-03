@@ -31,16 +31,41 @@ const FinishShader = {
     gl_FragColor = vec4(c, 1.0);
   }`,
 };
-let composer = null, finishPass = null;
+/* Transition: a render-target crossfade. The incoming world is rendered into `tB`, the outgoing one is the normal frame, and this pass shows B through a
+   moving mask (iris, slide, drop or pop) with a rim line at the edge: every transition frame still shows scene content, never a flat fill. */
+const MixShader = {
+  uniforms: { tDiffuse: { value: null }, tB: { value: null }, p: { value: 0 }, kind: { value: 0 }, rim: { value: new T.Color(STYLE.transition.color) } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform sampler2D tB; uniform float p; uniform int kind; uniform vec3 rim; varying vec2 vUv;
+  void main(){
+    vec4 a = texture2D(tDiffuse, vUv);
+    if (p <= 0.0) { gl_FragColor = a; return; }
+    vec4 b = texture2D(tB, vUv);
+    vec2 q = vec2((vUv.x - 0.5) * 0.5625, vUv.y - 0.5);
+    float e;
+    if (kind == 0) { e = length(q - vec2(0.0, 0.08)) - p * 1.05; }
+    else if (kind == 1) { e = (vUv.x + (vUv.y - 0.5) * 0.18) - p * 1.25 + 0.12; }
+    else if (kind == 2) { e = (1.0 - vUv.y) + sin(vUv.x * 9.0) * 0.025 - p * 1.1 + 0.05; }
+    else { float ang = atan(q.y, q.x); e = length(q) / (1.0 + 0.07 * sin(ang * 7.0)) - p * 1.0; }
+    float m = 1.0 - smoothstep(-0.008, 0.008, e);
+    float edge = 1.0 - smoothstep(0.0, 0.03, abs(e));
+    vec3 c = mix(a.rgb, b.rgb, m);
+    c = mix(c, rim * 1.4, edge * 0.9 * step(0.02, p) * (1.0 - step(0.985, p)));
+    gl_FragColor = vec4(c, 1.0);
+  }`,
+};
+let composer = null, finishPass = null, mixPass = null, rtB = null;
 function buildComposer() {
   const rt = new T.WebGLRenderTarget(FW, FH, { type: T.HalfFloatType, samples: 4 });
+  rtB = new T.WebGLRenderTarget(FW, FH, { type: T.HalfFloatType, samples: 4 });
   composer = new T.EffectComposer(renderer, rt); composer.setPixelRatio(1); composer.setSize(FW, FH);
   composer.addPass(new T.RenderPass(scene, cam));
+  mixPass = new T.ShaderPass(MixShader); mixPass.uniforms.tB.value = rtB.texture; composer.addPass(mixPass);
   composer.addPass(new T.UnrealBloomPass(new T.Vector2(FW / 2, FH / 2), P.bloom.strength, P.bloom.radius, P.bloom.threshold));
   finishPass = new T.ShaderPass(FinishShader); composer.addPass(finishPass);
   composer.addPass(new T.OutputPass());
 }
-async function loadEnv() {
-  const tex = await new T.RGBELoader().loadAsync(ASSET.hdri); tex.mapping = T.EquirectangularReflectionMapping;
-  const pm = new T.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(tex).texture; scene.environmentIntensity = L.env; pm.dispose();
+/* Procedural studio environment (no HDRI file): soft light boxes that give metal and glass something to reflect. */
+function loadEnv() {
+  const pm = new T.PMREMGenerator(renderer); scene.environment = pm.fromScene(new T.RoomEnvironment(), 0.04).texture; scene.environmentIntensity = L.env; pm.dispose();
 }

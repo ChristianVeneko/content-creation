@@ -9,43 +9,138 @@
   },
   "hf": {
     "style": "clay-diorama",
-    "hero": "robo",
     "camera": "dynamic",
+    "hero": {
+      "design": "kid",
+      "expression": "worried",
+      "seed": 4
+    },
     "worlds": [
       {
-        "setting": "desk",
+        "set": "room",
         "mood": "warm",
         "cast": [
           {
             "who": "hero",
-            "at": "left",
-            "size": "L"
+            "at": "front-left"
           }
         ],
-        "shots": [
+        "objects": [
           {
-            "kind": "wide",
-            "move": "dolly-in"
+            "id": "pc",
+            "build": "laptop",
+            "at": "back-center",
+            "label": "Computadora"
           },
           {
-            "kind": "close",
-            "target": "monitor",
-            "move": "push"
+            "id": "mem",
+            "build": "battery",
+            "params": {
+              "segments": 6
+            },
+            "at": "back-right",
+            "label": "Memoria"
           },
           {
-            "kind": "over-shoulder",
-            "target": "monitor"
+            "id": "cpu",
+            "label": "Procesador",
+            "at": "mid-left",
+            "scale": 1.1,
+            "motion": [
+              "bob"
+            ],
+            "parts": [
+              {
+                "id": "base",
+                "shape": "box",
+                "size": [
+                  1.2,
+                  0.14,
+                  1.2
+                ],
+                "pos": [
+                  0,
+                  0.07,
+                  0
+                ],
+                "radius": 0.05,
+                "role": "dark"
+              },
+              {
+                "id": "die",
+                "shape": "box",
+                "size": [
+                  0.7,
+                  0.12,
+                  0.7
+                ],
+                "pos": [
+                  0,
+                  0.13,
+                  0
+                ],
+                "parent": "base",
+                "radius": 0.04,
+                "role": "metal"
+              },
+              {
+                "id": "core",
+                "shape": "sphere",
+                "size": [
+                  0.17
+                ],
+                "pos": [
+                  0,
+                  0.14,
+                  0
+                ],
+                "parent": "die",
+                "role": "glow",
+                "states": {
+                  "glow": {
+                    "emissive": 3
+                  },
+                  "heat": {
+                    "color": "#e5574f"
+                  }
+                }
+              },
+              {
+                "id": "pinsL",
+                "shape": "box",
+                "size": [
+                  0.06,
+                  0.05,
+                  1
+                ],
+                "pos": [
+                  -0.66,
+                  0,
+                  0
+                ],
+                "parent": "base",
+                "role": "accent"
+              },
+              {
+                "id": "pinsR",
+                "shape": "box",
+                "size": [
+                  0.06,
+                  0.05,
+                  1
+                ],
+                "pos": [
+                  0.66,
+                  0,
+                  0
+                ],
+                "parent": "base",
+                "role": "accent"
+              }
+            ]
           }
         ],
         "beats": [
-          {
-            "on": {
-              "word": "computadora"
-            },
-            "do": "emote",
-            "who": "hero",
-            "symbol": "wave"
-          },
           {
             "on": {
               "word": "computadora"
@@ -55,326 +150,424 @@
           },
           {
             "on": {
-              "word": "programas"
+              "word": "computadora"
             },
-            "do": "light-up",
-            "target": "monitor"
+            "do": "emote",
+            "who": "hero",
+            "symbol": "no"
           },
           {
             "on": {
               "word": "programas"
             },
-            "do": "open",
-            "target": "monitor"
+            "do": "light-up",
+            "target": "pc"
+          },
+          {
+            "on": {
+              "word": "programas"
+            },
+            "do": "label",
+            "target": "pc",
+            "text": "Programas"
           },
           {
             "on": {
               "word": "ventanas"
             },
-            "do": "label",
-            "target": "monitor",
-            "text": "Programas"
+            "do": "pulse",
+            "target": "pc"
           },
           {
             "on": {
               "word": "memoria"
             },
-            "do": "pop-in",
-            "target": "ram-stick"
+            "do": "label",
+            "target": "mem",
+            "text": "Memoria"
           },
           {
             "on": {
               "word": "memoria"
             },
-            "do": "walk",
-            "who": "hero",
-            "to": "ram-stick"
+            "do": "fill",
+            "target": "mem",
+            "value": 0.4
           },
           {
             "on": {
               "word": "llena"
             },
             "do": "fill",
-            "target": "ram-stick",
+            "target": "mem",
+            "value": 0.8
+          },
+          {
+            "on": {
+              "word": "tope"
+            },
+            "do": "fill",
+            "target": "mem",
             "value": 1
           },
           {
             "on": {
-              "word": "llena"
+              "word": "tope"
             },
             "do": "shake",
-            "target": "monitor",
-            "dur": 1.2
+            "target": "mem",
+            "dur": 0.9
           },
           {
             "on": {
-              "word": "llena"
-            },
-            "do": "emote",
-            "who": "hero",
-            "symbol": "no"
-          }
-        ]
-      },
-      {
-        "setting": "warehouse",
-        "mood": "cool",
-        "transition": "slide",
-        "cast": [
-          {
-            "who": "hero",
-            "at": "center"
-          }
-        ],
-        "beats": [
-          {
-            "on": {
-              "word": "almacen"
-            },
-            "do": "light-up",
-            "target": "shelf-l"
-          },
-          {
-            "on": {
-              "word": "almacen"
-            },
-            "do": "fill",
-            "target": "shelf-l",
-            "value": 0.35
-          },
-          {
-            "on": {
-              "word": "cajas"
-            },
-            "do": "pop-in",
-            "target": "crate-3"
-          },
-          {
-            "on": {
-              "word": "cajas"
-            },
-            "do": "pop-in",
-            "target": "crate-4"
-          },
-          {
-            "on": {
-              "word": "cajas"
-            },
-            "do": "label",
-            "target": "crate-1",
-            "text": "Datos"
-          },
-          {
-            "on": {
-              "word": "lleno"
-            },
-            "do": "fill",
-            "target": "shelf-l",
-            "value": 1
-          },
-          {
-            "on": {
-              "word": "lleno"
-            },
-            "do": "shake",
-            "target": "shelf-l"
-          },
-          {
-            "on": {
-              "word": "camion"
-            },
-            "do": "pop-in",
-            "target": "truck"
-          },
-          {
-            "on": {
-              "word": "camion"
-            },
-            "do": "open",
-            "target": "door"
-          },
-          {
-            "on": {
-              "word": "sacar"
-            },
-            "do": "move",
-            "target": "crate-1",
-            "to": "truck"
-          },
-          {
-            "on": {
-              "word": "sacar"
-            },
-            "do": "emote",
-            "who": "hero",
-            "symbol": "punch"
-          }
-        ]
-      },
-      {
-        "setting": "server-room",
-        "mood": "alert",
-        "transition": "drop",
-        "cast": [
-          {
-            "who": "hero",
-            "at": "right"
-          }
-        ],
-        "shots": [
-          {
-            "kind": "wide",
-            "move": "orbit"
-          },
-          {
-            "kind": "close",
-            "target": "hard-disk"
-          },
-          {
-            "kind": "low"
-          }
-        ],
-        "beats": [
-          {
-            "on": {
-              "word": "disco"
-            },
-            "do": "light-up",
-            "target": "hard-disk"
-          },
-          {
-            "on": {
-              "word": "disco"
-            },
-            "do": "spin",
-            "target": "hard-disk",
-            "dur": 2.4
-          },
-          {
-            "on": {
-              "word": "lento"
-            },
-            "do": "stamp",
-            "text": "LENTISIMO"
-          },
-          {
-            "on": {
-              "word": "lento"
+              "word": "tope"
             },
             "do": "emote",
             "who": "hero",
             "symbol": "faint"
-          },
-          {
-            "on": {
-              "word": "datos"
-            },
-            "do": "burst",
-            "target": "rack-2"
-          },
-          {
-            "on": {
-              "word": "datos"
-            },
-            "do": "pulse",
-            "target": "rack-1"
-          },
-          {
-            "on": {
-              "word": "trabaja"
-            },
-            "do": "shake",
-            "target": "hard-disk"
-          },
-          {
-            "on": {
-              "word": "trabaja"
-            },
-            "do": "heat",
-            "target": "hard-disk"
-          },
-          {
-            "on": {
-              "word": "espera"
-            },
-            "do": "label",
-            "target": "hard-disk",
-            "text": "Disco lento"
           }
         ]
       },
       {
-        "setting": "kitchen",
-        "mood": "alert",
-        "transition": "iris",
+        "set": "warehouse",
+        "mood": "cool",
+        "from": {
+          "word": "almacen"
+        },
         "cast": [
           {
             "who": "hero",
-            "at": "left",
-            "size": "L"
+            "at": "front-left"
+          }
+        ],
+        "objects": [
+          {
+            "id": "shelf",
+            "build": "shelf",
+            "at": "back-left",
+            "label": "Almacen"
+          },
+          {
+            "id": "belt",
+            "build": "conveyor",
+            "at": "mid-right"
+          },
+          {
+            "id": "crate",
+            "build": "crate",
+            "at": "mid-left",
+            "hidden": true
           }
         ],
         "beats": [
           {
             "on": {
-              "word": "calor"
+              "word": "almacen"
             },
-            "do": "heat",
-            "target": "pot"
+            "do": "label",
+            "target": "shelf",
+            "text": "Almacen"
           },
           {
             "on": {
-              "word": "calor"
+              "word": "sitio"
             },
             "do": "fill",
-            "target": "thermometer",
-            "value": 0.5
+            "target": "shelf",
+            "value": 1
           },
           {
             "on": {
-              "word": "calienta"
+              "word": "cajas"
+            },
+            "do": "pop-in",
+            "target": "crate"
+          },
+          {
+            "on": {
+              "word": "cajas"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "wave"
+          },
+          {
+            "on": {
+              "word": "sacar"
+            },
+            "do": "light-up",
+            "target": "belt"
+          },
+          {
+            "on": {
+              "word": "camion"
             },
             "do": "fill",
-            "target": "thermometer",
+            "target": "belt",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "walk",
+            "who": "hero",
+            "to": "belt"
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "stamp",
+            "text": "SACAR"
+          }
+        ]
+      },
+      {
+        "set": "server-room",
+        "mood": "alert",
+        "from": {
+          "word": "disco"
+        },
+        "cast": [
+          {
+            "who": "hero",
+            "at": "front-right"
+          }
+        ],
+        "objects": [
+          {
+            "id": "rack",
+            "build": "server-rack",
+            "at": "back-center",
+            "label": "Disco"
+          },
+          {
+            "id": "cooler",
+            "build": "pipe-system",
+            "at": "mid-left",
+            "scale": 0.7
+          },
+          {
+            "id": "temp",
+            "build": "thermometer",
+            "at": "back-right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "disco"
+            },
+            "do": "open",
+            "target": "rack"
+          },
+          {
+            "on": {
+              "word": "disco"
+            },
+            "do": "label",
+            "target": "rack",
+            "text": "Disco"
+          },
+          {
+            "on": {
+              "word": "lento"
+            },
+            "do": "fill",
+            "target": "rack",
             "value": 0.9
           },
           {
             "on": {
-              "word": "calienta"
+              "word": "datos",
+              "n": 2
             },
-            "do": "shake",
-            "target": "pot",
-            "dur": 1.4
+            "do": "burst",
+            "target": "rack"
           },
           {
             "on": {
-              "word": "calienta"
+              "word": "calor"
             },
-            "do": "emote",
-            "who": "hero",
-            "symbol": "no"
+            "do": "heat",
+            "target": "rack"
+          },
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "fill",
+            "target": "temp",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "stamp",
+            "text": "CALOR"
           },
           {
             "on": {
               "word": "ventilador"
             },
-            "do": "cool",
-            "target": "pot"
+            "do": "open",
+            "target": "cooler"
           },
           {
             "on": {
               "word": "ventilador"
             },
             "do": "fill",
-            "target": "thermometer",
-            "value": 0.3
+            "target": "cooler",
+            "value": 0.9
+          },
+          {
+            "on": {
+              "word": "alcanza"
+            },
+            "do": "shake",
+            "target": "temp",
+            "dur": 0.8
+          }
+        ]
+      },
+      {
+        "set": "studio",
+        "mood": "warm",
+        "from": {
+          "word": "mejor"
+        },
+        "cast": [
+          {
+            "who": "hero",
+            "at": "front-center"
+          }
+        ],
+        "objects": [
+          {
+            "id": "power",
+            "label": "Reinicio",
+            "at": "mid-center",
+            "scale": 1.3,
+            "parts": [
+              {
+                "id": "plate",
+                "shape": "cylinder",
+                "size": [
+                  0.7,
+                  0.7,
+                  0.14
+                ],
+                "pos": [
+                  0,
+                  0.07,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "button",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.14,
+                  0
+                ],
+                "parent": "plate",
+                "role": "accent",
+                "states": {
+                  "glow": {
+                    "emissive": 1.4
+                  }
+                }
+              },
+              {
+                "id": "ring",
+                "shape": "torus",
+                "size": [
+                  0.27,
+                  0.05,
+                  280
+                ],
+                "pos": [
+                  0,
+                  0.09,
+                  0
+                ],
+                "parent": "button",
+                "rot": [
+                  -90,
+                  0,
+                  0
+                ],
+                "role": "light",
+                "emissive": 0.6
+              },
+              {
+                "id": "bar",
+                "shape": "box",
+                "size": [
+                  0.06,
+                  0.26,
+                  0.05
+                ],
+                "pos": [
+                  0,
+                  0.09,
+                  0
+                ],
+                "parent": "button",
+                "rot": [
+                  -90,
+                  0,
+                  0
+                ],
+                "role": "light",
+                "emissive": 0.6
+              }
+            ]
+          },
+          {
+            "id": "pc2",
+            "build": "laptop",
+            "at": "back-center"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "cerrar"
+            },
+            "do": "close",
+            "target": "pc2"
           },
           {
             "on": {
               "word": "reiniciar"
             },
-            "do": "burst",
-            "target": "pot"
+            "do": "light-up",
+            "target": "power"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "pulse",
+            "target": "power"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "stamp",
+            "text": "REINICIA"
           },
           {
             "on": {
@@ -386,10 +579,11 @@
           },
           {
             "on": {
-              "word": "reiniciar"
+              "word": "computadora",
+              "n": 2
             },
-            "do": "stamp",
-            "text": "REINICIA"
+            "do": "open",
+            "target": "pc2"
           }
         ]
       }
