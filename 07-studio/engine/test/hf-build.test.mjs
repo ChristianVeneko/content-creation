@@ -142,3 +142,18 @@ test("toWords converts Caption[] (ms) to monotonic seconds", () => {
   const w = hfb.toWords([{ text: " a", startMs: 500, endMs: 900 }, { text: " b", startMs: 400, endMs: 450 }]);
   assert.deepEqual(w, [{ text: "a", start: 0.5, end: 0.9 }, { text: "b", start: 0.5, end: 0.5 }]);
 });
+
+test("compose() may return the entry as a relative or an absolute path, but it must live inside outDir", async () => {
+  const { resolveHfEntry } = await import("../lib/build-hf.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "hf-entry-"));
+  try {
+    writeFileSync(join(dir, "index.html"), "<html></html>");
+    assert.equal(resolveHfEntry(dir, "index.html"), "index.html");
+    assert.equal(resolveHfEntry(dir, join(dir, "index.html")), "index.html");
+    assert.equal(resolveHfEntry(dir, "missing.html"), null);
+    assert.equal(resolveHfEntry(dir, "/etc/hosts"), null);
+    assert.equal(resolveHfEntry(dir, "../outside.html"), null);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

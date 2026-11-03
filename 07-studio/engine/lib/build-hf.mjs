@@ -6,7 +6,7 @@
 // the final mux copies the video stream. `captions.enabled=false` renders the composition with captions off.
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve } from "node:path";
 import { getHfFormat, parseHfPayload } from "../hf/registry.mjs";
 import { CC_ROOT, PYTHON, TRANSCRIBE_PY } from "./env.mjs";
 import { SFX_KIT, buildBed, loadKit } from "./audio-bed.mjs";
@@ -16,6 +16,16 @@ import { musicDuckedLevelDb, musicLevelDb, resolveMusic } from "./music.mjs";
 import { alignToScript, computeTimeline, syntheticCaptions } from "./timeline.mjs";
 import { effectiveProvider, synthesize } from "./tts.mjs";
 import { pickVoice, trendingVoices } from "./voices.mjs";
+
+/** The composition entry as a path relative to outDir (a module may return it relative or absolute); null when it is missing or outside outDir. */
+export function resolveHfEntry(outDir, entry) {
+  if (typeof entry !== "string" || !entry) return null;
+  const rel = isAbsolute(entry) ? relative(outDir, entry) : entry;
+  const abs = resolve(outDir, rel);
+  const inside = relative(outDir, abs);
+  if (!inside || inside.startsWith("..") || isAbsolute(inside)) return null;
+  return existsSync(abs) ? inside : null;
+}
 
 /** The one place the HyperFrames CLI version is pinned. */
 export const HYPERFRAMES_VERSION = "0.9.6";
@@ -259,7 +269,8 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
   } catch (e) {
     fail(`Format "${spec.template}" failed to compose: ${e.message}`);
   }
-  if (!composed || typeof composed.entry !== "string" || !existsSync(join(hfDir, composed.entry))) fail(`Format "${spec.template}" compose() must return { entry } naming a file it wrote in outDir`);
+  const entryRel = composed ? resolveHfEntry(hfDir, composed.entry) : null;
+  if (!entryRel) fail(`Format "${spec.template}" compose() must return { entry } naming a file it wrote in outDir`);
   if (!Number.isFinite(composed.durationSec) || composed.durationSec <= 0) fail(`Format "${spec.template}" compose() must return a positive durationSec`);
   if (Math.abs(composed.durationSec - totalSec) > 0.25) log(step, "running", `Composition lasts ${composed.durationSec}s but the narration timeline ${r3(totalSec)}s; audio follows the composition`, 0.456);
   totalSec = composed.durationSec;
@@ -331,7 +342,7 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
       output: pass.file,
       quality,
       captions: pass.captions,
-      entry: composed.entry,
+      entry: entryRel,
       onProgress: (p) => {
         const pct = Math.floor(p * 20);
         if (pct !== last) {
