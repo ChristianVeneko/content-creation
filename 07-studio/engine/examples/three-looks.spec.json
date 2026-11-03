@@ -1,0 +1,437 @@
+{
+  "version": 1,
+  "title": "Ejemplo three-looks",
+  "template": "three-looks",
+  "language": "es",
+  "mode": "multi",
+  "captions": {
+    "enabled": true
+  },
+  "hf": {
+    "style": "clay-diorama",
+    "hero": "robo",
+    "camera": "dynamic",
+    "worlds": [
+      {
+        "setting": "desk",
+        "mood": "warm",
+        "cast": [
+          {
+            "who": "hero",
+            "at": "left",
+            "size": "L"
+          }
+        ],
+        "shots": [
+          {
+            "kind": "wide",
+            "move": "dolly-in"
+          },
+          {
+            "kind": "close",
+            "target": "monitor",
+            "move": "push"
+          },
+          {
+            "kind": "over-shoulder",
+            "target": "monitor"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "computadora"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "wave"
+          },
+          {
+            "on": {
+              "word": "computadora"
+            },
+            "do": "stamp",
+            "text": "SE CUELGA"
+          },
+          {
+            "on": {
+              "word": "programas"
+            },
+            "do": "light-up",
+            "target": "monitor"
+          },
+          {
+            "on": {
+              "word": "programas"
+            },
+            "do": "open",
+            "target": "monitor"
+          },
+          {
+            "on": {
+              "word": "ventanas"
+            },
+            "do": "label",
+            "target": "monitor",
+            "text": "Programas"
+          },
+          {
+            "on": {
+              "word": "memoria"
+            },
+            "do": "pop-in",
+            "target": "ram-stick"
+          },
+          {
+            "on": {
+              "word": "memoria"
+            },
+            "do": "walk",
+            "who": "hero",
+            "to": "ram-stick"
+          },
+          {
+            "on": {
+              "word": "llena"
+            },
+            "do": "fill",
+            "target": "ram-stick",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "llena"
+            },
+            "do": "shake",
+            "target": "monitor",
+            "dur": 1.2
+          },
+          {
+            "on": {
+              "word": "llena"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "no"
+          }
+        ]
+      },
+      {
+        "setting": "warehouse",
+        "mood": "cool",
+        "transition": "slide",
+        "cast": [
+          {
+            "who": "hero",
+            "at": "center"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "almacen"
+            },
+            "do": "light-up",
+            "target": "shelf-l"
+          },
+          {
+            "on": {
+              "word": "almacen"
+            },
+            "do": "fill",
+            "target": "shelf-l",
+            "value": 0.35
+          },
+          {
+            "on": {
+              "word": "cajas"
+            },
+            "do": "pop-in",
+            "target": "crate-3"
+          },
+          {
+            "on": {
+              "word": "cajas"
+            },
+            "do": "pop-in",
+            "target": "crate-4"
+          },
+          {
+            "on": {
+              "word": "cajas"
+            },
+            "do": "label",
+            "target": "crate-1",
+            "text": "Datos"
+          },
+          {
+            "on": {
+              "word": "lleno"
+            },
+            "do": "fill",
+            "target": "shelf-l",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "lleno"
+            },
+            "do": "shake",
+            "target": "shelf-l"
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "pop-in",
+            "target": "truck"
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "open",
+            "target": "door"
+          },
+          {
+            "on": {
+              "word": "sacar"
+            },
+            "do": "move",
+            "target": "crate-1",
+            "to": "truck"
+          },
+          {
+            "on": {
+              "word": "sacar"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "punch"
+          }
+        ]
+      },
+      {
+        "setting": "server-room",
+        "mood": "alert",
+        "transition": "drop",
+        "cast": [
+          {
+            "who": "hero",
+            "at": "right"
+          }
+        ],
+        "shots": [
+          {
+            "kind": "wide",
+            "move": "orbit"
+          },
+          {
+            "kind": "close",
+            "target": "hard-disk"
+          },
+          {
+            "kind": "low"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "disco"
+            },
+            "do": "light-up",
+            "target": "hard-disk"
+          },
+          {
+            "on": {
+              "word": "disco"
+            },
+            "do": "spin",
+            "target": "hard-disk",
+            "dur": 2.4
+          },
+          {
+            "on": {
+              "word": "lento"
+            },
+            "do": "stamp",
+            "text": "LENTISIMO"
+          },
+          {
+            "on": {
+              "word": "lento"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "faint"
+          },
+          {
+            "on": {
+              "word": "datos"
+            },
+            "do": "burst",
+            "target": "rack-2"
+          },
+          {
+            "on": {
+              "word": "datos"
+            },
+            "do": "pulse",
+            "target": "rack-1"
+          },
+          {
+            "on": {
+              "word": "trabaja"
+            },
+            "do": "shake",
+            "target": "hard-disk"
+          },
+          {
+            "on": {
+              "word": "trabaja"
+            },
+            "do": "heat",
+            "target": "hard-disk"
+          },
+          {
+            "on": {
+              "word": "espera"
+            },
+            "do": "label",
+            "target": "hard-disk",
+            "text": "Disco lento"
+          }
+        ]
+      },
+      {
+        "setting": "kitchen",
+        "mood": "alert",
+        "transition": "iris",
+        "cast": [
+          {
+            "who": "hero",
+            "at": "left",
+            "size": "L"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "heat",
+            "target": "pot"
+          },
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "fill",
+            "target": "thermometer",
+            "value": 0.5
+          },
+          {
+            "on": {
+              "word": "calienta"
+            },
+            "do": "fill",
+            "target": "thermometer",
+            "value": 0.9
+          },
+          {
+            "on": {
+              "word": "calienta"
+            },
+            "do": "shake",
+            "target": "pot",
+            "dur": 1.4
+          },
+          {
+            "on": {
+              "word": "calienta"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "no"
+          },
+          {
+            "on": {
+              "word": "ventilador"
+            },
+            "do": "cool",
+            "target": "pot"
+          },
+          {
+            "on": {
+              "word": "ventilador"
+            },
+            "do": "fill",
+            "target": "thermometer",
+            "value": 0.3
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "burst",
+            "target": "pot"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "thumbs-up"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "stamp",
+            "text": "REINICIA"
+          }
+        ]
+      }
+    ]
+  },
+  "sfx": {
+    "enabled": true,
+    "volume": 1
+  },
+  "music": {
+    "provider": "library",
+    "mood": "auto",
+    "duck": true
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tu computadora se cuelga y no sabes por qué. Abres muchos programas y ventanas a la vez, y la memoria se llena.",
+      "visual": {
+        "type": "gradient"
+      }
+    },
+    {
+      "id": "almacen",
+      "narration": "Piensa en un almacen: cuando está lleno de cajas de datos, hay que sacar cosas a un camion para hacer espacio.",
+      "visual": {
+        "type": "gradient"
+      }
+    },
+    {
+      "id": "disco",
+      "narration": "Ese viaje al disco es lento, y mientras el disco trabaja el sistema espera. Los datos no paran.",
+      "visual": {
+        "type": "gradient"
+      }
+    },
+    {
+      "id": "calor",
+      "narration": "Todo ese trabajo da calor, y cuando se calienta mucho el ventilador no alcanza. Lo mejor es cerrar programas y reiniciar.",
+      "visual": {
+        "type": "gradient"
+      }
+    }
+  ]
+}

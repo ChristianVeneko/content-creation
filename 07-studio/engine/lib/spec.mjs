@@ -32,7 +32,7 @@ export const usesClassicLayout = (templateId) => CLASSIC_TEMPLATE_IDS.includes(t
  * (registerHfSupport) and a test checks every discovered public module is listed. Internal ids (underscore) are
  * accepted only when CC_HF_INTERNAL=1 is set before this module loads.
  */
-export const HF_TEMPLATE_IDS = ["pixel-world", "flat-2d", ...(["1", "true", "yes"].includes(String(globalThis.process?.env?.CC_HF_INTERNAL ?? "").toLowerCase()) ? ["_stub"] : [])];
+export const HF_TEMPLATE_IDS = ["pixel-world", "flat-2d", "three-looks", ...(["1", "true", "yes"].includes(String(globalThis.process?.env?.CC_HF_INTERNAL ?? "").toLowerCase()) ? ["_stub"] : [])];
 export const HF_MODES = ["single", "multi"];
 
 export const TEMPLATE_IDS = ["illustrated", "whiteboard", "broadcast", "editorial-chart", "editor-window", "rank-numbers", ...ART_LOOKS, ...FORMAT_2D_LOOKS, ...THREE_D_TEMPLATE_IDS, ...PIXEL_TEMPLATE_IDS, ...REELS_TEMPLATE_IDS, ...HF_TEMPLATE_IDS, ...CLASSIC_TEMPLATE_IDS];
