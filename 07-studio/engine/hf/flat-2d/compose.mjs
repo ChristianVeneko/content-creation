@@ -14,6 +14,7 @@ import { buildCaptions } from "./captions.mjs";
 import { buildCss, decoration, usedFonts } from "./css.mjs";
 import { icon, phosphorLicense } from "./icons.mjs";
 import { STAGE } from "./layout.mjs";
+import { SAFE, CAPTION_BAND, CONTENT, PANEL, placeTagCore, estimateSize } from "./safe.mjs";
 import { BL } from "./settings/common.mjs";
 import { r2, esc } from "./util.mjs";
 
@@ -25,9 +26,11 @@ const FPS = 30;
 /** Pure part of compose: everything except writing files. Returns the html, sfx, plan and warnings. */
 export function buildComposition({ spec, words, durationSec, captions, fontRel = "assets/fonts" }) {
   const raw = spec?.hf ?? spec;
-  const hf = payloadSchema.parse(normalize(raw));
+  // spec.mode is the single source of truth; a stray hf.mode only fills a missing spec.mode (with a warning)
+  const modeCtx = { spec: { mode: spec?.mode }, warnings: [] };
+  const hf = payloadSchema.parse(normalize(raw, modeCtx));
   hf.scenes = hf.scenes.map((s, i) => ({ ...s, id: s.id ?? `s${i + 1}` }));
-  const mode = spec?.mode ?? hf.mode ?? "single";
+  const mode = modeCtx.spec.mode ?? "single";
   const style = resolveStyle(hf.style);
   const d = makeDraw(style);
   const D = Math.ceil(durationSec * FPS) / FPS;
@@ -85,9 +88,13 @@ export function buildComposition({ spec, words, durationSec, captions, fontRel =
     scenes: layout.pos.map((p, i) => ({ cx: p.cx, cy: p.cy, i })),
     cameraInitial: cam.initial, moves: cam.moves, ops, origins: comp.origins,
     captions: captions?.enabled === false ? cap.data : cap.data,
+    panel: PANEL[mode === "single" ? "single" : "multi"],
+    safe: { content: CONTENT, caption: CAPTION_BAND, frame: SAFE },
+    tags: [...model.scenes.flatMap((sc, i) => (sc.def.label ? [{ id: `lab${i}`, kind: "label", si: i, x: 28, y: 22, anchor: "tl", ...estimateSize("label", sc.def.label) }] : [])), ...comp.tags],
   };
   const html = renderHtml({ hf, mode, style, d, model, layout, comp, deco, cap, plan, fontRel, D });
-  return { html, sfx, plan, warnings: timeline.warnings, hf, mode, durationSec: D };
+  const placed = model.scenes.map((sc) => ({ index: sc.index, props: sc.props.map((p) => ({ id: p.id, box: p.box })), cast: sc.cast.map((c) => ({ who: c.who, x: c.x, box: c.box })) }));
+  return { html, sfx, plan: { ...plan, placed }, warnings: [...modeCtx.warnings, ...timeline.warnings], hf, mode, durationSec: D };
 }
 
 function sceneHtml({ sc, si, mode, style, comp, d }) {
@@ -135,14 +142,15 @@ function renderHtml({ hf, mode, style, d, model, layout, comp, deco, cap, plan, 
 <div id="bgFar" data-layout-ignore>${bgDecoFar}</div>
 <div id="bgMid" data-layout-ignore><div class="tex"></div>${bgDecoMid}</div>
 ${glows}
-<div id="world" data-layout-ignore>${pathSvg}
+<div id="wmask" data-layout-ignore><div id="world" data-layout-ignore>${pathSvg}
 ${scenes}
-</div>
+</div></div>
 <div id="wipe" data-layout-ignore></div><div id="iris" data-layout-ignore></div>
 ${cap.html}
 </div>
 <script>
 const PLAN = ${JSON.stringify(plan)};
+const placeTag = ${placeTagCore.toString()};
 ${RUNTIME}
 </script>
 </body>

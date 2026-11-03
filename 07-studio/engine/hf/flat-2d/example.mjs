@@ -4,7 +4,6 @@ export { EXAMPLE_WORDS } from "./example-words.mjs";
 
 export const EXAMPLE_PAYLOAD = {
   style: "flat-dark-neon-ui",
-  mode: "single",
   cast: [{ id: "nico", design: "nico", size: "M" }, { id: "dora", design: "dora", size: "M" }, { id: "beto", design: "beto", size: "M" }],
   scenes: [
     {

@@ -46,6 +46,22 @@
       gsap.set(e.mid, { x: clampv(dx * 0.15, 90), y: clampv(dy * 0.07, 50) });
       gsap.set(e.near, { x: clampv(-dx * 0.12, 120), y: clampv(-dy * 0.06, 70) });
     }
+    placeTags();
+  }
+  // tags (labels, chips, hero stamps, emotes) stay inside the visible frame minus margins and inside their own panel
+  const tagEls = (P.tags || []).map((t) => ({ t, el: $("#" + t.id) })).filter((e) => e.el);
+  function placeTags() {
+    const z = cam.z, pn = P.panel;
+    for (const e of tagEls) {
+      const t = e.t, sc = P.scenes[t.si];
+      const w = (e.el.offsetWidth || t.w) * z, h = (e.el.offsetHeight || t.h) * z;
+      const wx = sc.cx - 480 + t.x, wy = sc.cy - 520 + t.y;
+      const sx = P.ax + (wx - cam.cx) * z, sy = P.ay + (wy - cam.cy) * z;
+      const rx = t.anchor === "c" ? sx - w / 2 : sx, ry = t.anchor === "c" ? sy - h / 2 : sy;
+      const panel = { x: P.ax + (sc.cx + pn.dx - cam.cx) * z, y: P.ay + (sc.cy + pn.dy - cam.cy) * z, w: pn.w * z, h: pn.h * z };
+      const o = placeTag({ box: P.safe.content, panel, sx: rx, sy: ry, w, h });
+      e.el.style.translate = (o.dx / z).toFixed(1) + "px " + (o.dy / z).toFixed(1) + "px";
+    }
   }
   applyCam();
   for (const m of P.moves) {

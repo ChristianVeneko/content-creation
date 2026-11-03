@@ -83,9 +83,9 @@ test("sfx cues are sorted, typed and within the video", () => {
   assert.ok(r.sfx.every((c) => c.at >= 0 && c.at <= 53));
 });
 
-test("safe zone: captions sit below 220px and replica text is large", () => {
+test("safe zone: captions sit inside the 900x1300 box (x 90-990, y 320) and replica text is large", () => {
   const r = build(clone(EXAMPLE_PAYLOAD));
-  assert.match(r.html, /\.cap\{position:absolute;left:60px;top:240px;width:960px/);
+  assert.match(r.html, /\.cap\{position:absolute;left:90px;top:320px;width:900px/);
   assert.match(r.html, /\.cw\{[^}]*font-size:(6\d|7\d)px/);
 });
 

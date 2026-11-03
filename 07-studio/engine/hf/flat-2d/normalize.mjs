@@ -20,7 +20,7 @@ const pickAlias = (v, ids, aliases = {}) => {
 const num = (v) => (typeof v === "string" && v.trim() !== "" && !Number.isNaN(Number(v)) ? Number(v) : v);
 
 const STYLE_ALIASES = { soft: "flat-soft-gradient", gradient: "flat-soft-gradient", torna: "flat-soft-gradient", neon: "flat-dark-neon-ui", dark: "flat-dark-neon-ui", "dark-neon": "flat-dark-neon-ui", guru: "flat-dark-neon-ui", memphis: "flat-memphis", pop: "flat-memphis", paper: "flat-paper-cut", "paper-cut": "flat-paper-cut", papercut: "flat-paper-cut", blueprint: "flat-blueprint", plano: "flat-blueprint", brutalist: "flat-neo-brutalist", brutal: "flat-neo-brutalist", neobrutalism: "flat-neo-brutalist", riso: "flat-risograph-duotone", risograph: "flat-risograph-duotone", duotone: "flat-risograph-duotone", glass: "flat-glass-ui", glassmorphism: "flat-glass-ui", sticker: "flat-sticker-cartoon", cartoon: "flat-sticker-cartoon", clay: "flat-clay-2d", claymorphism: "flat-clay-2d", iso: "flat-isometric", isometric: "flat-isometric", lowpoly: "flat-low-poly", "low-poly": "flat-low-poly", poly: "flat-low-poly" };
-const SETTING_ALIASES = { browser: "desktop-browser", desktop: "desktop-browser", computer: "desktop-browser", pc: "desktop-browser", desk: "desktop-browser", phone: "phone-ui", mobile: "phone-ui", app: "phone-ui", server: "server-room", servers: "server-room", datacenter: "data-center", cloud: "data-center", hosting: "data-center", street: "city-street", city: "city-street", shops: "city-street", neighborhood: "city-street", workplace: "office", barber: "barbershop", "barber-shop": "barbershop", barberia: "barbershop", cafe: "kitchen", restaurant: "kitchen", school: "classroom", class: "classroom", factory: "factory-line", production: "factory-line", plant: "factory-line", terminal: "airport", travel: "airport", vault: "bank", finance: "bank", clinic: "hospital", health: "hospital", home: "home-office", "home-desk": "home-office", remote: "home-office", shop: "store", retail: "store", market: "store", abstract: "void", empty: "void", stage: "void", blank: "void" };
+const SETTING_ALIASES = { browser: "desktop-browser", desktop: "desktop-browser", computer: "desktop-browser", pc: "desktop-browser", desk: "desktop-browser", phone: "phone-ui", mobile: "phone-ui", app: "phone-ui", server: "server-room", servers: "server-room", datacenter: "data-center", cloud: "cloud-sky", hosting: "data-center", "cloud-servers": "cloud-sky", sky: "cloud-sky", "home-screen": "phone-home", homescreen: "phone-home", launcher: "phone-home", cafe: "cafe-laptops", coffee: "cafe-laptops", coworking: "cafe-laptops", "coffee-shop": "cafe-laptops", tower: "wifi-street", antenna: "wifi-street", wifi: "wifi-street", "cell-tower": "wifi-street", appstore: "app-store", "play-store": "app-store", marketplace: "app-store", "store-app": "app-store", security: "vault-door", "security-door": "vault-door", safe: "vault-door", "call-center": "helpdesk", callcenter: "helpdesk", support: "helpdesk", "help-desk": "helpdesk", lab: "hardware-lab", laboratory: "hardware-lab", workshop: "hardware-lab", electronics: "hardware-lab", street: "city-street", city: "city-street", shops: "city-street", neighborhood: "city-street", workplace: "office", barber: "barbershop", "barber-shop": "barbershop", barberia: "barbershop", restaurant: "kitchen", school: "classroom", class: "classroom", factory: "factory-line", production: "factory-line", plant: "factory-line", terminal: "airport", travel: "airport", vault: "vault-door", finance: "bank", clinic: "hospital", health: "hospital", home: "home-office", "home-desk": "home-office", remote: "home-office", shop: "store", retail: "store", market: "store", abstract: "void", empty: "void", stage: "void", blank: "void" };
 const KIND_ALIASES = { "browser-window": "browser", navegador: "browser", web: "browser", website: "browser", window: "browser", messages: "chat", conversation: "chat", whatsapp: "chat", counter: "stats", counters: "stats", kpi: "stats", metrics: "stats", numbers: "stats", graph: "chart", plot: "chart", toast: "notification", notifications: "notification", alert: "notification", popup: "notification", smartphone: "phone", mobile: "phone", iphone: "phone", directory: "list", table: "list", contacts: "list", agenda: "list", server: "rack", servers: "rack", "server-rack": "rack", wifi: "router", modem: "router", loyalty: "stamp-card", "loyalty-card": "stamp-card", stamps: "stamp-card", "stamp-card": "stamp-card", "progress-bar": "progress", "progress-bars": "progress", bars: "progress", sign: "card", badge: "card", label: "card", "icon-card": "card" };
 const ROLE_ALIASES = { green: "good", success: "good", ok: "good", red: "bad", error: "bad", danger: "bad", yellow: "warn", orange: "warn", warning: "warn", blue: "accent", primary: "accent", purple: "accent2", violet: "accent2", cyan: "accent3", teal: "accent3", dark: "ink", gray: "muted", grey: "muted" };
 const DO_ALIASES = {
@@ -63,10 +63,27 @@ function fixOn(on) {
   return o;
 }
 
-export function normalize(input) {
+export function normalize(input, ctx) {
+  // The engine registry hands over the WHOLE spec (template, mode, narration scenes, hf); the payload is spec.hf.
+  if (input && typeof input === "object" && ("template" in input || "hf" in input)) {
+    const out = { ...input };
+    if (out.hf && typeof out.hf === "object") out.hf = normalize(out.hf, { spec: out, warnings: ctx?.warnings ?? [] });
+    return out;
+  }
   const p = structuredClone(input ?? {});
   if (typeof p.style === "string") p.style = pickAlias(p.style, STYLE_IDS, STYLE_ALIASES);
-  if (typeof p.mode === "string") { const m = key(p.mode); p.mode = ["single", "mono", "monoscene", "one", "single-scene"].includes(m) ? "single" : ["multi", "multiscene", "multi-scene", "many", "multiple"].includes(m) ? "multi" : p.mode; }
+  if (p.mode !== undefined) {
+    // spec.mode is the single source of truth: a stray hf.mode never reaches the payload
+    const m = key(p.mode);
+    const mode = ["single", "mono", "monoscene", "one", "single-scene"].includes(m) ? "single" : ["multi", "multiscene", "multi-scene", "many", "multiple"].includes(m) ? "multi" : null;
+    const spec = ctx?.spec;
+    if (spec && mode) {
+      if (spec.mode === undefined || spec.mode === null) { spec.mode = mode; ctx.warnings?.push(`hf.mode "${p.mode}" moved to spec.mode (${mode}); do not set hf.mode`); }
+      else if (spec.mode !== mode) ctx.warnings?.push(`hf.mode "${p.mode}" ignored: spec.mode "${spec.mode}" wins`);
+      else ctx.warnings?.push(`hf.mode ignored (same as spec.mode); do not set hf.mode`);
+    } else ctx?.warnings?.push(`hf.mode "${p.mode}" ignored: set the mode in spec.mode`);
+    delete p.mode;
+  }
   const props = settingPropNames();
   const declared = new Map((Array.isArray(p.cast) ? p.cast : []).map((c) => [key(c.id), c]));
   if (Array.isArray(p.cast)) p.cast = p.cast.map((c) => ({ ...c, id: slug(c.id) || c.id, design: pickAlias(c.design ?? c.id, DESIGN_IDS), ...(c.size ? { size: String(c.size).toUpperCase().slice(0, 1) } : {}), ...(c.name ? { name: cut(c.name, 20) } : {}) }));

@@ -13,7 +13,8 @@ export const promptSection = `## Format: flat-2d (flat vector worlds with charac
 
 Output \`hf\` (this payload) next to the narration. Everything on screen is bound to a spoken word with on: { word, n? } (n = n-th occurrence of that word in the narration; accents and punctuation are ignored). Write the narration first, then bind every cue to words that really appear in it.
 
-### Mode
+### Mode (set it in the spec's top-level \`mode\`, NEVER set \`hf.mode\`)
+\`spec.mode\` is the only place that decides the mode; a stray \`hf.mode\` is ignored with a warning.
 - "single" (default): ONE giant world, ONE camera, no cuts. Each scene is a station joined by a path that draws itself while the camera travels and zooms out between blocks. Use it for process / step-by-step / how-it-works / duel videos.
 - "multi": separate worlds joined by transitions (${TRANSITIONS.join(", ")}). Use it for stories, rankings, lists of unrelated items.
 
@@ -21,7 +22,8 @@ Output \`hf\` (this payload) next to the narration. Everything on screen is boun
 ${STYLE_IDS.map((id) => `- ${id}: ${STYLES[id].about}`).join("\n")}
 
 ### Settings (scene.setting) and their named props (targets for effects, chips, camera, pointing)
-${SETTING_IDS.map((id) => `- ${id}: ${SETTINGS[id].about}. Props: ${props[id].join(", ")}`).join("\n")}
+${SETTING_IDS.map((id) => `- ${id}: ${SETTINGS[id].about}. Props: ${props[id].join(", ")}. [topics: ${SETTINGS[id].topics.join(", ")}]`).join("\n")}
+Pick the setting whose [topics] match the scene's subject; never pick a setting that contradicts the topic (no bank vault for a cooking tip, no kitchen for a network explainer). Use "void" when nothing fits.
 
 ### Replicas (scene.props[].kind); slots (at): ${AT_IDS.join(", ")}; sizes: s, m, l
 ${KIT_KINDS.map((k) => `- ${k}: ${KITS[k].about}. Fields: ${KITS[k].fields.join(", ")}`).join("\n")}
@@ -43,6 +45,7 @@ Icons (Phosphor only): ${ICON_NAMES.join(", ")}.
 - Replicas hold the story (type the URL, roll the numbers, draw the chart); characters react (emote, point, shrug); at most one hero word per scene.
 - Scenes need at least 2.5 seconds each; scene.enter = { word } of the first word of that scene. The first scene starts at 0.
 - Text on screen is short: labels up to 24 characters, chips up to 3 words.
+- Captions own the band above the stage; the engine keeps labels, chips and hero stamps inside the safe box and the camera never clips them, so do not try to place text yourself. Put the character beside the replica it works with, not in front of it.
 
 ### Example payload
 \`\`\`json

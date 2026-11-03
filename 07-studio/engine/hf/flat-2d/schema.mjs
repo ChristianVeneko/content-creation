@@ -118,7 +118,6 @@ export const castSchema = z.strictObject({ id: z.string().min(1).max(32), design
 
 export const payloadSchema = z.strictObject({
   style: enumOf("style", STYLE_IDS),
-  mode: enumOf("mode", MODES).optional(),
   cast: z.array(castSchema).max(4).optional(),
   scenes: z.array(sceneSchema).min(1, "at least one scene is required").max(12),
   recap: z.boolean().optional(),

@@ -6,6 +6,7 @@ import { SETTINGS } from "./settings/index.mjs";
 import { DESIGN_IDS, RIG, sizeScale, characterSvg } from "./rig.mjs";
 import { icon } from "./icons.mjs";
 import { esc } from "./util.mjs";
+import { separateCast } from "./place.mjs";
 
 const DEFAULT_SIZE = { browser: "l", chat: "m", phone: "m", list: "m", stats: "m", chart: "m", notification: "m", rack: "m", router: "s", calendar: "m", "stamp-card": "m", progress: "m", card: "m" };
 const DEFAULT_AT = ["top", "floor-right", "middle-left", "top-right", "middle-right", "top-left"];
@@ -44,20 +45,31 @@ export function buildModel(hf, d, beatsByScene) {
       x = Math.min(STAGE.w - 20 - w, Math.max(20, x));
       y = Math.min(STAGE.h - 30 - h, Math.max(104, y));
       const out = { ...p, si, pi, el: `p${si}_${p.id}`, kit, k, bw, bh, box: { x, y, w, h }, html: kit.build(ctx, pp), typed, rows: p.rows, hiddenInit: p.hidden === true };
-      targets.set(p.id, { type: "prop", el: out.el, box: out.box, prop: out });
       return out;
     });
-    const cast = s.cast.map((c, ci) => {
+    const pre0 = s.cast.map((c, ci) => {
       const info = castInfo(c.who);
       const at = c.at ?? DEFAULT_CAST_AT[ci % 3];
       const x = (CAST_AT[at] ?? 480) + (c.dx ?? 0);
+      const sc = sizeScale(info.size ?? "M");
+      const hipY = FLOOR_FEET - RIG.feetY * sc;
+      return { c, ci, info, x, sc, hipY, who: c.who, box: { x: x - 70 * sc, y: hipY - 300 * sc, w: 140 * sc, h: (RIG.feetY + 300) * sc } };
+    });
+    // layout rule: characters stand beside the replicas, never over them
+    const sep = separateCast(props.map((p) => ({ id: p.id, box: p.box })), pre0);
+    props.forEach((p, i) => {
+      const nb = sep.props[i];
+      if (nb.shrink !== 1) p.k *= nb.shrink;
+      p.box = nb.box;
+      targets.set(p.id, { type: "prop", el: p.el, box: p.box, prop: p });
+    });
+    const cast = pre0.map((q, i) => {
+      const { c, ci, info, sc, hipY } = q, x = sep.cast[i].x;
       const facing = c.facing ?? (x < 400 ? "right" : x > 560 ? "left" : "front");
       const mode = facing === "front" ? "front" : "side";
-      const sc = sizeScale(info.size ?? "M");
       const key = `c${si}_${c.who}`;
-      const hipY = FLOOR_FEET - RIG.feetY * sc;
       const out = { who: c.who, key, design: info.design, size: info.size ?? "M", mode, facing, flip: facing === "left" ? -1 : 1, scale: sc, x, hipY, svg: characterSvg(key, info.design, mode, style), life: ci + si };
-      out.box = { x: x - 70 * sc, y: hipY - 300 * sc, w: 140 * sc, h: (RIG.feetY + 300) * sc };
+      out.box = sep.cast[i].box;
       targets.set(c.who, { type: "cast", el: key, box: out.box, cast: out });
       return out;
     });

@@ -46,6 +46,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-f
 #root{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--ink-bg)}
 #bgFar,#bgMid,#world{position:absolute;left:0;top:0;width:0;height:0}
 #world{transform-origin:0 0}
+#wmask{position:absolute;left:0;top:0;width:1080px;height:1920px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 440px,#000 462px);mask-image:linear-gradient(to bottom,transparent 0,transparent 440px,#000 462px)}
 #bgGrad{position:absolute;left:0;top:0;width:1080px;height:1920px;background:${style.id === "flat-glass-ui" ? `linear-gradient(160deg,${c.bg} 0%,${c.bg2} 55%,#0B6FA8 100%)` : style.id === "flat-low-poly" ? `linear-gradient(180deg,${c.bg} 0%,${c.bg2} 60%,#C0507A 100%)` : style.id === "flat-soft-gradient" ? `linear-gradient(180deg,${c.bg} 0%,${c.bg2} 100%)` : style.id === "flat-clay-2d" ? `linear-gradient(180deg,${c.bg} 0%,${c.bg2} 100%)` : "var(--bg)"}}
 #bgMid .tex{position:absolute;left:-5000px;top:-5000px;width:10000px;height:10000px;${tex}}
 .deco{position:absolute}
@@ -74,7 +75,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-f
 #paths{position:absolute;overflow:visible}
 #wipe{position:absolute;left:0;top:0;width:1080px;height:1920px;background:var(--accent);opacity:0;pointer-events:none;z-index:40}
 #iris{position:absolute;left:0;top:0;width:1080px;height:1920px;background:var(--accent2);clip-path:circle(0% at 50% 52%);pointer-events:none;z-index:41}
-.cap{position:absolute;left:60px;top:240px;width:960px;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:4px 16px;opacity:0;z-index:50}
+.cap{position:absolute;left:90px;top:320px;width:900px;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:4px 16px;opacity:0;z-index:50}
 .cw{font-family:var(--fc);font-weight:var(--fcw);font-size:${capSize}px;text-transform:uppercase;color:${style.cap.ink};line-height:1.12;letter-spacing:-.01em;text-shadow:0 5px 0 ${alpha(style.cap.halo, 0.9)},0 0 3px ${style.cap.halo},0 0 16px ${alpha(style.cap.halo, 0.65)};opacity:0}
 .cw.kw{background:${style.cap.kwBg};color:${style.cap.kwInk};text-shadow:none;padding:0 20px;border-radius:calc(20px*var(--rk) + 6px);box-shadow:0 6px 0 rgba(0,0,0,.30)}
 `;

@@ -5,6 +5,7 @@ import { esc, r2, mulberry32, hashSeed, clamp } from "./util.mjs";
 import { CAST_AT } from "./layout.mjs";
 import { CastState, clipOps, lifeOps } from "./clips.mjs";
 import { STAGE } from "./layout.mjs";
+import { estimateSize } from "./safe.mjs";
 
 const ROLE_VAR = (r) => `var(--${r})`;
 const cen = (b) => ({ x: b.x + b.w / 2, y: b.y + b.h / 2 });
@@ -12,7 +13,7 @@ const cen = (b) => ({ x: b.x + b.w / 2, y: b.y + b.h / 2 });
 export function compileBeats({ model, timeline, hf, d, duration, mode }) {
   const ops = [], sfx = [], camBeats = [];
   const ov = model.scenes.map(() => ""), lines = model.scenes.map(() => "");
-  const origins = [];
+  const origins = [], tags = [];
   let uid = 0;
   const accentHex = d.c.accent, goodHex = d.c.good;
   const add = (...o) => ops.push(...o.flat());
@@ -282,6 +283,7 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
         case "emote": {
           const id = `em${uid++}`, c = T.cast;
           const ex = clamp(c.x + 60 * c.scale * c.flip, 90, 870), ey = Math.max(130, T.box.y - 30);
+          tags.push({ id, kind: "emote", si, x: r2(ex), y: r2(ey), anchor: "c", ...estimateSize("emote") });
           mkOv(`<div class="emote cx" id="${id}" style="left:${r2(ex)}px;top:${r2(ey)}px;opacity:0"><span class="ic">${icon(b.icon, "fill")}</span></div>`);
           add({ k: "fromTo", t, sel: `#${id}`, from: { opacity: 0, scale: 0.2, y: 20 }, to: { opacity: 1, scale: 1, y: 0 }, d: 0.45, ease: "back.out(2.4)" });
           add({ k: "fromTo", t: r2(t + 0.5), sel: `#${id}`, from: { rotation: -8 }, to: { rotation: 8 }, d: 0.3, ease: "sine.inOut", repeat: 3, yoyo: true });
@@ -294,6 +296,7 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
           let cx = c.x, cy = T.box.y - 36;
           if (side === "bottom") cy = T.box.y + T.box.h + 36; else if (side === "left") { cx = T.box.x - 10; cy = c.y; } else if (side === "right") { cx = T.box.x + T.box.w + 10; cy = c.y; }
           cx = clamp(cx, 150, 810); cy = clamp(cy, 150, 980);
+          tags.push({ id, kind: "chip", si, x: r2(cx), y: r2(cy), anchor: "c", ...estimateSize("chip", b.text) });
           mkOv(`<div class="chip cx" id="${id}" style="left:${r2(cx)}px;top:${r2(cy)}px;opacity:0;--chip:${ROLE_VAR(b.role ?? "accent")};--chipi:${["warn", "good"].includes(b.role) ? "#111" : "var(--onaccent)"}">${esc(b.text)}</div>`);
           add({ k: "fromTo", t, sel: `#${id}`, from: { opacity: 0, scale: 0.3 }, to: { opacity: 1, scale: 1 }, d: 0.4, ease: "back.out(2.4)" });
           add({ k: "to", t: r2(Math.min(sceneEnd - 0.4, t + 2.6)), sel: `#${id}`, v: { opacity: 0, scale: 0.6 }, d: 0.25, ease: "power2.in" });
@@ -303,6 +306,7 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
         case "hero": {
           const id = `hr${uid++}`, len = [...b.text].length;
           const fs = len <= 5 ? 170 : len <= 10 ? 120 : 84;
+          tags.push({ id, kind: "hero", si, x: 480, y: 560, anchor: "c", ...estimateSize("hero", b.text, fs) });
           mkOv(`<div class="hero cx" id="${id}" style="left:480px;top:560px;font-size:${fs}px;color:${ROLE_VAR(b.role ?? "accent")};opacity:0">${esc(b.text)}</div>`);
           add({ k: "fromTo", t, sel: `#${id}`, from: { opacity: 0, scale: 2.6, rotation: -14 }, to: { opacity: 1, scale: 1, rotation: -5 }, d: 0.28, ease: "power4.in" });
           add({ k: "fromTo", t: r2(t + 0.3), sel: `#${id}`, from: { y: 0 }, to: { y: 8 }, d: 0.05, repeat: 3, yoyo: true });
@@ -350,6 +354,6 @@ export function compileBeats({ model, timeline, hf, d, duration, mode }) {
   sfx.sort((a, b) => a.at - b.at);
   const dedup = [];
   for (const c of sfx) { const last = dedup.findLast?.((x) => x.kind === c.kind); if (!last || c.at - last.at >= 0.09) dedup.push(c); }
-  return { ops, sfx: dedup, camBeats, ov, lines, origins };
+  return { ops, sfx: dedup, camBeats, ov, lines, origins, tags };
 }
 export { STAGE };

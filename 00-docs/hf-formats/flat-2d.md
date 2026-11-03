@@ -5,6 +5,8 @@ Data-driven flat 2D explainers: flat vector worlds, rigged characters, app repli
 Code: `07-studio/engine/hf/flat-2d/`. Contract (`meta`, `payloadSchema`, `promptSection`, `normalize`, `compose`) is `index.mjs`; `compose` returns `{ entry, sfx, durationSec, warnings }` where `entry` is the absolute path of `index.html`. The composition draws its OWN captions (variable `captions`), so the engine's caption overlay must not be applied.
 
 ## Modes
+`spec.mode` (top level) is the single source of truth. `hf.mode` does not exist: `normalize` drops it (moving it to `spec.mode` only when that is missing) and warns; the prompt tells the LLM never to set it.
+
 - `single` (default): one world, one camera. Scenes are stations on a snake path; the path draws itself while the camera travels (zoom-out dip plus light blur); a recap zoom-out closes long videos. Use for process, step-by-step, duels.
 - `multi`: scenes side by side, joined by `slide`, `whip`, `up`, `wipe` or `iris`. Use for stories and rankings.
 Both modes work with every style and setting.
@@ -12,8 +14,8 @@ Both modes work with every style and setting.
 ## Styles (12): `styles.mjs`
 flat-soft-gradient, flat-dark-neon-ui (default look of the guru videos), flat-memphis, flat-paper-cut, flat-blueprint, flat-neo-brutalist, flat-risograph-duotone, flat-glass-ui, flat-sticker-cartoon, flat-clay-2d, flat-isometric, flat-low-poly. A style = semantic color roles + shape rules (radius, stroke, shadow kind, gradient, facets) + texture + fonts + caption colors + cast mode (color, duo, line). Palettes are proposals, not sourced from a palette site.
 
-## Settings (16): `settings/*.mjs`
-desktop-browser, phone-ui, server-room, city-street, office, barbershop, kitchen, classroom, factory-line, airport, data-center, bank, hospital, home-office, store, void. Each draws 3 depth layers (far, mid, near) with parallax and 4-6 named props that beats can target (`pulse`, `chip`, `camera`, `act ... to`). Props with an empty group (window, mirror, shelf, blackboard, columns...) are decor targets: transform effects on them fall back to a pulse ring.
+## Settings (24): `settings/*.mjs`
+Each carries `topics` tags (shown compactly in `promptSection`; the prompt forbids a setting that contradicts the topic). Tech additions in `settings/tech.mjs`: phone-home, cloud-sky, cafe-laptops, wifi-street, app-store, vault-door, helpdesk, hardware-lab. Original 16: desktop-browser, phone-ui, server-room, city-street, office, barbershop, kitchen, classroom, factory-line, airport, data-center, bank, hospital, home-office, store, void. Each draws 3 depth layers (far, mid, near) with parallax and 4-6 named props that beats can target (`pulse`, `chip`, `camera`, `act ... to`). Props with an empty group (window, mirror, shelf, blackboard, columns...) are decor targets: transform effects on them fall back to a pulse ring.
 
 ## Replicas (13): `kit/*.mjs`
 browser (URL typed letter by letter, page draws itself), chat (typing dots), stats (rolling counters), chart (line, bars, donut that draw themselves), notification (toasts drop in), phone, list (directory/table with scan and pick), rack (LEDs, lever), router (blinking), calendar, stamp-card, progress, card. Dynamic extras created from beats: cursor (click), packet and line (send), chip, emote, hero stamp, burst, ring, tint.
@@ -36,7 +38,11 @@ Six designs (nico, dora, beto, luz, tomas, mica) with head, torso, 2-segment arm
 ```
 
 ## Layout and safe zones
-Stage 960x1040 at frame (60,450): nothing important in the top 220 px, bottom 420 px or 60 px sides. Captions sit at y=240 (2-4 words, at most 22 characters, so never more than two lines), keyword boxed. Caption text 58-66 px, replica text 34-48 px (base size l).
+Stage 960x1040 at frame (60,450). Project rule: text inside the centre 900x1300 box (x 90-990, y 310-1610); nothing important in the top 220 px, bottom 420 px or 60 px at the sides (`safe.mjs`).
+- Captions own the band y 320-470 (x 90-990, 2-4 words, at most 22 characters, two lines max); the world sits behind a mask that fades out above y 440-462, so a card in transit never crosses the captions.
+- Labels, chips, hero stamps and emotes are registered tags (`plan.tags`). At every camera state the player clamps them to their own panel and to the content box (x 90-990, y 480-1610) with the CSS `translate` property (pure function of the camera state); `placeTagCore` in `safe.mjs` is inlined into the player and unit tested.
+- `place.mjs` (`separateCast`): a character never stands over a replica; it moves to the nearest free column, else the replica is lifted (never above y 104) and, last, shrunk to at most 60 %.
+Caption text 58-66 px, replica text 34-48 px (base size l).
 
 ## Assets and licenses
 Icons: Phosphor only (MIT, `@phosphor-icons/core`), inlined from the engine's node_modules. Fonts: files from `03-assets/fonts` (SIL OFL) copied to `assetsDir/fonts`. `assetsDir/LICENSES.md` carries both notices. GSAP loads from the jsDelivr CDN pin used by the reference reel (`gsap@3.15.0`).
@@ -54,7 +60,7 @@ Create `{ id, name, about, build(d) }` in `settings/*.mjs` returning `{ far, mid
 Add `{ about, base:{w,h}, fields, css, build(ctx,p) }` in `kit/*.mjs`, register it in `kit/index.mjs`, and add the beat handling in `beats.mjs` (ops are plain data: set, to, fromTo, cycle, roll, path).
 
 ## Verification and showcase
-`04-projects/hf-showcase/flat-2d/`: `build-showcase.mjs` (12 style and 16 setting compositions), `build-main.mjs` (22 s reel), `contact-sheet-12-styles.png`, `contact-sheet-16-settings.png`, `flat-2d-showcase.mp4`. Tests: `node --test test/hf-flat-2d*.test.mjs` from `07-studio/engine`.
+`04-projects/hf-showcase/flat-2d/`: `build-showcase.mjs` (12 style and 24 setting compositions), `build-sheets.sh` (snapshots and tiles the sheets), `build-main.mjs` (22 s reel), `contact-sheet-12-styles.png`, `contact-sheet-24-settings.png`, `flat-2d-showcase.mp4` (not re-rendered in U8). Tests: `node --test test/hf-flat-2d*.test.mjs` from `07-studio/engine`.
 
 ## Known weaknesses
-Characters are rigid-limb puppets (no cloth or hair secondary motion); 3/4 view is a mirrored side rig, not a true turn; the isometric style is extruded shapes, not true isometric projection; some setting decor sits behind the hero replica; the scene label can overlap a setting sign (airport gate sign).
+Characters are rigid-limb puppets (no cloth or hair secondary motion); 3/4 view is a mirrored side rig, not a true turn; the isometric style is extruded shapes, not true isometric projection; replica-over-replica overlaps are not resolved; setting decor can still sit behind a replica; tag sizes are estimated in tests and measured only in the browser.
