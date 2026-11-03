@@ -3,7 +3,9 @@
 
 import type { CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
 import type { DurationSec } from "./durations.ts";
+import type { HfOptions, HfQuality } from "./hf.ts";
 
+export type { HfOptions, HfQuality } from "./hf.ts";
 export type { CaptionColors, CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
 export type VoiceProvider = "elevenlabs" | "kokoro" | "none";
 export type VisualType = "gradient" | "image" | "video" | "emoji" | "icon" | "illustration" | "scene3d";
@@ -56,6 +58,16 @@ export interface VideoSpec {
   captions?: CaptionSettings;
   /** Options of the reels-* templates (`subtitles`: "linea", "bloque" or "no"); other keys are kept as-is. */
   reels?: { subtitles?: string; [key: string]: unknown };
+  /** HyperFrames formats only: "single" (one continuous world) or "multi" (a sequence of worlds). */
+  mode?: "single" | "multi";
+  /** HyperFrames formats only: the format-specific payload (validated by the engine's format module). */
+  hf?: Record<string, unknown>;
+  /** HyperFrames formats only, optional (SDD 7.7): beat spacing, camera, brand pill, call to action, variants. */
+  pace?: "calm" | "normal" | "fast";
+  camera?: { intensity?: "none" | "subtle" | "dynamic"; [key: string]: unknown };
+  brand?: { handle?: string; avatar?: string; pill?: boolean; followClick?: boolean; [key: string]: unknown };
+  cta?: { type: "follow" | "comment" | "send" | "custom"; [key: string]: unknown };
+  variants?: { count: number };
   scenes: Scene[];
   post: {
     tiktok: string;
@@ -97,7 +109,7 @@ export interface ThemePreset {
   tone: string;
 }
 
-export type TemplateCategory = "illustrated-2d" | "3d" | "kinetic" | "reels-2d";
+export type TemplateCategory = "illustrated-2d" | "3d" | "kinetic" | "reels-2d" | "hyperframes";
 
 export type ProviderId = "anthropic" | "openai" | "gemini" | "claudeCode";
 
@@ -132,6 +144,22 @@ export interface TemplateInfo {
   /** The template's own palette (defaults.theme.palette), shown as "Original". */
   palette?: Palette;
   font?: string;
+  /** HyperFrames formats: "hyperframes" and `ownsCaptions` (the composition draws its own subtitles). */
+  engine?: string;
+  ownsCaptions?: boolean;
+  /** HyperFrames formats: scene modes, visual styles (optional swatch colors) and settings/scenarios the format offers. */
+  modes?: ("single" | "multi")[];
+  styles?: HfEntry[];
+  settings?: HfEntry[];
+}
+
+/** A style or setting of a HyperFrames format (engine `meta.styles` / `meta.settings`). */
+export interface HfEntry {
+  id: string;
+  name: string;
+  about: string;
+  /** Hex colors for a small preview swatch, when the format provides them. */
+  palette?: string[];
 }
 
 export type MusicProvider = "library" | "elevenlabs" | "none";
@@ -230,6 +258,8 @@ export interface GenerateOptions {
   reelsSubtitles?: ReelsSubtitleMode;
   /** Render engine (3D formats only; written to spec.theme.renderer, never chosen by the model). */
   renderer?: Renderer;
+  /** HyperFrames formats only: mode, style, setting, subtitles, quality and advanced choices. Ignored for other formats. */
+  hf?: HfOptions;
 }
 
 export interface GenerateRequest {
@@ -332,6 +362,10 @@ export interface JobSummary {
   dir: string;
   hasVideo: boolean;
   hasCover: boolean;
+  /** HyperFrames formats: `video-sin-subtitulos.mp4` exists next to `video.mp4`. */
+  hasVideoNoSubs: boolean;
+  /** Render quality of the last (or next) HyperFrames render. */
+  quality?: HfQuality;
   /** False for an idea that has no script yet. */
   hasSpec: boolean;
   error?: string;

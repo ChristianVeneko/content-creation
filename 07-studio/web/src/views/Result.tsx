@@ -45,8 +45,13 @@ export function Result({ job, onReedit }: { job: JobDetail; onReedit: () => void
         <h1 className="h-page">{job.title}</h1>
         <div className="result-actions">
           <a className="btn btn-primary" href={api.fileUrl(job.id, "video.mp4", true)} download>
-            Descargar MP4
+            {job.hasVideoNoSubs ? (job.spec?.captions?.enabled === false ? "Descargar MP4 (sin subtítulos)" : "Descargar MP4 (con subtítulos)") : "Descargar MP4"}
           </a>
+          {job.hasVideoNoSubs && (
+            <a className="btn btn-quiet" href={api.fileUrl(job.id, "video-sin-subtitulos.mp4", true)} download>
+              MP4 sin subtítulos
+            </a>
+          )}
           {job.hasCover && (
             <a className="btn btn-quiet" href={api.fileUrl(job.id, "cover.jpg", true)} download>
               Portada

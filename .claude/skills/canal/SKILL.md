@@ -33,7 +33,7 @@ Use for anything about channels (`08-channels/<slug>/`) and the content stage of
 ## Create
 
 1. Round 1 (identidad): Nombre; Handle; Plataformas (multi: YouTube Shorts, TikTok, Instagram Reels); Idioma. Offer brand assets found in `03-assets/brand/<slug>/` (read its README only for colors/handle).
-2. Round 2 (audiencia y nicho): Nicho (one sentence); A quién le hablas (one concrete person); 3-4 pilares; Plantilla por defecto (the 3 whose "best for" column fits the niche in `node 07-studio/engine/cli.mjs templates --brief`, 5 KB, English).
+2. Round 2 (audiencia y nicho): Nicho (one sentence); A quién le hablas (one concrete person); 3-4 pilares; Plantilla por defecto (the 3 whose "best for" column fits the niche in `node 07-studio/engine/cli.mjs templates --brief`, 5 KB, English; include the animated HyperFrames formats, category `hyperframes`, when the niche is explainers or stories).
 3. Round 3 (voz): "Escríbeme el voice.md a partir de 3 guiones o videos míos (Recomendado)" → ask for paths/text; transcribe videos with `02-scripts/transcribe.sh <file>`; infer how they talk, their tics, words they avoid. / "Responder preguntas" → tono, palabras que usa, palabras que nunca usa, lo que no afirma, CTA. / "Lo escribo yo después" → copy the template.
 4. Write `08-channels/<slug>/channel.json` (slug `a-z0-9-`, `version: 1`, `createdAt` now, defaults from the answers, `palette: null` unless chosen) and `voice.md` with the `08-channels/_template/voice.md` headings. Validate: `node $J channels` lists it.
 5. Close with one line: the channel is ready; `/video` will use it.

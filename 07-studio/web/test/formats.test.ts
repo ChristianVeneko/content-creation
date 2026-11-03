@@ -19,7 +19,7 @@ test("formatFamily groups by category, format and best-for keywords", () => {
 });
 
 test("every family has a label and a one-line hint", () => {
-  assert.deepEqual(FAMILIES.map((f) => f.id), ["explainer", "data", "story", "ranking", "product", "pixel", "3d"]);
+  assert.deepEqual(FAMILIES.map((f) => f.id), ["pixel-anim", "flat-anim", "animated", "explainer", "data", "story", "ranking", "product", "pixel", "3d"]);
   for (const f of FAMILIES) assert.ok(f.label && f.hint, f.id);
 });
 

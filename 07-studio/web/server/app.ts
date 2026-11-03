@@ -14,6 +14,7 @@ import { Engine, asPalette, type EngineMusicTrack, type EngineVoice } from "./en
 import { ChannelError, ChannelStore, isValidChannelSlug } from "./channels.ts";
 import { captionSettingsIssue, isCaptionStyle, isReelsSubtitleMode } from "../shared/captions.ts";
 import { RENDERERS, is3dTemplate, isRenderer } from "../shared/renderers.ts";
+import { type HfQuality, defaultHfOptions, hfOptionsIssue, isHfQuality, isHfTemplate, resolveHfOptions } from "../shared/hf.ts";
 import { buildChannelContext, channelOptionDefaults } from "./channelContext.ts";
 import { JobStore, isValidJobId, type JobEvent, type JobMeta } from "./jobs.ts";
 import { log, log as studioLog } from "./logger.ts";
@@ -23,6 +24,7 @@ import { SpecGenerationError, buildUserPrompt, generateValidSpec } from "./specG
 
 const MIME: Record<string, string> = {
   "video.mp4": "video/mp4",
+  "video-sin-subtitulos.mp4": "video/mp4",
   "cover.jpg": "image/jpeg",
   "post.md": "text/markdown; charset=utf-8",
   "spec.json": "application/json; charset=utf-8",
@@ -475,6 +477,15 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
     }
     const templates = await engine.templates().catch(() => []);
     const template = templates.find((t) => t.id === templateId);
+    // HyperFrames formats: the choices (mode, style, quality, ...) are checked against the format's registry data
+    const isHf = isHfTemplate(template);
+    if (isHf) {
+      const issue = hfOptionsIssue(body.options?.hf, template);
+      if (issue) return c.json({ error: issue }, 400);
+      options.hf = resolveHfOptions(body.options?.hf ?? options.hf ?? defaultHfOptions(template), template);
+    } else {
+      delete options.hf;
+    }
     const startedAt = performance.now();
     const model = body.model ?? listProviders({ claudeBin: config.claudeBin }).find((p) => p.id === body.provider)?.model;
     log.info("spec.request", { provider: body.provider, model, template: templateId, channel: channel?.slug, durationSec: options.durationSec, language: options.language });
@@ -482,11 +493,13 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
       const { spec, attempts } = await generateValidSpec({
         provider,
         // The subscription (Claude Code) gets the creative sections (custom sprites, models, fx); APIs stay catalog-first.
-        system: (await systemPromptFor(templateId, config, { creative: body.provider === "claudeCode" })).text,
+        system: isHf
+          ? await engine.prompt(templateId, { creative: body.provider === "claudeCode" })
+          : (await systemPromptFor(templateId, config, { creative: body.provider === "claudeCode" })).text,
         user: buildUserPrompt(body.prompt, template, templateId, options, channel ? buildChannelContext(channel, channel.voice) : undefined),
         templateId,
         // the render engine only exists for 3D formats (the engine rejects it elsewhere)
-        options: is3dTemplate(template) ? options : { ...options, renderer: undefined },
+        options: isHf || !is3dTemplate(template) ? { ...options, renderer: undefined } : options,
         validate: validateSpec,
       });
       const title = spec.title ?? body.prompt.slice(0, 60);
@@ -494,9 +507,9 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
       if (target) {
         id = target.id;
         jobs.writeSpec(id, spec);
-        jobs.update(id, { title, template: templateId, prompt: body.prompt, provider: body.provider, stage: "draft", ...(channel ? { channel: channel.slug } : {}) });
+        jobs.update(id, { title, template: templateId, prompt: body.prompt, provider: body.provider, stage: "draft", ...(channel ? { channel: channel.slug } : {}), ...(options.hf ? { quality: options.hf.quality } : {}) });
       } else {
-        id = jobs.create({ title, template: templateId, prompt: body.prompt, provider: body.provider, spec, ...(channel ? { channel: channel.slug } : {}) });
+        id = jobs.create({ title, template: templateId, prompt: body.prompt, provider: body.provider, spec, ...(channel ? { channel: channel.slug } : {}), ...(options.hf ? { quality: options.hf.quality } : {}) });
       }
       log.info("spec.ok", { provider: body.provider, model, jobId: id, attempts, scenes: spec.scenes?.length, ms: Math.round(performance.now() - startedAt) });
       return c.json({ jobId: id, spec, attempts });
@@ -575,9 +588,14 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
     if (!spec) return c.json({ error: "Este proyecto no tiene spec.json." }, 400);
     const invalid = await validateSpec(spec);
     if (invalid) return c.json({ error: invalid }, 422);
+    // HyperFrames formats render at a chosen quality (draft | looks | delivery) and take no render-engine choice
+    const renderBody = (await c.req.json().catch(() => null)) as { quality?: unknown } | null;
+    if (renderBody?.quality !== undefined && !isHfQuality(renderBody.quality)) return c.json({ error: "Calidad inválida: usa draft, looks o delivery." }, 400);
+    const isHfSpec = isHfTemplate((await engine.templates().catch(() => [])).find((t) => t.id === spec.template));
+    const quality: HfQuality | undefined = isHfSpec ? ((renderBody?.quality as HfQuality | undefined) ?? jobs.readMeta(id)?.quality ?? "looks") : undefined;
 
     const dir = jobs.dirOf(id);
-    let meta = jobs.update(id, { status: "rendering", error: undefined, logs: [], progress: 0 });
+    let meta = jobs.update(id, { status: "rendering", error: undefined, logs: [], progress: 0, ...(quality ? { quality } : {}) });
     jobs.emit(id, { type: "status", status: "rendering" });
     const tail: string[] = [];
     const { child, done } = engine.build(path.join(dir, "spec.json"), dir, {
@@ -593,7 +611,7 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
         if (tail.length > 20) tail.shift();
         jobs.emit(id, { type: "text", text });
       },
-    });
+    }, { quality });
     running.set(id, child);
     const renderStarted = performance.now();
     log.info("render.start", { jobId: id });

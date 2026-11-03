@@ -5,6 +5,8 @@ import { Frame } from "../components/Frame.tsx";
 import { CAPTION_LABEL, CaptionPanel, type CaptionPanelChange } from "../components/CaptionPanel.tsx";
 import { MusicPanel } from "../components/MusicPanel.tsx";
 import { captionKind, isCaptionStyle, normReelsSubtitles } from "../../shared/captions.ts";
+import { HF_QUALITY_CHOICES, type HfQuality, isHfSpec } from "../../shared/hf.ts";
+import { Segmented } from "../components/Segmented.tsx";
 import { FALLBACK_PALETTE } from "../lib/palette.ts";
 import { api } from "../lib/api.ts";
 
@@ -32,6 +34,7 @@ function musicSummary(spec: VideoSpec): string {
 }
 
 function captionsSummary(spec: VideoSpec): string {
+  if (isHfSpec(spec)) return spec.captions?.enabled === false ? "Video principal sin subtítulos" : "Subtítulos propios del formato";
   const kind = captionKind(spec.template);
   const colors = spec.captions?.colors || spec.captions?.accent ? "colores propios" : "colores de la paleta";
   if (kind === "reels") {
@@ -61,6 +64,7 @@ const drawnParts = (scene: Scene): { type: string }[] =>
 export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: () => void }) {
   const [spec, setSpec] = useState<VideoSpec | undefined>(job.spec);
   const [dirty, setDirty] = useState(false);
+  const [quality, setQuality] = useState<HfQuality>(job.quality ?? "looks");
   const [state, setState] = useState<"idle" | "saving" | "starting">("idle");
   const [error, setError] = useState<string | null>(job.status === "failed" ? job.error ?? "El render anterior falló." : null);
 
@@ -72,6 +76,7 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
     );
   }
 
+  const hf = isHfSpec(spec);
   const bg = spec.theme?.palette?.bg;
   const total = spec.scenes.reduce((s, sc) => s + estimateSeconds(sc), 0);
 
@@ -111,7 +116,7 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
     if (!(await save())) return;
     setState("starting");
     try {
-      await api.render(job.id);
+      await api.render(job.id, hf ? { quality } : {});
       onRendering();
     } catch (e) {
       setError((e as Error).message);
@@ -140,7 +145,7 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
             {state === "saving" ? "Guardando…" : dirty ? "Guardar cambios" : "Guardado"}
           </button>
           <button type="button" className="btn btn-primary" onClick={render} disabled={state !== "idle" || spec.scenes.length === 0} data-state={state === "starting" ? "loading" : undefined}>
-            {state === "starting" ? "Arrancando…" : "Renderizar video"}
+            {state === "starting" ? "Arrancando…" : hf && quality === "draft" ? "Renderizar borrador" : "Renderizar video"}
           </button>
         </div>
       </header>
@@ -165,12 +170,40 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
         </div>
       </details>
 
+      {hf && (
+        <details className="board-music" data-testid="hf-render">
+          <summary>
+            <span className="board-music-title">Render</span>
+            <span className="board-music-summary">{HF_QUALITY_CHOICES.find((q) => q.value === quality)?.label} · {spec.mode === "single" ? "una escena continua" : "varias escenas"}</span>
+          </summary>
+          <div className="board-music-body">
+            <Segmented label="Calidad" value={quality} options={HF_QUALITY_CHOICES.map(({ value, label }) => ({ value, label }))} onChange={setQuality} />
+            <p className="length-note">{HF_QUALITY_CHOICES.find((q) => q.value === quality)?.hint} Un borrador sirve para revisar ritmo y textos antes del render final.</p>
+          </div>
+        </details>
+      )}
+
       <details className="board-music">
         <summary>
           <span className="board-music-title">Subtítulos</span>
           <span className="board-music-summary">{captionsSummary(spec)}</span>
         </summary>
         <div className="board-music-body">
+          {hf ? (
+            <>
+              <p className="muted" data-testid="hf-captions-note">Este formato trae sus propios subtítulos dentro de la animación; no se les pone estilo ni se superponen otros.</p>
+              <Segmented
+                label="Video principal"
+                value={spec.captions?.enabled === false ? "sin" : "con"}
+                options={[
+                  { value: "con", label: "Con subtítulos" },
+                  { value: "sin", label: "Sin subtítulos" },
+                ]}
+                onChange={(v) => update({ ...spec, captions: { enabled: v === "con" } })}
+              />
+              <p className="length-note">Siempre se entregan los dos archivos (video.mp4 y video-sin-subtitulos.mp4).</p>
+            </>
+          ) : (
           <CaptionPanel
             captions={spec.captions}
             style={isCaptionStyle(spec.theme?.captionStyle) ? spec.theme.captionStyle : "hormozi"}
@@ -180,6 +213,7 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
             disabled={state !== "idle"}
             onChange={(c) => update(applyCaptions(spec, c))}
           />
+          )}
         </div>
       </details>
 
@@ -206,7 +240,7 @@ export function Storyboard({ job, onRendering }: { job: JobDetail; onRendering: 
                   {scene.visual.emoji}
                 </span>
               )}
-              {scene.onScreenText && <span className={`frame-caption caption-${spec.theme?.captionStyle ?? "clean"}`}>{scene.onScreenText}</span>}
+              {scene.onScreenText && <span className={hf ? "frame-caption" : `frame-caption caption-${spec.theme?.captionStyle ?? "clean"}`}>{scene.onScreenText}</span>}
               <span className="scene-time">{estimateSeconds(scene).toFixed(1)}s</span>
             </Frame>
             <div className="scene-fields">

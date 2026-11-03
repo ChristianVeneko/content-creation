@@ -1289,3 +1289,12 @@
   border-left: 3px solid var(--color-ink-3);
   padding-left: var(--space-xs);
 }
+
+/* HyperFrames formats: scene mode, style swatch, advanced accordion */
+.hf-panel { display: grid; gap: var(--space-3, 12px); margin-top: var(--space-3, 12px); }
+.hf-style-row { display: flex; align-items: center; gap: 10px; }
+.hf-style-row .input { flex: 1; min-width: 0; }
+.hf-about { display: block; margin-top: 4px; font-size: 0.85em; }
+.hf-advanced > summary { cursor: pointer; font-weight: 600; }
+.hf-advanced-body { display: grid; gap: var(--space-3, 12px); margin-top: var(--space-3, 12px); }
+.hf-advanced .check { display: flex; align-items: center; gap: 8px; }

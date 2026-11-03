@@ -78,6 +78,25 @@ from `STUDIO_MUSIC_DIR`, default `03-assets/music`).
 URLs) and `GET /api/voices/:id/preview` (proxies only previews of listed voices hosted by ElevenLabs, as `audio/mpeg`).
 In Create, ElevenLabs is the default voice; "Automática" leaves `voiceId` empty so the engine picks a trending voice.
 
+### HyperFrames formats (pixel-world, flat-2d, ...)
+
+Formats whose `templates` entry has `engine: "hyperframes"` / `ownsCaptions: true` are shown from registry data
+(`modes`, `styles` with an optional `palette` swatch, `settings`; helpers in `shared/hf.ts`) under the families
+"Pixel animado", "2D animado" and "Animado (otros)". New formats appear without touching the app.
+
+- `POST /api/spec` takes `options.hf` ({ mode, style, setting, withSubtitles, quality, pace, camera, brandPill,
+  followClick, cta, variants }), checks it against the format (400 with the reason) and sends the spec writer the
+  engine's own prompt (`cli.mjs prompt <id>`, `--creative` for Claude Code). Payload errors from `validate` go back to
+  the provider as `hf.<field>: <message>` (same retry as every format). The server writes `mode`, `hf.style`, the
+  advanced fields (only when set) and `captions: { enabled }`; it never writes caption style, colors, position,
+  `reels.subtitles` or `theme.renderer`, because the composition draws its own subtitles (no double subtitles).
+- `POST /api/jobs/:id/render` accepts `{ "quality": "draft" | "looks" | "delivery" }` (HyperFrames formats only, saved in
+  `job.json`) and runs `build --quality`. The job lists `video.mp4` and `video-sin-subtitulos.mp4`
+  (`hasVideoNoSubs`); `GET /api/jobs/:id/file/video-sin-subtitulos.mp4` serves the second one.
+- The Create wizard shows the format controls (scene mode, style, scenario, quality, "Avanzado") and replaces the caption
+  panel by a "con/sin subtítulos" choice; the storyboard does the same and never draws engine caption styles on them.
+  There is no render-engine choice for these formats.
+
 ### Captions
 
 The **Subtítulos** panel (Create, step "Formato y subtítulos"; the storyboard; channel defaults in compact form) edits

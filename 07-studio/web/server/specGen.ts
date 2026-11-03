@@ -5,6 +5,7 @@ import type { GenerateOptions, TemplateInfo, VideoSpec } from "../shared/types.t
 import type { SpecProvider } from "./providers/types.ts";
 import { applyMusicOptions } from "../shared/music.ts";
 import { CAPTION_STYLES, cleanCaptionSettings } from "../shared/captions.ts";
+import { applyHfOptions, hfPromptLines } from "../shared/hf.ts";
 import { asPalette } from "./engine.ts";
 
 const isObject = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
@@ -37,7 +38,8 @@ export function buildUserPrompt(prompt: string, template: TemplateInfo | undefin
     `Target total duration: about ${o.durationSec} seconds`,
     o.tone ? `Tone: ${o.tone}` : null,
     `Platform focus: ${PLATFORM_LABEL[o.platform]}`,
-    `Caption style: ${o.captionStyle}`,
+    o.hf ? null : `Caption style: ${o.captionStyle}`,
+    ...(o.hf ? hfPromptLines(o.hf, template) : []),
     `Voice provider: ${o.voiceProvider}${o.voiceId ? ` (voiceId ${o.voiceId})` : ""}`,
     ...(channelContext ? ["", channelContext] : []),
     "",
@@ -68,10 +70,11 @@ export function applyOptions(raw: unknown, templateId: string, o: GenerateOption
   spec.template = templateId;
   spec.language = o.language;
   spec.format = { ...{ width: 1080, height: 1920, fps: 30 }, ...(spec.format ?? {}) };
-  const captions = cleanCaptionSettings(o.captions);
-  spec.theme = { ...(spec.theme ?? ({} as VideoSpec["theme"])), captionStyle: captions?.style ?? o.captionStyle };
+  // HyperFrames formats draw their own captions: the app's caption style/colors/position never reach their spec
+  const captions = o.hf ? undefined : cleanCaptionSettings(o.captions);
+  spec.theme = { ...(spec.theme ?? ({} as VideoSpec["theme"])), ...(o.hf ? {} : { captionStyle: captions?.style ?? o.captionStyle }) };
   if (captions) spec.captions = { ...(isObject(spec.captions) ? spec.captions : {}), ...captions };
-  if (o.reelsSubtitles) spec.reels = { ...(isObject(spec.reels) ? spec.reels : {}), subtitles: o.reelsSubtitles };
+  if (o.reelsSubtitles && !o.hf) spec.reels = { ...(isObject(spec.reels) ? spec.reels : {}), subtitles: o.reelsSubtitles };
   // the render engine is a user setting (3D formats only), never the model's choice
   delete spec.theme.renderer;
   if (o.renderer === "blender") spec.theme.renderer = "blender";
@@ -87,8 +90,8 @@ export function applyOptions(raw: unknown, templateId: string, o: GenerateOption
     });
   }
   // Music and SFX are user choices, never the model's.
-  if (o.music) return applyMusicOptions(spec, o.music, o.tone);
-  return spec;
+  const withMusic = o.music ? applyMusicOptions(spec, o.music, o.tone) : spec;
+  return o.hf ? applyHfOptions(withMusic, o.hf) : withMusic;
 }
 
 export type Validator = (spec: VideoSpec) => Promise<string | null>;
@@ -158,7 +161,8 @@ export async function generateValidSpec(args: {
       if (!invalid && !cited) return { spec, attempts: attempt };
       // a cited source is cosmetic: one retry, then the fragments are stripped (validation errors get the full retries)
       if (!invalid && (attempt === maxAttempts || attempt >= 2)) return { spec: stripSourceMentions(spec), attempts: attempt };
-      lastError = invalid ? `The VideoSpec failed validation: ${invalid}` : `The script breaks the no-sources rule: ${cited}`;
+      const hfHint = invalid && args.options.hf && /\bhf\b|\bmode\b/.test(invalid) ? " Fix spec.hf (and mode) exactly as the format guidance says: field names, ranges and allowed values." : "";
+      lastError = invalid ? `The VideoSpec failed validation: ${invalid}${hfHint}` : `The script breaks the no-sources rule: ${cited}`;
     } catch (err) {
       lastError = `The output was not valid JSON: ${(err as Error).message}`;
     }

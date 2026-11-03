@@ -2,7 +2,7 @@
 //   templates · validate <spec.json> · build <spec.json> --out <dir> --json-logs
 import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync } from "node:fs";
-import type { EngineLog, MusicMood, Palette, TemplateInfo } from "../shared/types.ts";
+import type { EngineLog, HfEntry, HfQuality, MusicMood, Palette, TemplateInfo } from "../shared/types.ts";
 import { JsonLogStream } from "./jsonLogs.ts";
 
 export interface EngineRunResult {
@@ -78,6 +78,13 @@ export class Engine {
     return normalizeTemplates(JSON.parse(extractJson(res.stdout)));
   }
 
+  /** Spec-writer prompt of a template, trimmed by the engine (`cli.mjs prompt <id>`); HyperFrames formats get their own section. */
+  async prompt(templateId: string, opts: { creative?: boolean } = {}): Promise<string> {
+    const res = await this.run(["prompt", templateId, ...(opts.creative ? ["--creative"] : [])]);
+    if (res.code !== 0 || !res.stdout.trim()) throw new Error(`engine prompt ${templateId} failed: ${(res.stderr || res.stdout).trim().slice(0, 500)}`);
+    return res.stdout;
+  }
+
   /** Music library listing (`cli.mjs music`): moods and vetted tracks with their file relative to 03-assets/music. */
   async music(): Promise<{ moods: MusicMood[]; tracks: EngineMusicTrack[] }> {
     const res = await this.run(["music"]);
@@ -118,8 +125,10 @@ export class Engine {
     specPath: string,
     outDir: string,
     handlers: { onLog: (log: EngineLog) => void; onText: (text: string) => void },
+    opts: { quality?: HfQuality } = {},
   ): { child: ChildProcess; done: Promise<number | null> } {
-    const child = spawn(process.execPath, [this.cli, "build", specPath, "--out", outDir, "--json-logs"], {
+    const args = [this.cli, "build", specPath, "--out", outDir, "--json-logs", ...(opts.quality ? ["--quality", opts.quality] : [])];
+    const child = spawn(process.execPath, args, {
       cwd: this.cwd,
       env: process.env,
     });
@@ -191,6 +200,19 @@ export function asPalette(raw: unknown): Palette | undefined {
   return out;
 }
 
+/** Styles/settings of a HyperFrames format: {id, name, about} plus optional swatch colors. */
+function normalizeEntries(raw: unknown): HfEntry[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const out = raw.flatMap((e): HfEntry[] => {
+    if (!e || typeof e !== "object") return [];
+    const r = e as Record<string, unknown>;
+    if (typeof r.id !== "string" || !r.id) return [];
+    const palette = Array.isArray(r.palette) ? r.palette.filter(isHex) : [];
+    return [{ id: r.id, name: typeof r.name === "string" ? r.name : r.id, about: typeof r.about === "string" ? r.about : "", ...(palette.length > 0 ? { palette } : {}) }];
+  });
+  return out;
+}
+
 const FALLBACK_GRADIENT = ["#1b1033", "#ff7a3d"];
 
 /** Map whatever template metadata the engine prints onto the UI's TemplateInfo. */
@@ -225,6 +247,12 @@ export function normalizeTemplates(raw: unknown): TemplateInfo[] {
         bestFor: Array.isArray(t.best_for) ? t.best_for.map(String) : undefined,
         palette: asPalette(defaultsTheme(t).palette),
         font: typeof defaultsTheme(t).font === "string" ? (defaultsTheme(t).font as string) : undefined,
+        // HyperFrames formats (registry data): present only when the engine sends them, so other templates are unchanged
+        ...(t.engine === "hyperframes" ? { engine: "hyperframes" } : {}),
+        ...(t.ownsCaptions === true ? { ownsCaptions: true } : {}),
+        ...(Array.isArray(t.modes) ? { modes: t.modes.filter((m): m is "single" | "multi" => m === "single" || m === "multi") } : {}),
+        ...(Array.isArray(t.styles) ? { styles: normalizeEntries(t.styles) } : {}),
+        ...(Array.isArray(t.settings) ? { settings: normalizeEntries(t.settings) } : {}),
       },
     ];
   });

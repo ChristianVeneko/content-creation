@@ -9,6 +9,8 @@ import { DEFAULT_MUSIC } from "../../shared/music.ts";
 import { RENDERER_CHOICES, is3dTemplate } from "../../shared/renderers.ts";
 import { DURATION_CHOICES, durationLabel } from "../../shared/durations.ts";
 import { FAMILIES, formatFamily } from "../lib/formats.ts";
+import { type HfOptions, isHfTemplate, resolveHfOptions } from "../../shared/hf.ts";
+import { HfPanel } from "../components/HfPanel.tsx";
 import { CAPTION_LABEL, CaptionPanel } from "../components/CaptionPanel.tsx";
 import { MusicPanel } from "../components/MusicPanel.tsx";
 import { VoicePicker } from "../components/VoicePicker.tsx";
@@ -37,7 +39,8 @@ const PLATFORM_LABEL: Record<GenerateOptions["platform"], string> = { all: "Toda
 const LANGUAGE_LABEL: Record<string, string> = { es: "Español", en: "Inglés", pt: "Portugués" };
 
 /** "impacto · colores de la paleta" for the review list. */
-function captionSummary(o: GenerateOptions, templateId: string): string {
+function captionSummary(o: GenerateOptions, templateId: string, hf?: HfOptions): string {
+  if (hf) return hf.withSubtitles ? "con subtítulos propios del formato" : "video principal sin subtítulos";
   const kind = captionKind(templateId);
   const colors = o.captions?.colors ? "colores propios" : "colores de la paleta";
   if (kind === "reels") return o.reelsSubtitles === "no" ? "no" : `${o.reelsSubtitles === "bloque" ? "en bloque" : "en línea"} · ${colors}`;
@@ -54,6 +57,8 @@ interface Draft {
   paletteChoice: PaletteChoice;
   /** Channel slug ("" for none); never restored from a saved draft. */
   channel: string;
+  /** HyperFrames choices the user changed; repaired for the chosen format by resolveHfOptions. */
+  hf?: Partial<HfOptions>;
 }
 
 const DEFAULT_DRAFT: Draft = {
@@ -217,6 +222,10 @@ export function Create(props: { channel?: string; idea?: string }) {
   const palette = resolveChoice(draft.paletteChoice, palettes, template);
   // 3D formats can render with Remotion (three.js, fast) or Blender (Eevee, slower and more cinematic); 2D formats never send it
   const is3d = is3dTemplate(template);
+  // HyperFrames formats (registry data) carry their own subtitles and have no render-engine or caption-style choice
+  const isHf = isHfTemplate(template);
+  const hf = useMemo(() => (isHf ? resolveHfOptions(draft.hf, template) : undefined), [isHf, draft.hf, template]);
+  const setHf = (patch: Partial<HfOptions>) => setDraft((d) => ({ ...d, hf: { ...(d.hf ?? {}), ...patch } }));
   const setOpt = <K extends keyof GenerateOptions>(k: K, v: GenerateOptions[K]) => setDraft((d) => ({ ...d, options: { ...d.options, [k]: v } }));
 
   const missing = useMemo(() => {
@@ -265,13 +274,14 @@ export function Create(props: { channel?: string; idea?: string }) {
     setElapsed(0);
     setError(null);
     try {
-      const { voiceId, renderer, ...rest } = draft.options;
+      const { voiceId, renderer, captions: _captions, reelsSubtitles: _reels, ...rest } = draft.options;
+      const keep = isHf ? {} : { ...(_captions ? { captions: _captions } : {}), ...(_reels ? { reelsSubtitles: _reels } : {}) };
       const res = await api.generate({
         prompt: draft.prompt,
         template: draft.template,
         provider: provider.id,
         model: model || undefined,
-        options: { ...rest, ...(voiceId?.trim() ? { voiceId: voiceId.trim() } : {}), ...(palette.override ? { palette: palette.override } : {}), ...(is3d && renderer ? { renderer } : {}) },
+        options: { ...rest, ...keep, ...(hf ? { hf } : {}), ...(voiceId?.trim() ? { voiceId: voiceId.trim() } : {}), ...(palette.override ? { palette: palette.override } : {}), ...(is3d && renderer ? { renderer } : {}) },
         ...(channel ? { channel: channel.slug } : {}),
         ...(idea ? { jobId: idea.id } : {}),
       });
@@ -529,6 +539,9 @@ export function Create(props: { channel?: string; idea?: string }) {
                     ))}
                   </ul>
                 )}
+                {isHf && (
+                  <p className="style-note-3d">Este formato trae sus propios subtítulos dentro de la animación y no usa motor de render a elegir: siempre sale el video con subtítulos y otro sin ellos.</p>
+                )}
                 {is3d && (
                   <>
                     <Segmented
@@ -542,6 +555,7 @@ export function Create(props: { channel?: string; idea?: string }) {
                 )}
               </div>
             )}
+            {isHf && template && hf && <HfPanel template={template} value={hf} onChange={setHf} disabled={busy} />}
           </div>
         )}
 
@@ -597,6 +611,21 @@ export function Create(props: { channel?: string; idea?: string }) {
             </div>
             <div className="panel">
               <p className="field-label">Subtítulos</p>
+              {isHf && hf ? (
+                <>
+                  <p className="muted" data-testid="hf-captions-note">Este formato trae sus propios subtítulos dibujados dentro de la animación; no se les pone estilo ni se superponen otros encima.</p>
+                  <Segmented
+                    label="Video principal"
+                    value={hf.withSubtitles ? "con" : "sin"}
+                    options={[
+                      { value: "con", label: "Con subtítulos" },
+                      { value: "sin", label: "Sin subtítulos" },
+                    ]}
+                    onChange={(v) => setHf({ withSubtitles: v === "con" })}
+                  />
+                  <p className="length-note">Siempre se entregan los dos archivos: video.mp4 y video-sin-subtitulos.mp4. Esto solo decide cuál es el principal.</p>
+                </>
+              ) : (
               <CaptionPanel
                 captions={draft.options.captions}
                 style={draft.options.captionStyle}
@@ -611,6 +640,7 @@ export function Create(props: { channel?: string; idea?: string }) {
                   })
                 }
               />
+              )}
             </div>
 
           </div>
@@ -656,11 +686,11 @@ export function Create(props: { channel?: string; idea?: string }) {
                 { k: "Canal", v: channel?.name ?? "Sin canal", go: 0 },
                 { k: "Idea", v: draft.prompt.trim() || "Sin escribir", go: 0, warn: !draft.prompt.trim() },
                 { k: "Temática", v: theme?.label ?? "Ninguna", go: 0 },
-                { k: "Formato", v: template ? `${template.name}${template.category ? ` · ${CATEGORY_LABEL[template.category] ?? template.category}` : ""}${is3d && draft.options.renderer === "blender" ? " · render Blender" : ""}` : "Sin elegir", go: 1, warn: !template },
+                { k: "Formato", v: template ? `${template.name}${template.category ? ` · ${CATEGORY_LABEL[template.category] ?? template.category}` : ""}${is3d && draft.options.renderer === "blender" ? " · render Blender" : ""}${hf ? ` · ${hf.mode === "single" ? "una escena continua" : "varias escenas"}${hf.style ? ` · ${template?.styles?.find((x) => x.id === hf.style)?.name ?? hf.style}` : ""} · calidad ${hf.quality === "draft" ? "borrador" : hf.quality === "delivery" ? "entrega" : "normal"}` : ""}` : "Sin elegir", go: 1, warn: !template },
                 { k: "Paleta", v: palette.label, go: 2, palette: palette.preview },
                 { k: "Voz", v: `${VOICE_LABEL[draft.options.voiceProvider]}${draft.options.voiceId ? ` · ${draft.options.voiceId}` : draft.options.voiceProvider === "elevenlabs" ? " · automática en tendencia" : ""} · ${LANGUAGE_LABEL[draft.options.language] ?? draft.options.language}`, go: 3 },
                 { k: "Música", v: musicLabel, go: 3 },
-                { k: "Subtítulos", v: captionSummary(draft.options, draft.template), go: 3 },
+                { k: "Subtítulos", v: captionSummary(draft.options, draft.template, hf), go: 3 },
                 { k: "Duración", v: `${durationLabel(draft.options.durationSec)} · ${PLATFORM_LABEL[draft.options.platform]}${draft.options.tone ? ` · tono ${draft.options.tone.toLowerCase()}` : ""}`, go: 4 },
               ].map((r) => (
                 <div key={r.k} className="review-row" data-warn={r.warn || undefined}>

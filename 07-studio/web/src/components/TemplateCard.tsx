@@ -15,6 +15,7 @@ export const CATEGORY_LABEL: Record<string, string> = {
   "reels-2d": "Reels",
   "3d": "3D",
   kinetic: "Kinetic",
+  hyperframes: "Animado",
 };
 
 const reducedMotion = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;

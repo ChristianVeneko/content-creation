@@ -3,9 +3,9 @@
 import { EventEmitter } from "node:events";
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import type { ContentStage, EngineLog, JobDetail, JobStatus, JobSummary, ProviderId, VideoSpec } from "../shared/types.ts";
+import type { ContentStage, EngineLog, HfQuality, JobDetail, JobStatus, JobSummary, ProviderId, VideoSpec } from "../shared/types.ts";
 
-export const OUTPUT_FILES = ["video.mp4", "cover.jpg", "post.md", "spec.json"] as const;
+export const OUTPUT_FILES = ["video.mp4", "video-sin-subtitulos.mp4", "cover.jpg", "post.md", "spec.json"] as const;
 export type OutputFile = (typeof OUTPUT_FILES)[number];
 
 export interface JobMeta {
@@ -28,6 +28,8 @@ export interface JobMeta {
   notes?: string;
   publishedAt?: string;
   links?: string[];
+  /** HyperFrames formats: render quality chosen in the wizard or the storyboard. */
+  quality?: HfQuality;
 }
 
 export type JobEvent =
@@ -83,7 +85,7 @@ export class JobStore {
   }
 
   create(
-    input: { title: string; template: string; prompt: string; provider: ProviderId; spec: VideoSpec; channel?: string },
+    input: { title: string; template: string; prompt: string; provider: ProviderId; spec: VideoSpec; channel?: string; quality?: HfQuality },
     now = new Date(),
   ): string {
     const id = this.newFolder(input.title || input.prompt, now);
@@ -100,6 +102,7 @@ export class JobStore {
       progress: 0,
       stage: "draft",
       ...(input.channel ? { channel: input.channel } : {}),
+      ...(input.quality ? { quality: input.quality } : {}),
     };
     this.writeMeta(meta);
     this.writeSpec(id, input.spec);
@@ -203,6 +206,8 @@ export class JobStore {
       dir,
       hasVideo,
       hasCover: existsSync(path.join(dir, "cover.jpg")),
+      hasVideoNoSubs: existsSync(path.join(dir, "video-sin-subtitulos.mp4")),
+      quality: meta.quality,
       hasSpec: existsSync(path.join(dir, "spec.json")),
       channel: meta.channel,
       stage: deriveStage(meta.stage, hasVideo),

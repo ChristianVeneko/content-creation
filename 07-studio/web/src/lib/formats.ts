@@ -1,10 +1,15 @@
 // Format helpers for the wizard: templates are VIDEO FORMATS (how it looks and how it moves), grouped by family.
 // Pure functions; the registry (engine `templates`) stays the single source of truth for what exists.
 import type { TemplateInfo } from "../../shared/types.ts";
+import { isHfTemplate } from "../../shared/hf.ts";
 
-export type FamilyId = "explainer" | "data" | "story" | "ranking" | "product" | "pixel" | "3d";
+export type FamilyId = "pixel-anim" | "flat-anim" | "animated" | "explainer" | "data" | "story" | "ranking" | "product" | "pixel" | "3d";
 
 export const FAMILIES: { id: FamilyId; label: string; hint: string }[] = [
+  // HyperFrames formats (animated worlds with their own subtitles), offered first
+  { id: "pixel-anim", label: "Pixel animado", hint: "Mundos de pixel art que se mueven: personajes, escenarios y efectos" },
+  { id: "flat-anim", label: "2D animado", hint: "Ilustración 2D con personajes y escenas en movimiento" },
+  { id: "animated", label: "Animado (otros)", hint: "Otros mundos animados con subtítulos propios" },
   { id: "explainer", label: "Explicativo / tutorial", hint: "Explica paso a paso, con ejemplos claros" },
   { id: "data", label: "Datos y gráficas", hint: "Cifras, comparativas y tendencias" },
   { id: "story", label: "Historia / cinematográfico", hint: "Narrativa con atmósfera y ritmo" },
@@ -21,6 +26,8 @@ const slugOf = (t: TemplateInfo) => fold(`${t.id} ${t.format ?? ""}`);
 
 /** The family a template belongs to: category first (pixel, 3D), then keywords of its format and best-for lines. */
 export function formatFamily(t: TemplateInfo): FamilyId {
+  // HyperFrames formats come from registry data and are grouped before the keyword rules below (pixel-world is not "pixel / arcade")
+  if (isHfTemplate(t)) return /pixel/.test(slugOf(t)) ? "pixel-anim" : /2d|flat/.test(slugOf(t)) ? "flat-anim" : "animated";
   if (t.category === "pixel" || /pixel|arcade/.test(slugOf(t))) return "pixel";
   if (t.category === "3d") return "3d";
   const slug = slugOf(t);

@@ -3,6 +3,7 @@ import type {
   ChannelDetail,
   ChannelSummary,
   GenerateRequest,
+  HfQuality,
   JobPatch,
   JobDetail,
   JobSummary,
@@ -44,7 +45,8 @@ export const api = {
   job: (id: string) => call<JobDetail>(`/api/jobs/${encodeURIComponent(id)}`),
   saveSpec: (id: string, spec: VideoSpec) =>
     call<{ ok: true }>(`/api/jobs/${encodeURIComponent(id)}/spec`, { method: "PUT", body: JSON.stringify({ spec }) }),
-  render: (id: string) => call<{ ok: true }>(`/api/jobs/${encodeURIComponent(id)}/render`, { method: "POST" }),
+  render: (id: string, opts: { quality?: HfQuality } = {}) =>
+    call<{ ok: true }>(`/api/jobs/${encodeURIComponent(id)}/render`, { method: "POST", ...(opts.quality ? { body: JSON.stringify({ quality: opts.quality }) } : {}) }),
   cancel: (id: string) => call<{ ok: true }>(`/api/jobs/${encodeURIComponent(id)}/render`, { method: "DELETE" }),
   reveal: (id: string) => call<{ ok: true; dir: string }>(`/api/jobs/${encodeURIComponent(id)}/reveal`, { method: "POST" }),
   fileUrl: (id: string, name: string, download = false) =>
