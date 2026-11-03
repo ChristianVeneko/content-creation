@@ -1,5 +1,5 @@
 // ElevenLabs voice picker: trending Latin American Spanish male voices with a play/pause preview.
-// An empty voiceId means "auto": the engine picks one of the five most trending voices per video.
+// An empty voiceId means "default": the engine uses the app-wide default ElevenLabs voice (WFmom5vWeiir6CN1crV3).
 import { useEffect, useId, useRef, useState } from "react";
 import type { VoiceLibrary, VoiceOption } from "../../shared/types.ts";
 import { api } from "../lib/api.ts";
@@ -92,8 +92,8 @@ export function VoicePicker({ value, onChange, disabled = false }: { value: stri
           <label className="track-pick">
             <input type="radio" name={`${uid}-voice`} checked={!value} onChange={() => onChange("")} />
             <span className="track-text">
-              <span className="track-title">Automática (Recomendado)</span>
-              <span className="track-meta">Una de las 5 más usadas esta semana, distinta según el video</span>
+              <span className="track-title">Voz por defecto (Recomendado)</span>
+              <span className="track-meta">La voz fija de la app para todos los videos</span>
             </span>
           </label>
         </li>

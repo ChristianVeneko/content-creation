@@ -7,8 +7,7 @@ import { renderCover, bundleProject, renderVideo } from "./render.mjs";
 import { resolveSpec, usesClassicLayout, validateSpec } from "./spec.mjs";
 import { getTemplate } from "./templates.mjs";
 import { alignToScript, computeTimeline, paginateCaptions, syntheticCaptions } from "./timeline.mjs";
-import { effectiveProvider, synthesize } from "./tts.mjs";
-import { pickVoice, trendingVoices } from "./voices.mjs";
+import { DEFAULT_VOICE_ID, effectiveProvider, synthesize } from "./tts.mjs";
 import { computeBeats, planIllustration, scheduleSfx, usesIllustratedKit } from "./illustrated.mjs";
 import { collectIconNames, loadIcons } from "./icons.mjs";
 import { planThree, usesThreeKit } from "./scene3d.mjs";
@@ -144,12 +143,9 @@ export async function build({ specPath, outDir, log, keepWork = false, renderer:
         log(step, "done", "Voice disabled (provider none): timing from durationSec / reading time", 0.35);
       } else {
         if (provider === "elevenlabs" && needsAutoVoice(spec)) {
-          // No voice chosen: take a trending Latin American Spanish voice (stable per title) and record it in spec.json.
-          const auto = pickVoice(await trendingVoices({ gender: "male" }), spec.title);
-          if (auto) {
-            spec.voice.voiceId = auto.voiceId;
-            log(step, "running", `Auto voice: ${auto.name} (${auto.accent}, trending on ElevenLabs)`, 0.06);
-          }
+          // No voice chosen: use the app-wide default ElevenLabs voice and record it in spec.json.
+          spec.voice.voiceId = DEFAULT_VOICE_ID;
+          log(step, "running", "Default ElevenLabs voice", 0.06);
         }
         log(step, "running", `Synthesizing ${spec.scenes.length} scenes with ${provider}`, 0.06);
         const onItem = (done, total) => log(step, "running", `Voice ${done}/${total}`, 0.06 + 0.25 * (done / total));
@@ -411,9 +407,8 @@ export async function build({ specPath, outDir, log, keepWork = false, renderer:
   }
 }
 
-/** ElevenLabs with no explicit library voice (missing, or a Kokoro id) and Spanish narration. */
+/** ElevenLabs with no explicit library voice (missing, or a Kokoro id): the app-wide default voice applies, in any language. */
 export function needsAutoVoice(spec) {
   const id = spec.voice?.voiceId;
-  const explicit = id && !/^[a-z][fm]_[a-z]+$/.test(id);
-  return !explicit && String(spec.language || "es").startsWith("es");
+  return !(id && !/^[a-z][fm]_[a-z]+$/.test(id));
 }

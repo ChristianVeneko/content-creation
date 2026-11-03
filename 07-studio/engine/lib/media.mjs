@@ -27,9 +27,15 @@ export async function probeDuration(file) {
 }
 
 /** Normalize any audio file to 48 kHz mono WAV and trim leading/trailing silence. */
-export async function normalizeSpeech(input, output) {
+export const SPEECH_TIGHTEN = { maxPauseSec: 0.2, keepPauseSec: 0.12, compressor: "acompressor=threshold=-18dB:ratio=2:attack=10:release=120:makeup=2" };
+/**
+ * `tighten` (PIXEL guide voice chain, off by default): pauses longer than 0.2 s inside the narration shrink to 0.12 s and a real
+ * 2:1 compressor evens the level. The compressor is a smooth envelope follower, never a per-sample process (that sounds robotic).
+ */
+export async function normalizeSpeech(input, output, { tighten = false } = {}) {
   const trim = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05";
-  await run("ffmpeg", ["-y", "-v", "error", "-i", input, "-af", `${trim},areverse,${trim},areverse`, "-ar", "48000", "-ac", "1", output]);
+  const mid = tighten ? `,silenceremove=stop_periods=-1:stop_duration=${SPEECH_TIGHTEN.maxPauseSec}:stop_threshold=-45dB:stop_silence=${SPEECH_TIGHTEN.keepPauseSec},${SPEECH_TIGHTEN.compressor}` : "";
+  await run("ffmpeg", ["-y", "-v", "error", "-i", input, "-af", `${trim},areverse,${trim},areverse${mid}`, "-ar", "48000", "-ac", "1", output]);
   return probeDuration(output);
 }
 

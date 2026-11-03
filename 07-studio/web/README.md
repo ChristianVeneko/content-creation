@@ -76,7 +76,7 @@ API: `GET /api/music` (moods, tracks with license and credit, ElevenLabs availab
 from `STUDIO_MUSIC_DIR`, default `03-assets/music`).
 `GET /api/voices` (trending Latin American Spanish male ElevenLabs voices from `node cli.mjs voices`, no keys or remote
 URLs) and `GET /api/voices/:id/preview` (proxies only previews of listed voices hosted by ElevenLabs, as `audio/mpeg`).
-In Create, ElevenLabs is the default voice; "Automática" leaves `voiceId` empty so the engine picks a trending voice.
+In Create, ElevenLabs is the default voice; "Voz por defecto" leaves `voiceId` empty so the engine uses the app-wide default voice `WFmom5vWeiir6CN1crV3`.
 
 ### HyperFrames formats (pixel-world, flat-2d, ...)
 

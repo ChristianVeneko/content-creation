@@ -65,7 +65,7 @@ Without `--json-logs`, human-readable progress goes to stderr.
 
 1. **validate**: zod schema (`lib/spec.mjs`), then template defaults fill anything the spec omits.
 2. **tts**: per scene.
-   - `voice.provider: "elevenlabs"` and `ELEVENLABS_API_KEY` set: `POST https://api.elevenlabs.io/v1/text-to-speech/{voiceId}` with `eleven_multilingual_v2` (voice from `voiceId`; for Spanish with no `voiceId` the build picks one of the 5 most trending Latin American Spanish male voices from the ElevenLabs library, stable per title, and writes it into the output `spec.json`; `node cli.mjs voices [--pick <seed>]` lists them or shows the pick, cached 24 h in `$CC_CACHE/elevenlabs`; otherwise `ELEVENLABS_VOICE_ID`, else a premade multilingual voice). Without a key, or on API error, it falls back to Kokoro.
+   - `voice.provider: "elevenlabs"` and `ELEVENLABS_API_KEY` set: `POST https://api.elevenlabs.io/v1/text-to-speech/{voiceId}` with `eleven_multilingual_v2` (voice from `voiceId`; with no `voiceId` the build uses the app-wide default voice `WFmom5vWeiir6CN1crV3` (any language) and writes it into the output `spec.json`; `node cli.mjs voices [--pick <seed>]` still lists trending Latin American voices to browse, cached 24 h in `$CC_CACHE/elevenlabs`; `ELEVENLABS_VOICE_ID` is no longer read). Without a key, or on API error, it falls back to Kokoro.
    - `kokoro`: local `mlx-community/Kokoro-82M-bf16` via `scripts/kokoro_batch.py` (model loaded once). Spanish voices: `ef_dora` (female), `em_alex`, `em_santa` (male).
    - `none`: no audio; scene length is `durationSec` or ~0.3 s per word.
    Silence is trimmed, then scene lengths are computed from audio length plus padding (`lib/timeline.mjs`).

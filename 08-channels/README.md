@@ -29,7 +29,8 @@ A channel is a folder `08-channels/<slug>/` that tells the agent who a video is 
 | `createdAt` | ISO date | |
 | `defaults.template` | template id | `node 07-studio/engine/cli.mjs templates --brief`. |
 | `defaults.palette` | preset id or `null` | `07-studio/engine/lib/palettes.mjs`; `null` = the template's palette. |
-| `defaults.voiceProvider`, `defaults.voiceId` | `elevenlabs`/`kokoro`/`none`, voice id | ElevenLabs with `voiceId` null: the engine picks a trending Latin American Spanish male voice per video (`node 07-studio/engine/cli.mjs voices`). Kokoro Spanish: `ef_dora`, `em_alex`, `em_santa`. |
+| `defaults.voiceProvider`, `defaults.voiceId` | `elevenlabs`/`kokoro`/`none`, voice id | ElevenLabs with `voiceId` null: the app-wide default voice `WFmom5vWeiir6CN1crV3` is used (`node 07-studio/engine/cli.mjs voices` browses other voices). Kokoro Spanish: `ef_dora`, `em_alex`, `em_santa`. |
+| `defaults.mascot` | mascot or hero id, optional | pixel-world narrator (`hf.hero`); absent = the app default mascot (`node 07-studio/engine/cli.mjs mascots`). |
 | `defaults.captionStyle` | caption style or `null` | `null` = the template's captions. |
 | `defaults.musicMood` | mood id or `"auto"` | `node 07-studio/engine/cli.mjs music`. |
 | `defaults.durationSec` | `15`, `30`, `45` or `60` | |

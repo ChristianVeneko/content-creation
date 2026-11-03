@@ -16,8 +16,7 @@ import { mixAtOffsets, normalizeSpeech, run } from "./media.mjs";
 import { musicDuckedLevelDb, musicLevelDb, resolveMusic } from "./music.mjs";
 import { FORMAT_MOODS as FORMAT_MOOD_IDS } from "./spec.mjs";
 import { alignToScript, computeTimeline, syntheticCaptions } from "./timeline.mjs";
-import { effectiveProvider, synthesize } from "./tts.mjs";
-import { pickVoice, trendingVoices } from "./voices.mjs";
+import { DEFAULT_VOICE_ID, effectiveProvider, synthesize } from "./tts.mjs";
 
 /** Build-log lines for the warnings a format's compose() returned (de-duplicated, at most 10 shown). */
 export function composeWarningLines(warnings) {
@@ -264,7 +263,7 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
     log(step, "running", `Using pre-recorded voice audio for ${spec.scenes.length} scenes`, 0.06);
     const raw = spec.scenes.map((s, i) => resolveAssetPath(s.audio, specDir) ?? fail(`Cannot find scene ${i} audio file: "${s.audio}"`));
     speechFiles = raw.map((_, i) => join(work, "audio", `speech-${i}.wav`));
-    audioSecs = await Promise.all(raw.map((f, i) => normalizeSpeech(f, speechFiles[i])));
+    audioSecs = await Promise.all(raw.map((f, i) => normalizeSpeech(f, speechFiles[i], { tighten: spec.template === "pixel-world" })));
     log(step, "done", `Voice ready (pre-recorded): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
   } else {
     let { provider, fallback } = effectiveProvider(spec.voice);
@@ -273,11 +272,8 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
       log(step, "done", "Voice disabled (provider none): timing from durationSec / reading time", 0.35);
     } else {
       if (provider === "elevenlabs" && needsAutoVoice(spec)) {
-        const auto = pickVoice(await trendingVoices({ gender: "male" }), spec.title);
-        if (auto) {
-          spec.voice = { ...spec.voice, voiceId: auto.voiceId };
-          log(step, "running", `Auto voice: ${auto.name} (${auto.accent}, trending on ElevenLabs)`, 0.06);
-        }
+        spec.voice = { ...spec.voice, voiceId: DEFAULT_VOICE_ID };
+        log(step, "running", "Default ElevenLabs voice", 0.06);
       }
       const texts = spec.scenes.map((s) => s.narration);
       log(step, "running", `Synthesizing ${texts.length} scenes with ${provider}`, 0.06);
@@ -292,7 +288,7 @@ export async function buildHf({ spec, specDir, outDir, log, keepWork = false, qu
         rawFiles = await d.synthesize({ provider, texts, language: spec.language, voiceId: undefined, speed: spec.voice.speed ?? 1, dir: join(work, "audio"), onItem });
       }
       speechFiles = rawFiles.map((_, i) => join(work, "audio", `speech-${i}.wav`));
-      audioSecs = await Promise.all(rawFiles.map((f, i) => normalizeSpeech(f, speechFiles[i])));
+      audioSecs = await Promise.all(rawFiles.map((f, i) => normalizeSpeech(f, speechFiles[i], { tighten: spec.template === "pixel-world" })));
       log(step, "done", `Voice ready (${provider}): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
     }
   }
