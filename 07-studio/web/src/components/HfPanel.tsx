@@ -70,6 +70,21 @@ export function HfPanel(props: { template: TemplateInfo; value: HfOptions; onCha
         </label>
       )}
 
+      {t.id === HF_PIXEL_FORMAT && t.mascots && t.mascots.length > 0 && (
+        <label className="field">
+          <span className="field-label">Mascota</span>
+          <select className="input" data-testid="hf-mascot" value={v.mascot ?? AUTO} disabled={disabled} onChange={(e) => (e.target.value ? props.onChange({ mascot: e.target.value }) : unset("mascot"))}>
+            <option value={AUTO}>Por defecto{t.defaultMascot ? ` (${t.mascots.find((m) => m.id === t.defaultMascot)?.name ?? t.defaultMascot})` : ""}</option>
+            {t.mascots.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+          <span className="muted hf-about">{(t.mascots.find((m) => m.id === (v.mascot ?? t.defaultMascot)) ?? t.mascots[0]).about}</span>
+        </label>
+      )}
+
       <Segmented label="Calidad del render" value={v.quality} options={HF_QUALITY_CHOICES.map(({ value, label }) => ({ value, label }))} onChange={(quality) => props.onChange({ quality })} />
       <p className="length-note">{HF_QUALITY_CHOICES.find((q) => q.value === v.quality)?.hint}</p>
 

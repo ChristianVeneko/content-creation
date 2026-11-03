@@ -10,6 +10,20 @@ defHero({ id: 'wizard', name: 'Wizard', about: 'Tall pointed hat, long purple ro
 defHero({ id: 'astro', name: 'Astronaut', about: 'White suit, glass helmet dome and an orange chest pack.', kind: 'human', skin: M.skin, hair: M.wood, hairDark: '#3a2418', hairStyle: 'short', top: M.white, bottom: M.white, shoe: M.steel, hat: 'helmet', hatRamp: M.white, accent: M.orange });
 defHero({ id: 'robot', name: 'Robo-buddy', about: 'Boxy steel robot with a visor screen, antenna and tube legs.', kind: 'robot', top: M.steel, bottom: M.steel, shoe: M.stone, hat: 'antenna', accent: M.teal });
 
+/* Data-defined mascots (03-assets/mascots/<id>/mascot.json, inlined into SPEC.mascots): ramp names resolve against M, explicit
+ * 5-hex ramps pass through, so a mascot remaps to every pixel palette like the built-in heroes. */
+function mascotRamp(v, dflt) { return Array.isArray(v) ? v : (v && M[v]) || dflt; }
+function mascotDesign(m) {
+  return {
+    id: m.id, name: m.name, about: m.about, kind: m.kind || 'human', mascot: true,
+    skin: mascotRamp(m.skin, M.skin), hair: mascotRamp(m.hair, M.wood), hairDark: m.hairDark || mascotRamp(m.hair, M.wood)[0], hairStyle: m.hairStyle || 'short',
+    top: mascotRamp(m.top, M.orange), bottom: mascotRamp(m.bottom, M.blue), shoe: mascotRamp(m.shoe, M.white), shoeAcc: m.shoeAccent ? mascotRamp(m.shoeAccent, M.green) : null,
+    hat: m.hat || 'none', hatRamp: m.hatRamp ? mascotRamp(m.hatRamp, M.red) : null, robe: !!m.robe, accent: m.accent ? mascotRamp(m.accent, M.teal) : null,
+    glasses: !!m.glasses, pack: m.backpack ? mascotRamp(m.backpack, M.dark) : null, stripe: m.stripe ? mascotRamp(m.stripe, M.dark) : null, logo: m.logo ? mascotRamp(m.logo, M.red) : null,
+  };
+}
+if (typeof SPEC !== 'undefined' && SPEC.mascots) for (const m of SPEC.mascots) defHero(mascotDesign(m));
+
 /* Mouth level 0..2. With SPEC.env (30 fps voice loudness envelope, 0..1) the mouth follows the real voice, a frame
  * of hold smoothing keeps it from flickering; without it the mouth cycles while a word span is active. */
 function talkLevel(t) {
@@ -62,11 +76,25 @@ function figure(g, o, D) {
     line(g, q(3), hipY, q(3) + fl, -q(3) - fLift, lw, D.bottom[2]); R(g, q(0) + fl, -q(3) - fLift, q(8), q(3), D.shoe[2]);
     if (STYLE.shade === 'bevel') R(g, q(0) + fl, -q(3) - fLift, q(8), 1, D.shoe[4]);
   }
+  if (D.stripe && !D.robe) { // side stripe down the outer edge of each leg
+    const sw1 = Math.max(1, q(1)), lw2 = robot ? q(4) : q(5);
+    line(g, -q(3) - Math.floor(lw2 / 2), hipY, -q(3) - Math.floor(lw2 / 2) + bl, -q(3) - bLift, sw1, D.stripe[0]);
+    line(g, q(3) + Math.floor(lw2 / 2) - 1, hipY, q(3) + Math.floor(lw2 / 2) - 1 + fl, -q(3) - fLift, sw1, D.stripe[0]);
+  }
+  if (D.shoeAcc && !D.robe) { // coloured sneaker cuffs
+    R(g, -q(6) + bl, -q(4) - bLift, q(4), Math.max(1, q(1)), D.shoeAcc[2]); R(g, q(0) + fl, -q(4) - fLift, q(4), Math.max(1, q(1)), D.shoeAcc[3]);
+  }
   // torso
   const th = q(17) - sqz, ty = -q(35) + bob + sqz;
+  if (D.pack) { // backpack behind the torso (the figure faces right, so the back is the left side)
+    if (STYLE.outline !== 'none') R(g, -q(13) - 1, ty + q(2) - 1, q(7) + 1, th - q(3) + 2, INK);
+    R(g, -q(13), ty + q(2), q(7), th - q(3), D.pack[1]); R(g, -q(13), ty + q(2), q(7), q(2), D.pack[2]); R(g, -q(13), ty + th - q(4), q(7), q(1), D.pack[0]);
+  }
   if (STYLE.outline !== 'none') R(g, -q(8) - 1, ty - 1, q(16) + 2, th + 2, INK);
   R(g, -q(8), ty, q(16), th, D.top[2]);
   if (STYLE.shade === 'bevel') { R(g, -q(8), ty, q(16), q(2), D.top[3]); R(g, -q(8), ty, q(2), th, D.top[3]); R(g, q(6), ty + q(2), q(2), th - q(2), D.top[1]); R(g, -q(8), ty + th - q(2), q(16), q(2), D.top[1]); }
+  if (D.pack) { R(g, -q(5), ty, q(2), th, D.pack[0]); R(g, q(3), ty, q(2), th, D.pack[0]); }
+  if (D.logo) R(g, q(3), ty + q(4), Math.max(2, q(2)), Math.max(2, q(2)), D.logo[2]);
   if (D.accent && !robot) { R(g, -q(4), ty + q(5), q(8), q(5), D.accent[2]); R(g, -q(3), ty + q(6), q(6), q(2), D.accent[4]); }
   if (D.id === 'hoodie') { R(g, -q(5), ty + q(8), q(10), q(5), D.top[1]); R(g, 0, ty + 1, 1, q(7), D.top[1]); }
   if (D.id === 'capgirl') { R(g, -q(1), ty, q(2), th, D.top[4]); }
@@ -89,6 +117,13 @@ function figure(g, o, D) {
     // hair
     const hc = D.hair;
     if (D.hairStyle === 'short') { R(g, -q(10), hy - q(2), q(20), q(6), hc[1]); R(g, -q(10), hy + q(2), q(3), q(8), hc[1]); R(g, q(3), hy + q(3), q(6), q(2), hc[1]); R(g, -q(4), hy + q(4), q(5), q(2), hc[1]); }
+    if (D.hairStyle === 'curly') { // voluminous curls: a rounded crown of overlapping bumps at two heights, a broken fringe and darker back curls
+      R(g, -q(11), hy - q(2), q(22), q(8), hc[1]); R(g, -q(12), hy + q(1), q(4), q(8), hc[0]); R(g, q(8), hy + q(1), q(4), q(6), hc[1]);
+      for (let i = 0; i < 4; i++) { const lift = i % 2 ? q(5) : q(6); R(g, -q(11) + i * q(5.5), hy - lift, q(6), lift - q(1), hc[1]); R(g, -q(9) + i * q(5.5), hy - lift + 1, q(2), Math.max(1, q(1)), hc[2]); }
+      R(g, -q(12), hy - q(3), q(3), q(4), hc[1]); R(g, q(9), hy - q(3), q(3), q(4), hc[1]);
+      for (let i = 0; i < 4; i++) R(g, -q(9) + i * q(5), hy + q(3), q(3), q(3), hc[1]);
+      R(g, -q(11), hy + q(5), q(3), q(5), hc[0]);
+    }
     if (D.hairStyle === 'pony') { R(g, -q(10), hy - q(1), q(20), q(5), hc[1]); R(g, -q(11), hy + q(2), q(4), q(8), hc[1]); R(g, -q(15), hy + q(1), q(5), q(4), hc[1]); R(g, -q(16), hy + q(5), q(4), q(8), hc[1]); }
     if (D.hairStyle === 'beard') { R(g, -q(10), hy - q(1), q(20), q(5), hc[2]); R(g, -q(10), hy + q(2), q(3), q(10), hc[2]); R(g, -q(7), hy + q(12), q(14), q(8), hc[2]); R(g, -q(5), hy + q(18), q(10), q(3), hc[1]); }
     if (D.hat === 'cap') { R(g, -q(10), hy - q(3), q(20), q(6), D.hatRamp[2]); R(g, -q(10), hy - q(3), q(20), q(2), D.hatRamp[3]); R(g, q(3), hy + q(2), q(12), q(3), D.hatRamp[1]); }
@@ -114,6 +149,14 @@ function figure(g, o, D) {
     }
     const by = mood === 's' ? ey - q(4) : mood === 't' ? ey - q(3) : ey - q(2);
     R(g, -q(5), by, q(4), 1, D.hairDark); R(g, q(2), by + (mood === 't' ? -1 : 0), q(4), 1, D.hairDark);
+    if (D.glasses) { // rectangular frames around both eyes
+      for (const ex of [-q(5), q(2)]) {
+        const fw = eyeW + 2, fh = eyeH + 2;
+        R(g, ex - 1, ey - 1, fw, 1, INK); R(g, ex - 1, ey + eyeH, fw, 1, INK); R(g, ex - 1, ey - 1, 1, fh, INK); R(g, ex + eyeW, ey - 1, 1, fh, INK);
+        if (!blink && mood !== 'h') R(g, ex + eyeW - 1, ey, 1, 1, M.white[4]);
+      }
+      const bx = -q(5) + eyeW + 1; R(g, bx, ey + 1, Math.max(1, q(2) - 1 - bx), 1, INK); // bridge
+    }
     const m = o.talk || 0;
     if (D.hairStyle === 'beard') { /* mouth hidden in beard */ if (m) R(g, -q(1), hy + q(13), q(3), q(2), INK); }
     else if (mood === 'h' && !m) { R(g, -q(2), ey + q(9), q(6), 1, INK); R(g, -q(3), ey + q(8), 1, 1, INK); R(g, q(4), ey + q(8), 1, 1, INK); }
@@ -128,6 +171,15 @@ function figure(g, o, D) {
   R(g, q(5) + Math.sin(fa) * aLen - q(2), sy0 + Math.cos(fa) * aLen - q(2), q(4), q(4), robot ? D.shoe[3] : D.skin[2]);
   g.restore();
   if (o.lit) glow(g, x + dir, y - q(46) + bob, q(10), M.teal[3], 0.4);
+}
+
+/* Bust of a hero for the dialog caption box and the brand pill: the figure drawn so its head fills a w x h canvas
+ * (shoulders cropped). `talk` 0..2 drives the mouth, so the portrait speaks with the voice. */
+function portrait(g, D, o) {
+  const w = o.w, h = o.h, hat = (D.hat === 'wizard' ? 6 : D.hat === 'cap' ? 2 : 0) + (D.hairStyle === 'curly' ? 4 : 0);
+  g.save(); g.beginPath(); g.rect(0, 0, w, h); g.clip();
+  figure(g, { x: w / 2 + (D.pack ? 2 : 0), y: Math.round(h * 0.52 + 47 + hat), dir: 1, t: o.t || 0, talk: o.talk || 0, mood: o.mood || 'n', u: 1, bs: 0 }, D);
+  g.restore();
 }
 
 /* ---------------- npc creatures (u = size factor like the heroes) ---------------- */

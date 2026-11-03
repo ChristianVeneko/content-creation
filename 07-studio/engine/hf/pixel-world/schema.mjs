@@ -1,6 +1,7 @@
 // zod 4 schema of `spec.hf` for the pixel-world format. Enums are closed and every failure names the allowed values.
 import { z } from "zod";
 import { STYLE_IDS, PIXEL_SCALES } from "./styles.mjs";
+import { defaultHeroId } from "./mascots.mjs";
 import { BEAT_KINDS, PROP_ACTS, EMOTES, TRANSITIONS, TIMES, COLORS, SIZES, LAYOUTS, ANCHORS, scenarioIds, heroIds, castIds, getScenario, worldProps, propKinds, workshopProps, WORKSHOP_THEMES, WORKSHOP_MAX_PROPS } from "./catalog.mjs";
 
 /** Mechanism beats: objects that travel, change state, pile up, count, are compared, carried or rejected. */
@@ -124,7 +125,7 @@ export const worldSchema = z.object({
 
 export const payloadSchema = z.object({
   style: closedEnum(STYLE_IDS, "style").default("pixel-snes-16bit"),
-  hero: closedEnum(heroIds(), "hero").default("hoodie"),
+  hero: closedEnum(heroIds(), "hero").default(defaultHeroId()),
   layout: closedEnum(LAYOUTS, "layout").default("strip"),
   flash: z.boolean().default(false),
   ambient: closedEnum(AMBIENT_LEVELS, "ambient level").default("normal"),

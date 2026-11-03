@@ -16,7 +16,7 @@ export function buildPromptSection() {
   const mech = MECH_KINDS.map((k) => `- ${k}: ${MECH_DOCS[k]}`).join("\n");
   const heroes = cat.heroes.map((h) => `${h.id} (${h.about})`).join("; ");
   const example = {
-    style: "pixel-snes-16bit", hero: "hoodie", brand: { handle: "@canal", follow: { word: "Sigueme" } },
+    style: "pixel-snes-16bit", hero: "hoodie", brand: { handle: "@canal" },
     worlds: [
       { scenario: "phone-workshop", cast: [{ who: "hero", at: "left" }, { who: "cat", at: "right" }], beats: [
         { on: { word: "celular" }, do: "light", target: "phone" }, { on: { word: "celular" }, do: "hero-stamp", text: "CELULAR", color: "teal" },
@@ -51,7 +51,7 @@ export function buildPromptSection() {
 
 Modes (\`spec.mode\`): "multi" (default) = several worlds joined by transitions; "single" = one continuous level, the camera travels from world to world along a path, no cuts (\`layout\`: "strip" side-scroll, "tower" top-to-bottom). Every style works in both modes.
 
-Payload: { "style": <style>, "hero": <hero>, "layout"?: "strip"|"tower", "flash"?: false, "pixelScale"?: "chunky"|"standard"|"fine", "brand"?: { "handle": "@name", "follow"?: { "word": "..." } }, "worlds": [ { "scenario": <scenario>, "from"?: { "word": "..", "n"?: 1 } | seconds, "transition"?: ${TRANSITIONS.join("|")}, "time"?: day|dusk|night, "cast"?: [ { "who": "hero"|<npc>, "at"?: left|center|right|<prop>, "size"?: S|M|L } ], "beats": [ { "on": { "word": "..", "n"?: 1 }, "do": <beat kind>, ...fields } ] } ] }
+Payload: { "style": <style>, "hero": <hero>, "layout"?: "strip"|"tower", "flash"?: false, "pixelScale"?: "chunky"|"standard"|"fine", "brand"?: { "handle": "@name" }, "worlds": [ { "scenario": <scenario>, "from"?: { "word": "..", "n"?: 1 } | seconds, "transition"?: ${TRANSITIONS.join("|")}, "time"?: day|dusk|night, "cast"?: [ { "who": "hero"|<npc>, "at"?: left|center|right|<prop>, "size"?: S|M|L } ], "beats": [ { "on": { "word": "..", "n"?: 1 }, "do": <beat kind>, ...fields } ] } ] }
 - \`on.word\` binds a beat to the n-th occurrence (n starts at 1) of a spoken word; accents and punctuation are ignored. Do not invent words that are not in the narration.
 - Worlds without \`from\` are spaced evenly. Give \`from\` on the word where the new idea starts.
 - Captions are drawn by the format itself, never add caption text.
@@ -60,7 +60,7 @@ Styles (one per video, applies to every scenario). CHOOSE BY TOPIC, never by hab
 ${styles}
 Default picks: tech and AI, phones, hardware, networks -> pixel-cyberpunk-neon, pixel-snes-16bit or pixel-crt-arcade; kids, friendly, everyday life, health -> pixel-snes-16bit or pixel-pico8; serious, security, privacy, mystery -> pixel-noir or pixel-crt-arcade; heat, energy, weather -> pixel-liquid-fire; nature, travel, stories -> pixel-dusk-lowres. The monochrome styles (pixel-gameboy-dmg, pixel-1bit-dither, pixel-virtual-red, 2-4 tones) are chosen only when the user asks for retro or handheld: in them progress bars, heat and colour coding barely read. Always set \`style\`; when unsure use pixel-snes-16bit.
 
-Hero: ${heroes}. NPCs (use in \`cast\`): ${cat.npcs.map((n) => `${n.id} (${n.about})`).join("; ")}.
+Hero (the narrating mascot; leave \`hero\` out to use the default mascot, which is the one the user chose; name another only when the brief asks for a character): ${heroes}. NPCs (use in \`cast\`): ${cat.npcs.map((n) => `${n.id} (${n.about})`).join("; ")}.
 
 Scenarios. CHOOSE BY TOPIC: read the "suits topics" column and pick the scenario whose tags match what the sentence is about. NEVER choose a scenario whose props contradict the topic (no AI machine, hospital, dungeon or shop for a phone-heat topic). Props are the \`target\` of beats; use only the listed props:
 ${scen}
@@ -91,6 +91,8 @@ Rules:
 - Vary the beat kinds (a prop change, an emphasis, a camera move, an emote); never the same kind three times in a row. Use \`push\` on 1-2 impact beats per world; the camera also drifts slowly by itself.
 - \`flash\` (a white blink under 2 frames) is a photosensitivity risk and stays OFF unless the brief asks for a high-energy or hype video; then set \`"flash": true\` and write at most 3 \`flash\` beats per 10 s (the engine drops the rest, and any before 0.5 s). Never use it on a calm explainer.
 - \`pixelScale\` is the pixel quality; leave it out (standard) unless the user or the topic asks: ${PIXEL_SCALES_TEXT}
+- GAME FEEL (the PIXEL guide): the video IS a video game and each idea is a different level (world). One literal metaphor per sentence; a visual change at least every 2 seconds; one giant stamped word per idea (the concept, no more than one per idea); a sentence that cannot be drawn gets rewritten. Prefer game vocabulary you do not need to explain (lives, coins, levels, enemies, pipes). Change the WORLD to change the video, not the idea: when the brief gives a theme (christmas, desert, beach, mars, volcano, arctic, jungle, western, haunted, temple, mine, space, sea) pick the scenario of that theme for every world of the video.
+- NO CALL TO ACTION: never write comment, follow or subscribe lines ("comenta X", "sigueme", "te mando la guia") in the narration or in stamps, and never use \`brand.follow\`. The last sentence is the payoff of the idea, shown with a stamp.
 - No sources or URLs in on-screen text. Mark uncertain facts with [COMPROBAR] in the narration notes, not in the payload.
 - Text fields (\`text\`, \`label\`) are 1-3 words in the video language, at most 16 characters per chip.
 

@@ -138,7 +138,7 @@ function frame(t) {
 /* ---------------- DOM overlays: captions, stamp, flash, brand pill, hud, zoom ---------------- */
 const VARS = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
 const CAPS_ON = VARS.captions !== undefined ? !!VARS.captions : SPEC.capsDefault;
-const capsEl = $('caps'), stampEl = $('stamp'), flashEl = $('flash'), stageEl = $('stage'), pillEl = $('brand');
+const capsEl = $('caps'), dlgEl = $('dlg'), stampEl = $('stamp'), flashEl = $('flash'), stageEl = $('stage'), pillEl = $('brand');
 const capGroups = [];
 SPEC.caps.forEach((gr, gi) => {
   const dv = document.createElement('div'); dv.className = 'cg'; dv.id = 'cg' + gi;
@@ -164,6 +164,8 @@ function overlays(t) {
     if (cur >= 0) capGroups[cur].el.style.display = 'block';
     lastGroup = cur;
   }
+  dlgEl.style.display = CAPS_ON && cur >= 0 ? 'flex' : 'none';
+  if (CAPS_ON && cur >= 0) drawDialogPortrait(t);
   if (cur >= 0) {
     const cg = capGroups[cur]; let wi = 0;
     cg.g.words.forEach((w, i) => { if (t >= w.t0 - 0.02) wi = i; });
@@ -201,20 +203,25 @@ function overlays(t) {
   brand(t); hud(t);
 }
 
+/* game dialog box: the narrator's portrait speaks with the voice (mouth follows the loudness envelope or the word spans) */
+const DLG_HERO = HEROES[SPEC.hero] || HEROES.hoodie;
+function drawDialogPortrait(t) {
+  const g = $('dp').getContext('2d'); g.imageSmoothingEnabled = false;
+  R(g, 0, 0, 32, 32, M.yellow[2]); R(g, 0, 22, 32, 10, M.yellow[1]);
+  portrait(g, DLG_HERO, { w: 32, h: 32, t, talk: talkLevel(t) });
+}
+
 /* brand pill: hero face avatar, handle, optional fake follow click */
 const BR = SPEC.brand;
 (function () {
   if (!BR) { pillEl.style.display = 'none'; return; }
-  const g = $('av').getContext('2d'); g.imageSmoothingEnabled = false;
-  const D = HEROES[SPEC.hero] || HEROES.hoodie;
-  R(g, 0, 0, 20, 20, M.yellow[2]);
-  if (D.kind === 'robot') { R(g, 3, 3, 14, 13, D.top[2]); R(g, 5, 6, 10, 6, INK); R(g, 6, 7, 3, 3, D.accent[3]); R(g, 11, 7, 3, 3, D.accent[3]); R(g, 9, 0, 2, 3, D.top[1]); }
-  else { R(g, 4, 5, 12, 12, D.skin[2]); R(g, 3, 3, 14, 5, D.hair[1]); R(g, 6, 9, 2, 3, M.white[4]); R(g, 11, 9, 2, 3, M.white[4]); R(g, 7, 10, 1, 2, INK); R(g, 12, 10, 1, 2, INK); R(g, 8, 14, 4, 1, INK); R(g, 4, 17, 12, 3, D.top[2]); if (D.hat === 'wizard') { R(g, 2, 3, 16, 2, D.hatRamp[2]); R(g, 5, 0, 10, 4, D.hatRamp[2]); } if (D.hat === 'cap') R(g, 2, 3, 16, 3, D.hatRamp[2]); }
   $('handle').textContent = BR.handle;
   if (BR.followAt == null) $('fbc').style.display = 'none';
 })();
 function brand(t) {
   if (!BR) return;
+  const ag = $('av').getContext('2d'); ag.imageSmoothingEnabled = false;
+  R(ag, 0, 0, 28, 28, M.yellow[2]); portrait(ag, DLG_HERO, { w: 28, h: 28, t, talk: talkLevel(t) });
   $('avs').style.transform = ((t % 3.1) < 0.1) ? 'scaleY(0.5)' : 'scaleY(1)';
   if (BR.followAt == null) return;
   const fa = BR.followAt, g = $('fbc').getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, 16, 16);

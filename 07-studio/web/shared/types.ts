@@ -151,6 +151,9 @@ export interface TemplateInfo {
   modes?: ("single" | "multi")[];
   styles?: HfEntry[];
   settings?: HfEntry[];
+  /** pixel-world: the narrating mascots (built-in heroes and saved mascots) and the default one. */
+  mascots?: HfEntry[];
+  defaultMascot?: string;
 }
 
 /** A style or setting of a HyperFrames format (engine `meta.styles` / `meta.settings`). */

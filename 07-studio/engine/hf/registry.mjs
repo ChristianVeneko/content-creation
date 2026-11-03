@@ -157,6 +157,7 @@ export function hfTemplateEntry(id) {
     modes: m.modes,
     styles: m.styles,
     settings: m.settings,
+    ...(m.mascots ? { mascots: m.mascots, defaultMascot: m.defaultMascot } : {}),
     defaults: {
       ...d,
       sfx: { enabled: true, volume: 1, ...(d.sfx ?? {}) },

@@ -253,6 +253,7 @@ export function normalizeTemplates(raw: unknown): TemplateInfo[] {
         ...(Array.isArray(t.modes) ? { modes: t.modes.filter((m): m is "single" | "multi" => m === "single" || m === "multi") } : {}),
         ...(Array.isArray(t.styles) ? { styles: normalizeEntries(t.styles) } : {}),
         ...(Array.isArray(t.settings) ? { settings: normalizeEntries(t.settings) } : {}),
+        ...(Array.isArray(t.mascots) ? { mascots: normalizeEntries(t.mascots), ...(typeof t.defaultMascot === "string" ? { defaultMascot: t.defaultMascot } : {}) } : {}),
       },
     ];
   });

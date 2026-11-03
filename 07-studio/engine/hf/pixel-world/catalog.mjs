@@ -2,6 +2,7 @@
 // Single source of truth: the browser runtime files declare scenarios/heroes/npcs with defScenario/defHero/defNpc;
 // this module evaluates those files in a vm sandbox with stubs (top level of those files only registers definitions)
 // so the node side (schema, validator, prompt, docs) can never drift from what the runtime can draw.
+import { loadMascots } from "./mascots.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -85,7 +86,7 @@ export function loadCatalog() {
   const propLib = Object.entries(sc.PL).map(([kind, d]) => ({ kind, about: d.about, row: d.row, w: d.w, h: d.h, fills: !!d.fills, opens: !!d.opens }));
   cache = {
     scenarios, propLib,
-    heroes: cast.heroes.map((h) => ({ id: h.id, name: h.name, about: h.about })),
+    heroes: [...cast.heroes.map((h) => ({ id: h.id, name: h.name, about: h.about })), ...loadMascots().mascots.map((m) => ({ id: m.id, name: m.name, about: m.about, mascot: true }))],
     npcs: cast.npcs.map((n) => ({ id: n.id, name: n.name, about: n.about })),
     styles: STYLES,
   };

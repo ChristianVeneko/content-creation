@@ -24,6 +24,8 @@ export interface HfOptions {
   quality: HfQuality;
   /** Pixel quality (pixel-world only; written to `spec.hf.pixelScale` when set, absent = standard). */
   pixelScale?: HfPixelScale;
+  /** Narrating mascot (pixel-world only; written to `spec.hf.hero`); absent = the default mascot of the app. */
+  mascot?: string;
   /** Advanced, format-agnostic (SDD 7.7); each is written to the spec only when set. */
   pace?: HfPace;
   camera?: HfCamera;
@@ -87,6 +89,7 @@ export function resolveHfOptions(saved: Partial<HfOptions> | undefined, t?: Temp
   if (o.style !== undefined && !(t?.styles ?? []).some((s) => s.id === o.style)) o.style = base.style;
   if (o.setting !== undefined && !(t?.settings ?? []).some((s) => s.id === o.setting)) delete o.setting;
   if (!HF_QUALITIES.includes(o.quality)) o.quality = base.quality;
+  if (o.mascot !== undefined && (t?.id !== HF_PIXEL_FORMAT || !(t?.mascots ?? []).some((m) => m.id === o.mascot))) delete o.mascot;
   if (o.pixelScale !== undefined && (t?.id !== HF_PIXEL_FORMAT || !HF_PIXEL_SCALES.includes(o.pixelScale))) delete o.pixelScale;
   return o;
 }
@@ -102,6 +105,7 @@ export function hfOptionsIssue(v: unknown, t?: TemplateInfo | null): string | nu
   if (t && !hfModesOf(t).includes(o.mode as HfMode)) return `El formato ${t.name} no admite el modo ${String(o.mode)}.`;
   if (o.style !== undefined && (typeof o.style !== "string" || (t?.styles && t.styles.length > 0 && !t.styles.some((s) => s.id === o.style)))) return `Estilo desconocido para este formato: ${String(o.style)}.`;
   if (o.setting !== undefined && (typeof o.setting !== "string" || (t?.settings && t.settings.length > 0 && !t.settings.some((s) => s.id === o.setting)))) return `Escenario desconocido para este formato: ${String(o.setting)}.`;
+  if (o.mascot !== undefined && (typeof o.mascot !== "string" || (t?.mascots && t.mascots.length > 0 && !t.mascots.some((m) => m.id === o.mascot)))) return `Mascota desconocida para este formato: ${String(o.mascot)}.`;
   if (o.quality !== undefined && !isHfQuality(o.quality)) return `Calidad inválida: usa ${HF_QUALITIES.join(", ")}.`;
   if (o.pixelScale !== undefined && !HF_PIXEL_SCALES.includes(o.pixelScale as HfPixelScale)) return `Calidad de píxel inválida: usa ${HF_PIXEL_SCALES.join(", ")}.`;
   if (o.pace !== undefined && !HF_PACES.includes(o.pace as HfPace)) return `Ritmo inválido: usa ${HF_PACES.join(", ")}.`;
@@ -119,7 +123,10 @@ export function hfOptionsIssue(v: unknown, t?: TemplateInfo | null): string | nu
  */
 export function applyHfOptions(spec: VideoSpec, o: HfOptions): VideoSpec {
   const next: VideoSpec = { ...spec, mode: o.mode };
-  const pixel = o.pixelScale && spec.template === HF_PIXEL_FORMAT ? { pixelScale: o.pixelScale } : {};
+  const pixel = {
+    ...(o.pixelScale && spec.template === HF_PIXEL_FORMAT ? { pixelScale: o.pixelScale } : {}),
+    ...(o.mascot && spec.template === HF_PIXEL_FORMAT ? { hero: o.mascot } : {}),
+  };
   if (o.style || Object.keys(pixel).length > 0) next.hf = { ...(isObj(spec.hf) ? spec.hf : {}), ...(o.style ? { style: o.style } : {}), ...pixel };
   else if (spec.hf !== undefined && !isObj(spec.hf)) delete next.hf;
   if (o.pace) next.pace = o.pace;
@@ -151,6 +158,7 @@ export function hfPromptLines(o: HfOptions, t?: TemplateInfo | null): string[] {
     `Scene mode: ${o.mode} (${o.mode === "single" ? "one continuous world, one camera travelling between stations, no cuts" : "a sequence of worlds joined by cuts or wipes"})`,
     o.style ? `Style: ${o.style}${name(t?.styles, o.style) ? ` (${name(t?.styles, o.style)})` : ""}. Use exactly this style in spec.hf.` : null,
     o.setting ? `Setting/scenario: ${o.setting}${name(t?.settings, o.setting) ? ` (${name(t?.settings, o.setting)})` : ""}. Build the world around it.` : null,
+    o.mascot ? `Mascot: set \`hero\` to "${o.mascot}" in spec.hf${name(t?.mascots, o.mascot) ? ` (${name(t?.mascots, o.mascot)})` : ""}.` : null,
     o.pixelScale && o.pixelScale !== "standard" ? `Pixel quality: set \`pixelScale\` to "${o.pixelScale}" in spec.hf.` : null,
     o.pace ? `Pace: ${o.pace}` : null,
     o.camera ? `Camera intensity: ${o.camera}` : null,

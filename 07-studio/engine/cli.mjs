@@ -136,6 +136,16 @@ async function main() {
     return 0;
   }
 
+  if (cmd === "mascots") {
+    setupEnv();
+    const { loadMascots, defaultHeroId } = await import("./hf/pixel-world/mascots.mjs");
+    const { loadCatalog } = await import("./hf/pixel-world/catalog.mjs");
+    const lib = loadMascots();
+    const out = { default: defaultHeroId(), dir: lib.dir, heroes: loadCatalog().heroes, errors: lib.errors };
+    process.stdout.write(JSON.stringify(out, null, 2) + "\n");
+    return 0;
+  }
+
   if (cmd === "validate") {
     const file = pos[1];
     if (!file) {

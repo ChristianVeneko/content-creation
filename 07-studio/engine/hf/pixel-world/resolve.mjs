@@ -1,5 +1,6 @@
 // Resolves a validated payload against the narration: world windows, beat times (bound to words), caption groups, sfx cues.
 // Pure and deterministic: the same inputs always give the same output.
+import { getMascot } from "./mascots.mjs";
 import { getScenario, PROP_ACTS, worldProps, workshopProps } from "./catalog.mjs";
 import { densify, DENSITY_MIN_PER_SEC, punctuate, punchLoad, deriveShakes, capFlashes, PUNCH_MIN_PER_SEC, FLASH_MAX_PER_10S } from "./normalize.mjs";
 import { getStyle, pixelGrid } from "./styles.mjs";
@@ -205,8 +206,14 @@ export function resolvePayload({ payload, words, durationSec, mode = "multi", ca
   sfx.sort((a, b) => a.at - b.at || a.kind.localeCompare(b.kind));
   const dedup = []; for (const s of sfx) if (!dedup.some((d) => d.kind === s.kind && Math.abs(d.at - s.at) < 0.06)) dedup.push({ at: +s.at.toFixed(3), kind: s.kind });
   return {
-    data: { dur, mode, ambient: payload.ambient ?? "normal", layout: payload.layout, hero: payload.hero, flash: !!payload.flash, pixelScale: grid.scale, ss: grid.ss, capsDefault: !!captionsEnabled, brand, words: ws, caps: captionGroups(ws), hud, worlds },
+    data: { dur, mode, ambient: payload.ambient ?? "normal", layout: payload.layout, hero: payload.hero, mascots: usedMascots(payload), flash: !!payload.flash, pixelScale: grid.scale, ss: grid.ss, capsDefault: !!captionsEnabled, brand, words: ws, caps: captionGroups(ws), hud, worlds },
     sfx: dedup, warnings, durationSec: dur, style, coverage: { written: covWritten, final: covFinal },
   };
 }
 export { PROP_ACTS };
+
+/** Designs of the data-defined mascots a payload uses (its hero and any mascot in a world's cast), inlined for the browser runtime. */
+export function usedMascots(payload) {
+  const ids = new Set([payload.hero, ...(payload.worlds ?? []).flatMap((w) => (w.cast ?? []).map((c) => c?.who))]);
+  return [...ids].map((id) => getMascot(id)).filter(Boolean);
+}

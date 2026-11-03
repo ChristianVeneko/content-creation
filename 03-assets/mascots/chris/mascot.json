@@ -1,0 +1,19 @@
+{
+  "id": "chris",
+  "name": "Chris",
+  "about": "Curly black hair, rectangular glasses, black tee with a small red chest logo, grey sweatpants with dark side stripes, white sneakers with green cuffs and a black backpack.",
+  "kind": "human",
+  "skin": ["#7a4a2c", "#b57844", "#d29a64", "#e8b684", "#fbd3a6"],
+  "hair": "dark",
+  "hairDark": "#0b0710",
+  "hairStyle": "curly",
+  "top": "dark",
+  "bottom": "stone",
+  "shoe": "white",
+  "shoeAccent": "green",
+  "hat": "none",
+  "glasses": true,
+  "backpack": "dark",
+  "stripe": "dark",
+  "logo": "red"
+}

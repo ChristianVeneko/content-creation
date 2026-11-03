@@ -2,7 +2,7 @@
 
 Animated pixel-art worlds driven by a JSON payload (`spec.hf`), no coding agent in the loop. Module: `07-studio/engine/hf/pixel-world/`. Generalizes the hand-made project `04-projects/2026-11-03-pixel-que-es-un-token-en-la-ia/`.
 
-14 styles, 51 scenarios (12 of them tech-oriented, 8 developer-tooling, plus the composable `workshop-stage`), 48 library props, 5 hero designs, 5 NPC creatures, 28 beat kinds. Modes: `multi` (worlds joined by transitions, default) and `single` (one continuous level, the camera travels between stations; `layout` strip or tower).
+14 styles, 61 scenarios (10 themed worlds: christmas-village, desert, beach, mars, volcano, arctic, jungle, western-town, haunted-park, temple) (12 of them tech-oriented, 8 developer-tooling, plus the composable `workshop-stage`), 48 library props, 5 built-in hero designs plus data-defined mascots (`03-assets/mascots`, see its README; the default `chris` was made from a photo), 5 NPC creatures, 28 beat kinds. Modes: `multi` (worlds joined by transitions, default) and `single` (one continuous level, the camera travels between stations; `layout` strip or tower).
 
 ## How it works
 
@@ -11,6 +11,13 @@ Animated pixel-art worlds driven by a JSON payload (`spec.hf`), no coding agent 
 - The composition draws its own karaoke captions (DOM, 2-4 words per group, keyword box on the active word, below the 220 px safe zone). They show only when the composition variable `captions` is true (default = `captions.enabled` given to `compose`). The engine must not overlay its own captions.
 - Beats are bound to narration words: `on: { word, n?, offset? }` (n-th occurrence, accents and punctuation ignored; fixed tolerance: exact, then 4+ letter prefix, then edit distance 1-2) or `on: { at: seconds }`. A word that cannot be found gets spread evenly inside its world and a warning is returned; nothing is dropped.
 - Frame zones (`layout.mjs`, one source of truth for runtime, template and tests; logical 270x480): caption band y 90-140 (DOM captions only), brand pill y 56-80, action band y 77-346 (16-72 % of the height: props and cast), floor y 346-480. The HUD (`progress`, `counter`) lives in the first floor rows y 350-372, never in the caption band; the hero stamp is a DOM element at 700 px (logical 175). A test asserts no HUD element intersects the caption band.
+
+## PIXEL guide compliance
+
+- **Mascot**: `hf.hero` names a built-in hero or a saved mascot; omitted = the default mascot (`index.json`). Mascots are parametric (curly hair, glasses, backpack, pants stripe, chest logo, sneaker cuffs) and remap to every palette.
+- **Captions** are a game dialog box (DOM, caption band) with the mascot portrait whose mouth follows the voice, word by word; the brand pill uses the same portrait. Nothing important sits below y=1580.
+- **No call to action**: the prompt forbids comment/follow lines and `brand.follow`; the video ends on its payoff.
+- **Voice chain** (pixel-world builds only): pauses over 0.2 s shrink to 0.12 s and a 2:1 compressor evens the level (`normalizeSpeech({tighten})`); mix at -14 LUFS with the music 17 dB under the voice. Default ElevenLabs voice `WFmom5vWeiir6CN1crV3`.
 
 ## Readability guarantees (U10)
 
