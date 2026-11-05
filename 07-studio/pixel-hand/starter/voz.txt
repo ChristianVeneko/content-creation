@@ -1,0 +1,6 @@
+Tu PC tiene un oasis escondido que hace todo más rápido.
+Se llama caché. Es una memoria pequeña, pero está al lado del procesador.
+Cuando el dato está en el oasis, bebes al instante. Si no, caminas hasta el pozo: la memoria RAM.
+Y si tampoco está ahí, viajas hasta el disco, que es el pozo más lejano.
+Por eso lo que usas seguido se guarda cerca.
+Cerca es rápido. Lejos es caro.

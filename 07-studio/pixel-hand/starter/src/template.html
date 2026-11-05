@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es" data-resolution="portrait">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<style>
+@font-face { font-family: "PS2P"; src: url('assets/fonts/PressStart2P-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: "SLK"; src: url('assets/fonts/Silkscreen-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: "PXS"; src: url('assets/fonts/PixelifySans-Variable.ttf'); font-weight: 400 700; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #140d22; }
+#root { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: #140d22; }
+canvas.l { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+#cb { filter: blur(4px); transform: scale(1.03); }
+#cf { filter: blur(6px); transform: scale(1.02); }
+#vig { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 58%, rgba(10,4,20,.5) 100%); }
+#grade { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: rgba(255,150,70,.07); }
+#hud { position: absolute; left: 60px; top: 170px; height: 72px; padding: 6px 22px 6px 8px; display: flex; align-items: center; gap: 14px; background: rgba(20,13,34,.88); border: 4px solid #fff; box-shadow: 6px 6px 0 #1a1020; font: 700 42px "PXS"; color: #fff; }
+#hud canvas { width: 56px; height: 56px; image-rendering: pixelated; }
+#avs { display: block; transform-origin: center; }
+#caps { position: absolute; left: 80px; width: 920px; top: 1416px; text-align: center; }
+.cg { display: none; line-height: 1.32; }
+.cw { display: inline-block; font: 700 62px "PXS"; color: #fff; padding: 0 14px; margin: 0 2px 6px; text-shadow: -4px 0 #1a1020, 4px 0 #1a1020, 0 -4px #1a1020, 0 4px #1a1020, 4px 4px #1a1020, -4px -4px #1a1020, 4px -4px #1a1020, -4px 4px #1a1020; }
+.cw.on { box-shadow: 0 6px 0 #1a1020; }
+.cw.fut { opacity: .92; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <canvas class="l" id="cb" width="270" height="480"></canvas>
+  <canvas class="l" id="cm" width="270" height="480"></canvas>
+  <canvas class="l" id="cf" width="270" height="480"></canvas>
+  <canvas class="l" id="cu" width="270" height="480"></canvas>
+  <div id="grade"></div>
+  <div id="vig"></div>
+  <div id="hud"><span id="avs"><canvas id="av" width="20" height="20"></canvas></span><span>@bitssinhumo</span></div>
+  <div id="caps"></div>
+  <audio id="mix" class="clip" data-start="0" data-duration="__DUR__" data-track-index="0" data-volume="1" src="assets/mix.wav"></audio>
+</div>
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>
