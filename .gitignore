@@ -43,3 +43,11 @@ odd/
 !08-channels/_template/
 03-assets/brand/
 
+
+# Video kits: local tools, downloaded assets and test renders stay on disk
+05-tools/science-shorts/home/
+05-tools/whatif-3d/assets/
+05-tools/whatif-3d/.pipcache/
+05-tools/whatif-3d/story_test/
+05-tools/whatif-3d/queue.log
+05-tools/whatif-3d/blender/
