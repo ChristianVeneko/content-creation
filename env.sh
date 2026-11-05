@@ -31,3 +31,6 @@ mkdir -p "$TMPDIR" "$WHISPER_MODELS"
 [ -f "$CC_ROOT/.env" ] && { set -a; . "$CC_ROOT/.env"; set +a; } || true
 # Machine-specific extras (ignored by git): extra tools, local paths, experiments.
 [ -f "$CC_ROOT/env.local.sh" ] && . "$CC_ROOT/env.local.sh" || true
+
+# science-shorts kit tools (venv, font, browser path) stay inside the repo
+export SCIENCE_SHORTS_HOME="$CC_ROOT/05-tools/science-shorts/home"
