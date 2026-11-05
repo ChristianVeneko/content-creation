@@ -55,3 +55,13 @@ odd/
 05-tools/story-video/engine/models/
 05-tools/story-video/.venv/
 05-tools/story-video/engine/sfx/
+# opuscar kit: installed packages, models, gallery images and render output (re-created by setup.sh / build.sh)
+05-tools/opuscar/node_modules/
+05-tools/opuscar/.venv/
+05-tools/opuscar/films/
+05-tools/opuscar/styleboard/
+05-tools/opuscar/docs/frames/
+05-tools/opuscar/**/*.jpg
+05-tools/opuscar/core/tts/*.onnx
+05-tools/opuscar/core/tts/*.bin
+05-tools/opuscar/**/.cache/
