@@ -343,7 +343,7 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
 
   // ---------- channels (08-channels/<slug>/channel.json + voice.md) ----------
 
-  /** Brand avatar path, resolved inside the workspace root only (symlinks included), images only. */
+  /** Brand image path (avatar or banner), resolved inside the workspace root only (symlinks included), images only. */
   function avatarFile(avatar: string | undefined): string | null {
     if (!avatar) return null;
     const root = path.resolve(config.workspaceRoot);
@@ -417,11 +417,13 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
     return c.json({ ok: true });
   });
 
-  app.get("/api/channels/:slug/avatar", (c) => {
-    const file = avatarFile(channels.get(c.req.param("slug"))?.brand?.avatar);
-    if (!file) return c.json({ error: "Not found" }, 404);
-    return serveFile(file, IMAGE_MIME[path.extname(file).toLowerCase()], undefined, { "Cache-Control": "max-age=60" });
-  });
+  for (const kind of ["avatar", "banner"] as const) {
+    app.get(`/api/channels/:slug/${kind}`, (c) => {
+      const file = avatarFile(channels.get(c.req.param("slug"))?.brand?.[kind]);
+      if (!file) return c.json({ error: "Not found" }, 404);
+      return serveFile(file, IMAGE_MIME[path.extname(file).toLowerCase()], undefined, { "Cache-Control": "max-age=60" });
+    });
+  }
 
   async function resolvePalettes(): Promise<PalettePreset[]> {
     return loadPreset<PalettePreset>("palettes.mjs", "PALETTES").catch(() => []);

@@ -2,7 +2,7 @@
 // (channel.json fields + voice.md) and delete.
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import type { ChannelDetail, ContentStage, JobSummary } from "../../shared/types.ts";
-import { ChannelAvatar, IdeaForm, MiniCover, StageSelect } from "../components/ChannelBits.tsx";
+import { ChannelAvatar, ChannelBanner, IdeaForm, MiniCover, StageSelect } from "../components/ChannelBits.tsx";
 import { ChannelFields } from "../components/ChannelFields.tsx";
 import { api } from "../lib/api.ts";
 import { PLATFORM_LABEL, STAGES, STAGE_HINT, STAGE_LABEL, channelInput, dateFmt, draftFromChannel, useChannelRefs, type ChannelDraft } from "../lib/channels.ts";
@@ -102,6 +102,7 @@ export function ChannelView({ slug }: { slug: string }) {
       <nav className="crumbs" aria-label="Ruta">
         <a href={href({ name: "panel" })}>Panel</a> <span aria-hidden="true">/</span> <span>{channel.name}</span>
       </nav>
+      {channel.brand?.banner && <ChannelBanner slug={channel.slug} />}
       <header className="channel-head">
         <ChannelAvatar slug={channel.slug} name={channel.name} hasAvatar={Boolean(channel.brand?.avatar)} size="lg" />
         <div className="channel-head-text">
@@ -119,6 +120,15 @@ export function ChannelView({ slug }: { slug: string }) {
           </a>
         </div>
       </header>
+
+      {channel.description && (
+        <section className="dash-section" aria-labelledby="ch-about">
+          <h2 className="h-section" id="ch-about">
+            Descripción del canal
+          </h2>
+          <p className="channel-description">{channel.description}</p>
+        </section>
+      )}
 
       {ideaOpen && (
         <IdeaForm

@@ -63,4 +63,5 @@ export const api = {
     call<ChannelDetail>(`/api/channels/${encodeURIComponent(slug)}`, { method: "PUT", body: JSON.stringify(body) }),
   deleteChannel: (slug: string) => call<{ ok: true }>(`/api/channels/${encodeURIComponent(slug)}`, { method: "DELETE" }),
   avatarUrl: (slug: string) => `/api/channels/${encodeURIComponent(slug)}/avatar`,
+  bannerUrl: (slug: string) => `/api/channels/${encodeURIComponent(slug)}/banner`,
 };

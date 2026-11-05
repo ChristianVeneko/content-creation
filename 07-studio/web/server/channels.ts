@@ -42,6 +42,7 @@ export function isValidChannelSlug(slug: unknown): slug is string {
 const VOICE_PROVIDERS: VoiceProvider[] = ["kokoro", "elevenlabs", "none"];
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 const MAX_VOICE = 50_000;
+const MAX_DESCRIPTION = 5_000; // YouTube's channel description limit
 
 const isObj = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
 const str = (v: unknown, max = 400): string | undefined => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
@@ -70,6 +71,7 @@ function sanitizeBrand(v: unknown): Channel["brand"] | undefined {
   if (!isObj(v)) return undefined;
   const brand: NonNullable<Channel["brand"]> = {};
   if (str(v.avatar, 400)) brand.avatar = str(v.avatar, 400);
+  if (str(v.banner, 400)) brand.banner = str(v.banner, 400);
   const colors = strList(v.colors, 8).filter((c) => HEX_RE.test(c));
   if (colors.length) brand.colors = colors;
   return brand;
@@ -84,6 +86,7 @@ function sanitizeFields(input: Record<string, unknown>): Partial<Channel> {
   if ("language" in input) out.language = str(input.language, 12) ?? "es";
   if ("niche" in input) out.niche = str(input.niche, 400);
   if ("audience" in input) out.audience = str(input.audience, 600);
+  if ("description" in input) out.description = typeof input.description === "string" && input.description.trim() ? input.description.trim().slice(0, MAX_DESCRIPTION) : undefined;
   if ("pillars" in input) out.pillars = strList(input.pillars);
   if ("defaults" in input) out.defaults = sanitizeDefaults(input.defaults);
   if ("brand" in input) out.brand = sanitizeBrand(input.brand);
@@ -130,6 +133,7 @@ export class ChannelStore {
       language: f.language ?? "es",
       ...(f.niche ? { niche: f.niche } : {}),
       ...(f.audience ? { audience: f.audience } : {}),
+      ...(f.description ? { description: f.description } : {}),
       pillars: f.pillars ?? [],
       createdAt: typeof raw.createdAt === "string" ? raw.createdAt : "",
       defaults: f.defaults ?? {},
@@ -184,6 +188,7 @@ export class ChannelStore {
       language: fields.language ?? "es",
       ...(fields.niche ? { niche: fields.niche } : {}),
       ...(fields.audience ? { audience: fields.audience } : {}),
+      ...(fields.description ? { description: fields.description } : {}),
       pillars: fields.pillars ?? [],
       createdAt: now.toISOString(),
       defaults: fields.defaults ?? {},

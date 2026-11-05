@@ -204,6 +204,15 @@ export function ChannelFields(props: {
         <input id={`${id}-avatar`} className="input" value={draft.avatar} onChange={(e) => set("avatar", e.target.value)} placeholder="03-assets/brand/mi-canal/avatar.png" />
         <span className="field-note">PNG, JPG o WebP. Solo se muestran archivos dentro de la carpeta del proyecto.</span>
       </label>
+      <label className="field" htmlFor={`${id}-banner`}>
+        <span className="field-label">Portada (ruta dentro de content-creation)</span>
+        <input id={`${id}-banner`} className="input" value={draft.banner} onChange={(e) => set("banner", e.target.value)} placeholder="03-assets/brand/mi-canal/banner-2560x1440.png" />
+        <span className="field-note">2560x1440; el texto importante dentro de los 1546x423 del centro.</span>
+      </label>
+      <label className="field" htmlFor={`${id}-desc`}>
+        <span className="field-label">Descripción del canal (la de YouTube)</span>
+        <textarea id={`${id}-desc`} className="input" rows={8} value={draft.description} onChange={(e) => set("description", e.target.value)} maxLength={5000} />
+      </label>
     </div>
   );
 }

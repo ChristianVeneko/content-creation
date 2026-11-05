@@ -150,7 +150,24 @@ export class JobStore {
     const file = path.join(dir, "job.json");
     if (existsSync(file)) {
       try {
-        return JSON.parse(readFileSync(file, "utf8")) as JobMeta;
+        const raw = JSON.parse(readFileSync(file, "utf8")) as Partial<JobMeta>;
+        // job.json written by hand or by a skill may hold only id/title/stage: fill the fields the studio relies on.
+        if (!raw.createdAt || !raw.updatedAt || !Array.isArray(raw.logs)) {
+          const st = statSync(dir);
+          const spec = this.readSpec(id);
+          return {
+            title: spec?.title ?? id,
+            template: spec?.template ?? "",
+            status: existsSync(path.join(dir, "video.mp4")) ? "done" : "draft",
+            progress: 0,
+            ...raw,
+            id,
+            createdAt: raw.createdAt || st.birthtime.toISOString(),
+            updatedAt: raw.updatedAt || st.mtime.toISOString(),
+            logs: Array.isArray(raw.logs) ? raw.logs : [],
+          } as JobMeta;
+        }
+        return raw as JobMeta;
       } catch {
         // fall through to inference
       }

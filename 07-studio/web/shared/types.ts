@@ -316,8 +316,10 @@ export interface Channel {
   pillars: string[];
   createdAt: string;
   defaults: ChannelDefaults;
-  /** `avatar` is a path relative to the content-creation root. */
-  brand?: { avatar?: string; colors?: string[] };
+  /** Public channel description (YouTube "About"), free text with line breaks. */
+  description?: string;
+  /** `avatar` and `banner` are paths relative to the content-creation root. */
+  brand?: { avatar?: string; banner?: string; colors?: string[] };
 }
 
 /** A channel with its free-text voice guide (`voice.md`). */
