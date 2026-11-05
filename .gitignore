@@ -51,3 +51,6 @@ odd/
 05-tools/whatif-3d/story_test/
 05-tools/whatif-3d/queue.log
 05-tools/whatif-3d/blender/
+05-tools/story-video/engine/vendor/
+05-tools/story-video/engine/models/
+05-tools/story-video/.venv/
