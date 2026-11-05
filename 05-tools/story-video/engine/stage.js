@@ -11,7 +11,7 @@ import * as CANNON from './vendor/cannon-es.js';
 export { THREE, CANNON };
 export const W = 1080, H = 1920;
 // overlay strings; a film can localize them before drawing (STR.day = 'DÍA '; STR.follow = '' hides that line)
-export const STR = { day: 'DAY ', comment: 'COMMENT BELOW', follow: 'FOLLOW FOR DAY ' };
+export const STR = { rule: 'RULE #', day: 'DAY ', comment: 'COMMENT BELOW', follow: 'FOLLOW FOR DAY ' };
 
 // ---------- small helpers ----------
 export const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -244,7 +244,7 @@ export function ruleSticker(c, n, title, k, y = 520) {
   if (k <= 0) return; c.save(); c.translate(540, y); c.rotate(-0.06); c.scale(0.6 + 0.4 * clamp(k, 0, 1.2), 0.6 + 0.4 * clamp(k, 0, 1.2));
   c.fillStyle = '#f4f0e6'; c.shadowColor = 'rgba(0,0,0,0.45)'; c.shadowBlur = 30; c.beginPath(); c.roundRect(-400, -120, 800, 250, 22); c.fill(); c.shadowBlur = 0;
   c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(-400, -120, 260, 70, [22, 0, 22, 0]); c.fill();
-  txt(c, 'RULE #' + n, -270, -84, '700 44px Oswald', '#ffffff');
+  txt(c, STR.rule + n, -270, -84, '700 44px Oswald', '#ffffff');
   const lines = Array.isArray(title) ? title : [title];
   lines.forEach((s, i) => txt(c, s.toUpperCase(), 0, 0 + i * 80 - (lines.length - 1) * 30 + 10, '700 72px Oswald', '#14161b'));
   c.restore();
