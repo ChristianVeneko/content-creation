@@ -10,6 +10,8 @@ import { OutputPass } from './vendor/addons/postprocessing/OutputPass.js';
 import * as CANNON from './vendor/cannon-es.js';
 export { THREE, CANNON };
 export const W = 1080, H = 1920;
+// overlay strings; a film can localize them before drawing (STR.day = 'DÍA '; STR.follow = '' hides that line)
+export const STR = { day: 'DAY ', comment: 'COMMENT BELOW', follow: 'FOLLOW FOR DAY ' };
 
 // ---------- small helpers ----------
 export const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -226,7 +228,7 @@ function txt(c, s, x, y, font, fill, o = {}) {
 // the HUD, top-left, monospace: DAY n and a clock
 export function hud(c, day, clock, k = 1) {
   c.save(); c.globalAlpha = k; c.fillStyle = 'rgba(8,9,12,0.62)'; c.beginPath(); c.roundRect(40, 120, 330, 108, 18); c.fill();
-  txt(c, 'DAY ' + day, 70, 152, '700 34px "JetBrains Mono"', '#f3eee4', { align: 'left' });
+  txt(c, STR.day + day, 70, 152, '700 34px "JetBrains Mono"', '#f3eee4', { align: 'left' });
   txt(c, clock, 70, 198, '700 40px "JetBrains Mono"', '#ff5a4f', { align: 'left' }); c.restore();
 }
 // captions: 1-3 words, chunky, the key word in an accent colour; words = [{w, key}] drawn centred at y
@@ -255,7 +257,7 @@ export function endCard(c, t0, t, q, optA, optB, nextDay) {
   (Array.isArray(q) ? q : [q]).forEach((s, i) => txt(c, s.toUpperCase(), 540, 560 + i * 110, '700 104px Oswald', '#ffffff', { stroke: 10 }));
   const opt = (s, y, col) => { c.fillStyle = col; c.beginPath(); c.roundRect(170, y - 70, 740, 140, 30); c.fill(); txt(c, s.toUpperCase(), 540, y, '700 64px Oswald', '#ffffff'); };
   opt(optA, 900, '#2e9e57'); opt(optB, 1080, '#c8372d');
-  txt(c, 'COMMENT BELOW', 540, 1250, '700 56px Oswald', '#ffffff'); txt(c, 'FOLLOW FOR DAY ' + nextDay, 540, 1330, '700 46px Oswald', '#ffcc4d');
+  txt(c, STR.comment, 540, 1250, '700 56px Oswald', '#ffffff'); if (STR.follow) txt(c, STR.follow + nextDay, 540, 1330, '700 46px Oswald', '#ffcc4d');
   c.restore();
 }
 // a phone held in POV: a 2D screen with two stick thumbs; draw(c, x, y, w, h) fills the screen
@@ -272,7 +274,7 @@ export function phone(c, draw, k = 1) {
 // phrase starts, never ending on a function word ("of", "the", "your"...). A time ("2:14 AM") or a number with its unit
 // ("150 liters") stays together. Set window.CHUNKS to the result: render.py refuses a full render if a chunk ends badly.
 // keyColor: {red: '#ff4b3e', ...}; each line's `key` ({word: 'red'}) colours that word.
-export const FUNCTION_WORDS = new Set("a an the to of at for from with by into onto under about after before until behind through and or but nor so if as than that this these those is are was were be been it its it's i i'm you you're they're he she we they me him her us them my your his our their who which what when where while because".split(' '));
+export const FUNCTION_WORDS = new Set("a an the to of at for from with by into onto under about after before until behind through and or but nor so if as than that this these those is are was were be been it its it's i i'm you you're they're he she we they me him her us them my your his our their who which what when where while because un una unos unas el la los las lo al del de en con por para sin sobre entre hasta desde y e o u pero ni que si como cuando donde mientras porque se te me nos le les mi tu su mis tus sus no ya muy más".split(' '));
 export const PARTICLES = new Set('in on up off out down back away over'.split(' '));
 export function chunkCaptions(T, keyColor = { red: '#ff5a4f', yellow: '#ffcc4d', amber: '#ffcc4d', green: '#4fe08a', blue: '#5ab4ff' }) {
   const bare = s => String(s).toLowerCase().replace(/[^a-z0-9':]/g, '');

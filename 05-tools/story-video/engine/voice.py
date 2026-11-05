@@ -45,7 +45,7 @@ def whisper():
         _w = WhisperModel(d, device="cpu", compute_type="int8")
     return _w
 
-def norm(w): return re.sub(r"[^a-z0-9]", "", w.lower())
+def norm(w): return re.sub(r"[^a-z0-9áéíóúüñ]", "", w.lower())
 def clean(w): return w.strip(".,!?;\"()[]").rstrip(".")
 
 def estimate(text, raw):
@@ -109,6 +109,29 @@ def offline(text, path):
     elif platform.system() == "Darwin": subprocess.run(["say", "-f", txt, "-o", path, "--data-format=LEI16@22050"], check=True)
     else: subprocess.run(["espeak-ng", "-f", txt, "-w", path], check=True)
 
+def eleven(text, path, voice, speed):
+    """ElevenLabs with character timestamps -> word bounds (no whisper needed). Key: ELEVENLABS_API_KEY."""
+    import base64
+    key = os.environ["ELEVENLABS_API_KEY"]
+    body = json.dumps({"text": text, "model_id": spec.get("model", "eleven_multilingual_v2"),
+                       "voice_settings": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": True,
+                                          "speed": max(0.7, min(1.2, speed))}}).encode()
+    req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{voice}/with-timestamps?output_format=mp3_44100_128",
+                                 data=body, headers={"xi-api-key": key, "Content-Type": "application/json"})
+    d = json.load(urllib.request.urlopen(req, timeout=180))
+    open(path, "wb").write(base64.b64decode(d["audio_base64"]))
+    al = d["alignment"]; ch, st, en = al["characters"], al["character_start_times_seconds"], al["character_end_times_seconds"]
+    words, cur, s0, e0 = [], "", None, None
+    for c, a, b in zip(ch, st, en):
+        if c.isspace():
+            if cur: words.append((clean(cur), s0, e0 - s0))
+            cur, s0 = "", None
+        else:
+            if s0 is None: s0 = a
+            cur += c; e0 = b
+    if cur: words.append((clean(cur), s0, e0 - s0))
+    return words
+
 async def speak(i, line):
     """one line -> (pcm at 48 kHz, word boundaries relative to that pcm)"""
     text, path = line.get("say", line["text"]).strip(), os.path.join(part, "vo", f"line{i:02d}")
@@ -116,13 +139,20 @@ async def speak(i, line):
         import soundfile as sf
         a, sr = kokoro().create(text, voice=line.get("voice", VOICE), speed=float(line.get("speed", SPEED)), lang="en-us")
         sf.write(path + ".wav", a, sr); raw = decode(path + ".wav"); return raw, align(text, raw)
+    if engine == "elevenlabs":
+        bounds = eleven(text, path + ".mp3", line.get("voice", VOICE), float(line.get("speed", SPEED))); raw = decode(path + ".mp3")
+        x = np.abs(np.frombuffer(raw, np.int16).astype(np.float32)); loud = np.where(x > 0.02 * 32768)[0]
+        v0 = loud[0] / SR if len(loud) else 0.0                       # the alignment can start before the first audible sample
+        if bounds and bounds[0][1] < v0 - 0.04:
+            w0, s0, d0 = bounds[0]; e0 = s0 + d0; s1 = min(v0 - 0.02, e0 - 0.05); bounds[0] = (w0, s1, e0 - s1)
+        return raw, bounds
     if engine == "edge":
         bounds = await edge(text, line.get("voice", VOICE), path + ".mp3"); return decode(path + ".mp3"), bounds
     offline(text, path + ".wav"); raw = decode(path + ".wav"); return raw, align(text, raw)
 
 async def main():
     global engine
-    order = {"kokoro": ["kokoro", "edge", "offline"], "edge": ["edge", "offline"], "offline": ["offline"]}[engine]
+    order = {"elevenlabs": ["elevenlabs"], "kokoro": ["kokoro", "edge", "offline"], "edge": ["edge", "offline"], "offline": ["offline"]}[engine]
     for engine in order:
         try:
             lead = spec.get("lead", 0.15)
@@ -154,7 +184,7 @@ async def main():
                         words.append({"w": w, "s": round(cursor + s, 3), "e": round(cursor + e, 3)})
                 extra = {k: v for k, v in line.items() if k not in ("text", "pause", "speed")}
                 out.append({"i": i, "text": text, "start": round(cursor, 3), "end": round(cursor + dur, 3), "words": words, **extra})
-                pcm += raw; gap = float(line.get("pause", 0.25))
+                pcm += raw; gap = float(line.get("pause", spec.get("pause", 0.25)))
                 pcm += b"\0\0" * int(gap * SR); cursor += dur + gap
                 print(f"line {i:2d}  {cursor:6.2f} s  {len(words):2d} words  {text[:60]}")
             break
