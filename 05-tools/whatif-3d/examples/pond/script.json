@@ -1,0 +1,72 @@
+{
+ "title": "How a Hole in Your Yard Becomes a Pond",
+ "voice": "am_michael",
+ "speed": 1.22,
+ "lines": [
+  {
+   "id": "open",
+   "text": "If you dig a hole in your yard and fill it with a hose, you have a pond."
+  },
+  {
+   "id": "leak",
+   "text": "But by morning, the water has soaked into the dirt, and the hole is empty again."
+  },
+  {
+   "id": "liner",
+   "text": "So you lay a rubber sheet over a bed of sand, so the stones can't poke through. This is a liner."
+  },
+  {
+   "id": "green",
+   "text": "But a week of sun turns the water green, because algae feed on light and on whatever rots at the bottom."
+  },
+  {
+   "id": "plants",
+   "text": "So you add lilies to shade it, and plants that eat the same food. Starve the algae, and the water clears."
+  },
+  {
+   "id": "mosq",
+   "text": "But still water is a nursery for mosquitoes."
+  },
+  {
+   "id": "fish",
+   "text": "So you add fish, and they eat the larvae before they can fly."
+  },
+  {
+   "id": "air",
+   "text": "But the fish use up the oxygen in the water."
+  },
+  {
+   "id": "falls",
+   "text": "So you add a pump that lifts the water to a little waterfall, and every splash mixes air back in."
+  },
+  {
+   "id": "poop",
+   "text": "But fish poop, and their waste turns into ammonia, which poisons them."
+  },
+  {
+   "id": "filter",
+   "text": "So the pump pushes it through a box of sponges, where bacteria turn the ammonia into plant food. This is a biofilter."
+  },
+  {
+   "id": "winter",
+   "text": "But then winter comes, and the pond freezes over."
+  },
+  {
+   "id": "four",
+   "text": "And the fish survive, because water is heaviest at four degrees. The coldest water floats up and freezes, and the deep end stays at four degrees all winter."
+  },
+  {
+   "id": "deep",
+   "text": "That is why every pond needs a deep end."
+  },
+  {
+   "id": "gas",
+   "text": "But rotting leaves make gas that gets trapped under the ice. So a small floating heater keeps one hole open. This is a de-icer."
+  },
+  {
+   "id": "end",
+   "text": "Add stones around the edge. Congratulations, you have built a pond."
+  }
+ ],
+ "pause": 0.08
+}
