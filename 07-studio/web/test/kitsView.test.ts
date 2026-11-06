@@ -22,6 +22,9 @@ test("groups keep catalog order", () => {
   ]);
 });
 
-test("a style card copies a /video request naming the style", () => {
-  assert.equal(styleRequest(styles[0]), "/video <tu idea> con estilo de cine en código: Pizarra de tiza (chalkboard)");
+test("a style card copies a concrete /video request naming the style", () => {
+  const r = styleRequest(styles[0]);
+  assert.match(r, /^\/video \S/);
+  assert.match(r, /Pizarra de tiza \(chalkboard\)$/);
+  assert.doesNotMatch(r, /[<>]/);
 });

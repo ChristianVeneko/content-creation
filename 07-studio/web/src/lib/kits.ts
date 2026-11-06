@@ -20,7 +20,21 @@ export function groupStyles(styles: KitStyle[]): { group: string; items: KitStyl
 
 export const EFFORT_LABEL: Record<string, string> = { B: "Render rápido", M: "Render medio", A: "Render lento" };
 
-/** What to type in Claude Code to make a video in this style. */
+// A concrete topic per catalog group, so the copied request is a real example, not a template.
+const GROUP_TOPICS: [RegExp, string][] = [
+  [/explicar/i, "cómo viaja un correo electrónico"],
+  [/datos|ranking/i, "los 5 países que más café toman"],
+  [/historia|misterio/i, "el misterio del vuelo MH370"],
+  [/terror|liminal|suspenso/i, "la señal Wow! que nadie volvió a escuchar"],
+  [/caricatura|anime|humor/i, "por qué los gatos tiran cosas de la mesa"],
+  [/cuentos|infantil/i, "cómo nace una mariposa"],
+  [/3d|materiales/i, "qué hay dentro de un teléfono"],
+  [/edición|noticias/i, "lo que cambió en la inteligencia artificial este mes"],
+  [/juegos/i, "cómo se hizo el primer videojuego"],
+];
+
+/** What to type in Claude Code to make a video in this style: a real topic that fits its group. */
 export function styleRequest(style: KitStyle): string {
-  return `/video <tu idea> con estilo de cine en código: ${style.name} (${style.slug})`;
+  const topic = GROUP_TOPICS.find(([re]) => re.test(style.group))?.[1] ?? "cómo funciona una VPN";
+  return `/video ${topic}, estilo cine en código: ${style.name} (${style.slug})`;
 }
