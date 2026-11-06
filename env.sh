@@ -35,6 +35,9 @@ mkdir -p "$TMPDIR" "$WHISPER_MODELS"
 # science-shorts kit tools (venv, font, browser path) stay inside the repo
 export SCIENCE_SHORTS_HOME="$CC_ROOT/05-tools/science-shorts/home"
 
+# moment-reel kit tools (venv, Kokoro voice, whisper model, font, browser path) stay inside the repo
+export MOMENT_REEL_HOME="$CC_ROOT/05-tools/moment-reel/home"
+
 # opuscar kit (66 code-made film styles): library, packages and saved styles stay inside the repo
 export LEMO_OPUSCAR_HOME="$CC_ROOT/05-tools/opuscar"
 export LEMO_MY_STYLES="$CC_ROOT/05-tools/opuscar-my-styles"
