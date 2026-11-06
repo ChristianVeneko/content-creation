@@ -41,6 +41,7 @@ Esfuerzo: **B** = canvas 2D, render rápido; **M** = 2D con texturas o mucho dib
 | Mesa de luz de archivo | `archive-lighttable` | Negativos, cartas y recortes sobre mesa de luz con lupa (real: archivo) | M |
 | Investigación visual | `visual-investigation` | Footage, fotos y mapas de un hecho real sincronizados en un reloj (real) | M |
 | Briefing satelital | `satellite-briefing` | Imagen satelital real en gris con líneas de medición (real) | M |
+| Escaneo LiDAR | `lidar-survey` | Nube de puntos láser de un lugar real que se condensa en relieve y revela lo oculto (real: datos LiDAR) | A |
 | Pizarra de ingeniería | `briefing-board` | Pared de pizarra real con fotos recortadas que caen sobre ella | M |
 | Grabado en cobre | `engraving` | Una plancha que se graba sola con buril; la figura crece por capas | M |
 | Xilografía | `woodcut` | Bloque negro donde la luz solo existe donde cortó el cuchillo | M |
