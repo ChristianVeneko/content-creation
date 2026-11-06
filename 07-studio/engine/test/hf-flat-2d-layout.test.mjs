@@ -12,7 +12,7 @@ import { separateCast, separateProps, placeStamp, rectsOverlap } from "../hf/fla
 import { EXAMPLE_WORDS } from "../hf/flat-2d/example.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const VPN = join(HERE, "..", "..", "..", "04-projects", "api-test-flat-vpn", "spec.json");
+const VPN = join(HERE, "fixtures", "flat-vpn", "spec.json");
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const boxOf = (kind, size, at) => {
   const k = SIZE_K[size], k0 = KITS[kind], w = k0.base.w * k, h = k0.base.h * k, [cx, cy] = AT[at];
@@ -120,7 +120,7 @@ test("placeStamp: reports clear=false only when the hard boxes leave no room eve
 
 // ---------------------------------------------------------------- 3. the real LLM spec
 const spec = JSON.parse(readFileSync(VPN, "utf8"));
-const words = JSON.parse(readFileSync(join(HERE, "..", "..", "..", "04-projects", "api-test-flat-vpn", "words.json"), "utf8"));
+const words = JSON.parse(readFileSync(join(HERE, "fixtures", "flat-vpn", "words.json"), "utf8"));
 const build = (s = spec) => buildComposition({ spec: clone(s), words: Array.isArray(words) ? words : words.words ?? EXAMPLE_WORDS, durationSec: 43, captions: { enabled: true } });
 
 test("VPN spec: replicas never overlap each other or a character, in any scene", () => {

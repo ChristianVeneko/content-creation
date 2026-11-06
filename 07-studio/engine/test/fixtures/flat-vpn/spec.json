@@ -1,0 +1,793 @@
+{
+  "language": "es",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "theme": {
+    "palette": {
+      "bg": [
+        "#FFF4E6",
+        "#FFE3C7"
+      ],
+      "text": "#2B1D14",
+      "accent": "#D95B34"
+    },
+    "font": "Poppins",
+    "captionStyle": "hormozi"
+  },
+  "voice": {
+    "provider": "kokoro",
+    "speed": 1,
+    "voiceId": "em_alex"
+  },
+  "music": {
+    "volume": 0.12,
+    "provider": "library",
+    "mood": "auto",
+    "duck": true
+  },
+  "sfx": {
+    "enabled": true,
+    "volume": 1
+  },
+  "captions": {
+    "enabled": true,
+    "wordsPerPage": 3
+  },
+  "version": 1,
+  "title": "Cómo funciona una VPN (y lo que no hace)",
+  "template": "flat-2d",
+  "mode": "single",
+  "hf": {
+    "style": "flat-soft-gradient",
+    "mode": "single",
+    "cast": [
+      {
+        "id": "nico",
+        "design": "nico",
+        "size": "M"
+      },
+      {
+        "id": "beto",
+        "design": "beto",
+        "size": "M"
+      },
+      {
+        "id": "luz",
+        "design": "luz",
+        "size": "M"
+      },
+      {
+        "id": "dora",
+        "design": "dora",
+        "size": "M"
+      }
+    ],
+    "scenes": [
+      {
+        "id": "hook",
+        "setting": "home-office",
+        "label": "TU VPN",
+        "glow": "accent",
+        "props": [
+          {
+            "id": "vpn",
+            "kind": "card",
+            "at": "top",
+            "size": "l",
+            "role": "good",
+            "title": "VPN",
+            "sub": "activada",
+            "icon": "shield-check"
+          }
+        ],
+        "cast": [
+          {
+            "who": "nico",
+            "at": "floor-left",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "VPN"
+            },
+            "do": "show",
+            "target": "vpn",
+            "how": "pop"
+          },
+          {
+            "on": {
+              "word": "anónimo"
+            },
+            "do": "chip",
+            "target": "vpn",
+            "text": "no anónimo",
+            "role": "bad"
+          },
+          {
+            "on": {
+              "word": "útil"
+            },
+            "do": "act",
+            "who": "nico",
+            "clip": "shades"
+          },
+          {
+            "on": {
+              "word": "espiarte"
+            },
+            "do": "emote",
+            "target": "nico",
+            "icon": "question"
+          },
+          {
+            "on": {
+              "word": "espiarte"
+            },
+            "do": "act",
+            "who": "nico",
+            "clip": "think"
+          }
+        ]
+      },
+      {
+        "id": "tunel",
+        "setting": "desktop-browser",
+        "label": "EL TÚNEL",
+        "glow": "accent2",
+        "enter": {
+          "word": "Sin"
+        },
+        "props": [
+          {
+            "id": "web",
+            "kind": "browser",
+            "at": "top",
+            "size": "l",
+            "title": "Tienda",
+            "heading": "Ofertas",
+            "url": "tienda.net",
+            "page": "shop"
+          },
+          {
+            "id": "wifi",
+            "kind": "router",
+            "at": "floor-right",
+            "size": "s",
+            "title": "Tu red"
+          },
+          {
+            "id": "lock",
+            "kind": "card",
+            "at": "top-left",
+            "size": "s",
+            "role": "good",
+            "title": "Cifrado",
+            "sub": "VPN activa",
+            "icon": "lock-simple-open",
+            "icon2": "lock-simple"
+          }
+        ],
+        "cast": [
+          {
+            "who": "nico",
+            "at": "floor-left",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "página"
+            },
+            "do": "type",
+            "target": "web",
+            "text": "tienda.net"
+          },
+          {
+            "on": {
+              "word": "red"
+            },
+            "do": "pulse",
+            "target": "wifi",
+            "role": "bad"
+          },
+          {
+            "on": {
+              "word": "red"
+            },
+            "do": "chip",
+            "target": "wifi",
+            "text": "a la vista",
+            "role": "bad"
+          },
+          {
+            "on": {
+              "word": "VPN",
+              "n": 3
+            },
+            "do": "toggle",
+            "target": "lock"
+          },
+          {
+            "on": {
+              "word": "túnel"
+            },
+            "do": "send",
+            "from": "web",
+            "to": "wifi",
+            "text": "cifrado",
+            "icon": "lock-key",
+            "role": "good"
+          },
+          {
+            "on": {
+              "word": "cifrado"
+            },
+            "do": "camera",
+            "target": "wifi",
+            "move": "push",
+            "zoom": 1.3
+          }
+        ]
+      },
+      {
+        "id": "servidor",
+        "setting": "data-center",
+        "label": "SERVIDOR VPN",
+        "glow": "good",
+        "enter": {
+          "word": "Ese"
+        },
+        "props": [
+          {
+            "id": "rk",
+            "kind": "rack",
+            "at": "floor-right",
+            "size": "m",
+            "title": "Servidor VPN"
+          },
+          {
+            "id": "net",
+            "kind": "card",
+            "at": "top-left",
+            "size": "m",
+            "role": "accent",
+            "title": "Internet",
+            "sub": "sitios web",
+            "icon": "globe"
+          }
+        ],
+        "cast": [
+          {
+            "who": "beto",
+            "at": "floor-left",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "túnel",
+              "n": 2
+            },
+            "do": "camera",
+            "move": "release"
+          },
+          {
+            "on": {
+              "word": "servidor"
+            },
+            "do": "light",
+            "target": "rk"
+          },
+          {
+            "on": {
+              "word": "empresa"
+            },
+            "do": "chip",
+            "target": "rk",
+            "text": "empresa VPN",
+            "role": "accent"
+          },
+          {
+            "on": {
+              "word": "sale"
+            },
+            "do": "act",
+            "to": "net",
+            "who": "beto",
+            "clip": "point"
+          },
+          {
+            "on": {
+              "word": "internet"
+            },
+            "do": "send",
+            "from": "rk",
+            "to": "net",
+            "text": "petición",
+            "icon": "paper-plane-tilt"
+          }
+        ]
+      },
+      {
+        "id": "ip",
+        "setting": "city-street",
+        "label": "TU IP",
+        "glow": "accent3",
+        "enter": {
+          "word": "Los"
+        },
+        "props": [
+          {
+            "id": "site",
+            "kind": "browser",
+            "at": "top",
+            "size": "l",
+            "title": "Noticias",
+            "heading": "Hoy",
+            "url": "noticias.com",
+            "page": "article"
+          },
+          {
+            "id": "ipcard",
+            "kind": "card",
+            "at": "middle-right",
+            "size": "m",
+            "role": "good",
+            "title": "Tu IP",
+            "sub": "oculta",
+            "icon": "map-pin",
+            "icon2": "eye-slash"
+          }
+        ],
+        "cast": [
+          {
+            "who": "luz",
+            "at": "floor-left",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "sitios"
+            },
+            "do": "show",
+            "target": "site",
+            "how": "drop"
+          },
+          {
+            "on": {
+              "word": "servidor",
+              "n": 2
+            },
+            "do": "chip",
+            "target": "site",
+            "text": "IP del servidor",
+            "role": "accent"
+          },
+          {
+            "on": {
+              "word": "tuya"
+            },
+            "do": "show",
+            "target": "ipcard",
+            "how": "pop"
+          },
+          {
+            "on": {
+              "word": "ubicación"
+            },
+            "do": "act",
+            "who": "luz",
+            "clip": "react"
+          },
+          {
+            "on": {
+              "word": "oculta"
+            },
+            "do": "toggle",
+            "target": "ipcard"
+          },
+          {
+            "on": {
+              "word": "oculta"
+            },
+            "do": "act",
+            "who": "luz",
+            "clip": "celebrate"
+          }
+        ]
+      },
+      {
+        "id": "no-anonimo",
+        "setting": "desktop-browser",
+        "label": "NO ERES ANÓNIMO",
+        "glow": "bad",
+        "enter": {
+          "word": "Pero",
+          "n": 2
+        },
+        "props": [
+          {
+            "id": "login",
+            "kind": "browser",
+            "at": "top",
+            "size": "l",
+            "title": "Inicia sesión",
+            "heading": "Hola, Dora",
+            "url": "red-social.com",
+            "page": "login"
+          },
+          {
+            "id": "cook",
+            "kind": "notification",
+            "at": "middle-right",
+            "size": "s",
+            "items": [
+              {
+                "text": "Cookie guardada",
+                "icon": "fingerprint"
+              },
+              {
+                "text": "Hola de nuevo, Dora",
+                "icon": "user"
+              }
+            ]
+          }
+        ],
+        "cast": [
+          {
+            "who": "dora",
+            "at": "floor-left",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "anónimo",
+              "n": 2
+            },
+            "do": "hero",
+            "text": "NO ANÓNIMO",
+            "role": "bad"
+          },
+          {
+            "on": {
+              "word": "sesión"
+            },
+            "do": "click",
+            "target": "login"
+          },
+          {
+            "on": {
+              "word": "cookies"
+            },
+            "do": "drop",
+            "target": "cook",
+            "n": 1
+          },
+          {
+            "on": {
+              "word": "sabiendo"
+            },
+            "do": "drop",
+            "target": "cook",
+            "n": 2
+          },
+          {
+            "on": {
+              "word": "quién",
+              "n": 2
+            },
+            "do": "emote",
+            "target": "dora",
+            "icon": "exclamation-mark"
+          },
+          {
+            "on": {
+              "word": "quién",
+              "n": 2
+            },
+            "do": "act",
+            "who": "dora",
+            "clip": "react"
+          }
+        ]
+      },
+      {
+        "id": "empresa",
+        "setting": "server-room",
+        "label": "LA EMPRESA",
+        "glow": "warn",
+        "enter": {
+          "word": "aquí"
+        },
+        "props": [
+          {
+            "id": "rk2",
+            "kind": "rack",
+            "at": "floor-right",
+            "size": "m",
+            "title": "Servidor VPN"
+          },
+          {
+            "id": "logs",
+            "kind": "list",
+            "at": "top",
+            "size": "l",
+            "title": "Tu tráfico",
+            "rows": [
+              {
+                "text": "tienda.net",
+                "tag": "visto"
+              },
+              {
+                "text": "noticias.com",
+                "tag": "visto"
+              },
+              {
+                "text": "red-social.com",
+                "tag": "visto"
+              },
+              {
+                "text": "banco.com",
+                "tag": "visto"
+              }
+            ],
+            "icon": "eye-slash"
+          }
+        ],
+        "cast": [
+          {
+            "who": "beto",
+            "at": "floor-left",
+            "facing": "right"
+          },
+          {
+            "who": "nico",
+            "at": "floor-center",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "trampa"
+            },
+            "do": "shake",
+            "target": "rk2"
+          },
+          {
+            "on": {
+              "word": "empresa",
+              "n": 2
+            },
+            "do": "show",
+            "target": "logs",
+            "how": "pop"
+          },
+          {
+            "on": {
+              "word": "ver"
+            },
+            "do": "scan",
+            "target": "logs",
+            "row": 3
+          },
+          {
+            "on": {
+              "word": "tráfico",
+              "n": 2
+            },
+            "do": "pick",
+            "target": "logs",
+            "row": 3
+          },
+          {
+            "on": {
+              "word": "tráfico",
+              "n": 2
+            },
+            "do": "act",
+            "to": "logs",
+            "who": "beto",
+            "clip": "point"
+          },
+          {
+            "on": {
+              "word": "confías"
+            },
+            "do": "emote",
+            "target": "nico",
+            "icon": "handshake"
+          },
+          {
+            "on": {
+              "word": "confías"
+            },
+            "do": "act",
+            "who": "nico",
+            "clip": "shrug"
+          }
+        ]
+      },
+      {
+        "id": "cta",
+        "setting": "home-office",
+        "label": "COMPÁRTELO",
+        "glow": "accent",
+        "enter": {
+          "word": "Envía"
+        },
+        "props": [
+          {
+            "id": "phone",
+            "kind": "phone",
+            "at": "middle-right",
+            "size": "m",
+            "title": "Amigo",
+            "messages": [
+              {
+                "from": "me",
+                "text": "Tu VPN no te hace invisible"
+              },
+              {
+                "from": "them",
+                "text": "¿En serio? 😮"
+              }
+            ]
+          }
+        ],
+        "cast": [
+          {
+            "who": "nico",
+            "at": "floor-left",
+            "facing": "right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "Envía"
+            },
+            "do": "show",
+            "target": "phone",
+            "how": "slide-up"
+          },
+          {
+            "on": {
+              "word": "amigo"
+            },
+            "do": "message",
+            "target": "phone",
+            "n": 1
+          },
+          {
+            "on": {
+              "word": "amigo"
+            },
+            "do": "act",
+            "who": "nico",
+            "clip": "click"
+          },
+          {
+            "on": {
+              "word": "invisible"
+            },
+            "do": "message",
+            "target": "phone",
+            "n": 2
+          },
+          {
+            "on": {
+              "word": "invisible"
+            },
+            "do": "camera",
+            "move": "recap"
+          }
+        ]
+      }
+    ]
+  },
+  "brand": {
+    "pill": false
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tu VPN no te vuelve anónimo. Pero sí hace algo muy útil, y al final verás quién puede espiarte.",
+      "onScreenText": "VPN ≠ anónimo",
+      "visual": {
+        "type": "emoji",
+        "emoji": "🕵️"
+      },
+      "animation": "pop"
+    },
+    {
+      "id": "tunel",
+      "narration": "Sin VPN, cada página que abres viaja a la vista de tu red. Con VPN, tu tráfico entra en un túnel cifrado.",
+      "onScreenText": "Túnel cifrado",
+      "visual": {
+        "type": "emoji",
+        "emoji": "🔒"
+      },
+      "animation": "slide"
+    },
+    {
+      "id": "servidor",
+      "narration": "Ese túnel termina en un servidor de la empresa. Desde ahí sale tu petición hacia internet.",
+      "onScreenText": "Sales por otro lado",
+      "visual": {
+        "type": "emoji",
+        "emoji": "🖥️"
+      },
+      "animation": "zoom"
+    },
+    {
+      "id": "ip-oculta",
+      "narration": "Los sitios web ven la IP del servidor, no la tuya. Tu ubicación real queda oculta.",
+      "onScreenText": "Tu IP, escondida",
+      "visual": {
+        "type": "emoji",
+        "emoji": "📍"
+      },
+      "animation": "slide"
+    },
+    {
+      "id": "no-anonimo",
+      "narration": "Pero ojo: no eres anónimo. Si inicias sesión o usas cookies, las páginas siguen sabiendo quién eres.",
+      "onScreenText": "Las cookies te delatan",
+      "visual": {
+        "type": "emoji",
+        "emoji": "🍪"
+      },
+      "animation": "pop"
+    },
+    {
+      "id": "empresa",
+      "narration": "Y aquí está la trampa: la empresa de la VPN puede ver tu tráfico. Solo cambiaste en quién confías.",
+      "onScreenText": "Alguien sigue mirando",
+      "visual": {
+        "type": "emoji",
+        "emoji": "👀"
+      },
+      "animation": "zoom"
+    },
+    {
+      "id": "cta",
+      "narration": "Envía esto a ese amigo que cree que su VPN lo hace invisible.",
+      "onScreenText": "Pásaselo",
+      "visual": {
+        "type": "emoji",
+        "emoji": "📲"
+      },
+      "animation": "pop"
+    }
+  ],
+  "credits": [
+    "Study And Relax Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/"
+  ],
+  "post": {
+    "tiktok": "Tu VPN esconde tu IP… pero alguien sigue viendo todo lo que haces 👀 #vpn #privacidad #ciberseguridad #tecnologia",
+    "instagram": "Tu VPN no te hace anónimo 👀\n\nCifra tu tráfico y oculta tu IP a los sitios web.\nPero las cookies y tu sesión te siguen delatando.\nY la empresa de la VPN puede ver tu tráfico.\n\nEnvíaselo a quien cree que es invisible.\n\n#vpn #privacidad #ciberseguridad #internet #tecnologia",
+    "youtube": {
+      "title": "Cómo funciona una VPN: lo que oculta y lo que NO #shorts",
+      "description": "Qué hace realmente una VPN: túnel cifrado, servidor intermedio e IP oculta. Por qué no te vuelve anónimo y quién puede ver tu tráfico."
+    },
+    "hashtags": [
+      "vpn",
+      "privacidad",
+      "ciberseguridad",
+      "internet",
+      "tecnologia"
+    ]
+  }
+}
