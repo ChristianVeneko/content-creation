@@ -61,19 +61,36 @@ def kokoro_line(text, voice, speed):
 
 
 def eleven_line(text):
+    """ElevenLabs with character timestamps, so any language works without whisper.
+    Returns (mono float32, sample rate, [(start, end), ...] one per word of text). The key is read from the environment only."""
+    import base64
     key = os.environ.get("ELEVENLABS_API_KEY")
     vid = SPEC.get("eleven_voice")
     if not vid:
         sys.exit('script.json has "engine": "elevenlabs" but no "eleven_voice" id')
     body = {"text": text, "model_id": SPEC.get("eleven_model", "eleven_multilingual_v2"),
             "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": True}}
-    req = urllib.request.Request("https://api.elevenlabs.io/v1/text-to-speech/%s?output_format=pcm_24000" % vid, data=json.dumps(body).encode(),
-                                 headers={"xi-api-key": key, "Content-Type": "application/json", "Accept": "audio/pcm"})
+    req = urllib.request.Request("https://api.elevenlabs.io/v1/text-to-speech/%s/with-timestamps?output_format=pcm_24000" % vid,
+                                 data=json.dumps(body).encode(), headers={"xi-api-key": key, "Content-Type": "application/json"})
     try:
-        pcm = urllib.request.urlopen(req, timeout=120).read()
+        d = json.load(urllib.request.urlopen(req, timeout=180))
     except urllib.error.HTTPError as e:
         sys.exit("ElevenLabs said %d: %s" % (e.code, e.read()[:300].decode("utf-8", "replace")))
-    return np.frombuffer(pcm, np.int16).astype(np.float32) / 32768, 24000
+    pcm = base64.b64decode(d["audio_base64"])
+    al = d.get("alignment") or {}
+    times, s0, e0 = [], None, None
+    for c, a, b in zip(al.get("characters", []), al.get("character_start_times_seconds", []), al.get("character_end_times_seconds", [])):
+        if c.isspace():
+            if s0 is not None:
+                times.append((s0, e0))
+            s0 = None
+        else:
+            if s0 is None:
+                s0 = a
+            e0 = b
+    if s0 is not None:
+        times.append((s0, e0))
+    return np.frombuffer(pcm, np.int16).astype(np.float32) / 32768, 24000, times
 
 
 def engine():
@@ -249,16 +266,32 @@ def main():
         key = hashlib.sha1(json.dumps([eng, voice, speed, say, SPEC.get("eleven_voice"), SPEC.get("eleven_model")]).encode()).hexdigest()
         src = os.path.join(VO, "line_%d.wav" % i)
         if "--force" in sys.argv or old.get(str(i)) != key or not os.path.exists(src):
-            a, sr = eleven_line(say) if eng == "elevenlabs" else kokoro_line(say, voice, speed)
+            if eng == "elevenlabs":
+                a, sr, et = eleven_line(say)
+                json.dump(et, open(src + ".json", "w"))
+            else:
+                a, sr = kokoro_line(say, voice, speed)
             write_wav(src, a, sr)
         new[str(i)] = key
         a, sr = read_wav(src)
-        a = to48k(squeeze(trim(a, sr), sr, max_pause), sr)
+        et = json.load(open(src + ".json")) if eng == "elevenlabs" and os.path.exists(src + ".json") else None
+        if et is not None and len(et) == len(say.split()):
+            loud = np.where(np.abs(a) > 0.012)[0]               # trim() cuts the lead silence: shift the word times with it
+            off = max(0, loud[0] - int(0.03 * sr)) / sr if len(loud) else 0.0
+            a = to48k(trim(a, sr), sr)                          # no squeeze: ElevenLabs pauses are natural and the times must hold
+        else:
+            et = None
+            a = to48k(squeeze(trim(a, sr), sr, max_pause), sr)
         if i > 0:
             g = gap + float(SPEC["lines"][i - 1].get("pause", 0))
             pcm.append(np.zeros(int(g * SR), np.float32)); t += g
-        times, got, heard = align(say, a)
         sw = say.split()
+        if et is not None:
+            end = len(a) / SR
+            times = [(min(end, max(0.0, x - off)), min(end, max(0.0, y - off))) for x, y in et]
+            got, heard = len(sw), sw
+        else:
+            times, got, heard = align(say, a)
         show = ln.get("show", "").replace("|", " ").split() or sw
         if len(show) != len(sw):
             fails.append("line %d: show has %d words but say has %d. Give one caption word per spoken word." % (i, len(show), len(sw)))
