@@ -4,6 +4,33 @@ Un kit para hacer videos verticales (Reels, TikTok, YouTube Shorts, 1080x1920 a 
 
 Todo lo que instala (librerías de Node, cachés, modelos, entorno de Python) queda **dentro de esta carpeta**. Si la borras, no queda nada repartido por tu sistema, salvo los paquetes del sistema que instala `setup.sh` (ffmpeg, Python, librerías de Chrome).
 
+## Así se ven los resultados
+
+Videos verticales hechos con este kit (vista previa de cada formato, a 3,5 s y menor resolución):
+
+**Plantillas 2D**: pizarra, gráfica editorial, cómic, acuarela
+
+<img src="00-docs/readme/formatos-2d.gif" alt="Cuatro videos verticales 2D: pizarra blanca, gráfica editorial, cómic pop y acuarela" width="800">
+
+**Plantillas 3D**: holograma, mundo de papel, bloques de juguete
+
+<img src="00-docs/readme/formatos-3d.gif" alt="Tres videos verticales 3D: holograma, mundo de papel y bloques de juguete" width="600">
+
+**Pixel art y reels**
+
+<img src="00-docs/readme/formatos-pixel-reels.gif" alt="Dos videos en pixel art y dos reels de texto animado" width="800">
+
+**Cine en código (`opuscar`)**: 12 de sus 66 estilos (fotogramas de las demos, CC BY 4.0, LemoLab)
+
+<img src="00-docs/readme/opuscar-estilos.jpg" alt="Collage de 12 estilos: pizarra de tiza, acuarela, grabado, expediente, infografía isométrica, plano, ukiyo-e, satélite, backrooms, gráfica de datos, libro de crayones y cine mudo" width="800">
+
+**Momento famoso en caricatura (`moment-reel`)** y **Ciencia animada (`science-shorts`)**: portadas de los ejemplos de cada kit
+
+<p>
+<img src="00-docs/readme/moment-reel-ejemplo.jpg" alt="Caricatura de un futbolista golpeando el balón con la mano, subtítulo 'He punched the ball'" width="300">
+<img src="00-docs/readme/science-shorts-ejemplo.jpg" alt="Una nube con cara sostiene tres elefantes, título 'This Cloud Weighs 100 Elephants!'" width="300">
+</p>
+
 ## Qué trae
 
 - **Skills de Claude Code**: `/video` (video guiado de principio a fin), `/canal` (tus canales, etapas y plan semanal), `/hooks` (puntúa ganchos y pares título/portada), `/lote` (un lote de videos de noche para un canal; nunca sube nada).
@@ -173,6 +200,10 @@ Abre http://127.0.0.1:4317. Tiene tres secciones:
 - **Panel**: tus canales y todo tu contenido por etapa.
 - **Crear**: escribe la idea, elige el formato (cómo se ve y se mueve), los colores, la voz y la duración (de 15 s a 3 min), y quién escribe el guion (Claude Code con tu suscripción, o Anthropic/OpenAI/Gemini con clave), edita las escenas y renderiza.
 - **Motores**: todos los tipos de video que puedes hacer, cada uno con ejemplos de pedidos para copiar y lo que te entrega. En **Cine en código** está la galería de los 66 estilos de opuscar con un fotograma de cada uno.
+
+<img src="00-docs/readme/web-motores.jpg" alt="Vista Motores del estudio web: tarjetas de cada motor con ejemplos de pedidos y lo que entrega" width="800">
+
+<img src="00-docs/readme/web-estilos.jpg" alt="Galería de estilos de opuscar en el estudio web, con filtros por grupo y un fotograma por estilo" width="800">
 
 ### 3. Línea de comandos (motor)
 
