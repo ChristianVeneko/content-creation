@@ -9,6 +9,8 @@ Todo lo que instala (librerías de Node, cachés, modelos, entorno de Python) qu
 - **Skills de Claude Code**: `/video` (video guiado de principio a fin), `/canal` (tus canales, etapas y plan semanal), `/hooks` (puntúa ganchos y pares título/portada), `/lote` (un lote de videos de noche para un canal; nunca sube nada).
 - **Motor de video** (`07-studio/engine`): Remotion con unas 40 plantillas (ilustrado 2D, reels 2D, 3D con three.js, pixel art, tipografía cinética).
 - **Estudio web** (`07-studio/web`): una app local en el navegador para escribir la idea, editar escenas y renderizar.
+- **Kits de video** (`05-tools/`), que maneja `/video`: `opuscar` (66 estilos de cine hechos en código), `moment-reel` (momentos famosos en caricatura), `science-shorts` (ciencia animada), `whatif-3d` (patio en corte 3D, Blender) y `story-video` (historias de supervivencia 3D).
+- **Investigación con fuentes**: los videos hechos desde cero parten de datos buscados en la web, cada uno con su enlace y fecha en `sources.md`; lo que no se puede confirmar queda fuera del video.
 - **Recursos**: fuentes, efectos de sonido, catálogo de música y recursos 3D con licencias aptas para videos monetizados (ver [Licencias](#licencias-de-los-recursos-incluidos)).
 
 ## Requisitos
@@ -102,7 +104,11 @@ cd 07-studio/web
 npm run build && npm start
 ```
 
-Abre http://127.0.0.1:4317. Escribe la idea, elige el formato (cómo se ve y se mueve), los colores, la voz y la duración (de 15 s a 3 min), y quién escribe el guion (Claude Code con tu suscripción, o Anthropic/OpenAI/Gemini con clave), edita las escenas y renderiza.
+Abre http://127.0.0.1:4317. Tiene tres secciones:
+
+- **Panel**: tus canales y todo tu contenido por etapa.
+- **Crear**: escribe la idea, elige el formato (cómo se ve y se mueve), los colores, la voz y la duración (de 15 s a 3 min), y quién escribe el guion (Claude Code con tu suscripción, o Anthropic/OpenAI/Gemini con clave), edita las escenas y renderiza.
+- **Motores**: todos los tipos de video que puedes hacer, cada uno con ejemplos de pedidos para copiar y lo que te entrega. En **Cine en código** está la galería de los 66 estilos de opuscar con un fotograma de cada uno.
 
 ### 3. Línea de comandos (motor)
 
@@ -143,7 +149,7 @@ Con la clave de ElevenLabs puesta, reinicia Claude Code dentro de la carpeta y a
 - `02-scripts/`: ayudantes de ffmpeg (formato vertical, subtítulos quemados, normalizar audio, exportar por plataforma).
 - `03-assets/`: fuentes, música, efectos de sonido, overlays y recursos 3D.
 - `04-projects/`: una carpeta por video (local, no se sube).
-- `05-tools/`: binarios locales, cachés y modelos (todo ignorado por git salvo los lanzadores).
+- `05-tools/`: los kits de video (`opuscar`, `moment-reel`, `science-shorts`, `whatif-3d`, `story-video`, cada uno con su `ADAPTER.md` o `CLAUDE.md`), más binarios locales, cachés y modelos (ignorados por git).
 - `06-exports/`: videos finales por plataforma (local).
 - `07-studio/`: el motor (`engine/`) y el estudio web (`web/`).
 - `08-channels/`: tus canales (`channel.json` + `voice.md`). Solo se versionan `README.md` y `_template/`; tus canales quedan locales.
