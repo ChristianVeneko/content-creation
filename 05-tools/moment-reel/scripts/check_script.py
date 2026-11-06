@@ -9,6 +9,8 @@ Writing the script is Claude's job (reference/story_formula.md, the facts in sou
   - no digits in `say` (the voice misreads them: "nineteen-eighty-six"), and `show` has one word per spoken word;
   - hand-cut chunks (`|`) of 2-4 words, so a caption never holds one word or five.
 FAIL stops the voice from being worth recording; WARN is a judgement call.
+With "lang": "es" in script.json the formula is checked in Spanish: line 1 opens on the act (no intro such as "Hoy" or
+"Imagina"), the context opens with "Verás," and the hinges are Entonces / Así que / Pero / De repente / Luego ...
 """
 import json, os, re, sys
 
@@ -16,6 +18,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _common import project
 
 HINGES = {"then", "so", "but", "suddenly", "after", "later", "because", "meanwhile", "until", "instead", "finally", "which"}
+HINGES_ES = {"entonces", "así", "pero", "de", "luego", "después", "porque", "mientras", "hasta", "en", "al", "finalmente", "y"}
+INTROS_ES = {"hoy", "imagina", "sabías", "¿sabías", "te", "esta", "este", "había", "una", "un", "érase", "en"}
 
 
 def main():
@@ -30,10 +34,17 @@ def main():
     add("PASS" if 90 <= n <= 140 else "FAIL", "spoken words", "%d (the format: 90-140)" % n)
     add("PASS" if 30 <= secs <= 50 else "WARN", "estimated length", "%.0f s (30-50 s; narrate.py measures it exactly)" % secs)
     first = lines[0]["say"].replace("|", " ").split()[0] if lines else ""
-    add("PASS" if first in ("He", "She", "They") else "FAIL", "line 1", "opens with %r (the act first: \"He punched the ball ...\")" % first)
-    add("PASS" if any(re.match(r"\s*You see,", ln["say"]) for ln in lines) else "WARN", "context", 'a line opening "You see," (the step back)')
-    h = sum(1 for ln in lines if ln["say"].replace("|", " ").split()[0].strip(",.").lower() in HINGES)
-    add("PASS" if h >= 3 else "WARN", "hinge words", "%d lines open on Then / So / But / Suddenly ... (3 or more keeps the chain moving)" % h)
+    if spec.get("lang") == "es":
+        add("FAIL" if not first or first.strip(",.¿¡").lower() in INTROS_ES else "PASS", "line 1",
+            "opens with %r (el acto primero: \"Metió el balón con la mano ...\", nunca \"Hoy\" ni \"Imagina\")" % first)
+        add("PASS" if any(re.match(r"\s*Verás,", ln["say"]) for ln in lines) else "WARN", "context", 'a line opening "Verás," (the step back)')
+        h = sum(1 for ln in lines if ln["say"].replace("|", " ").split()[0].strip(",.").lower() in HINGES_ES)
+        add("PASS" if h >= 3 else "WARN", "hinge words", "%d lines open on Entonces / Así que / Pero / De repente ... (3 or more keeps the chain moving)" % h)
+    else:
+        add("PASS" if first in ("He", "She", "They") else "FAIL", "line 1", "opens with %r (the act first: \"He punched the ball ...\")" % first)
+        add("PASS" if any(re.match(r"\s*You see,", ln["say"]) for ln in lines) else "WARN", "context", 'a line opening "You see," (the step back)')
+        h = sum(1 for ln in lines if ln["say"].replace("|", " ").split()[0].strip(",.").lower() in HINGES)
+        add("PASS" if h >= 3 else "WARN", "hinge words", "%d lines open on Then / So / But / Suddenly ... (3 or more keeps the chain moving)" % h)
     digits = [ln["say"] for ln in lines if re.search(r"\d", ln["say"])]
     add("FAIL" if digits else "PASS", "digits in say", "; ".join(d[:50] for d in digits) or "none")
     bad_show = [i for i, ln in enumerate(lines) if ln.get("show") and len(ln["show"].replace("|", " ").split()) != len(ln["say"].replace("|", " ").split())]
