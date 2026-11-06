@@ -141,7 +141,8 @@ The UI has three sections in the top bar: **Panel** (home, `#/`), **Crear** (`#/
 - **Motores** (`#/motores`) lists every way to make a video: the engine's templates (made in Crear) and the kits in
   `05-tools/` (opuscar, moment-reel, science-shorts, whatif-3d, story-video), which the `/video` skill drives in
   Claude Code. Each card says how it looks, what it fits, its length and render time, whether it researches the
-  facts first, and copies the `/video` request to type. `#/motores/opuscar` is the gallery of the 66 film styles
+  facts first, two concrete `/video` requests to copy (real topics, no placeholders) and what a run delivers
+  (`video.mp4`, `cover.jpg`, `post.md`, plus `sources.md` or the kit's working folder). `#/motores/opuscar` is the gallery of the 66 film styles
   with a real frame each, grouped and ordered like `00-docs/opuscar-styles.md`, searchable.
 
 ### Channels
@@ -188,7 +189,7 @@ else `draft`; their `job.json` is not rewritten for that. A new script is `draft
 | `POST /api/jobs` | Create an idea: `{ title, notes?, channel? }` |
 | `PATCH /api/jobs/:id` | Set `title`, `notes`, `channel` (null clears), `stage`, `publishedAt`, `links` (http/https) |
 | `POST /api/spec` | Also accepts `channel` and `jobId` (fill an idea; 409 if it already has a script) |
-| `GET /api/kits` | The video kits with their copy and `available` (folder on disk); opuscar adds its style count |
+| `GET /api/kits` | The video kits with their copy, `examples` (requests to type), `delivers` and `available` (folder on disk); opuscar adds its style count |
 | `GET /api/kits/opuscar/styles` | Every opuscar style: `style.json` joined with the Spanish catalog (name, group, effort) |
 | `GET /api/kits/opuscar/styles/:slug/still` | The style's demo frame (JPEG), only for a listed slug |
 

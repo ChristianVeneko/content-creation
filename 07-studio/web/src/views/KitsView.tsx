@@ -77,20 +77,34 @@ function KitCard({ kit }: { kit: KitInfo }) {
         {kit.styles ? <span className="kit-tag">{kit.styles} estilos</span> : null}
         {!kit.available && <span className="kit-tag kit-tag-warn">No instalado</span>}
       </div>
+      <div className="kit-block">
+        <h3 className="kit-block-title">Cómo pedirlo en Claude Code</h3>
+        <ul className="kit-examples">
+          {kit.examples.map((e) => (
+            <li key={e} className="kit-actions">
+              <code className="kit-ask">{e}</code>
+              <CopyButton text={e} label="Copiar" />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="kit-block">
+        <h3 className="kit-block-title">Te entrega</h3>
+        <ul className="kit-delivers">
+          {kit.delivers.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+      </div>
       <div className="kit-actions">
-        {kit.id === "engine" ? (
+        {kit.id === "engine" && (
           <a className="btn btn-quiet btn-sm" href={href({ name: "create" })}>
-            Ver formatos
+            Crear desde la web
           </a>
-        ) : (
-          <>
-            <code className="kit-ask">{kit.ask}</code>
-            <CopyButton text={kit.ask} label="Copiar pedido" />
-          </>
         )}
         {kit.id === "opuscar" && kit.available && (
-          <a className="btn btn-text btn-sm" href={href({ name: "kits", kit: "opuscar" })}>
-            Ver los estilos
+          <a className="btn btn-quiet btn-sm" href={href({ name: "kits", kit: "opuscar" })}>
+            Ver los {kit.styles} estilos
           </a>
         )}
       </div>
@@ -183,8 +197,8 @@ function StyleCard({ style }: { style: KitStyle }) {
         </div>
         <p className="style-does">{style.does}</p>
         <div className="kit-actions">
-          <code className="kit-ask">{style.slug}</code>
-          <CopyButton text={styleRequest(style)} label="Copiar pedido" />
+          <code className="kit-ask">{styleRequest(style)}</code>
+          <CopyButton text={styleRequest(style)} label="Copiar" />
         </div>
       </div>
     </li>
