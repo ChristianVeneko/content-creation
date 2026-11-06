@@ -17,6 +17,7 @@ import { RENDERERS, is3dTemplate, isRenderer } from "../shared/renderers.ts";
 import { type HfQuality, defaultHfOptions, hfOptionsIssue, isHfQuality, isHfTemplate, resolveHfOptions } from "../shared/hf.ts";
 import { buildChannelContext, channelOptionDefaults } from "./channelContext.ts";
 import { JobStore, isValidJobId, type JobEvent, type JobMeta } from "./jobs.ts";
+import { listKits, opuscarStyles, styleStill } from "./kits.ts";
 import { log, log as studioLog } from "./logger.ts";
 import { createProvider as defaultCreateProvider, isProviderId, listProviders } from "./providers/index.ts";
 import { systemPromptFor } from "./systemPrompt.ts";
@@ -246,6 +247,15 @@ export function createApp(config: StudioConfig, deps: AppDeps = {}) {
     const file = path.join(config.thumbsDir, name);
     if (!existsSync(file)) return c.json({ error: "Not found" }, 404);
     return serveFile(file, m[2] === "jpg" ? "image/jpeg" : "video/mp4", c.req.header("range"), { "Cache-Control": "max-age=300" });
+  });
+
+  // ---------- video kits (the "Motores" view) ----------
+  app.get("/api/kits", (c) => c.json({ kits: listKits(config.workspaceRoot) }));
+  app.get("/api/kits/opuscar/styles", (c) => c.json({ styles: opuscarStyles(config.workspaceRoot) }));
+  app.get("/api/kits/opuscar/styles/:slug/still", (c) => {
+    const file = styleStill(config.workspaceRoot, c.req.param("slug"));
+    if (!file) return c.json({ error: "Not found" }, 404);
+    return serveFile(file, "image/jpeg", c.req.header("range"), { "Cache-Control": "max-age=3600" });
   });
 
   // ---------- music library ----------

@@ -46,6 +46,7 @@ odd/
 
 # Video kits: local tools, downloaded assets and test renders stay on disk
 05-tools/science-shorts/home/
+05-tools/moment-reel/home/
 05-tools/whatif-3d/assets/
 05-tools/whatif-3d/.pipcache/
 05-tools/whatif-3d/story_test/

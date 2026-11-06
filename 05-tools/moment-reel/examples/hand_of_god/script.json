@@ -1,0 +1,43 @@
+{
+ "slug": "hand_of_god",
+ "voice": "am_liam+am_puck",
+ "speed": 0.9,
+ "gap": 0.3,
+ "max_pause": 0.3,
+ "tail": 0.9,
+ "lines": [
+  {
+   "say": "He punched the ball | into the net | with his hand, | in front of | one-hundred-fourteen-thousand-five-hundred-eighty | people.",
+   "show": "He punched the ball into the net with his hand, in front of 114,580 people."
+  },
+  {
+   "say": "You see, it was | the fifty-first minute | of a World Cup | quarter-final, | Argentina against England.",
+   "show": "You see, it was the 51st minute of a World Cup quarter-final, Argentina against England."
+  },
+  {
+   "say": "Then an England midfielder | hooked the ball back | toward his own goal."
+  },
+  {
+   "say": "So the keeper | rushed out | to meet it."
+  },
+  {
+   "say": "But Maradona leapt | with his left arm up, | and his fist | got there first."
+  },
+  {
+   "say": "The ball floated | over the keeper's head | and dropped | into the goal."
+  },
+  {
+   "say": "Suddenly, | England's players | protested the handball."
+  },
+  {
+   "say": "But the referee | hadn't seen the hand, | so the goal stood."
+  },
+  {
+   "say": "After the game, | Maradona said | it was scored | a little | with the head | of Maradona, | and a little | with the hand | of God.",
+   "show": "After the game, Maradona said it was scored \"a little with the head of Maradona, and a little with the hand of God.\""
+  },
+  {
+   "say": "Four minutes later, | he ran from | his own half, | past four England players | and the keeper, | and scored the | Goal of the Century."
+  }
+ ]
+}

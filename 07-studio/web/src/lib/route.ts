@@ -5,7 +5,8 @@ export type Route =
   | { name: "create"; channel?: string; idea?: string }
   | { name: "channel"; slug: string }
   | { name: "newChannel" }
-  | { name: "job"; id: string };
+  | { name: "job"; id: string }
+  | { name: "kits"; kit?: string };
 
 export function parseHash(hash: string): Route {
   const [pathPart, query = ""] = hash.replace(/^#\/?/, "").split("?");
@@ -17,6 +18,7 @@ export function parseHash(hash: string): Route {
   if (parts[0] === "canales" && parts[1] === "nuevo") return { name: "newChannel" };
   if (parts[0] === "canal" && parts[1]) return { name: "channel", slug: parts[1] };
   if (parts[0] === "video" && parts[1]) return { name: "job", id: parts[1] };
+  if (parts[0] === "motores") return { name: "kits", kit: parts[1] || undefined };
   // "#/historial" (old link) and anything unknown land on the panel, which lists all content.
   return { name: "panel" };
 }
@@ -36,6 +38,8 @@ export function href(route: Route): string {
       return `#/canal/${encodeURIComponent(route.slug)}`;
     case "job":
       return `#/video/${encodeURIComponent(route.id)}`;
+    case "kits":
+      return route.kit ? `#/motores/${encodeURIComponent(route.kit)}` : "#/motores";
     default:
       return "#/";
   }

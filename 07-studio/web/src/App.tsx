@@ -3,12 +3,13 @@ import { ChannelView } from "./views/ChannelView.tsx";
 import { ChannelWizard } from "./views/ChannelWizard.tsx";
 import { Create } from "./views/Create.tsx";
 import { JobView } from "./views/JobView.tsx";
+import { KitsView } from "./views/KitsView.tsx";
 import { Panel } from "./views/Panel.tsx";
 
 export function App() {
   const route = useRoute();
-  // Channel pages and videos belong to the panel; the creation flow to "Crear".
-  const section = route.name === "create" ? "create" : "panel";
+  // Channel pages and videos belong to the panel; the creation flow to "Crear"; the kit catalog to "Motores".
+  const section = route.name === "create" ? "create" : route.name === "kits" ? "kits" : "panel";
   return (
     <div className="shell">
       <header className="topbar">
@@ -23,6 +24,9 @@ export function App() {
           <a href={href({ name: "create" })} aria-current={section === "create" ? "page" : undefined}>
             Crear
           </a>
+          <a href={href({ name: "kits" })} aria-current={section === "kits" ? "page" : undefined}>
+            Motores
+          </a>
         </nav>
       </header>
       <main className="main">
@@ -31,6 +35,7 @@ export function App() {
         {route.name === "newChannel" && <ChannelWizard />}
         {route.name === "channel" && <ChannelView key={route.slug} slug={route.slug} />}
         {route.name === "job" && <JobView key={route.id} id={route.id} />}
+        {route.name === "kits" && <KitsView key={route.kit ?? ""} kit={route.kit} />}
       </main>
     </div>
   );

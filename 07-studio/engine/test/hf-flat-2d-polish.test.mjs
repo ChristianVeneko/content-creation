@@ -156,8 +156,8 @@ test("separateCast moves a character out from under a replica, or lifts the repl
 });
 
 test("integration: no character covers a replica in the VPN spec that showed the problem", () => {
-  const spec = JSON.parse(readFileSync(join(HERE, "..", "..", "..", "04-projects", "api-test-flat-vpn", "spec.json"), "utf8"));
-  const r = buildComposition({ spec, words: JSON.parse(readFileSync(join(HERE, "..", "..", "..", "04-projects", "api-test-flat-vpn", "words.json"), "utf8")), durationSec: 43, captions: { enabled: true } });
+  const spec = JSON.parse(readFileSync(join(HERE, "fixtures", "flat-vpn", "spec.json"), "utf8"));
+  const r = buildComposition({ spec, words: JSON.parse(readFileSync(join(HERE, "fixtures", "flat-vpn", "words.json"), "utf8")), durationSec: 43, captions: { enabled: true } });
   assert.ok(r.plan.placed.length >= 5);
   for (const sc of r.plan.placed) for (const c of sc.cast) for (const p of sc.props) {
     assert.ok(!rectsOverlap(c.box, p.box, 16), `scene ${sc.index}: ${c.who} over ${p.id}`);

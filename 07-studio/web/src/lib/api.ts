@@ -7,6 +7,8 @@ import type {
   JobPatch,
   JobDetail,
   JobSummary,
+  KitInfo,
+  KitStyle,
   MusicLibrary,
   PalettePreset,
   ProviderInfo,
@@ -38,6 +40,9 @@ export const api = {
   templates: () => call<{ templates: TemplateInfo[] }>("/api/templates").then((r) => r.templates),
   palettes: () => call<{ palettes: PalettePreset[] }>("/api/palettes").then((r) => r.palettes),
   themes: () => call<{ themes: ThemePreset[] }>("/api/themes").then((r) => r.themes),
+  kits: () => call<{ kits: KitInfo[] }>("/api/kits").then((r) => r.kits),
+  opuscarStyles: () => call<{ styles: KitStyle[] }>("/api/kits/opuscar/styles").then((r) => r.styles),
+  opuscarStillUrl: (slug: string) => `/api/kits/opuscar/styles/${encodeURIComponent(slug)}/still`,
   thumbUrl: (id: string, kind: "jpg" | "mp4") => `/thumbs/${encodeURIComponent(id)}.${kind}`,
   generate: (body: GenerateRequest) =>
     call<{ jobId: string; spec: VideoSpec; attempts: number }>("/api/spec", { method: "POST", body: JSON.stringify(body) }),

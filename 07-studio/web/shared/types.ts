@@ -389,3 +389,42 @@ export interface JobDetail extends JobSummary {
   progress: number;
   postMarkdown?: string;
 }
+
+// ---------- video kits (the "Motores" view) ----------
+
+/** One way to make a video: the web engine's templates or a kit in 05-tools/ driven by the /video skill. */
+export interface KitInfo {
+  id: string;
+  name: string;
+  /** How it looks and moves, one line. */
+  look: string;
+  bestFor: string;
+  /** Typical length, e.g. "30-50 s". */
+  length: string;
+  /** Machine render time, one line. */
+  renderTime: string;
+  /** Concrete requests to type in Claude Code, e.g. "/video cómo funciona una VPN ...". */
+  examples: string[];
+  /** What a finished run leaves in the project folder. */
+  delivers: string[];
+  /** Builds on a checked fact table (sources.md) before the script. */
+  researched: boolean;
+  /** Its folder exists on disk (the engine is always available). */
+  available: boolean;
+  /** Number of styles, for kits that have a style catalog (opuscar). */
+  styles?: number;
+}
+
+/** One opuscar film style: style.json joined with the Spanish catalog (00-docs/opuscar-styles.md). */
+export interface KitStyle {
+  slug: string;
+  name: string;
+  group: string;
+  does: string;
+  /** B = 2D canvas, fast; M = 2D with textures; A = three.js with post, slow. */
+  effort: string;
+  film: string;
+  line: string;
+  durationSec?: number;
+  still: boolean;
+}
