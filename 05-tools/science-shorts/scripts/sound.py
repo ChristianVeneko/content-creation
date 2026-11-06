@@ -4,13 +4,13 @@
   PY sound.py build/sound.json build/audio.wav
   PY sound.py --demo                                 every sound once, one after another -> build/sound_demo.wav
 
-The format's sound, measured on the references: the voice from 0.0 s on top; under it a warm synth bed that stays
-present (only 2-6 dB under the speech in the pauses); a small sound on almost every new thing on screen (a pop for a
+The format's sound, measured on the references: the voice from 0.0 s on top; under it a warm synth bed, 13 dB under
+the voice and 22 dB under it while words are spoken (02-scripts/engine_duck.py, the web engine rule); a small sound on almost every new thing on screen (a pop for a
 label, a whoosh on a transition, a bloop for a drop); no silence anywhere.
 
 sound.json:
 {
- "total": 55.9, "seed": 7, "duck": 0.45,            duck: how far the music dips under the voice (0.45 is about 5 dB)
+ "total": 55.9, "seed": 7, "duck": 0.45,            duck: ignored; the music level and ducking come from 02-scripts/engine_duck.py (web engine rule)
  "music": {"gain": 1.0, "bpm": 84, "root": 146.83, "mood": "wonder" | "tense" | "bright", "end_swell": true},
  "amb": {"wind": [[t, level], ...], "rain": [...], "hum": [...], "bubbles": [...]},
  "events": [["pop", 3.2, 0.3], ["whoosh", 8.42, 0.3, {"dur": 0.5, "f": [400, 2400, 600]}], ...]   [name, time s, gain, options]
@@ -21,6 +21,8 @@ Never put a sound on sample 0 (AAC overshoots it): the first one at 0.04 s or la
 """
 import json, os, sys
 import numpy as np
+sys.path.insert(0, os.path.join(os.environ.get("CC_ROOT") or os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../..")), "02-scripts"))
+from engine_duck import engine_music, describe as duck_describe   # the web engine's music level + ducking, always
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _common import read_wav, write_wav, project
@@ -321,8 +323,10 @@ def main():
                 e_ += (x - e_) * (0.25 if x > e_ else 0.025); envb[i] = e_
             talk = np.interp(np.arange(N) / Bk, np.arange(len(envb)), envb)
         print("voice mixed on top (music ducked under it)")
-    duck = 1 - float(spec.get("duck", 0.45)) * talk
-    y = np.stack([mus * duck, mus * duck]) + fx * (1 - 0.25 * talk) + np.stack([v, v])
+    if np.any(v):
+        mus = engine_music(v, mus, SR)                                       # the web engine's level + ducking, always
+        print(duck_describe())
+    y = np.stack([mus, mus]) + fx * (1 - 0.25 * talk) + np.stack([v, v])
     y = np.tanh(y * 1.1) / 1.1
     y /= max(1.0, np.max(np.abs(y)) / 0.89)
     y *= np.clip(t / 0.03, 0, 1) * np.clip((total - t) / 0.03, 0, 1)
