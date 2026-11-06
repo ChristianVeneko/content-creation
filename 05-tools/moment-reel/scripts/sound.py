@@ -17,6 +17,8 @@ sound.json:
 Sounds: kick thump shutter whoosh squeak tick tape net chime whistle buzzer swish bounce sneaker punch bell flashbulbs riser hit
         shimmer pop tvclick
 "music": {"gain": 0.1, "bpm": 100, "root": 146.83} adds a light synthesized bed (I-V-vi-IV pad, plucked arpeggio, soft kick).
+  With a voice-over the music's level and ducking come from 02-scripts/engine_duck.py (the web engine rule: 13 dB under the
+  voice, 9 dB more while words are spoken) and "gain" is ignored; the crowd bed still ducks by "duck".
 Any sound takes "pan" (-1 left .. 1 right). whoosh: dur, f [start, middle, end Hz]. tape, squeak, buzzer, riser, flashbulbs: dur.
 whistle: dur, n (blasts). bell: n (rings).
 The voice (build/vo.wav, from narrate.py) goes on top: speech at about -16 dBFS RMS, the bed ducked under it while it speaks.
@@ -24,6 +26,8 @@ Never put a hit on sample 0: AAC overshoots it. Start the first one at 0.04 s or
 """
 import json, os, sys
 import numpy as np
+sys.path.insert(0, os.path.join(os.environ.get("CC_ROOT") or os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../..")), "02-scripts"))
+from engine_duck import engine_music, describe as duck_describe   # the web engine's music level + ducking, always
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _common import read_wav, write_wav
@@ -315,7 +319,8 @@ if spec.get("music"):
             j2 = j + int(beat / 2 * SR); m2 = min(N - j2, int(0.05 * SR))
             if m2 > 0:
                 mus[j2:j2 + m2] += band(rng.standard_normal(m2), 7000, 14000) * np.exp(-np.arange(m2) / SR * 80) * 0.12
-    mus = mus / (np.max(np.abs(mus)) + 1e-9) * float(M.get("gain", 0.1)) * np.clip(t / 0.5, 0, 1) * np.clip((TOTAL - t) / 1.0, 0, 1)
+    mus_raw = mus / (np.max(np.abs(mus)) + 1e-9)                                     # raw, for the engine ducking rule
+    mus = mus_raw * float(M.get("gain", 0.1)) * np.clip(t / 0.5, 0, 1) * np.clip((TOTAL - t) / 1.0, 0, 1)
 
 # the voice on top, the bed ducked under it (the music a little less)
 vo_path = os.path.join(os.path.dirname(os.path.abspath(SRC)), "vo.wav")
@@ -334,7 +339,10 @@ if os.path.exists(vo_path):
             e_ += (x - e_) * (0.33 if x > e_ else 0.028); envb[k] = e_
         talk = np.interp(np.arange(N) / Bk, np.arange(len(envb)), envb)
         duck = 1 - float(spec.get("duck", 0.65)) * talk
-        y = np.tanh((y * duck + mus * (1 - 0.35 * talk) + v) * 1.05)
+        if np.any(mus):
+            mus = engine_music(v, mus_raw, SR)                           # the web engine's level + ducking, always
+            print(duck_describe())
+        y = np.tanh((y * duck + mus + v) * 1.05)
         y /= np.max(np.abs(y)) / 0.89
         mus = None
     print("voice mixed on top (bed ducked under it)")
