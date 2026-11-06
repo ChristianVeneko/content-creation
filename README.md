@@ -96,6 +96,70 @@ claude
 
 Y dile **"hazme un video"** (o `/video`). Te hace pocas preguntas (tema, canal, cómo quieres que se vea y se mueva (formato), colores, voz y duración, de 15 s hasta 3 min), te muestra el guion y el storyboard, renderiza y te entrega el video, la portada y el texto para cada plataforma. Otros comandos: `/canal` para crear tu canal y planear la semana, `/hooks` para mejorar ganchos y títulos, `/lote` para dejar varios videos haciéndose de noche.
 
+#### Ejemplos de pedidos
+
+Escribe el tema tal cual, como se lo dirías a una persona. Si nombras el estilo, se salta esa pregunta:
+
+| Escribes | Qué hace |
+|---|---|
+| `/video cómo funciona una VPN en 45 segundos` | Plantilla del motor (2D animado), investiga el tema y te pregunta voz y colores |
+| `/video 5 errores al pedir un préstamo, formato ranking` | Plantilla de ranking con un número por escena |
+| `/video cuánto pesa una nube, como ciencia animada` | Kit `science-shorts`: vector plano con objetos que tienen cara |
+| `/video la mano de Dios de Maradona en caricatura` | Kit `moment-reel`: caricatura 2D del momento, el acto primero y después el contexto |
+| `/video por qué el Titanic no tenía suficientes botes, estilo cine en código: Expediente de semitono` | Kit `opuscar` con uno de sus 66 estilos (ver la galería en la web, pestaña **Motores**) |
+| `/video qué pasa si cavas un pozo en tu patio, patio en corte 3D` | Kit `whatif-3d` en Blender (lento: ~2,5 h para 90 s) |
+| `/video imagina que un agente de IA borra producción un viernes, historia de supervivencia 3D` | Kit `story-video`: thriller en segunda persona con reloj y reglas |
+| `/video` | Sin tema: te pregunta "¿De qué trata el video?" |
+
+Con `tú decide` o `lo que veas` en cualquier pregunta, toma los valores recomendados y sigue.
+
+#### Cómo se ve una sesión
+
+```text
+> /video cuánto pesa una nube, como ciencia animada
+
+  ¿Canal?  › Sin canal (Recomendado)
+  Investigué 7 datos en 4 sitios (NOAA, USGS, ...); dejé fuera 1 que no pude confirmar.
+  Gancho elegido (8.6/10): "Esa nube pesa lo mismo que 100 elefantes."
+
+  # | frase                                     | en pantalla
+  1 | Esa nube pesa lo mismo que 100 elefantes. | nube con cara, 100 elefantes caen debajo
+  2 | Y aun así flota sobre tu cabeza.          | la nube sonríe, flecha "500 toneladas"
+  ...
+  ¿Storyboard? › Renderizar (Recomendado)
+
+  Listo: 04-projects/2026-11-06-cuanto-pesa-una-nube/video.mp4 (52 s)
+```
+
+#### Qué te entrega
+
+Cada video queda en su carpeta de `04-projects/` (local, no se sube a git):
+
+```text
+04-projects/2026-11-06-cuanto-pesa-una-nube/
+├── video.mp4        el video final, 1080x1920, 30 fps, audio a -14 LUFS
+├── cover.jpg        la portada
+├── post.md          título, descripción, hashtags y créditos para cada plataforma
+├── sources.md       cada dato con su enlace y la fecha en que se leyó
+├── hooks.txt        los 5 ganchos que se probaron, con su puntaje
+├── brief.md         fuentes y licencias de los recursos usados
+└── job.json         canal y etapa (idea, draft, ready, published)
+
+06-exports/reels/2026-11-06-cuanto-pesa-una-nube.mp4    copias listas para cada plataforma
+06-exports/tiktok/...
+06-exports/shorts/...
+```
+
+Revisa los datos antes de publicar: `node 02-scripts/sources-check.mjs 04-projects/<id>/sources.md`
+
+```text
+PASS  facts       7 verified facts
+PASS  urls        every fact has a URL
+PASS  read dates  every source read in the last week
+PASS  sites       4 different sites (2 or more: confirm key facts twice)
+PASS  left out    section present
+```
+
 ### 2. Estudio web
 
 ```bash
