@@ -11,6 +11,8 @@ types made in code (tiny UI sounds, and the offline fallback for every type): ti
 needs: pip install numpy imageio-ffmpeg"""
 import json, os, re, shutil, subprocess, sys, wave
 import numpy as np
+sys.path.insert(0, os.path.join(os.environ.get("CC_ROOT") or os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../..")), "02-scripts"))
+from engine_duck import engine_music, describe as duck_describe   # the web engine's music level + ducking, always
 def ffmpeg():
     if os.environ.get("FFMPEG"): return os.environ["FFMPEG"]
     if shutil.which("ffmpeg"): return shutil.which("ffmpeg")
@@ -164,14 +166,10 @@ if mcfg not in ("off", False, None, 0):
     for c in spec.get("sfx", []):                               # low booms on the big beats
         if c.get("type") == "hit":
             i = int(when(c["at"]) * SR); e = min(N, i + len(boom)); music[i:e] += 0.8 * boom[:e - i]
-    vslow = np.convolve(np.abs(voice), np.ones(SR // 4) / (SR // 4), mode="same")
-    talking = vslow > 0.01
-    mduck = 1 - 0.37 * np.clip(vslow / 0.03, 0, 1)               # about 4 dB down while a line plays
-    music *= mduck * (0.75 + 0.3 * np.clip(level, 0, 1.2))       # swells with the bed cues and fades with it
-    vr = np.sqrt(np.mean(voice[talking] ** 2)) if talking.any() else 0.1
-    mr = np.sqrt(np.mean(music[talking] ** 2)) + 1e-9
-    music *= vr * 10 ** (mdb / 20) / mr                          # mdb below the voice while it speaks
-    print(f"music: {mdb:.0f} dB under the voice while it speaks")
+    music *= 0.75 + 0.3 * np.clip(level, 0, 1.2)                # swells with the bed cues and fades with it
+    vol = 0.12 * 10 ** ((mdb + 13) / 20)                        # "level" keeps working as dB under the voice (-13 = engine default)
+    music = engine_music(voice, music, SR, volume=vol)          # the web engine's level + ducking (9 dB while a line plays)
+    print("music: " + duck_describe(vol))
 mix = voice + 0.22 * bed * level * duck + 0.45 * fx + music
 mix /= max(1.0, np.abs(mix).max() / 0.98)
 raw = os.path.join(part, "mix_raw.wav")
