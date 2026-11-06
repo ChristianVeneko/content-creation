@@ -1,9 +1,11 @@
 """sound.py STORY_DIR : narration.wav + sfx.json (+ timing.json) -> mix.wav at -14 LUFS.
 The music bed and every sound effect are synthesized here (no downloads, no licences): a soft plucked
-arpeggio over warm chords, about 12 dB under the voice and ducked while he speaks.
+arpeggio over warm chords, 13 dB under the voice and ducked 9 dB more while he speaks (02-scripts/engine_duck.py, same as the web engine).
 needs: pip install numpy imageio-ffmpeg"""
 import json, os, shutil, subprocess, sys, wave
 import numpy as np
+sys.path.insert(0, os.path.join(os.environ.get("CC_ROOT") or os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../..")), "02-scripts"))
+from engine_duck import engine_music, describe as duck_describe   # the web engine's music level + ducking, always
 
 
 def ffmpeg():
@@ -116,8 +118,6 @@ with wave.open(os.path.join(story, "narration.wav")) as w:
 voice = np.zeros(N); voice[:min(N, len(v))] = v[:N]
 bed = music(N)
 t = np.arange(N) / SR
-venv = np.convolve(np.abs(voice), np.ones(SR // 10) / (SR // 10), mode="same")
-duck = 1 - 0.45 * np.clip(venv / 0.03, 0, 1)
 fade = np.clip(t / 0.25, 0, 1) * np.clip((TOTAL - t) / 1.2, 0, 1)
 fx = np.zeros(N)
 for c in cues:
@@ -126,9 +126,9 @@ for c in cues:
     x = make(c["type"], c.get("dur")); x = x / (np.abs(x).max() + 1e-9)
     e = min(N, s + len(x)); fx[s:e] += float(c.get("vol", 0.7)) * x[:e - s]
 vr = np.sqrt(np.mean(voice[voice != 0] ** 2)) if np.any(voice) else 0.1
-BED_DB = float(os.environ.get("BED_DB", "-13"))          # music level relative to the voice
-br = np.sqrt(np.mean(bed ** 2)) + 1e-9
-mix = voice + bed * (vr * 10 ** (BED_DB / 20) / br) * duck * fade + fx * vr * 1.6
+bed = engine_music(voice, bed * fade, SR)                 # 13 dB under the voice, 9 dB more while he speaks
+print(duck_describe())
+mix = voice + bed + fx * vr * 1.6
 mix /= max(1.0, np.abs(mix).max() / 0.98)
 raw = os.path.join(story, "mix_raw.wav")
 with wave.open(raw, "wb") as w:
