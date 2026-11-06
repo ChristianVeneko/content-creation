@@ -98,6 +98,7 @@ export function listKits(root: string): KitInfo[] {
 }
 
 interface CatalogRow {
+  order: number;
   name: string;
   group: string;
   does: string;
@@ -117,14 +118,17 @@ function readCatalog(root: string): Map<string, CatalogRow> {
       continue;
     }
     const c = line.match(/^\|\s*([^|]+?)\s*\|\s*`([a-z0-9-]+)`\s*\|\s*([^|]*?)\s*\|\s*([^|]*?)\s*\|/);
-    if (c && !rows.has(c[2])) rows.set(c[2], { name: c[1], group, does: c[3], effort: c[4] });
+    if (c && !rows.has(c[2])) rows.set(c[2], { order: rows.size, name: c[1], group, does: c[3], effort: c[4] });
   }
   return rows;
 }
 
+/** Styles in catalog order (the Spanish doc's groups first to last); styles missing from it go last. */
 export function opuscarStyles(root: string): KitStyle[] {
   const catalog = readCatalog(root);
-  return styleSlugs(root).map((slug) => {
+  const at = (slug: string) => catalog.get(slug)?.order ?? Number.MAX_SAFE_INTEGER;
+  const slugs = styleSlugs(root).sort((a, b) => at(a) - at(b) || a.localeCompare(b));
+  return slugs.map((slug) => {
     let meta: Record<string, unknown> = {};
     try {
       meta = JSON.parse(readFileSync(path.join(stylesDir(root), slug, "style.json"), "utf8"));

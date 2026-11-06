@@ -56,6 +56,24 @@ test("kits report which folders exist, with the engine always available", () => 
   assert.equal(by.get("moment-reel")!.researched, true);
 });
 
+test("styles follow the catalog order, unlisted ones last", () => {
+  style("zz-unlisted", false);
+  try {
+    assert.deepEqual(opuscarStyles(root).map((s) => s.slug), ["chalkboard", "woodcut", "zz-unlisted"]);
+    const swapped = path.join(root, "swapped");
+    mkdirSync(path.join(swapped, "00-docs"), { recursive: true });
+    writeFileSync(path.join(swapped, "00-docs/opuscar-styles.md"), "## B\n| W | `woodcut` | x | M |\n## A\n| C | `chalkboard` | y | B |\n");
+    mkdirSync(path.join(swapped, "05-tools/opuscar"), { recursive: true });
+    for (const slug of ["chalkboard", "woodcut"]) {
+      mkdirSync(path.join(swapped, "05-tools/opuscar/styles", slug), { recursive: true });
+      writeFileSync(path.join(swapped, "05-tools/opuscar/styles", slug, "style.json"), "{}");
+    }
+    assert.deepEqual(opuscarStyles(swapped).map((s) => s.slug), ["woodcut", "chalkboard"]);
+  } finally {
+    rmSync(path.join(root, "05-tools/opuscar/styles/zz-unlisted"), { recursive: true, force: true });
+  }
+});
+
 test("opuscar styles join style.json with the Spanish catalog groups", () => {
   const styles = opuscarStyles(root);
   assert.deepEqual(styles.map((s) => s.slug), ["chalkboard", "woodcut"]);
