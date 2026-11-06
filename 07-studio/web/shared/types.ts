@@ -2,7 +2,10 @@
 // The VideoSpec mirrors the engine contract in 07-studio/engine/spec.schema.json.
 
 import type { CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
+import type { DurationSec } from "./durations.ts";
+import type { HfOptions, HfQuality } from "./hf.ts";
 
+export type { HfOptions, HfQuality } from "./hf.ts";
 export type { CaptionColors, CaptionSettings, CaptionStyle, ReelsSubtitleMode } from "./captions.ts";
 export type VoiceProvider = "elevenlabs" | "kokoro" | "none";
 export type VisualType = "gradient" | "image" | "video" | "emoji" | "icon" | "illustration" | "scene3d";
@@ -45,6 +48,8 @@ export interface VideoSpec {
     palette: Palette;
     font: string;
     captionStyle: CaptionStyle;
+    /** Render engine (3D formats can choose "blender"); omitted = Remotion. A user setting, never the model's. */
+    renderer?: Renderer;
   };
   voice: { provider: VoiceProvider; voiceId?: string; speed?: number };
   music?: MusicSpec;
@@ -53,6 +58,16 @@ export interface VideoSpec {
   captions?: CaptionSettings;
   /** Options of the reels-* templates (`subtitles`: "linea", "bloque" or "no"); other keys are kept as-is. */
   reels?: { subtitles?: string; [key: string]: unknown };
+  /** HyperFrames formats only: "single" (one continuous world) or "multi" (a sequence of worlds). */
+  mode?: "single" | "multi";
+  /** HyperFrames formats only: the format-specific payload (validated by the engine's format module). */
+  hf?: Record<string, unknown>;
+  /** HyperFrames formats only, optional (SDD 7.7): beat spacing, camera, brand pill, call to action, variants. */
+  pace?: "calm" | "normal" | "fast";
+  camera?: { intensity?: "none" | "subtle" | "dynamic"; [key: string]: unknown };
+  brand?: { handle?: string; avatar?: string; pill?: boolean; followClick?: boolean; [key: string]: unknown };
+  cta?: { type: "follow" | "comment" | "send" | "custom"; [key: string]: unknown };
+  variants?: { count: number };
   scenes: Scene[];
   post: {
     tiktok: string;
@@ -94,7 +109,7 @@ export interface ThemePreset {
   tone: string;
 }
 
-export type TemplateCategory = "illustrated-2d" | "3d" | "kinetic" | "reels-2d";
+export type TemplateCategory = "illustrated-2d" | "3d" | "kinetic" | "reels-2d" | "hyperframes";
 
 export type ProviderId = "anthropic" | "openai" | "gemini" | "claudeCode";
 
@@ -123,13 +138,34 @@ export interface TemplateInfo {
   style?: string;
   /** Gallery family (engine `category`). */
   category?: TemplateCategory | string;
+  /** Kebab slug naming the video format (engine `format`; defaults to the template id). */
+  format?: string;
   bestFor?: string[];
   /** The template's own palette (defaults.theme.palette), shown as "Original". */
   palette?: Palette;
   font?: string;
+  /** HyperFrames formats: "hyperframes" and `ownsCaptions` (the composition draws its own subtitles). */
+  engine?: string;
+  ownsCaptions?: boolean;
+  /** HyperFrames formats: scene modes, visual styles (optional swatch colors) and settings/scenarios the format offers. */
+  modes?: ("single" | "multi")[];
+  styles?: HfEntry[];
+  settings?: HfEntry[];
+  /** pixel-world: the narrating mascots (built-in heroes and saved mascots) and the default one. */
+  mascots?: HfEntry[];
+  defaultMascot?: string;
 }
 
-export type MusicProvider = "library" | "elevenlabs" | "none";
+/** A style or setting of a HyperFrames format (engine `meta.styles` / `meta.settings`). */
+export interface HfEntry {
+  id: string;
+  name: string;
+  about: string;
+  /** Hex colors for a small preview swatch, when the format provides them. */
+  palette?: string[];
+}
+
+export type MusicProvider = "library" | "elevenlabs" | "format" | "none";
 
 /** `spec.music` (engine contract, see engine/spec.schema.json). */
 export interface MusicSpec {
@@ -150,8 +186,9 @@ export interface MusicSpec {
 /** Music + SFX choices made in the UI (Create options or the storyboard). */
 export interface MusicOptions {
   enabled: boolean;
-  provider: "library" | "elevenlabs";
-  /** Mood id or "auto". */
+  /** "format": the HyperFrames format synthesizes its own chiptune (pixel-world only). */
+  provider: "library" | "elevenlabs" | "format";
+  /** Mood id or "auto" (with provider "format": a format mood id or "auto"). */
   mood: string;
   /** Specific track id, or "" for automatic. */
   track: string;
@@ -205,9 +242,12 @@ export interface VoiceLibrary {
   voices: VoiceOption[];
 }
 
+/** Render engine of a video (spec.theme.renderer): "remotion" (default) or "blender" (3D formats only). */
+export type Renderer = "remotion" | "blender";
+
 export interface GenerateOptions {
   language: string;
-  durationSec: 15 | 30 | 45 | 60;
+  durationSec: DurationSec;
   tone: string;
   voiceProvider: VoiceProvider;
   voiceId?: string;
@@ -220,6 +260,10 @@ export interface GenerateOptions {
   captions?: CaptionSettings;
   /** Subtitle mode of the reels-* templates (spec.reels.subtitles). */
   reelsSubtitles?: ReelsSubtitleMode;
+  /** Render engine (3D formats only; written to spec.theme.renderer, never chosen by the model). */
+  renderer?: Renderer;
+  /** HyperFrames formats only: mode, style, setting, subtitles, quality and advanced choices. Ignored for other formats. */
+  hf?: HfOptions;
 }
 
 export interface GenerateRequest {
@@ -272,8 +316,10 @@ export interface Channel {
   pillars: string[];
   createdAt: string;
   defaults: ChannelDefaults;
-  /** `avatar` is a path relative to the content-creation root. */
-  brand?: { avatar?: string; colors?: string[] };
+  /** Public channel description (YouTube "About"), free text with line breaks. */
+  description?: string;
+  /** `avatar` and `banner` are paths relative to the content-creation root. */
+  brand?: { avatar?: string; banner?: string; colors?: string[] };
 }
 
 /** A channel with its free-text voice guide (`voice.md`). */
@@ -322,6 +368,10 @@ export interface JobSummary {
   dir: string;
   hasVideo: boolean;
   hasCover: boolean;
+  /** HyperFrames formats: `video-sin-subtitulos.mp4` exists next to `video.mp4`. */
+  hasVideoNoSubs: boolean;
+  /** Render quality of the last (or next) HyperFrames render. */
+  quality?: HfQuality;
   /** False for an idea that has no script yet. */
   hasSpec: boolean;
   error?: string;

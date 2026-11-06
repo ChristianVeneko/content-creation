@@ -24,7 +24,9 @@
             "label": "Jugador",
             "highlight": true
           }
-        ]
+        ],
+        "stock": true,
+        "set": "voxel"
       }
     },
     {
@@ -47,7 +49,9 @@
             "value": 4,
             "label": "Monedas"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "voxel"
       }
     },
     {
@@ -71,7 +75,9 @@
             "value": 2,
             "label": "Gasto"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "voxel"
       }
     },
     {
@@ -101,7 +107,9 @@
             ],
             "label": "Precios"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "voxel"
       }
     },
     {
@@ -142,7 +150,9 @@
             "from": "m",
             "to": "t"
           }
-        ]
+        ],
+        "stock": true,
+        "set": "voxel"
       }
     },
     {
@@ -167,7 +177,9 @@
             "kind": "tree",
             "size": 0.8
           }
-        ]
+        ],
+        "stock": true,
+        "set": "voxel"
       }
     }
   ]

@@ -16,7 +16,7 @@ const example = (id) => JSON.parse(readFileSync(fileURLToPath(new URL(`../exampl
 const schemaJson = () => readFileSync(fileURLToPath(new URL("../spec.schema.json", import.meta.url)), "utf8");
 
 test("the new 2D formats are registered as illustrated-kit looks and template ids, after the art looks", () => {
-  assert.deepEqual(FORMAT_2D_LOOKS, NEW);
+  assert.deepEqual(FORMAT_2D_LOOKS.slice(0, NEW.length), NEW, "later formats are appended after these three");
   for (const id of NEW) {
     assert.ok(LOOKS.includes(id), `look ${id}`);
     assert.ok(ILLUSTRATED_TEMPLATE_IDS.includes(id), `illustrated ${id}`);

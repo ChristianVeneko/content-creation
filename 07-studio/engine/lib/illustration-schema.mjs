@@ -2,7 +2,8 @@
 // Every element is drawn in code (SVG/HTML); the LLM picks elements and fills their text.
 import { z } from "zod";
 import { LOOKS } from "./illustrated-looks.mjs";
-import { COLOR_TOKENS, drawingFields } from "./drawing-schema.mjs";
+import { COLOR_TOKENS, MAX_BACKDROP_PARTS, MAX_BACKDROP_PATH_CHARS, MAX_DRAW_PARTS, drawPartSchema, drawingFields } from "./drawing-schema.mjs";
+import { GENERATORS, GEN_KINDS, expandLayer, genSchema } from "./drawing-gen.mjs";
 import { drawingIssues } from "./drawing.mjs";
 
 const hex = z
@@ -221,7 +222,176 @@ const character = z.object({
   hair: color.optional(),
 });
 
-const LEAF = [card, flow, compare, checklist, bars, counter, code, terminal, chat, doc, timeline, icon, badge, stamp, callout, svg, drawing, post, chart, meter, hourglass, tags, stat, timer, panels, object, character];
+// ---------------- host-tutorial, checklist-glass and spotlight-narrative elements ----------------
+
+export const HOST_POSES = ["point", "wave", "think", "shrug", "cheer", "present"];
+export const HOST_EXPRESSIONS = ["smile", "wow", "wink", "calm", "think"];
+/** The persistent cutout host at the bottom of a host-tutorial scene: a flat vector bust built from shapes. A slot, not a column element. */
+const host = z.object({
+  type: z.literal("host"),
+  ...base,
+  pose: z.enum(HOST_POSES).default("point"),
+  expression: z.enum(HOST_EXPRESSIONS).default("smile"),
+  skin: z.number().int().min(0).max(3).default(0).describe("Skin tone index 0..3"),
+  shirt: color.optional(),
+  hair: color.optional(),
+});
+
+export const MASCOT_MOODS = ["happy", "wow", "think", "proud"];
+export const MASCOT_POSES = ["idle", "wave", "point", "cheer"];
+/** The persistent mascot slot at the bottom right of a checklist-glass scene: a small creature of rounded, shaded shapes. */
+const mascot = z.object({
+  type: z.literal("mascot"),
+  ...base,
+  mood: z.enum(MASCOT_MOODS).default("happy"),
+  pose: z.enum(MASCOT_POSES).default("idle"),
+});
+
+export const WINDOW_KINDS = ["app", "settings", "browser"];
+const windowRow = z.object({
+  label: text(30),
+  value: text(14).optional().describe("Right-aligned value (a setting, a count)"),
+  icon: z.string().optional(),
+  toggle: z.enum(["on", "off", "turn-on", "turn-off"]).optional().describe("A switch; turn-on / turn-off flip while the row is revealed"),
+});
+/** UI-window mockup: chrome with three dots, rows (labels, values, switches), an optional button, a gliding cursor and a highlight sweep. */
+const windowEl = z
+  .object({
+    type: z.literal("window"),
+    ...base,
+    title: text(28),
+    kind: z.enum(WINDOW_KINDS).default("app"),
+    rows: z.array(windowRow).min(1).max(5),
+    button: text(16).optional().describe("Primary button under the rows"),
+    cursor: z.number().int().min(0).max(4).optional().describe("0-based row the cursor glides to and clicks"),
+    highlight: z.number().int().min(0).max(4).optional().describe("0-based row swept with a highlighter"),
+  })
+  .superRefine((w, ctx) => {
+    for (const k of ["cursor", "highlight"]) if (w[k] !== undefined && w[k] >= w.rows.length) ctx.addIssue({ code: "custom", path: [k], message: `${k} must point at one of the ${w.rows.length} rows (0-based)` });
+  });
+
+/** "n STEPS" roadmap card: the big count, the word after it, and the steps; `active` marks the step being taught. */
+const roadmap = z
+  .object({
+    type: z.literal("roadmap"),
+    ...base,
+    title: text(14).default("STEPS").describe("Word after the count (n STEPS)"),
+    items: z.array(text(30)).min(2).max(8),
+    active: z.number().int().min(0).max(7).optional().describe("0-based step highlighted"),
+  })
+  .superRefine((r, ctx) => {
+    if (r.active !== undefined && r.active >= r.items.length) ctx.addIssue({ code: "custom", path: ["active"], message: `active must point at one of the ${r.items.length} steps (0-based)` });
+  });
+
+/** One icon metaphor in glowing concentric rings with a big counting number (spotlight-narrative). */
+const beacon = z.object({
+  type: z.literal("beacon"),
+  ...base,
+  icon: z.string().min(1).describe("Icon name (Lucide / Phosphor) of the metaphor"),
+  value: z.number(),
+  from: z.number().optional(),
+  prefix: z.string().max(3).optional(),
+  suffix: z.string().max(5).optional(),
+  label: text(28),
+  rings: z.number().int().min(2).max(5).default(3),
+});
+
+// ---------------- data-atlas elements ----------------
+
+export const DEPTH_PLANES = ["far", "mid", "subject", "near"];
+export const BACKDROP_MODES = ["2.5d", "flat"];
+const pct = z.number().min(0).max(100);
+const point = z.tuple([pct, pct]);
+
+/** One depth plane of the backdrop: agent-drawn parts on a full-frame canvas (default viewBox 0 0 540 480 = the 1080x960 picture window at half scale). */
+const backdropLayer = z
+  .object({
+    depth: z.enum(DEPTH_PLANES).default("subject").describe("far (sky, map, horizon), mid, subject (the hero of the scene) or near (foreground framing)"),
+    viewBox: drawingFields.viewBox.describe('Layer coordinates; default "0 0 540 480" (the 1080x960 picture window at half scale)'),
+    gen: z.array(genSchema).max(8).optional().describe(`Generators that paint a whole lit layer from a few params, drawn under this layer's parts (\`over: true\` for over): ${GEN_KINDS.map((k) => `${k} (${GENERATORS[k].about})`).join("; ")}`),
+    parts: z.array(drawPartSchema).max(MAX_BACKDROP_PARTS, `at most ${MAX_BACKDROP_PARTS} parts per backdrop layer`).default([]).describe(`Your own parts (up to ${MAX_BACKDROP_PARTS} per layer; the path budget is ${MAX_BACKDROP_PATH_CHARS} characters)`),
+    motion: drawingFields.motion,
+    keys: drawingFields.keys,
+  })
+  .strict()
+  .refine((l) => l.parts.length > 0 || (l.gen?.length ?? 0) > 0, { message: "a backdrop layer needs `parts` or `gen`", path: ["parts"] });
+
+/**
+ * The picture-window illustrated scene of a data-atlas scene: 1-5 agent-drawn depth planes. In the "2.5d" mode (default)
+ * each plane drifts at its own speed with a slow dolly and a soft blur on the far and near planes; "flat" renders the same
+ * planes as one picture with a single push-in. Haze, glow, drifting particles and the vignette are painted over it.
+ */
+const backdrop = z
+  .object({
+    type: z.literal("backdrop"),
+    ...base,
+    layers: z.array(backdropLayer).min(1).max(5),
+    mode: z.enum(BACKDROP_MODES).default("2.5d").describe('"2.5d": parallax layers with a dolly (default); "flat": one picture, one push-in'),
+    glow: color.optional().describe("Atmospheric glow color (default accent2)"),
+    haze: z.number().min(0).max(1).default(0.5).describe("Strength of the horizon haze, 0..1"),
+  })
+  .strict()
+  .superRefine((b, ctx) =>
+    b.layers.forEach((l, i) => {
+      let parts;
+      try {
+        parts = expandLayer(l).parts;
+      } catch {
+        return; // an invalid generator is already reported on the `gen` field itself
+      }
+      if (parts.length > MAX_BACKDROP_PARTS * 2) ctx.addIssue({ code: "custom", path: ["layers", i, "gen"], message: `the layer expands to ${parts.length} parts; the limit is ${MAX_BACKDROP_PARTS * 2}` });
+      drawingIssues({ ...l, parts }, { pathChars: MAX_BACKDROP_PATH_CHARS }).forEach((iss) => ctx.addIssue({ code: "custom", path: ["layers", i, ...iss.path], message: iss.message }));
+    }),
+  );
+
+/** A dark rounded pill with a big number that counts up (lower middle of the frame). */
+const counterPill = z.object({
+  type: z.literal("counter-pill"),
+  ...base,
+  value: z.number(),
+  from: z.number().optional(),
+  prefix: z.string().max(4).optional(),
+  suffix: z.string().max(8).optional(),
+  decimals: z.number().int().min(0).max(2).optional(),
+  label: text(24).optional().describe("Small tag above the pill (a place name, a unit)"),
+});
+
+/** Points of light spread over the frame (a populated map); the visible share grows from `from` to `to` over the scene. */
+const particleField = z.object({
+  type: z.literal("particle-field"),
+  ...base,
+  count: z.number().int().min(40).max(500).default(240),
+  from: z.number().min(0).max(1).default(0.15).describe("Share of the points lit at the start"),
+  to: z.number().min(0).max(1).default(1).describe("Share of the points lit at the end"),
+  cluster: point.optional().describe("[x, y] in percent: the points gather around this spot as the scene plays"),
+  flow: z.boolean().optional().describe("The points stream toward the cluster (or the right edge)"),
+});
+
+/** A glowing line that draws itself across the frame, with a bright head; points are [x, y] in percent of the frame. */
+const route = z.object({
+  type: z.literal("route"),
+  ...base,
+  points: z.array(point).min(2).max(8),
+  dashed: z.boolean().optional(),
+  flow: z.boolean().optional().describe("Sparks keep flowing along the line once it is drawn"),
+  endpoints: z.boolean().default(true).describe("Glowing dots at both ends"),
+  label: text(24).optional().describe("Small tag at the end of the line"),
+});
+
+/** A paper table: parchment ledger or blueprint sheet with a title, column heads, rows, a total and a red underline. */
+const ledger = z.object({
+  type: z.literal("ledger"),
+  ...base,
+  paper: z.enum(["parchment", "blueprint"]).default("parchment"),
+  title: text(28).optional(),
+  columns: z.tuple([text(14), text(14)]).optional().describe("Heads of the label and value columns"),
+  rows: z.array(z.object({ label: text(22), value: text(14) })).min(1).max(8),
+  total: z.object({ label: text(16), value: text(16) }).optional(),
+  underline: z.boolean().optional().describe("A red underline draws itself under the total"),
+  tilt: z.number().min(-6).max(6).optional().describe("Degrees the sheet is turned, like paper left on a desk"),
+});
+
+const LEAF = [card, flow, compare, checklist, bars, counter, code, terminal, chat, doc, timeline, icon, badge, stamp, callout, svg, drawing, post, chart, meter, hourglass, tags, stat, timer, panels, object, character, host, mascot, windowEl, roadmap, beacon, backdrop, counterPill, particleField, route, ledger];
 export const LEAF_TYPES = LEAF.map((s) => s.shape.type.value);
 export const ELEMENT_TYPES = [...LEAF_TYPES, "split"];
 

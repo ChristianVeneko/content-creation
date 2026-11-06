@@ -308,3 +308,41 @@ test("mutating API calls from a foreign origin are rejected; local origins pass"
   const local = await app.request("/api/channels", { method: "POST", body: JSON.stringify({ name: "Local Origin" }), headers: { "Content-Type": "application/json", Origin: "http://127.0.0.1:5173" } });
   assert.equal(local.status, 201);
 });
+
+test("channel banner and description: stored, returned, banner served like the avatar", async () => {
+  mkdirSync(path.join(root, "03-assets", "brand"), { recursive: true });
+  writeFileSync(path.join(root, "03-assets", "brand", "b.png"), "PNG");
+  const created = await send("/api/channels", "POST", {
+    name: "Canal Portada",
+    description: "Historias reales.\n\nSuscríbete.",
+    brand: { avatar: "03-assets/brand/b.png", banner: "03-assets/brand/b.png" },
+  });
+  assert.equal(created.status, 201);
+  const ch = (await created.json()) as Json;
+  assert.equal(ch.description, "Historias reales.\n\nSuscríbete.");
+  assert.equal(ch.brand.banner, "03-assets/brand/b.png");
+  const stored = JSON.parse(readFileSync(path.join(channelsDir, "canal-portada", "channel.json"), "utf8"));
+  assert.equal(stored.description, "Historias reales.\n\nSuscríbete.");
+  assert.equal(stored.brand.banner, "03-assets/brand/b.png");
+  const banner = await app.request("/api/channels/canal-portada/banner");
+  assert.equal(banner.status, 200);
+  assert.equal(banner.headers.get("content-type"), "image/png");
+  await send("/api/channels/canal-portada", "PUT", { brand: { avatar: "03-assets/brand/b.png", banner: "../../etc/passwd.png" } });
+  assert.equal((await app.request("/api/channels/canal-portada/banner")).status, 404);
+  assert.equal((await app.request("/api/channels/canal-portada/avatar")).status, 200);
+  const got = (await (await app.request("/api/channels/canal-portada")).json()) as Json;
+  assert.equal(got.description, "Historias reales.\n\nSuscríbete.");
+});
+
+test("hand-written job.json without dates or logs does not break the job and channel lists", async () => {
+  const dir = path.join(projectsDir, "2026-02-02-a-mano");
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(path.join(dir, "job.json"), JSON.stringify({ id: "2026-02-02-a-mano", title: "A mano", stage: "draft" }));
+  const res = await app.request("/api/jobs");
+  assert.equal(res.status, 200);
+  const job = ((await res.json()) as Json).jobs.find((j: Json) => j.id === "2026-02-02-a-mano");
+  assert.equal(job.title, "A mano");
+  assert.equal(typeof job.createdAt, "string");
+  assert.equal((await app.request("/api/channels")).status, 200);
+  assert.equal((await app.request("/api/jobs/2026-02-02-a-mano")).status, 200);
+});

@@ -97,3 +97,13 @@ test("legacy topic-named template ids still validate and map to the format-named
   assert.equal(r.spec.theme.look, "broadcast");
   assert.equal(validateSpec({ template: "no-such-template" }).ok, false);
 });
+
+test("previous behavior kept: resolveSpec of a classic template adds no hf or mode, and an optional mode passes through unchecked", async () => {
+  const { resolveSpec, validateSpec } = await import("../lib/spec.mjs");
+  const v = validateSpec({ version: 1, title: "T", template: "countdown", scenes: [{ id: "a", narration: "x", visual: { type: "gradient" } }] });
+  assert.equal(v.ok, true);
+  const r = resolveSpec(v.spec, getTemplate("countdown"));
+  assert.equal("hf" in r, false);
+  assert.equal("mode" in r, false);
+  assert.equal(validateSpec({ version: 1, title: "T", template: "countdown", mode: "single", scenes: [{ id: "a", narration: "x", visual: { type: "gradient" } }] }).ok, true);
+});

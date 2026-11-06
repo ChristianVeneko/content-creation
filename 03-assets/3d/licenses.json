@@ -255,5 +255,71 @@
       "author": "Poly Haven",
       "credit": "Poly Haven (CC0)"
     }
-  ]
+  ],
+  "hfModels": [
+    {
+      "id": "robot-expressive",
+      "file": "hf-models/robot-expressive.glb",
+      "title": "Robot Expressive (skinned, 14 clips)",
+      "source": "https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf/RobotExpressive",
+      "license": "CC0-1.0",
+      "author": "Tomas Laulhe (Quaternius); morph targets and conversion by Don McCurdy",
+      "credit": "Tomas Laulhe (Quaternius), CC0 1.0 (three.js examples README)"
+    },
+    {
+      "id": "television-01",
+      "file": "hf-models/television-01.glb",
+      "title": "Television 01",
+      "source": "https://polyhaven.com/a/Television_01",
+      "license": "CC0-1.0",
+      "author": "Gabriel Radic",
+      "credit": "Gabriel Radic via Poly Haven (CC0)"
+    },
+    {
+      "id": "classic-laptop",
+      "file": "hf-models/classic-laptop.glb",
+      "title": "Classic Laptop",
+      "source": "https://polyhaven.com/a/classic_laptop",
+      "license": "CC0-1.0",
+      "author": "Arrangemonk",
+      "credit": "Arrangemonk via Poly Haven (CC0)"
+    },
+    {
+      "id": "ceiling-fan",
+      "file": "hf-models/ceiling-fan.glb",
+      "title": "Ceiling Fan",
+      "source": "https://polyhaven.com/a/ceiling_fan",
+      "license": "CC0-1.0",
+      "author": "Ulan Cabanilla",
+      "credit": "Ulan Cabanilla via Poly Haven (CC0)"
+    },
+    {
+      "id": "brass-pot-01",
+      "file": "hf-models/brass-pot-01.glb",
+      "title": "Brass Pot 01",
+      "source": "https://polyhaven.com/a/brass_pot_01",
+      "license": "CC0-1.0",
+      "author": "Rico Cilliers",
+      "credit": "Rico Cilliers via Poly Haven (CC0)"
+    },
+    {
+      "id": "barrel-03",
+      "file": "hf-models/barrel-03.glb",
+      "title": "Barrel 03",
+      "source": "https://polyhaven.com/a/barrel_03",
+      "license": "CC0-1.0",
+      "author": "Serhii Khromov",
+      "credit": "Serhii Khromov via Poly Haven (CC0)"
+    },
+    {
+      "id": "shelf-01",
+      "file": "hf-models/shelf-01.glb",
+      "title": "Shelf 01",
+      "source": "https://polyhaven.com/a/Shelf_01",
+      "license": "CC0-1.0",
+      "author": "Gabriel Radic",
+      "credit": "Gabriel Radic via Poly Haven (CC0)"
+    }
+  ],
+  "hfModelsNote": "Models used by the HyperFrames format three-looks (07-studio/engine/hf/three-looks). Kept apart from `models` (which the Remotion 3D templates enumerate in lib/scene3d.mjs). Poly Haven 1k glTF packed to GLB with gltf-transform copy on 2026-11-03; the robot comes from the three.js examples (CC0 1.0). Every entry is CC0, no attribution required."
 }

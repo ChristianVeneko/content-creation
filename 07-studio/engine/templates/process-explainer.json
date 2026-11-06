@@ -1,0 +1,103 @@
+{
+  "id": "process-explainer",
+  "name": "Process Explainer 3D",
+  "category": "3d",
+  "format": "process-explainer",
+  "description": "Master 3D template for any explainer, tutorial, story or comparison: how something works, how it is built, how to do it, what happened, why it happens, A versus B. ONE continuous low-poly world (a persistent `stage`) in soft daylight with a warm key light, built from parametric builders (laptop, router, server-rack, house, castle, ship, planet, cell, factory, bridge, desk, chart-3d, person with costumes and 40 more) that changes over time through word-timed beats while the camera establishes, dives in, follows and pulls out. Diegetic overlay kit (flow, concept, limit, versus), automatic non-overlapping callout labels, and small word-by-word captions (white with a dark outline) near the middle of the frame. Five documented recipes in this one template: build-process, how-it-works, what-happened, cause-effect, compare. Use it instead of engineering-explainer for any stage-based video. No emoji.",
+  "prompt_hint": "5-9 scenes (4-8 s) about ONE topic of any kind: a tutorial, a mechanism, a history, a science idea, a product comparison, a process. Build the world ONCE in a top-level `stage` (concept, world scenery, actors, optionally terrain with strata and liquids) from `{ \"build\": \"<name>\", \"params\": {...}, \"seed\": n }` calls (run `node cli.mjs builders` for the catalog with params): pick builders that fit the subject (tech: laptop, router, data-cable, server-rack, chip; nature: planet, atom, cell, plant, mountain, volcano; history: castle, ship, map-table, cart, tent, person costumes; city: building, bridge, road, factory, crane, wind-turbine; office: desk, chart-3d, coin-stack, safe, calendar). NEVER a new world per scene and never loop presets: every state change is a beat in a scene's `beats` timed to a narration word, and the camera moves with `shots` (wide, zoom-to a focus, dive, low, orbit-like pulls). Pick one recipe: build-process, how-it-works, what-happened, cause-effect or compare (see the 3D section of the spec-writer prompt). Overlays: concept pill, flow, limit, versus. Titles stay short; captions word by word near the middle (small, white with a dark outline). No emoji.",
+  "best_for": [
+    "tutorials and how-to explainers (software, hardware, networks, cooking, DIY)",
+    "how a mechanism or system works (machines, energy, finance, the body)",
+    "stories and history told as a timeline with characters",
+    "science and nature: why something happens",
+    "comparisons: A versus B, before and after"
+  ],
+  "recipes": {
+    "build-process": {
+      "subject": "An assembly or construction process, for example building a wind farm or a wooden cart.",
+      "when": "Something is made step by step: construction, assembly, installation, cooking, a recipe.",
+      "beats": "show the empty site -> prepare the ground (terrain carve or raise) -> bring in the parts (actor pos from above, visible) -> assemble in order (each part appears on a word) -> finish and test (the rotor turns, the load lifts) -> pull out to the result.",
+      "shots": "wide -> zoom-to the site -> zoom-to each step -> pullout.",
+      "builders": "crane, wind-turbine, factory, cart, slab, rebar-grid, house, person (hard-hat), road"
+    },
+    "how-it-works": {
+      "subject": "A technology flow, for example a web request from a browser to a server and back.",
+      "when": "A system moves something through stages: data, power, money, water.",
+      "beats": "show the whole chain -> a signal (data-cable dot or a glowing part) travels stage by stage, one beat per hop -> highlight each stage as it is reached (emissive, scale pop) -> the result appears -> pull out. Pair it with a `flow` overlay whose active chip follows the hops.",
+      "shots": "wide -> zoom-to each stage in order -> wide.",
+      "builders": "laptop, phone, router, data-cable, server-rack, database-cylinder, chip, building, cloud"
+    },
+    "what-happened": {
+      "subject": "A historical event with characters, for example the voyage of a kingdom's first ship.",
+      "when": "An event or story told in 4-7 moments with people and places.",
+      "beats": "the world before -> a council or trigger (characters gesture, a token moves on the map) -> the journey (an actor travels along the stage) -> the turning point -> the outcome (a flag is raised) -> the consequence.",
+      "shots": "wide -> zoom-to the characters -> follow the traveller -> pullout over the result.",
+      "builders": "castle, map-table, ship, cart, tent, flag, person (crown, helmet, pirate), mountain, road"
+    },
+    "cause-effect": {
+      "subject": "A physics or biology idea, for example why a volcano erupts or how a cell makes energy.",
+      "when": "One force or process produces a visible effect: heat, pressure, growth, orbit.",
+      "beats": "the stable state -> the hidden cause appears (a liquid level, a glowing part, a limit overlay) -> the threshold is crossed (the overlay turns red) -> the effect (lift, eruption, growth) -> the fix or the loop closes.",
+      "shots": "wide -> zoom-to the cause -> dive in -> pullout to the effect.",
+      "builders": "volcano, planet, atom, cell, plant, mountain, river, pipe-run, valve, pool"
+    },
+    "compare": {
+      "subject": "A product A versus B, for example two energy systems or two phones.",
+      "when": "Two options on one stage: methods, designs, before and after.",
+      "beats": "place A and B side by side in the same world -> run the same trigger on both (the same beat on each actor) -> show the different outcomes (charge, speed, cost bar) -> versus overlay with the verdict.",
+      "shots": "wide -> zoom-to A -> zoom-to B -> wide with a versus overlay.",
+      "builders": "solar-panel, wind-turbine, battery, phone, laptop, car-lowpoly, desk, chart-3d, coin-stack, safe"
+    }
+  },
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#BFE0FF",
+      "#F4EBD3",
+      "#2F7DE1"
+    ],
+    "accent": "#2F7DE1",
+    "sample_text": "HOW IT WORKS"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#9ED2F5",
+          "#F4EBD3"
+        ],
+        "text": "#14213D",
+        "accent": "#2F7DE1",
+        "accent2": "#E8743B",
+        "accent3": "#2FB98F"
+      },
+      "font": "Poppins",
+      "captionStyle": "hormozi"
+    },
+    "captions": {
+      "enabled": true,
+      "style": "clean",
+      "size": "s",
+      "wordsPerPage": 2,
+      "position": "center",
+      "colors": {
+        "text": "#FFFFFF",
+        "highlight": "#FFE27A",
+        "outline": "#0B1220"
+      }
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.03
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "volume": 0.25
+    }
+  }
+}

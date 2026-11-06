@@ -1,0 +1,892 @@
+{
+  "version": 1,
+  "title": "The kingdom that crossed the sea",
+  "template": "process-explainer",
+  "language": "en",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "a kingdom, a map table, a harbor and a ship that sets out to a new land",
+    "world": {
+      "concept": "green kingdom coast with a castle, a road and a harbor",
+      "ground": {
+        "kind": "plane",
+        "color": "#8CC66B",
+        "size": 50
+      },
+      "backdrop": "#F6D7A8",
+      "parts": [
+        {
+          "build": "road",
+          "id": "road",
+          "pos": [
+            0,
+            0,
+            5.6
+          ],
+          "params": {
+            "length": 14,
+            "width": 1.3,
+            "sidewalk": false,
+            "lamps": 0,
+            "crosswalk": false,
+            "asphalt": "#B79B6E"
+          },
+          "seed": 2
+        },
+        {
+          "build": "grass-tufts",
+          "id": "grass",
+          "params": {
+            "count": 100,
+            "blades": 3,
+            "area": [
+              -6.48,
+              -6,
+              2.16,
+              4
+            ],
+            "avoid": [
+              [
+                -4.68,
+                -6,
+                -2.16,
+                -2
+              ],
+              [
+                -3.31,
+                0.4,
+                -0.29,
+                4
+              ]
+            ]
+          },
+          "seed": 7
+        },
+        {
+          "build": "tree",
+          "id": "trees",
+          "params": {
+            "kind": "pine",
+            "height": 3,
+            "density": 1
+          },
+          "seed": 4,
+          "scatter": {
+            "count": 5,
+            "area": [
+              -6.48,
+              -8,
+              1.44,
+              -5.2
+            ],
+            "seed": 2
+          }
+        },
+        {
+          "id": "sea",
+          "shape": "box",
+          "size": [
+            7.2,
+            0.2,
+            9.4
+          ],
+          "pos": [
+            6.0,
+            0.1,
+            -1.2
+          ],
+          "color": "#3FA7D6",
+          "radius": 0.05
+        },
+        {
+          "id": "sea-foam",
+          "shape": "box",
+          "size": [
+            7.4,
+            0.04,
+            9.6
+          ],
+          "pos": [
+            6.0,
+            0.2,
+            -1.2
+          ],
+          "color": "#9ADBF2"
+        },
+        {
+          "build": "flowers",
+          "id": "flowers",
+          "params": {
+            "count": 14,
+            "area": [
+              -6.48,
+              -5,
+              1.44,
+              3
+            ],
+            "avoid": [
+              [
+                -4.68,
+                -6,
+                -2.16,
+                -2
+              ],
+              [
+                -3.31,
+                0.4,
+                -0.29,
+                4
+              ]
+            ],
+            "colors": [
+              "#FFD23F",
+              "#FFFFFF"
+            ]
+          },
+          "seed": 4
+        }
+      ]
+    },
+    "actors": [
+      {
+        "build": "castle",
+        "id": "castle",
+        "label": "Castle",
+        "pos": [
+          -3.312,
+          0,
+          -3.2
+        ],
+        "size": 0.85,
+        "params": {
+          "width": 4.4,
+          "depth": 3.2,
+          "flag": "#B8453A"
+        },
+        "seed": 1
+      },
+      {
+        "build": "flag",
+        "id": "banner",
+        "pos": [
+          -0.792,
+          0,
+          -2.4
+        ],
+        "params": {
+          "height": 2.2,
+          "colors": [
+            "#B8453A",
+            "#F4EFE4",
+            "#B8453A"
+          ]
+        },
+        "seed": 1
+      },
+      {
+        "build": "tent",
+        "id": "camp",
+        "pos": [
+          -0.648,
+          0,
+          -4.4
+        ],
+        "params": {
+          "size": 1.1
+        },
+        "seed": 1
+      },
+      {
+        "build": "map-table",
+        "id": "table",
+        "pos": [
+          -1.872,
+          0,
+          1.6
+        ],
+        "size": 0.9,
+        "params": {
+          "width": 3.0,
+          "tokens": 3
+        },
+        "seed": 1
+      },
+      {
+        "build": "person",
+        "id": "king",
+        "pos": [
+          -2.592,
+          0,
+          3.0
+        ],
+        "params": {
+          "hat": "crown",
+          "outfit": "robe",
+          "shirt": "#8B5CF6",
+          "tool": "none"
+        },
+        "seed": 2
+      },
+      {
+        "build": "person",
+        "id": "knight",
+        "pos": [
+          -1.152,
+          0,
+          3.0
+        ],
+        "params": {
+          "hat": "helmet",
+          "outfit": "armor",
+          "tool": "none",
+          "hatColor": "#B8453A"
+        },
+        "seed": 3
+      },
+      {
+        "build": "person",
+        "id": "captain",
+        "pos": [
+          -1.872,
+          0,
+          0.0
+        ],
+        "params": {
+          "hat": "pirate",
+          "outfit": "coat",
+          "tool": "clipboard"
+        },
+        "seed": 4
+      },
+      {
+        "build": "cart",
+        "id": "cart",
+        "pos": [
+          -3.744,
+          0,
+          5.6
+        ],
+        "size": 0.7,
+        "rot": [
+          0,
+          90,
+          0
+        ],
+        "params": {
+          "cargo": "barrels"
+        },
+        "seed": 1
+      },
+      {
+        "build": "ship",
+        "id": "ship",
+        "label": "Ship",
+        "pos": [
+          4.608,
+          0.35,
+          0.6
+        ],
+        "size": 0.85,
+        "params": {
+          "masts": 2,
+          "length": 3.6
+        },
+        "seed": 2
+      },
+      {
+        "build": "flag",
+        "id": "landflag",
+        "pos": [
+          8.928,
+          0,
+          -4.0
+        ],
+        "params": {
+          "height": 1.6,
+          "colors": [
+            "#3B82F6",
+            "#F4EFE4"
+          ]
+        },
+        "seed": 3
+      },
+      {
+        "build": "mountain",
+        "id": "land",
+        "pos": [
+          9.504,
+          0,
+          -5.2
+        ],
+        "params": {
+          "height": 2.4,
+          "peaks": 3
+        },
+        "seed": 2
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-a",
+        "pos": [
+          1.44,
+          5.5,
+          -6
+        ],
+        "params": {
+          "size": 2.4
+        },
+        "seed": 1
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-b",
+        "pos": [
+          6.48,
+          5.8,
+          -6
+        ],
+        "params": {
+          "size": 2.0
+        },
+        "seed": 4
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "dawn",
+      "narration": "At dawn the castle wakes, its banner rising over a kingdom that has never seen the sea.",
+      "title": {
+        "kicker": "Chapter 1",
+        "main": "The kingdom wakes"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "shift": [
+              0,
+              1.2,
+              0
+            ],
+            "frame": "wide"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "castle",
+            "at": 2,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "ship",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "landflag",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "banner/cloth",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                -1.6,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "banner/cloth",
+            "dur": 3,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "cloud-a",
+            "dur": 8,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -2.88,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "council",
+      "narration": "In the war room the king, a knight and a pirate captain bend over a map and argue about a route.",
+      "title": {
+        "kicker": "Chapter 2",
+        "main": "The council"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "table",
+            "at": 0,
+            "frame": "close"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "captain",
+            "at": 3.2,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.5,
+            "target": "king/arm-r",
+            "dur": 0.6,
+            "to": {
+              "rot": [
+                -80,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "knight/arm-l",
+            "dur": 0.6,
+            "to": {
+              "rot": [
+                -60,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.4,
+            "target": "king/arm-r",
+            "dur": 0.6,
+            "to": {
+              "rot": [
+                -20,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 3.2,
+            "target": "captain/arm-r",
+            "dur": 0.6,
+            "to": {
+              "rot": [
+                -90,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.0,
+            "target": "table/token-0",
+            "dur": 1.8,
+            "to": {
+              "pos": [
+                0.864,
+                0,
+                -0.3
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "The big decision",
+            "at": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "cart",
+      "narration": "They decide to go: a cart of supplies rolls down the royal road toward the harbor.",
+      "title": {
+        "kicker": "Chapter 3",
+        "main": "Supplies roll out"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "frame": "wide",
+            "shift": [
+              0,
+              1.2,
+              0
+            ]
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "cart",
+            "at": 1.2,
+            "frame": "close"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "cart",
+            "at": 2.8,
+            "frame": "close"
+          },
+          {
+            "shot": "low",
+            "focus": "cart",
+            "at": 4.4,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.3,
+            "target": "cart",
+            "dur": 2.0,
+            "ease": "in",
+            "to": {
+              "pos": [
+                2.2,
+                0,
+                -0.5
+              ]
+            }
+          },
+          {
+            "at": 2.3,
+            "target": "cart",
+            "dur": 2.0,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                4.6,
+                0,
+                -0.9
+              ]
+            }
+          },
+          {
+            "at": 4.3,
+            "target": "cart",
+            "dur": 2.0,
+            "ease": "out",
+            "to": {
+              "pos": [
+                6.84,
+                0,
+                -0.4
+              ]
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "cart/wheel-0",
+            "dur": 6,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                0,
+                -720
+              ]
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "cart/wheel-1",
+            "dur": 6,
+            "ease": "linear",
+            "to": {
+              "rot": [
+                0,
+                0,
+                -720
+              ]
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "ship",
+            "dur": 0,
+            "set": {
+              "visible": true,
+              "pos": [
+                0,
+                -1.5,
+                0
+              ]
+            }
+          },
+          {
+            "at": 4.0,
+            "target": "ship",
+            "dur": 2.0,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0.0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "harbor",
+      "narration": "At the harbor the ship is loaded and the sails open, ready to catch the first wind.",
+      "title": {
+        "kicker": "Chapter 4",
+        "main": "The ship is ready"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "ship",
+            "at": 0,
+            "frame": "close"
+          },
+          {
+            "shot": "low",
+            "focus": "ship",
+            "at": 3.4,
+            "frame": "close"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "ship/sail-0",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0,
+            "target": "ship/sail-1",
+            "dur": 0,
+            "set": {
+              "scale": [
+                1,
+                0.05,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "ship/sail-0",
+            "dur": 1.8,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "ship/sail-1",
+            "dur": 1.8,
+            "ease": "out",
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sail",
+      "narration": "The captain gives the order and the ship leaves the coast, small against the open water.",
+      "title": {
+        "kicker": "Chapter 5",
+        "main": "Setting sail"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "ship",
+            "at": 0,
+            "frame": "close"
+          },
+          {
+            "shot": "wide",
+            "shift": [
+              0.5,
+              1.2,
+              0
+            ],
+            "at": 4,
+            "frame": "wide"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.2,
+            "target": "ship",
+            "dur": 6.4,
+            "ease": "in-out",
+            "to": {
+              "pos": [
+                2.592,
+                0.0,
+                -1.6
+              ],
+              "rot": [
+                0,
+                -12,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "cloud-b",
+            "dur": 6,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                -2.16,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "land",
+      "narration": "Weeks later a new coast appears, and the first flag of the kingdom is planted on it.",
+      "title": {
+        "kicker": "Chapter 6",
+        "main": "A new land"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "land",
+            "at": 0,
+            "frame": "close"
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "landflag",
+            "at": 3,
+            "frame": "close"
+          },
+          {
+            "shot": "wide",
+            "shift": [
+              2,
+              1.2,
+              0
+            ],
+            "at": 6,
+            "frame": "wide"
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.1,
+            "target": "landflag",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0,
+            "target": "landflag/cloth",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                -1.4,
+                0
+              ]
+            }
+          },
+          {
+            "at": 3.0,
+            "target": "landflag/cloth",
+            "dur": 2.2,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "concept",
+            "text": "The journey begins",
+            "at": 2.5
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -11,10 +11,10 @@ export type Caption = {
 export type CaptionPage = { startMs: number; endMs: number; words: Caption[] };
 
 export type Animation = "pop" | "slide" | "typewriter" | "zoom";
-export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world";
+export type ThreeTemplateId = "clay-diorama" | "iso-toon" | "neon-glass" | "pedestal" | "paper-world" | "toy-blocks" | "holo-studio" | "neon-grid" | "soft-studio" | "moody-night" | "voxel-world" | "data-stage" | "monolith-story" | "clay-mascot" | "cutaway-explainer" | "engineering-explainer" | "process-explainer" | "documentary-3d";
 export type ArtTemplateId = "watercolor" | "paper-collage" | "chalkboard" | "risograph" | "ukiyo-e" | "pop-comic";
-export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient";
-export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono";
+export type FormatTemplateId = "ui-cards" | "flat-depth" | "soft-gradient" | "host-tutorial" | "checklist-glass" | "spotlight-narrative" | "data-atlas";
+export type PixelTemplateId = "pixel-dusk" | "pixel-night" | "pixel-arcade" | "pixel-mono" | "pixel-versus";
 export type ReelsTemplateId = "reels-nube" | "reels-noche" | "reels-menta" | "reels-limon" | "reels-pizarra";
 export type TemplateId = "illustrated" | "captions-voice" | "kinetic-type" | "countdown" | "glass-cards" | "letterbox" | "whiteboard" | "broadcast" | "editorial-chart" | "editor-window" | "rank-numbers" | ArtTemplateId | FormatTemplateId | ThreeTemplateId | PixelTemplateId | ReelsTemplateId;
 export type CaptionStyle =
@@ -163,12 +163,32 @@ export type DrawingPlan = { kind: "drawing2d"; moments: Record<string, number>; 
 export type IconData = { viewBox: string; back: string[]; outline: string[] };
 
 /** One planned 3D object (lib/scene3d.mjs planScene3d). Times are seconds into the scene. */
-export type Placed3D = { pos: [number, number, number]; scale: number; h: number; enter: number; items: number[] };
+export type Placed3D = { pos: [number, number, number]; scale: number; h: number; enter: number; items: number[]; half?: number; /** corner-pinned mascot: placed from the camera each frame */ corner?: "bl" | "br" | "tl" | "tr" };
+export type World3D = { concept: string; ground: { kind?: string; color?: string; size?: number } | null; backdrop: string | null; parts: Record<string, unknown>[]; crowd: { count: number; area: [number, number]; pos?: [number, number, number]; height?: number; color?: string } | null };
+/** Persistent stage (lib/scene3d-stage.mjs, planStageScenes): shared by every scene of a spec; state is a pure function of global seconds. */
+export type StageActor3D = { id: string; label: string | null; color: string | null; size: number; rot: [number, number, number]; at: number; buoyant: { amp?: number; speed?: number } | null; highlight: boolean; parts: Record<string, unknown>[]; motion: unknown[]; keys: unknown[]; placed: Placed3D };
+export type StageRegion = { box?: [number, number, number, number]; disc?: [number, number, number] };
+export type StageCarve = { t: number; dur: number; ease?: string; id?: string; region: StageRegion; depth?: number; mode?: string; bank?: number };
+export type StageTerrain3D = { size: [number, number]; pos: [number, number]; grid: number; depth: number; bumps: number; seed: number; top: string | null; strata: { to: number; color: string }[]; stones: { count: number; seed?: number; size?: [number, number]; buried?: boolean } | null; carves: StageCarve[] };
+export type StageLiquid3D = { id: string; kind: "pit" | "box"; area: [number, number, number, number]; floor: number; top: number; color?: string; opacity: number; level: number; wave: number };
+export type StagePlan3D = {
+  concept: string;
+  world: World3D | null;
+  actors: StageActor3D[];
+  terrain: StageTerrain3D | null;
+  liquids: StageLiquid3D[];
+  tracks: Record<string, Record<string, { t: number; v: unknown; ease?: string }[]>>;
+  totalSec: number;
+  safe: { top: number; bottom: number; title: { y: number; h: number }; caption: { y: number; h: number } };
+  title: { mode: "pill"; fill: string; fillAlpha: number; ink: string; rule: string; kickerInk: string; contrast: number };
+};
 export type CameraFrame = { target: [number, number, number]; dist: number; viewH: number };
 export type ScenePlan3D = {
   kind: "scene3d";
   /** environment set (resolved: never "auto") */
   set?: string;
+  /** the agent-built world of this scene (parts already expanded) */
+  world?: World3D | null;
   layout: string;
   move: string;
   frame: CameraFrame;
@@ -176,7 +196,23 @@ export type ScenePlan3D = {
   explode: boolean;
   objects: Placed3D[];
   connections: { from: number; to: number; label?: string; enter: number }[];
+  /** diegetic explainer UI (lib/scene3d.mjs planOverlay): moments already in seconds */
+  overlay?: Overlay3DPlan[];
+  /** persistent stage (spec.stage): shared plan, and this scene's start in global seconds */
+  stage?: StagePlan3D;
+  t0?: number;
+  /** resolved camera keys (global seconds with a stage) */
+  cameraKeys?: { t: number; yaw?: number; pitch?: number; zoom?: number; shift?: [number, number, number]; ease?: string }[];
+  moments?: Record<string, number>;
 };
+export type OverlayWindow = { at: number; until: number | null };
+export type Overlay3DPlan =
+  | ({ type: "flow"; chips: { id: string; icon: string; label: string; value?: string }[]; active?: string; steps?: { at: number; active?: string; values?: Record<string, string> }[] } & OverlayWindow)
+  | ({ type: "concept"; text: string } & OverlayWindow)
+  | ({ type: "limit"; label: string; value?: number; limit?: number; steps?: { at: number; value: number }[]; limitLabel?: string; note?: string; icons?: string[] } & OverlayWindow)
+  | ({ type: "versus"; left: VersusSide; right: VersusSide } & OverlayWindow)
+  | ({ type: "counter"; value: number; from?: number; dur?: number; unit?: string; prefix?: string; label?: string; decimals?: number; sep?: string; steps?: { at: number; value: number; dur?: number }[] } & OverlayWindow);
+export type VersusSide = { title: string; sub?: string; icon?: string };
 /** One planned pixel scene (lib/pixel.mjs planPixelScene). Times are seconds into the scene. */
 export type PixelPlan = {
   kind: "pixel";
@@ -186,6 +222,9 @@ export type PixelPlan = {
   props: { x: number; enter: number }[];
   panelAt: number;
   checks: number[];
+  /** pixel-versus: the ROUND card window and the reveal time of each ranking / verdict row (seconds into the scene) */
+  round?: { at: number; until: number };
+  rows?: number[];
 };
 export type ThreeAssets = { hdri: string | null; models: Record<string, string> };
 

@@ -1,10 +1,11 @@
 // Turn a user prompt into a validated VideoSpec: build the request, call the
 // provider, parse JSON, enforce the user's explicit choices, validate via the
-// engine, and retry once with the error when the output is invalid.
+// engine, and retry up to twice with the errors when the output is invalid.
 import type { GenerateOptions, TemplateInfo, VideoSpec } from "../shared/types.ts";
 import type { SpecProvider } from "./providers/types.ts";
 import { applyMusicOptions } from "../shared/music.ts";
 import { CAPTION_STYLES, cleanCaptionSettings } from "../shared/captions.ts";
+import { applyHfOptions, hfPromptLines } from "../shared/hf.ts";
 import { asPalette } from "./engine.ts";
 
 const isObject = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
@@ -37,7 +38,8 @@ export function buildUserPrompt(prompt: string, template: TemplateInfo | undefin
     `Target total duration: about ${o.durationSec} seconds`,
     o.tone ? `Tone: ${o.tone}` : null,
     `Platform focus: ${PLATFORM_LABEL[o.platform]}`,
-    `Caption style: ${o.captionStyle}`,
+    o.hf ? null : `Caption style: ${o.captionStyle}`,
+    ...(o.hf ? hfPromptLines(o.hf, template) : []),
     `Voice provider: ${o.voiceProvider}${o.voiceId ? ` (voiceId ${o.voiceId})` : ""}`,
     ...(channelContext ? ["", channelContext] : []),
     "",
@@ -68,10 +70,14 @@ export function applyOptions(raw: unknown, templateId: string, o: GenerateOption
   spec.template = templateId;
   spec.language = o.language;
   spec.format = { ...{ width: 1080, height: 1920, fps: 30 }, ...(spec.format ?? {}) };
-  const captions = cleanCaptionSettings(o.captions);
-  spec.theme = { ...(spec.theme ?? ({} as VideoSpec["theme"])), captionStyle: captions?.style ?? o.captionStyle };
+  // HyperFrames formats draw their own captions: the app's caption style/colors/position never reach their spec
+  const captions = o.hf ? undefined : cleanCaptionSettings(o.captions);
+  spec.theme = { ...(spec.theme ?? ({} as VideoSpec["theme"])), ...(o.hf ? {} : { captionStyle: captions?.style ?? o.captionStyle }) };
   if (captions) spec.captions = { ...(isObject(spec.captions) ? spec.captions : {}), ...captions };
-  if (o.reelsSubtitles) spec.reels = { ...(isObject(spec.reels) ? spec.reels : {}), subtitles: o.reelsSubtitles };
+  if (o.reelsSubtitles && !o.hf) spec.reels = { ...(isObject(spec.reels) ? spec.reels : {}), subtitles: o.reelsSubtitles };
+  // the render engine is a user setting (3D formats only), never the model's choice
+  delete spec.theme.renderer;
+  if (o.renderer === "blender") spec.theme.renderer = "blender";
   const palette = asPalette(o.palette);
   if (palette) spec.theme.palette = palette;
   const modelVoiceProvider = spec.voice?.provider;
@@ -84,8 +90,8 @@ export function applyOptions(raw: unknown, templateId: string, o: GenerateOption
     });
   }
   // Music and SFX are user choices, never the model's.
-  if (o.music) return applyMusicOptions(spec, o.music, o.tone);
-  return spec;
+  const withMusic = o.music ? applyMusicOptions(spec, o.music, o.tone) : spec;
+  return o.hf ? applyHfOptions(withMusic, o.hf) : withMusic;
 }
 
 export type Validator = (spec: VideoSpec) => Promise<string | null>;
@@ -107,8 +113,8 @@ export class SpecGenerationError extends Error {
 }
 
 /**
- * Ask the provider for a spec; on unparseable or invalid output, retry ONCE
- * with the error appended to the request.
+ * Ask the provider for a spec; on unparseable or invalid output, retry up to TWICE
+ * with the errors appended to the request (the engine repairs the commonest slips itself).
  */
 // Sources belong in the post description, never in the spoken script or on screen (channel rule; models still do it).
 const CITE_LABEL = /(?:^|\s)(?:fuente|fuentes|source|sources)\s*:[^.!?\n]*[.!?]?/gi;
@@ -141,8 +147,10 @@ export async function generateValidSpec(args: {
   options: GenerateOptions;
   validate: Validator;
   maxAttempts?: number;
+  /** Called for every rejected attempt (invalid JSON, failed validation, cited source) so the server can log it. */
+  onRejected?: (attempt: number, error: string) => void;
 }): Promise<GenerateResult> {
-  const maxAttempts = args.maxAttempts ?? 2;
+  const maxAttempts = args.maxAttempts ?? 3;
   let user = args.user;
   let lastError = "";
   let lastOutput = "";
@@ -153,11 +161,14 @@ export async function generateValidSpec(args: {
       const invalid = await args.validate(spec);
       const cited = invalid ? null : sourceMentions(spec);
       if (!invalid && !cited) return { spec, attempts: attempt };
-      if (!invalid && attempt === maxAttempts) return { spec: stripSourceMentions(spec), attempts: attempt };
-      lastError = invalid ? `The VideoSpec failed validation: ${invalid}` : `The script breaks the no-sources rule: ${cited}`;
+      // a cited source is cosmetic: one retry, then the fragments are stripped (validation errors get the full retries)
+      if (!invalid && (attempt === maxAttempts || attempt >= 2)) return { spec: stripSourceMentions(spec), attempts: attempt };
+      const hfHint = invalid && args.options.hf && /\bhf\b|\bmode\b/.test(invalid) ? " Fix spec.hf (and mode) exactly as the format guidance says: field names, ranges and allowed values." : "";
+      lastError = invalid ? `The VideoSpec failed validation: ${invalid}${hfHint}` : `The script breaks the no-sources rule: ${cited}`;
     } catch (err) {
       lastError = `The output was not valid JSON: ${(err as Error).message}`;
     }
+    args.onRejected?.(attempt, lastError);
     user =
       `${args.user}\n\nYour previous answer was rejected. ${lastError}\n` +
       `Previous answer:\n${lastOutput.slice(0, 6000)}\n\nReturn ONLY the corrected VideoSpec JSON object.`;

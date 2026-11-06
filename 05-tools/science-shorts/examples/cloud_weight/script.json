@@ -1,0 +1,22 @@
+{
+ "slug": "cloud_weight",
+ "title": ["This Cloud Weighs", "100 Elephants!"],
+ "voice": "am_liam+am_puck", "speed": 0.9,
+ "gap": 0.36, "max_pause": 0.34, "tail": 0.8,
+ "lines": [
+  {"say": "This fluffy cloud | weighs as much as | a-hundred elephants.", "show": "This fluffy cloud | weighs as much as | 100 elephants.", "pause": 0.1},
+  {"say": "So how is it | just hanging up there?"},
+  {"say": "A typical puffy cloud | is about a kilometer | wide, tall and deep."},
+  {"say": "Each cubic meter holds | just half a gram | of water. | Not even a sip."},
+  {"say": "But this cloud | holds a billion | cubic meters."},
+  {"say": "Add it all up, | and five-hundred tonnes | of water are floating | over your head.", "show": "Add it all up, | and 500 tonnes | of water are floating | over your head.", "pause": 0.15},
+  {"say": "So why doesn't it fall? | It does. | Just very slowly."},
+  {"say": "The water is split | into droplets so tiny | they sink about | a centimeter a second."},
+  {"say": "And warm air | rising from the ground | pushes up | hundreds of times faster, | so it keeps | carrying them back up."},
+  {"say": "Besides, the air | in that same space | weighs about | a-thousand times more | than the water.", "show": "Besides, the air | in that same space | weighs about | 1,000 times more | than the water."},
+  {"say": "Next to it, | the cloud is a lightweight.", "pause": 0.1},
+  {"say": "Until the droplets | start crashing | into each other."},
+  {"say": "A million of them | make one raindrop. | Too heavy to float, | it falls.", "pause": 0.1},
+  {"say": "And the hundred elephants | come down on you, | one drop at a time.", "show": "And the 100 elephants | come down on you, | one drop at a time."}
+ ]
+}

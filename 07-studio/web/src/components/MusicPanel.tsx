@@ -2,7 +2,7 @@
 // ElevenLabs), music and SFX levels shown as dB under the voice, and a play/pause preview of library tracks.
 import { useEffect, useId, useRef, useState } from "react";
 import type { MusicLibrary, MusicOptions, MusicTrack } from "../../shared/types.ts";
-import { musicDuckedDb, musicLevelDb, sfxLevelDb } from "../../shared/music.ts";
+import { FORMAT_DUCK_DB, FORMAT_MOODS, formatMusicLevelDb, musicDuckedDb, musicLevelDb, sfxLevelDb } from "../../shared/music.ts";
 import { api } from "../lib/api.ts";
 
 let libraryPromise: Promise<MusicLibrary> | null = null;
@@ -17,7 +17,8 @@ function loadLibrary(): Promise<MusicLibrary> {
 const fmtDb = (v: number) => (Number.isFinite(v) ? `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v)} dB` : "silencio");
 const fmtTime = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
 
-export function MusicPanel({ value, onChange, disabled = false }: { value: MusicOptions; onChange: (next: MusicOptions) => void; disabled?: boolean }) {
+/** `formatMusic`: the chosen format synthesizes its own chiptune (HyperFrames formats such as pixel-world); other formats never show it. */
+export function MusicPanel({ value, onChange, disabled = false, formatMusic = false }: { value: MusicOptions; onChange: (next: MusicOptions) => void; disabled?: boolean; formatMusic?: boolean }) {
   const [library, setLibrary] = useState<MusicLibrary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
@@ -32,7 +33,7 @@ export function MusicPanel({ value, onChange, disabled = false }: { value: Music
 
   const set = <K extends keyof MusicOptions>(k: K, v: MusicOptions[K]) => onChange({ ...value, [k]: v });
   const elAvailable = library?.elevenlabs.available ?? false;
-  const provider = value.provider === "elevenlabs" && elAvailable ? "elevenlabs" : "library";
+  const provider = value.provider === "format" && formatMusic ? "format" : value.provider === "elevenlabs" && elAvailable ? "elevenlabs" : "library";
   const moodTracks: MusicTrack[] = library?.tracks.filter((t) => value.mood !== "auto" && t.mood === value.mood) ?? [];
 
   function toggle(track: MusicTrack) {
@@ -83,8 +84,15 @@ export function MusicPanel({ value, onChange, disabled = false }: { value: Music
           <fieldset className="field">
             <legend className="field-label">Fuente</legend>
             <div className="music-sources" role="radiogroup">
+              {formatMusic && (
+                <label className="music-source">
+                  <input type="radio" name={`${uid}-src`} checked={provider === "format"} disabled={disabled} onChange={() => onChange({ ...value, provider: "format", mood: FORMAT_MOODS.some((f) => f.id === value.mood) ? value.mood : "auto", track: "" })} />
+                  <span className="music-source-name">Chiptune del formato</span>
+                  <span className="music-source-note">Se genera en código para este video · sin créditos</span>
+                </label>
+              )}
               <label className="music-source">
-                <input type="radio" name={`${uid}-src`} checked={provider === "library"} disabled={disabled} onChange={() => set("provider", "library")} />
+                <input type="radio" name={`${uid}-src`} checked={provider === "library"} disabled={disabled} onChange={() => onChange({ ...value, provider: "library", mood: FORMAT_MOODS.some((f) => f.id === value.mood) ? "auto" : value.mood })} />
                 <span className="music-source-name">Biblioteca</span>
                 <span className="music-source-note">Gratis · licencias CC0 / CC BY con crédito</span>
               </label>
@@ -102,7 +110,22 @@ export function MusicPanel({ value, onChange, disabled = false }: { value: Music
             </div>
           </fieldset>
 
-          {provider === "library" ? (
+          {provider === "format" ? (
+            <fieldset className="field">
+              <legend className="field-label">Estilo del chiptune</legend>
+              <div className="chips">
+                <button type="button" className="chip" aria-pressed={!FORMAT_MOODS.some((f) => f.id === value.mood)} disabled={disabled} onClick={() => set("mood", "auto")}>
+                  Automático
+                </button>
+                {FORMAT_MOODS.map((m) => (
+                  <button key={m.id} type="button" className="chip" title={m.hint} aria-pressed={value.mood === m.id} disabled={disabled} onClick={() => set("mood", m.id)}>
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+              <p className="field-note">{FORMAT_MOODS.find((m) => m.id === value.mood)?.hint ?? "Automático: lo decide el estilo pixel del video"}. Cada video tiene su propia melodía.</p>
+            </fieldset>
+          ) : provider === "library" ? (
             <>
               <fieldset className="field">
                 <legend className="field-label">Estilo</legend>
@@ -187,7 +210,7 @@ export function MusicPanel({ value, onChange, disabled = false }: { value: Music
           <label className="field level">
             <span className="level-head">
               <span className="field-label">Volumen de la música</span>
-              <output className="level-db">{fmtDb(musicLevelDb(value.volume))} bajo la voz</output>
+              <output className="level-db">{fmtDb(provider === "format" ? formatMusicLevelDb(value.volume) : musicLevelDb(value.volume))} bajo la voz</output>
             </span>
             <input
               type="range"
@@ -199,7 +222,11 @@ export function MusicPanel({ value, onChange, disabled = false }: { value: Music
               disabled={disabled}
               onChange={(e) => set("volume", Number(e.target.value))}
             />
-            <span className="field-note">Mientras se habla baja a {fmtDb(musicDuckedDb(value.volume))}; sube en las pausas.</span>
+            <span className="field-note">
+              {provider === "format"
+                ? `Mientras se habla baja solo ${FORMAT_DUCK_DB} dB, para que se note la música.`
+                : `Mientras se habla baja a ${fmtDb(musicDuckedDb(value.volume))}; sube en las pausas.`}
+            </span>
           </label>
         </>
       )}

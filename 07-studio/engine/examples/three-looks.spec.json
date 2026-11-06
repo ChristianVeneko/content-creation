@@ -1,0 +1,631 @@
+{
+  "version": 1,
+  "title": "Ejemplo three-looks",
+  "template": "three-looks",
+  "language": "es",
+  "mode": "multi",
+  "captions": {
+    "enabled": true
+  },
+  "hf": {
+    "style": "clay-diorama",
+    "camera": "dynamic",
+    "hero": {
+      "design": "kid",
+      "expression": "worried",
+      "seed": 4
+    },
+    "worlds": [
+      {
+        "set": "room",
+        "mood": "warm",
+        "cast": [
+          {
+            "who": "hero",
+            "at": "front-left"
+          }
+        ],
+        "objects": [
+          {
+            "id": "pc",
+            "build": "laptop",
+            "at": "back-center",
+            "label": "Computadora"
+          },
+          {
+            "id": "mem",
+            "build": "battery",
+            "params": {
+              "segments": 6
+            },
+            "at": "back-right",
+            "label": "Memoria"
+          },
+          {
+            "id": "cpu",
+            "label": "Procesador",
+            "at": "mid-left",
+            "scale": 1.1,
+            "motion": [
+              "bob"
+            ],
+            "parts": [
+              {
+                "id": "base",
+                "shape": "box",
+                "size": [
+                  1.2,
+                  0.14,
+                  1.2
+                ],
+                "pos": [
+                  0,
+                  0.07,
+                  0
+                ],
+                "radius": 0.05,
+                "role": "dark"
+              },
+              {
+                "id": "die",
+                "shape": "box",
+                "size": [
+                  0.7,
+                  0.12,
+                  0.7
+                ],
+                "pos": [
+                  0,
+                  0.13,
+                  0
+                ],
+                "parent": "base",
+                "radius": 0.04,
+                "role": "metal"
+              },
+              {
+                "id": "core",
+                "shape": "sphere",
+                "size": [
+                  0.17
+                ],
+                "pos": [
+                  0,
+                  0.14,
+                  0
+                ],
+                "parent": "die",
+                "role": "glow",
+                "states": {
+                  "glow": {
+                    "emissive": 3
+                  },
+                  "heat": {
+                    "color": "#e5574f"
+                  }
+                }
+              },
+              {
+                "id": "pinsL",
+                "shape": "box",
+                "size": [
+                  0.06,
+                  0.05,
+                  1
+                ],
+                "pos": [
+                  -0.66,
+                  0,
+                  0
+                ],
+                "parent": "base",
+                "role": "accent"
+              },
+              {
+                "id": "pinsR",
+                "shape": "box",
+                "size": [
+                  0.06,
+                  0.05,
+                  1
+                ],
+                "pos": [
+                  0.66,
+                  0,
+                  0
+                ],
+                "parent": "base",
+                "role": "accent"
+              }
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "computadora"
+            },
+            "do": "stamp",
+            "text": "SE CUELGA"
+          },
+          {
+            "on": {
+              "word": "computadora"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "no"
+          },
+          {
+            "on": {
+              "word": "programas"
+            },
+            "do": "light-up",
+            "target": "pc"
+          },
+          {
+            "on": {
+              "word": "programas"
+            },
+            "do": "label",
+            "target": "pc",
+            "text": "Programas"
+          },
+          {
+            "on": {
+              "word": "ventanas"
+            },
+            "do": "pulse",
+            "target": "pc"
+          },
+          {
+            "on": {
+              "word": "memoria"
+            },
+            "do": "label",
+            "target": "mem",
+            "text": "Memoria"
+          },
+          {
+            "on": {
+              "word": "memoria"
+            },
+            "do": "fill",
+            "target": "mem",
+            "value": 0.4
+          },
+          {
+            "on": {
+              "word": "llena"
+            },
+            "do": "fill",
+            "target": "mem",
+            "value": 0.8
+          },
+          {
+            "on": {
+              "word": "tope"
+            },
+            "do": "fill",
+            "target": "mem",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "tope"
+            },
+            "do": "shake",
+            "target": "mem",
+            "dur": 0.9
+          },
+          {
+            "on": {
+              "word": "tope"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "faint"
+          }
+        ]
+      },
+      {
+        "set": "warehouse",
+        "mood": "cool",
+        "from": {
+          "word": "almacen"
+        },
+        "cast": [
+          {
+            "who": "hero",
+            "at": "front-left"
+          }
+        ],
+        "objects": [
+          {
+            "id": "shelf",
+            "build": "shelf",
+            "at": "back-left",
+            "label": "Almacen"
+          },
+          {
+            "id": "belt",
+            "build": "conveyor",
+            "at": "mid-right"
+          },
+          {
+            "id": "crate",
+            "build": "crate",
+            "at": "mid-left",
+            "hidden": true
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "almacen"
+            },
+            "do": "label",
+            "target": "shelf",
+            "text": "Almacen"
+          },
+          {
+            "on": {
+              "word": "sitio"
+            },
+            "do": "fill",
+            "target": "shelf",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "cajas"
+            },
+            "do": "pop-in",
+            "target": "crate"
+          },
+          {
+            "on": {
+              "word": "cajas"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "wave"
+          },
+          {
+            "on": {
+              "word": "sacar"
+            },
+            "do": "light-up",
+            "target": "belt"
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "fill",
+            "target": "belt",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "walk",
+            "who": "hero",
+            "to": "belt"
+          },
+          {
+            "on": {
+              "word": "camion"
+            },
+            "do": "stamp",
+            "text": "SACAR"
+          }
+        ]
+      },
+      {
+        "set": "server-room",
+        "mood": "alert",
+        "from": {
+          "word": "disco"
+        },
+        "cast": [
+          {
+            "who": "hero",
+            "at": "front-right"
+          }
+        ],
+        "objects": [
+          {
+            "id": "rack",
+            "build": "server-rack",
+            "at": "back-center",
+            "label": "Disco"
+          },
+          {
+            "id": "cooler",
+            "build": "pipe-system",
+            "at": "mid-left",
+            "scale": 0.7
+          },
+          {
+            "id": "temp",
+            "build": "thermometer",
+            "at": "back-right"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "disco"
+            },
+            "do": "open",
+            "target": "rack"
+          },
+          {
+            "on": {
+              "word": "disco"
+            },
+            "do": "label",
+            "target": "rack",
+            "text": "Disco"
+          },
+          {
+            "on": {
+              "word": "lento"
+            },
+            "do": "fill",
+            "target": "rack",
+            "value": 0.9
+          },
+          {
+            "on": {
+              "word": "datos",
+              "n": 2
+            },
+            "do": "burst",
+            "target": "rack"
+          },
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "heat",
+            "target": "rack"
+          },
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "fill",
+            "target": "temp",
+            "value": 1
+          },
+          {
+            "on": {
+              "word": "calor"
+            },
+            "do": "stamp",
+            "text": "CALOR"
+          },
+          {
+            "on": {
+              "word": "ventilador"
+            },
+            "do": "open",
+            "target": "cooler"
+          },
+          {
+            "on": {
+              "word": "ventilador"
+            },
+            "do": "fill",
+            "target": "cooler",
+            "value": 0.9
+          },
+          {
+            "on": {
+              "word": "alcanza"
+            },
+            "do": "shake",
+            "target": "temp",
+            "dur": 0.8
+          }
+        ]
+      },
+      {
+        "set": "studio",
+        "mood": "warm",
+        "from": {
+          "word": "mejor"
+        },
+        "cast": [
+          {
+            "who": "hero",
+            "at": "front-center"
+          }
+        ],
+        "objects": [
+          {
+            "id": "power",
+            "label": "Reinicio",
+            "at": "mid-center",
+            "scale": 1.3,
+            "parts": [
+              {
+                "id": "plate",
+                "shape": "cylinder",
+                "size": [
+                  0.7,
+                  0.7,
+                  0.14
+                ],
+                "pos": [
+                  0,
+                  0.07,
+                  0
+                ],
+                "role": "dark"
+              },
+              {
+                "id": "button",
+                "shape": "cylinder",
+                "size": [
+                  0.5,
+                  0.5,
+                  0.16
+                ],
+                "pos": [
+                  0,
+                  0.14,
+                  0
+                ],
+                "parent": "plate",
+                "role": "accent",
+                "states": {
+                  "glow": {
+                    "emissive": 1.4
+                  }
+                }
+              },
+              {
+                "id": "ring",
+                "shape": "torus",
+                "size": [
+                  0.27,
+                  0.05,
+                  280
+                ],
+                "pos": [
+                  0,
+                  0.09,
+                  0
+                ],
+                "parent": "button",
+                "rot": [
+                  -90,
+                  0,
+                  0
+                ],
+                "role": "light",
+                "emissive": 0.6
+              },
+              {
+                "id": "bar",
+                "shape": "box",
+                "size": [
+                  0.06,
+                  0.26,
+                  0.05
+                ],
+                "pos": [
+                  0,
+                  0.09,
+                  0
+                ],
+                "parent": "button",
+                "rot": [
+                  -90,
+                  0,
+                  0
+                ],
+                "role": "light",
+                "emissive": 0.6
+              }
+            ]
+          },
+          {
+            "id": "pc2",
+            "build": "laptop",
+            "at": "back-center"
+          }
+        ],
+        "beats": [
+          {
+            "on": {
+              "word": "cerrar"
+            },
+            "do": "close",
+            "target": "pc2"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "light-up",
+            "target": "power"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "pulse",
+            "target": "power"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "stamp",
+            "text": "REINICIA"
+          },
+          {
+            "on": {
+              "word": "reiniciar"
+            },
+            "do": "emote",
+            "who": "hero",
+            "symbol": "thumbs-up"
+          },
+          {
+            "on": {
+              "word": "computadora",
+              "n": 2
+            },
+            "do": "open",
+            "target": "pc2"
+          }
+        ]
+      }
+    ]
+  },
+  "sfx": {
+    "enabled": true,
+    "volume": 1
+  },
+  "music": {
+    "provider": "library",
+    "mood": "auto",
+    "duck": true
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Tu computadora se cuelga y no sabes por qué. Abres muchos programas y ventanas a la vez, y la memoria se llena.",
+      "visual": {
+        "type": "gradient"
+      }
+    },
+    {
+      "id": "almacen",
+      "narration": "Piensa en un almacen: cuando está lleno de cajas de datos, hay que sacar cosas a un camion para hacer espacio.",
+      "visual": {
+        "type": "gradient"
+      }
+    },
+    {
+      "id": "disco",
+      "narration": "Ese viaje al disco es lento, y mientras el disco trabaja el sistema espera. Los datos no paran.",
+      "visual": {
+        "type": "gradient"
+      }
+    },
+    {
+      "id": "calor",
+      "narration": "Todo ese trabajo da calor, y cuando se calienta mucho el ventilador no alcanza. Lo mejor es cerrar programas y reiniciar.",
+      "visual": {
+        "type": "gradient"
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": "host-tutorial",
+  "name": "Host Step Tutorial",
+  "category": "illustrated-2d",
+  "format": "host-tutorial",
+  "description": "FORMAT: a numbered step-by-step tutorial led by a persistent cutout host. Warm paper texture with a halftone dot corner, a flat vector host bust fixed at the bottom of every scene (the pose and the expression change per scene), a headline of bold sans words with one serif-italic accent word in the accent color, a small mono kicker like '// step 1 . name', an 'n STEPS' roadmap card, hard-shadow step cards, UI-window mockups with a gliding cursor, toggles and a highlighter, sticker pops, and a halftone-dot transition between scenes. The host, the UI mockups and the drawings are new in every video: the format is the camera, the motion and the layout, never a fixed subject. No emoji.",
+  "prompt_hint": "Write 6-10 scenes (3-6 s each): a hook that shows the roadmap card (roadmap, items = the step names, the count becomes the 'n STEPS' number), one scene per step, and a short recap or call to action. title.kicker is the mono step tag written like '// paso 1 . filtros' and title.main the headline (max ~28 chars) with the accent word between *asterisks* (without them the last word is the accent). Put one host element in every scene and switch its pose (point, wave, think, shrug, cheer, present) and expression (smile, wow, wink, calm, think) to match the sentence; change skin, shirt and hair only to cast a different host. Teach each step with a window element (a UI mockup for THIS video's tool: title, rows with label, value, icon, toggle on|off|turn-on|turn-off, cursor = row to click, highlight = row to sweep, button) or a card (title, body lines, icon), plus an optional badge, stamp or stat as a sticker pop. For anything a window cannot show, draw a new subject with a drawing element (agent-drawn vector parts); invent the objects, props and UI labels for this topic every video and never reuse the example's. Never use emoji.",
+  "best_for": [
+    "step-by-step tutorials",
+    "how-to guides",
+    "app and tool walkthroughs",
+    "numbered tips",
+    "beginner explainers"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#F6EBDA",
+      "#EFDFC6",
+      "#C9461F"
+    ],
+    "accent": "#C9461F",
+    "sample_text": "6 STEPS"
+  },
+  "defaults": {
+    "theme": {
+      "look": "host-tutorial",
+      "palette": {
+        "bg": [
+          "#F6EBDA",
+          "#EFDFC6"
+        ],
+        "text": "#2A2118",
+        "accent": "#B83F1B",
+        "accent2": "#F2B33D",
+        "accent3": "#2B7A78"
+      },
+      "font": "Montserrat",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.04
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

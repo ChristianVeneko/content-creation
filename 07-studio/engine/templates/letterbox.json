@@ -2,6 +2,7 @@
   "id": "letterbox",
   "name": "Letterbox",
   "category": "kinetic",
+  "format": "letterbox",
   "description": "Cinematic letterbox: bars top and bottom, slow push-ins, film grain feel and typewriter lines.",
   "prompt_hint": "Open with the climax as a cold open (scene 1). Rewind, build tension with open loops, deliver the twist, then the lesson. onScreenText is a short quote or chapter line. Calm, intimate narration. One soft CTA at the end.",
   "best_for": ["storytime", "quotes", "lessons", "history", "reflections"],

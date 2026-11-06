@@ -13,6 +13,16 @@ const TEMPLATES = [
   { id: "letterbox", preview: { name: "Historia / cita", description: "Storytime o cita, ritmo cinematográfico.", emoji: "🎞️", gradient: ["#200122", "#6f0000"] }, prompt_hint: "story" },
 ];
 
+// HyperFrames format stand-in (shape of the real `templates` / `prompt` output); opt-in so the base catalog stays at five.
+const HF_TEMPLATE = {
+  id: "fake-world", name: "Fake World", category: "hyperframes", format: "fake-world", description: "Animated world with its own captions.",
+  prompt_hint: "hf", best_for: ["explainers"], preview: { style: "hyperframes", gradient: ["#0F0C29", "#302B63"], accent: "#FFD60A", sample_text: "Fake World" },
+  engine: "hyperframes", ownsCaptions: true, modes: ["single", "multi"],
+  styles: [{ id: "neon", name: "Neon", about: "Neon night", palette: ["#0F0C29", "#FF2E97", "#FFD60A"] }, { id: "sunny", name: "Sunny", about: "Daylight" }],
+  settings: [{ id: "city", name: "City", about: "Night city" }],
+};
+const withHf = (list) => (process.env.FAKE_ENGINE_HF ? [...list, HF_TEMPLATE] : list);
+
 const MUSIC = {
   moods: [
     { id: "tech-lofi", label: "Tech / lo-fi", count: 1 },
@@ -35,12 +45,15 @@ if (cmd === "voices") {
 } else if (cmd === "music") {
   process.stdout.write(JSON.stringify(MUSIC));
 } else if (cmd === "templates") {
-  process.stdout.write(JSON.stringify(TEMPLATES));
+  process.stdout.write(JSON.stringify(withHf(TEMPLATES)));
+} else if (cmd === "prompt") {
+  process.stdout.write(`COMMON RULES\n\n## HyperFrames format \`${args[0]}\`\n\nPut the payload in spec.hf.${args.includes("--creative") ? "\nCREATIVE" : ""}\n`);
 } else if (cmd === "validate") {
   const spec = JSON.parse(readFileSync(args[0], "utf8"));
   const errors = [];
   if (spec.version !== 1) errors.push({ path: "version", message: "must be 1" });
   if (!Array.isArray(spec.scenes) || spec.scenes.length === 0) errors.push({ path: "scenes", message: "must be a non-empty array" });
+  if (spec.template === "fake-world" && !(spec.hf && typeof spec.hf.scenes === "number")) errors.push({ path: ["hf", "scenes"], message: "must be a number" });
   if (errors.length) {
     process.stdout.write(JSON.stringify({ ok: false, errors }));
     process.exit(1);
@@ -61,6 +74,8 @@ if (cmd === "voices") {
     process.exit(2);
   }
   writeFileSync(path.join(out, "video.mp4"), "fake");
+  writeFileSync(path.join(out, "args.json"), JSON.stringify(args));
+  if (args.includes("--quality")) writeFileSync(path.join(out, "video-sin-subtitulos.mp4"), "fake-nosubs");
   writeFileSync(path.join(out, "post.md"), "# Post\n");
 } else {
   console.error(`unknown command ${cmd}`);

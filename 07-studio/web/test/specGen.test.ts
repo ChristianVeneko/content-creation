@@ -61,13 +61,13 @@ test("retries once with the validation error, then succeeds", async () => {
   assert.match(requests[1].user, /scenes must be a non-empty array/);
 });
 
-test("gives up after the single retry with a SpecGenerationError", async () => {
-  const { provider, requests } = scripted(["nope", "still nope", "never asked"]);
+test("gives up after two retries (three attempts) with a SpecGenerationError", async () => {
+  const { provider, requests } = scripted(["nope", "still nope", "nope again", "never asked"]);
   await assert.rejects(
     generateValidSpec({ provider, system: "S", user: "U", templateId: "t", options, validate: validateScenes }),
-    (err: Error) => err instanceof SpecGenerationError && err.attempts === 2,
+    (err: Error) => err instanceof SpecGenerationError && err.attempts === 3,
   );
-  assert.equal(requests.length, 2);
+  assert.equal(requests.length, 3);
 });
 
 test("applyOptions enforces language, voice, caption style and scene ids", () => {
@@ -98,4 +98,28 @@ test("applyOptions drops a model voiceId that belongs to a different voice provi
   assert.deepEqual(spec.voice, { provider: "kokoro" });
   const same = applyOptions({ ...structuredClone(goodSpec), voice: { provider: "kokoro", voiceId: "em_alex" } }, "countdown", { ...options, voiceProvider: "kokoro", voiceId: undefined });
   assert.equal(same.voice.voiceId, "em_alex");
+});
+
+test("applyOptions writes Blender as the user's render engine and never keeps one the model chose", () => {
+  const blender = applyOptions(structuredClone(goodSpec), "moody-night", { ...options, renderer: "blender" });
+  assert.equal(blender.theme.renderer, "blender");
+  const modelPick = { ...structuredClone(goodSpec), theme: { renderer: "blender" } };
+  const none = applyOptions(modelPick, "moody-night", options);
+  assert.equal("renderer" in none.theme, false);
+  const remotion = applyOptions(structuredClone(goodSpec), "moody-night", { ...options, renderer: "remotion" });
+  assert.equal("renderer" in remotion.theme, false, "remotion is the default and stays omitted");
+});
+
+test("onRejected reports every rejected attempt with its error, so the server can log what the model got wrong", async () => {
+  const { provider } = scripted([JSON.stringify({ ...goodSpec, scenes: [] }), "no json here", JSON.stringify(goodSpec)]);
+  const seen: { attempt: number; error: string }[] = [];
+  const res = await generateValidSpec({
+    provider, system: "S", user: "U", templateId: "t", options, validate: validateScenes,
+    onRejected: (attempt, error) => seen.push({ attempt, error }),
+  });
+  assert.equal(res.attempts, 3);
+  assert.equal(seen.length, 2);
+  assert.deepEqual(seen.map((s) => s.attempt), [1, 2]);
+  assert.match(seen[0].error, /scenes must be a non-empty array/);
+  assert.match(seen[1].error, /not valid JSON/);
 });

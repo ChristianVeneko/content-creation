@@ -1,27 +1,11 @@
-// Template gallery: category filter, search and a grid of cards that preview the real render.
+// Format gallery: family chips, search and cards grouped by family (how it looks and moves), previewing the real render.
 // Everything comes from the engine registry; nothing here lists template ids.
 import { useId, useMemo, useState } from "react";
 import type { TemplateInfo } from "../../shared/types.ts";
+import { FAMILIES, familyCounts, formatFamily, matchesFormatQuery, rankTemplates } from "../lib/formats.ts";
 import { TemplateCard } from "./TemplateCard.tsx";
 
-const FILTERS: { id: string; label: string }[] = [
-  { id: "all", label: "Todos" },
-  { id: "illustrated-2d", label: "Ilustrado 2D" },
-  { id: "reels-2d", label: "Reels" },
-  { id: "3d", label: "3D" },
-  { id: "kinetic", label: "Kinetic" },
-];
-
-const fold = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
-
-export function matchesQuery(t: TemplateInfo, q: string): boolean {
-  if (!q.trim()) return true;
-  const hay = fold([t.id, t.name, t.description, t.category ?? "", ...(t.bestFor ?? [])].join(" "));
-  return fold(q)
-    .split(/\s+/)
-    .filter(Boolean)
-    .every((w) => hay.includes(w));
-}
+export const matchesQuery = matchesFormatQuery;
 
 export function TemplateGallery(props: {
   templates: TemplateInfo[];
@@ -37,32 +21,40 @@ export function TemplateGallery(props: {
   const searchId = useId();
   const rec = props.recommended ?? [];
 
-  const counts = useMemo(() => {
-    const c: Record<string, number> = { all: props.templates.length };
-    for (const t of props.templates) if (t.category) c[t.category] = (c[t.category] ?? 0) + 1;
-    return c;
-  }, [props.templates]);
+  const chips = useMemo(() => familyCounts(props.templates), [props.templates]);
 
-  const shown = useMemo(() => {
-    const list = props.templates.filter((t) => (filter === "all" || t.category === filter) && matchesQuery(t, query));
-    // Recommended templates for the chosen topic first, in the topic's order; the rest keep registry order.
-    const rank = (t: TemplateInfo) => (rec.includes(t.id) ? rec.indexOf(t.id) : rec.length);
-    return [...list].sort((a, b) => rank(a) - rank(b));
-  }, [props.templates, filter, query, rec]);
+  const shown = useMemo(
+    () => rankTemplates(props.templates.filter((t) => (filter === "all" || formatFamily(t) === filter) && matchesFormatQuery(t, query)), rec),
+    [props.templates, filter, query, rec],
+  );
+
+  // Without a filter or search the formats are grouped by family; otherwise one flat, ranked grid.
+  const sections = useMemo(() => {
+    if (filter !== "all" || query.trim()) return [{ id: "flat", label: "", hint: "", items: shown }];
+    const recommendedItems = shown.filter((t) => rec.includes(t.id));
+    const rest = shown.filter((t) => !rec.includes(t.id));
+    const out: { id: string; label: string; hint: string; items: TemplateInfo[] }[] = [];
+    if (recommendedItems.length > 0) out.push({ id: "rec", label: `Recomendadas para ${props.recommendedFor ?? "tu temática"}`, hint: "", items: recommendedItems });
+    for (const f of FAMILIES) {
+      const items = rest.filter((t) => formatFamily(t) === f.id);
+      if (items.length > 0) out.push({ id: f.id, label: f.label, hint: f.hint, items });
+    }
+    return out;
+  }, [shown, filter, query, rec, props.recommendedFor]);
 
   return (
     <div className="gallery">
       <div className="gallery-tools">
         <div className="gallery-filters" role="group" aria-label="Filtrar por familia">
-          {FILTERS.filter((f) => f.id === "all" || counts[f.id]).map((f) => (
+          {chips.map((f) => (
             <button key={f.id} type="button" className="gfilter" aria-pressed={filter === f.id} onClick={() => setFilter(f.id)}>
               {f.label}
-              <span className="gfilter-count">{counts[f.id] ?? 0}</span>
+              <span className="gfilter-count">{f.count}</span>
             </button>
           ))}
         </div>
         <label className="gallery-search" htmlFor={searchId}>
-          <span className="visually-hidden">Buscar plantilla</span>
+          <span className="visually-hidden">Buscar formato</span>
           <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
             <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
             <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -70,7 +62,7 @@ export function TemplateGallery(props: {
           <input
             id={searchId}
             type="search"
-            placeholder="Buscar: pizarra, datos, código…"
+            placeholder="Buscar: tutorial, datos, ranking, 3D…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -79,14 +71,9 @@ export function TemplateGallery(props: {
           />
         </label>
       </div>
-      {rec.length > 0 && props.recommendedFor && (
-        <p className="gallery-note">
-          Primero las recomendadas para <strong>{props.recommendedFor}</strong>. Puedes elegir cualquiera.
-        </p>
-      )}
       {shown.length === 0 ? (
         <div className="gallery-empty">
-          <p>Ninguna plantilla coincide{query ? ` con “${query}”` : ""}.</p>
+          <p>Ningún formato coincide{query ? ` con “${query}”` : ""}.</p>
           <button
             type="button"
             className="btn btn-quiet btn-sm"
@@ -99,17 +86,29 @@ export function TemplateGallery(props: {
           </button>
         </div>
       ) : (
-        <div className="gallery-grid" role="radiogroup" aria-label="Plantillas">
-          {shown.map((t) => (
-            <TemplateCard
-              key={t.id}
-              name={name}
-              template={t}
-              checked={props.value === t.id}
-              onSelect={() => props.onChange(t.id)}
-              disabled={props.disabled}
-              recommended={rec.includes(t.id)}
-            />
+        <div className="gallery-sections" role="radiogroup" aria-label="Formatos">
+          {sections.map((sec) => (
+            <section key={sec.id} className="gallery-section">
+              {sec.label && (
+                <header className="gallery-section-head">
+                  <h2>{sec.label}</h2>
+                  {sec.hint && <p className="muted">{sec.hint}</p>}
+                </header>
+              )}
+              <div className="gallery-grid">
+                {sec.items.map((t) => (
+                  <TemplateCard
+                    key={t.id}
+                    name={name}
+                    template={t}
+                    checked={props.value === t.id}
+                    onSelect={() => props.onChange(t.id)}
+                    disabled={props.disabled}
+                    recommended={rec.includes(t.id)}
+                  />
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}

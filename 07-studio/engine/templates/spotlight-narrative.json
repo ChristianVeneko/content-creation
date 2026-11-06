@@ -1,0 +1,61 @@
+{
+  "id": "spotlight-narrative",
+  "name": "Spotlight Narrative",
+  "category": "illustrated-2d",
+  "format": "spotlight-narrative",
+  "description": "FORMAT: a cinematic flat-vector story told one beat per scene. A dark moody room with a vignette, a single spotlight cone that lands on a glowing floor ellipse, slowly pulsing concentric rings, floating dust in the beam, a slow warm light leak and film grain. Each scene centers one icon metaphor inside glowing rings with a big counting number, or a layered flat-vector drawing with soft light, under a calm serif headline with a tracked kicker. Slow push-ins and parallax, word-by-word captions low in the frame. The metaphors, numbers and drawn props are new in every video: the format is the light, the camera and the pacing, never a fixed subject. No emoji.",
+  "prompt_hint": "Tell a short story in 5-9 scenes (4-7 s each), one idea and one beat per scene, building from a quiet hook to a turn and a closing line. title.kicker is a tiny tracked tag (a place, a time, a chapter) and title.main one calm sentence (max ~30 chars). Put ONE focal element in each scene: beacon (an icon metaphor in glowing rings with a big counting number: icon, value, from, prefix, suffix, label, rings 2-5) or a drawing element (a layered flat-vector scene drawn with parts: far, mid and near layers, a light source, soft shadows; draw it new for this story). Use counter, stat or card only as a support. Choose a different icon metaphor and a different drawn subject in every scene and every video; never reuse the example's objects. Numbers must be real or clearly hypothetical. Keep narration short and visual: the captions are word-by-word at the bottom. Never use emoji.",
+  "best_for": [
+    "story-driven explainers",
+    "what-if and imagine scenarios",
+    "history and documentary beats",
+    "big-number narratives",
+    "emotional hooks"
+  ],
+  "preview": {
+    "style": "illustrated",
+    "gradient": [
+      "#171B2B",
+      "#07080D",
+      "#FFB547"
+    ],
+    "accent": "#FFB547",
+    "sample_text": "122 H"
+  },
+  "defaults": {
+    "theme": {
+      "look": "spotlight-narrative",
+      "palette": {
+        "bg": [
+          "#1A1F33",
+          "#06070C"
+        ],
+        "text": "#F3F5FB",
+        "accent": "#FFB547",
+        "accent2": "#FFE2A8",
+        "accent3": "#6C8CFF"
+      },
+      "font": "Montserrat",
+      "captionStyle": "minimal"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 0.98
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.9
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 1
+    },
+    "animation": "pop"
+  }
+}

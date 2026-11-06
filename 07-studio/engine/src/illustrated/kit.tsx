@@ -5,7 +5,7 @@ import { evolvePath } from "@remotion/paths";
 import { noise2D } from "@remotion/noise";
 import rough from "roughjs";
 import type { IconData, Palette } from "../types";
-import { rgba, seeded } from "../util";
+import { luminance, rgba, seeded } from "../util";
 import { LOOKS, type Look } from "./looks";
 import { artPanel, isArtLook } from "./artstyles";
 import { depthPanel } from "./depth";
@@ -34,6 +34,13 @@ export type Ink = {
   look: Look;
 };
 
+/** Looks whose panels are light glass / paper: with a light-text (dark) palette their surfaces turn into dark glass so card text keeps its contrast. */
+const SURFACE_FOLLOWS_PALETTE = new Set(["checklist-glass", "host-tutorial"]);
+const darkSurfaces = (look: Look, text: string): Partial<Look["colors"]> =>
+  SURFACE_FOLLOWS_PALETTE.has(look.id) && luminance(text) > 0.5
+    ? { surface: "rgba(24, 28, 48, 0.62)", surface2: "rgba(30, 34, 58, 0.82)", paper: "rgba(30, 34, 58, 0.9)", paperInk: text, line: "rgba(255, 255, 255, 0.16)", muted: "#B4B9D6", stampBg: "rgba(24, 28, 48, 0.75)" }
+    : {};
+
 export const makeInk = (p: Palette, look: Look = LOOKS.blueprint): Ink => ({
   bg: p.bg[0],
   bg2: p.bg[1] ?? p.bg[0],
@@ -42,6 +49,7 @@ export const makeInk = (p: Palette, look: Look = LOOKS.blueprint): Ink => ({
   accent2: p.accent2 ?? "#FFC145",
   accent3: p.accent3 ?? "#38D6F5",
   ...look.colors,
+  ...darkSurfaces(look, p.text),
   look,
 });
 
@@ -54,7 +62,7 @@ export const col = (ink: Ink, c: string | undefined, fallback: string): string =
 };
 
 /** moments: the scene's resolved word moments (drawings and 2D fx), seconds into the scene. */
-type Ctx = { ink: Ink; icons: Record<string, IconData>; seed: number; look: Look; moments?: Record<string, number> };
+type Ctx = { ink: Ink; icons: Record<string, IconData>; seed: number; look: Look; moments?: Record<string, number>; /** Spec language (number grouping of the counter pill) */ language?: string };
 export const IllustrationContext = createContext<Ctx>({ ink: makeInk({ bg: ["#0B1020"], text: "#fff", accent: "#FF7A59" }), icons: {}, seed: 1, look: LOOKS.blueprint });
 export const useKit = () => useContext(IllustrationContext);
 
@@ -312,6 +320,14 @@ const basePanelStyle = (ink: Ink, accent?: string): React.CSSProperties => {
     return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: accent ? `3px solid ${accent}` : "none", boxShadow: `0 10px 0 ${rgba("#0A0A28", 0.45)}` };
   if (L.id === "soft-gradient")
     return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.6) : "rgba(255,255,255,0.95)"}`, backdropFilter: "blur(14px)", boxShadow: accent ? `0 0 0 6px ${rgba(accent, 0.12)}` : "none" };
+  if (L.id === "host-tutorial")
+    return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `3px solid ${ink.paperInk}`, boxShadow: `7px 7px 0 ${accent ?? ink.paperInk}` };
+  if (L.id === "checklist-glass")
+    return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.55) : "rgba(255,255,255,0.95)"}`, backdropFilter: "blur(16px)", boxShadow: L.panel.shadow };
+  if (L.id === "spotlight-narrative")
+    return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: `1px solid ${accent ? rgba(accent, 0.55) : ink.line}`, boxShadow: `${L.panel.shadow}${accent ? `, 0 0 40px ${rgba(accent, 0.14)}` : ""}` };
+  if (L.id === "data-atlas")
+    return { position: "absolute", borderRadius: L.panel.radius, background: `linear-gradient(180deg, ${ink.surface2}, ${ink.surface})`, border: `1.5px solid ${accent ? rgba(accent, 0.55) : ink.line}`, boxShadow: `${L.panel.shadow}${accent ? `, 0 0 36px ${rgba(accent, 0.12)}` : ""}` };
   return { position: "absolute", borderRadius: L.panel.radius, background: ink.surface2, border: `2px solid ${accent ? rgba(accent, 0.7) : ink.line}`, boxShadow: L.panel.shadow };
 };
 

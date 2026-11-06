@@ -3,7 +3,7 @@
 // Text stays inside x 90..990; the dialog box (the only element below y 1400) ends at y 1456.
 import React from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
-import { bannerFace, dialogAt, fitMono, formatCount } from "../../lib/pixel.mjs";
+import { CROWN_ROWS, STAR_ROWS, bannerFace, dialogAt, fitMono, formatCount, rankRows, starsOf } from "../../lib/pixel.mjs";
 import { BANNER_FONT, PIXEL_FONT, TAG_FONT } from "../fonts";
 import type { CaptionPage } from "../types";
 
@@ -83,14 +83,14 @@ export const bannerBottom = (text: string, kicker: boolean) => {
 };
 
 /** Title banner: boxed (default) or big hero title for the hook. Top edge at y >= 300 (safe zone). */
-export const Banner: React.FC<{ text: string; accent?: string; kicker?: string; big?: boolean; ui: UiColors; enterFrame: number }> = ({ text, accent, kicker, big, ui, enterFrame }) => {
+export const Banner: React.FC<{ text: string; accent?: string; kicker?: string; big?: boolean; ui: UiColors; enterFrame: number; shift?: number }> = ({ text, accent, kicker, big, ui, enterFrame, shift = 0 }) => {
   const frame = useCurrentFrame();
   const sc = popScale(frame, enterFrame);
   if (!sc) return null;
   if (big) {
     const fit = fitMono(text.toUpperCase(), { maxWidth: 880, sizes: [96, 88, 80, 72, 64, 56, 48], maxLines: 3, advance: bannerFace(text).advance });
     return (
-      <div style={{ position: "absolute", left: 90, width: 900, top: 330, textAlign: "center", transform: `scale(${sc})`, transformOrigin: "50% 0" }}>
+      <div style={{ position: "absolute", left: 90, width: 900, top: 330 + shift, textAlign: "center", transform: `scale(${sc})`, transformOrigin: "50% 0" }}>
         {kicker ? <div style={{ marginBottom: 28, display: "inline-block", position: "relative", height: 44 }}><Tag text={kicker} ui={ui} x={0} y={0} /></div> : null}
         {fit.lines.map((line, i) => (
           <div key={i} style={{ fontFamily: faceFont(text), fontSize: fit.size, lineHeight: `${Math.round(fit.size * 1.3)}px`, color: ui.text, textShadow: `${outline(ink, 6)}, ${hardShadow(ink, 12)}` }}>
@@ -103,7 +103,7 @@ export const Banner: React.FC<{ text: string; accent?: string; kicker?: string; 
   const fit = fitBanner(text);
   const width = Math.max(...fit.lines.map((l) => l.length)) * fit.size * bannerFace(text).advance + 72;
   return (
-    <div style={{ position: "absolute", left: 540 - width / 2, top: kicker ? 300 : 330, width, transform: `scale(${sc})`, transformOrigin: "50% 50%" }}>
+    <div style={{ position: "absolute", left: 540 - width / 2, top: (kicker ? 300 : 330) + shift, width, transform: `scale(${sc})`, transformOrigin: "50% 50%" }}>
       {kicker ? (
         <div style={{ position: "relative", height: 48 }}>
           <Tag text={kicker} ui={ui} x={width / 2} y={0} color={ui.name} />
@@ -197,6 +197,154 @@ export const PixelCheck: React.FC<{ color: string; px?: number }> = ({ color, px
     {CHECK.flatMap((row, y) => [...row].map((ch, x) => (ch === "x" ? <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={color} /> : null)))}
   </svg>
 );
+
+/* ================================================================ versus format ================================================================ */
+
+/** A pixel-art shape from rows of `x` cells, drawn as crisp rects (the crown and the star of the versus UI). */
+const PixelShape: React.FC<{ rows: string[]; px: number; color: string; style?: React.CSSProperties }> = ({ rows, px, color, style }) => (
+  <svg width={rows[0].length * px} height={rows.length * px} viewBox={`0 0 ${rows[0].length} ${rows.length}`} shapeRendering="crispEdges" style={{ flex: "none", ...style }}>
+    {rows.flatMap((row, y) => [...row].map((ch, x) => (ch === "x" ? <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={color} /> : null)))}
+  </svg>
+);
+export const PixelCrown: React.FC<{ color: string; px?: number; style?: React.CSSProperties }> = ({ color, px = 4, style }) => <PixelShape rows={CROWN_ROWS} px={px} color={color} style={style} />;
+
+/** Five pixel stars for a rating in half steps: full, half (left half lit) and empty. */
+export const PixelStars: React.FC<{ rating: number; ui: UiColors; px?: number }> = ({ rating, ui, px = 4 }) => {
+  const dim = `${ui.text}40`;
+  return (
+    <div style={{ display: "flex", gap: px * 1.5 }}>
+      {starsOf(rating).map((st, i) =>
+        st === "half" ? (
+          <div key={i} style={{ position: "relative", width: 7 * px, height: 7 * px }}>
+            <PixelShape rows={STAR_ROWS} px={px} color={dim} style={{ position: "absolute", left: 0, top: 0 }} />
+            <div style={{ position: "absolute", left: 0, top: 0, width: 3.5 * px, height: 7 * px, overflow: "hidden" }}>
+              <PixelShape rows={STAR_ROWS} px={px} color={ui.accent} />
+            </div>
+          </div>
+        ) : (
+          <PixelShape key={i} rows={STAR_ROWS} px={px} color={st === "full" ? ui.accent : dim} />
+        ),
+      )}
+    </div>
+  );
+};
+
+/** "ROUND n/N" title card: pops in, holds until `until`, then shrinks away in whole steps. */
+export const RoundCard: React.FC<{ n: number; of: number; title?: string; ui: UiColors; at: number; until: number }> = ({ n, of, title, ui, at, until }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const enter = popScale(frame, Math.round(at * fps));
+  const out = frame - Math.round(until * fps);
+  const sc = out < 0 ? enter : [0.9, 0.7, 0.45, 0][Math.min(3, Math.floor(out / 2))] ?? 0;
+  if (!sc) return null;
+  return (
+    <PixelBox ui={ui} border={ui.accent} style={{ left: 200, top: 560, width: 680, transform: `scale(${sc})`, transformOrigin: "50% 50%" }}>
+      <div style={{ padding: "34px 36px 36px", textAlign: "center" }}>
+        <div style={{ fontFamily: TAG_FONT, fontSize: 36, letterSpacing: 10, color: ui.name, textTransform: "uppercase" }}>Round</div>
+        <div style={{ fontFamily: BANNER_FONT, fontSize: 132, lineHeight: "150px", color: ui.accent, textShadow: `${outline(ink, 6)}, ${hardShadow(ink, 12)}` }}>{n}/{of}</div>
+        {title ? <div style={{ marginTop: 10, fontFamily: TAG_FONT, fontSize: 38, letterSpacing: 4, color: ui.text, textTransform: "uppercase" }}>{title}</div> : null}
+      </div>
+    </PixelBox>
+  );
+};
+
+type Fighter = { name: string; stars: number; crown?: boolean };
+/** Header strip of the stage: one cell per contestant with its name, its pixel stars and an optional crown. */
+export const VersusHeader: React.FC<{ fighters: Fighter[]; ui: UiColors; enterFrame: number }> = ({ fighters, ui, enterFrame }) => {
+  const frame = useCurrentFrame();
+  const sc = popScale(frame, enterFrame);
+  if (!sc) return null;
+  return (
+    <PixelBox ui={ui} style={{ left: 90, top: 310, width: 900, transform: `scale(${sc})`, transformOrigin: "50% 0" }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "22px 20px 20px" }}>
+        {fighters.flatMap((f, i) => [
+          i > 0 ? <div key={`v${i}`} style={{ fontFamily: BANNER_FONT, fontSize: 24, color: ui.accent, padding: "0 6px", flex: "none" }}>VS</div> : null,
+          <div key={i} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, height: 34 }}>
+              {f.crown ? <PixelCrown color={ui.accent} px={3} /> : null}
+              <span style={{ fontFamily: TAG_FONT, fontSize: 30, letterSpacing: 3, color: ui.name, textTransform: "uppercase", whiteSpace: "nowrap" }}>{f.name}</span>
+            </div>
+            <PixelStars rating={f.stars} ui={ui} px={4} />
+          </div>,
+        ])}
+      </div>
+    </PixelBox>
+  );
+};
+
+const stepped = (p: number, steps = 12) => Math.floor(Math.min(1, Math.max(0, p)) * steps) / steps;
+
+/** Ranking panel: rows with rank, name, a bar that fills in steps and the score; rows enter one after another. */
+export const Ranking: React.FC<{ title?: string; rows: { name: string; score: number; crown?: boolean }[]; unit?: string; max?: number; times: number[]; ui: UiColors; top?: number }> = ({ title, rows, unit = "", max, times, ui, top = 440 }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const sc = popScale(frame, 4);
+  if (!sc) return null;
+  const ranked = rankRows(rows, max) as { name: string; score: number; crown?: boolean; rank: number; ratio: number }[];
+  return (
+    <PixelBox ui={ui} border={ui.accent} style={{ left: 110, top, width: 860, transform: `scale(${sc})`, transformOrigin: "50% 0" }}>
+      <div style={{ padding: "26px 30px 28px" }}>
+        {title ? <div style={{ fontFamily: TAG_FONT, fontSize: 30, color: ui.name, letterSpacing: 3, textTransform: "uppercase", textAlign: "center", marginBottom: 14 }}>{title}</div> : null}
+        {ranked.map((r, k) => {
+          const q = Math.min(1, Math.max(0, (t - times[k]) / 0.18));
+          const fill = stepped((t - times[k] - 0.1) / 0.6);
+          const shown = Math.round(r.score * fill);
+          const first = r.rank === 1;
+          return (
+            <div key={k} style={{ display: "flex", alignItems: "center", gap: 18, height: 84, opacity: q > 0 ? 1 : 0, transform: `translateX(${Math.round((1 - q) * 5) * 24}px)` }}>
+              <div style={{ width: 54, height: 54, flex: "none", background: first ? ui.accent : ui.border, color: ui.box, fontFamily: BANNER_FONT, fontSize: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>{r.rank}</div>
+              <div style={{ width: 200, flex: "none", fontFamily: PIXEL_FONT, fontWeight: 700, fontSize: 36, color: ui.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textTransform: "uppercase" }}>{r.name}</div>
+              <div style={{ position: "relative", flex: 1, height: 34, border: `4px solid ${ui.border}`, background: "rgba(0,0,0,0.35)" }}>
+                <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${r.ratio * fill * 100}%`, background: first ? ui.accent : ui.name }} />
+              </div>
+              <div style={{ width: 150, flex: "none", textAlign: "right", fontFamily: BANNER_FONT, fontSize: 26, color: first ? ui.accent : ui.text }}>
+                {formatCount(shown)}
+                {unit}
+              </div>
+              <div style={{ width: 40, flex: "none", display: "flex", justifyContent: "center" }}>{r.crown && q >= 1 ? <PixelCrown color={ui.accent} px={4} /> : null}</div>
+            </div>
+          );
+        })}
+      </div>
+    </PixelBox>
+  );
+};
+
+/** Verdict panel: every row fills in (name typed, dotted leader, score) one after another; the winner lights up with a crown. */
+export const Verdict: React.FC<{ title?: string; rows: { name: string; score: number | string; note?: string }[]; winner?: number; times: number[]; ui: UiColors; top?: number }> = ({ title = "VERDICT", rows, winner, times, ui, top = 440 }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const sc = popScale(frame, 4);
+  if (!sc) return null;
+  const best = winner ?? rows.reduce((b, r, k) => (Number(r.score) > Number(rows[b].score) ? k : b), 0);
+  const last = times[times.length - 1] ?? 0;
+  const lit = t >= last + 0.5;
+  return (
+    <PixelBox ui={ui} border={ui.accent} style={{ left: 130, top, width: 820, transform: `scale(${sc})`, transformOrigin: "50% 0" }}>
+      <div style={{ padding: "28px 34px 30px" }}>
+        <div style={{ fontFamily: BANNER_FONT, fontSize: 34, color: ui.accent, textAlign: "center", marginBottom: 18, textShadow: hardShadow(ink, 4) }}>{title}</div>
+        {rows.map((r, k) => {
+          const since = t - times[k];
+          if (since < 0) return <div key={k} style={{ height: 88 }} />;
+          const chars = Math.min(r.name.length, Math.ceil((since / 0.35) * r.name.length));
+          const scoreOn = since > 0.4;
+          const win = lit && k === best;
+          return (
+            <div key={k} style={{ display: "flex", alignItems: "center", gap: 14, height: 88, padding: "0 16px", background: win ? ui.accent : "transparent", color: win ? ui.box : ui.text }}>
+              <div style={{ width: 56, flex: "none", display: "flex", justifyContent: "center" }}>{win ? <PixelCrown color={ui.box} px={5} /> : <span style={{ fontFamily: BANNER_FONT, fontSize: 26, color: ui.name }}>{k + 1}</span>}</div>
+              <div style={{ fontFamily: PIXEL_FONT, fontWeight: 700, fontSize: 40, textTransform: "uppercase", whiteSpace: "nowrap" }}>{r.name.slice(0, chars)}</div>
+              <div style={{ flex: 1, height: 0, borderBottom: `6px dotted ${win ? ui.box : `${ui.text}66`}`, alignSelf: "flex-end", marginBottom: 26, opacity: since > 0.3 ? 1 : 0 }} />
+              {r.note && scoreOn ? <div style={{ fontFamily: TAG_FONT, fontSize: 24, letterSpacing: 2, color: win ? ui.box : ui.name, textTransform: "uppercase" }}>{r.note}</div> : null}
+              <div style={{ minWidth: 110, textAlign: "right", fontFamily: BANNER_FONT, fontSize: 30, opacity: scoreOn ? 1 : 0 }}>{typeof r.score === "number" ? formatCount(r.score) : r.score}</div>
+            </div>
+          );
+        })}
+      </div>
+    </PixelBox>
+  );
+};
 
 /**
  * RPG dialog box at the bottom: optional portrait square, speaker name in accent small caps, and the narration typed

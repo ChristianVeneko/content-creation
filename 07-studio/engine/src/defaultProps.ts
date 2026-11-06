@@ -21,6 +21,14 @@ import uiCardsTemplate from "../templates/ui-cards.json";
 import flatDepthExample from "../examples/flat-depth.spec.json";
 import flatDepthTemplate from "../templates/flat-depth.json";
 import softGradientExample from "../examples/soft-gradient.spec.json";
+import hostTutorialExample from "../examples/host-tutorial.spec.json";
+import hostTutorialTemplate from "../templates/host-tutorial.json";
+import checklistGlassExample from "../examples/checklist-glass.spec.json";
+import checklistGlassTemplate from "../templates/checklist-glass.json";
+import spotlightExample from "../examples/spotlight-narrative.spec.json";
+import spotlightTemplate from "../templates/spotlight-narrative.json";
+import dataAtlasExample from "../examples/data-atlas.spec.json";
+import dataAtlasTemplate from "../templates/data-atlas.json";
 import softGradientTemplate from "../templates/soft-gradient.json";
 import pixelDuskExample from "../examples/pixel-dusk.spec.json";
 import pixelNightExample from "../examples/pixel-night.spec.json";
@@ -29,6 +37,8 @@ import pixelMonoExample from "../examples/pixel-mono.spec.json";
 import pixelDuskTemplate from "../templates/pixel-dusk.json";
 import pixelNightTemplate from "../templates/pixel-night.json";
 import pixelArcadeTemplate from "../templates/pixel-arcade.json";
+import pixelVersusExample from "../examples/pixel-versus.spec.json";
+import pixelVersusTemplate from "../templates/pixel-versus.json";
 import pixelMonoTemplate from "../templates/pixel-mono.json";
 import { planPixel, usesPixelKit } from "../lib/pixel.mjs";
 import neonGridExample from "../examples/neon-grid.spec.json";
@@ -39,6 +49,20 @@ import neonGridTemplate from "../templates/neon-grid.json";
 import softStudioTemplate from "../templates/soft-studio.json";
 import moodyNightTemplate from "../templates/moody-night.json";
 import voxelWorldTemplate from "../templates/voxel-world.json";
+import dataStageExample from "../examples/data-stage.spec.json";
+import dataStageTemplate from "../templates/data-stage.json";
+import monolithStoryExample from "../examples/monolith-story.spec.json";
+import monolithStoryTemplate from "../templates/monolith-story.json";
+import clayMascotExample from "../examples/clay-mascot.spec.json";
+import clayMascotTemplate from "../templates/clay-mascot.json";
+import cutawayExample from "../examples/cutaway-explainer.spec.json";
+import cutawayTemplate from "../templates/cutaway-explainer.json";
+import engineeringExample from "../examples/engineering-explainer.spec.json";
+import engineeringTemplate from "../templates/engineering-explainer.json";
+import processExample from "../examples/process-explainer.spec.json";
+import documentaryExample from "../examples/documentary-3d-clavo.spec.json";
+import documentaryTemplate from "../templates/documentary-3d.json";
+import processTemplate from "../templates/process-explainer.json";
 import { computeTimeline, paginateCaptions, syntheticCaptions } from "../lib/timeline.mjs";
 import { resolveSpec } from "../lib/spec.mjs";
 import { planIllustration } from "../lib/illustrated.mjs";
@@ -58,6 +82,13 @@ const THREE_EXAMPLES: Record<string, [unknown, unknown]> = {
   "soft-studio": [softStudioExample, softStudioTemplate],
   "moody-night": [moodyNightExample, moodyNightTemplate],
   "voxel-world": [voxelWorldExample, voxelWorldTemplate],
+  "data-stage": [dataStageExample, dataStageTemplate],
+  "monolith-story": [monolithStoryExample, monolithStoryTemplate],
+  "clay-mascot": [clayMascotExample, clayMascotTemplate],
+  "cutaway-explainer": [cutawayExample, cutawayTemplate],
+  "engineering-explainer": [engineeringExample, engineeringTemplate],
+  "process-explainer": [processExample, processTemplate],
+  "documentary-3d": [documentaryExample, documentaryTemplate],
 };
 
 // Format looks preview their own example spec (their elements need a plan).
@@ -65,12 +96,17 @@ const FORMAT_EXAMPLES: Record<string, [unknown, unknown]> = {
   "ui-cards": [uiCardsExample, uiCardsTemplate],
   "flat-depth": [flatDepthExample, flatDepthTemplate],
   "soft-gradient": [softGradientExample, softGradientTemplate],
+  "host-tutorial": [hostTutorialExample, hostTutorialTemplate],
+  "checklist-glass": [checklistGlassExample, checklistGlassTemplate],
+  "spotlight-narrative": [spotlightExample, spotlightTemplate],
+  "data-atlas": [dataAtlasExample, dataAtlasTemplate],
 };
 const PIXEL_EXAMPLES: Record<string, [unknown, unknown]> = {
   "pixel-dusk": [pixelDuskExample, pixelDuskTemplate],
   "pixel-night": [pixelNightExample, pixelNightTemplate],
   "pixel-arcade": [pixelArcadeExample, pixelArcadeTemplate],
   "pixel-mono": [pixelMonoExample, pixelMonoTemplate],
+  "pixel-versus": [pixelVersusExample, pixelVersusTemplate],
 };
 
 export const previewProps = (template: TemplateId): RenderProps => {

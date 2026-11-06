@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "title": "Bridge at night",
+  "template": "moody-night",
+  "language": "en",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "a suspension bridge over dark water with a lone car",
+    "actors": [
+      {
+        "build": "bridge",
+        "id": "bridge",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "params": {
+          "kind": "suspension",
+          "span": 7.6,
+          "height": 2.4,
+          "structure": "#E8743B",
+          "deck": "#2A3350"
+        },
+        "seed": 1
+      },
+      {
+        "build": "car-lowpoly",
+        "id": "car",
+        "pos": [
+          -4.2,
+          0.9,
+          0
+        ],
+        "params": {
+          "kind": "suv",
+          "body": "#F2C14E",
+          "width": 0.6,
+          "length": 1.4
+        },
+        "seed": 3,
+        "size": 0.6
+      }
+    ],
+    "world": {
+      "concept": "night bridge over dark water",
+      "backdrop": "#0A0F24",
+      "ground": {
+        "kind": "plane",
+        "color": "#12203F",
+        "size": 40
+      },
+      "parts": [
+        {
+          "build": "cloud",
+          "id": "moon-cloud",
+          "pos": [
+            4,
+            6,
+            -8
+          ],
+          "params": {
+            "size": 3,
+            "color": "#B8C4E8"
+          },
+          "seed": 2
+        }
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "a",
+      "narration": "At night the bridge is a line of light over dark water.",
+      "title": {
+        "kicker": "Step 1",
+        "main": "The bridge"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.7
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "bridge",
+            "zoom": 0.5,
+            "at": 2
+          }
+        ],
+        "beats": []
+      }
+    },
+    {
+      "id": "b",
+      "narration": "A single car crosses, small against the long steel cables.",
+      "title": {
+        "kicker": "Step 2",
+        "main": "The crossing"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "low",
+            "zoom": 0.6
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "car",
+            "zoom": 0.45,
+            "at": 2
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.3,
+            "target": "car",
+            "dur": 5.5,
+            "ease": "linear",
+            "to": {
+              "pos": [
+                8,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "narration": "The camera rises and the whole span glows against the sky.",
+      "title": {
+        "kicker": "Step 3",
+        "main": "The span"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.8
+          }
+        ],
+        "beats": []
+      }
+    }
+  ]
+}

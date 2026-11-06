@@ -1,0 +1,60 @@
+{
+  "id": "data-stage",
+  "name": "Data Stage 3D",
+  "category": "3d",
+  "format": "data-stage",
+  "description": "Dark-arena 3D format for numbers and comparisons: volumetric spotlight cones, an instanced crowd of silhouettes, glossy objects lined up in rows that recede into depth, balance scales and filling tubes, with a big counter. A format, not a scene: the agent builds the stage, the objects and the props from scratch for each video. No emoji.",
+  "prompt_hint": "5-9 scenes (3-6 s). Each: title.kicker + title.main, visual.type \"scene3d\" with a `world` (concept, ground, parts, `crowd`) and `custom` objects built for THIS topic: rows of glossy objects via `repeat` (step [0, 0, -1.2]), a balance scale (two pans + beam with keys) or a filling tube (glass cylinder + inner cylinder scaling up). Add 1-3 fx type spotlight, a `stat` object as the counter, and `shots` (wide, low, close). No emoji.",
+  "best_for": [
+    "money and wealth",
+    "rankings and comparisons",
+    "numbers and statistics",
+    "before and after",
+    "big counters"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#05060F",
+      "#101A3A",
+      "#FFC83D"
+    ],
+    "accent": "#FFC83D",
+    "sample_text": "ESCENARIO"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#05060F",
+          "#101A3A"
+        ],
+        "text": "#FFFFFF",
+        "accent": "#FFC83D",
+        "accent2": "#4DA3FF",
+        "accent3": "#FF5C7A"
+      },
+      "font": "Montserrat",
+      "captionStyle": "clean"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "em_alex",
+      "speed": 1.04
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.12,
+      "duck": true
+    },
+    "sfx": {
+      "enabled": true,
+      "volume": 0.95
+    },
+    "captions": {
+      "enabled": true,
+      "wordsPerPage": 3
+    },
+    "animation": "pop"
+  }
+}

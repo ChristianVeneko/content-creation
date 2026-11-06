@@ -7,6 +7,7 @@ import { api } from "../lib/api.ts";
 import { paletteVars, templatePalette } from "../lib/palette.ts";
 import { IllustratedPreview } from "./IllustratedPreview.tsx";
 import { ThreePreview } from "./ThreePreview.tsx";
+import { lookLine } from "../lib/formats.ts";
 import { TypePreview } from "./TypePreview.tsx";
 
 export const CATEGORY_LABEL: Record<string, string> = {
@@ -14,6 +15,7 @@ export const CATEGORY_LABEL: Record<string, string> = {
   "reels-2d": "Reels",
   "3d": "3D",
   kinetic: "Kinetic",
+  hyperframes: "Animado",
 };
 
 const reducedMotion = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -82,6 +84,7 @@ export function TemplateCard(props: {
   const { template: t } = props;
   const [active, setActive] = useState(false);
   const category = t.category ? CATEGORY_LABEL[t.category] ?? t.category : null;
+  const look = lookLine(t, 70);
   return (
     <label
       className="tcard"
@@ -104,6 +107,7 @@ export function TemplateCard(props: {
       <span className="tcard-meta">
         <span className="tcard-name">{t.name}</span>
         {category && <span className="tcard-cat">{category}</span>}
+        {look && <span className="tcard-look">{look}</span>}
       </span>
     </label>
   );

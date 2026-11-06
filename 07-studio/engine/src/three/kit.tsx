@@ -93,6 +93,11 @@ export const Mat: React.FC<{ finish?: Finish; color?: string; intensity?: number
       if (finish === "metal") return <meshStandardMaterial color="#C9CED8" metalness={0.7} roughness={0.35} />;
       if (finish === "screen") return <meshStandardMaterial color={c} roughness={0.25} emissive={c} emissiveIntensity={0.2} />;
       return <meshStandardMaterial color={c} map={map} metalness={0.1} roughness={finish === "dark" ? 0.6 : 0.45} />;
+    case "lowpoly":
+      // cutaway explainer: flat-shaded matte facets (the low-poly read), no gloss
+      if (finish === "metal") return <meshStandardMaterial color="#C9CDD6" metalness={0.25} roughness={0.55} flatShading />;
+      if (finish === "screen") return <meshStandardMaterial color={c} roughness={0.5} emissive={c} emissiveIntensity={0.35} flatShading />;
+      return <meshStandardMaterial color={c} map={map} roughness={0.92} metalness={0} flatShading />;
     case "voxel":
       if (finish === "metal") return <meshStandardMaterial color="#C9CCD2" metalness={0.6} roughness={0.45} flatShading />;
       if (finish === "screen") return <meshStandardMaterial color={c} roughness={0.5} emissive={c} emissiveIntensity={0.2} flatShading />;
@@ -219,10 +224,14 @@ export const CameraRig: React.FC<{ cam: CamState }> = ({ cam }) => {
 
 // ---------------- lights + environment ----------------
 
-export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity: number; shadowRadius: number; set: boolean }> = ({ hdri, span, envIntensity, shadowRadius, set }) => {
+export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity: number; shadowRadius: number; set: boolean; follow?: number[] }> = ({ hdri, span, envIntensity, shadowRadius, set, follow }) => {
   const { look, palette } = useKit3D();
   // a set reaches past the objects: widen the key light's shadow frustum so props near the subject cast too
   const s = Math.max(set ? 9 : 6, span + (set ? 4 : 0));
+  // a long gallery of set pieces: the key light (and its shadow frustum) follows the camera's look-at point
+  const target = useMemo(() => new THREE.Object3D(), []);
+  const fx = follow ? Math.round(follow[0] * 2) / 2 : 0;
+  const fz = follow ? Math.round(follow[2] * 2) / 2 : 0;
   const shadowCam = (l: THREE.DirectionalLight | null) => {
     if (!l) return;
     // PCF penumbra width (PCFShadowMap; PCFSoftShadowMap is removed in three r186)
@@ -260,6 +269,16 @@ export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity:
         <>
           <hemisphereLight args={["#FFF6EA", "#C9B092", 1.5]} />
           <directionalLight ref={shadowCam} position={[-7, 8, 3]} intensity={2.4} color="#FFE6C7" {...key} />
+        </>
+      );
+    case "documentary-3d":
+      // data documentary: a dusk sky fill, a low warm key that rakes across the set (long shadows) and a cool rim from behind
+      return (
+        <>
+          <hemisphereLight args={["#8EA2DA", "#2A2118", 1.7]} />
+          <primitive object={target} position={[fx, 0, fz]} />
+          <directionalLight ref={shadowCam} target={target} position={[fx - 7, 4.5, fz + 6]} intensity={3.3} color="#FFB877" {...key} shadow-mapSize={[2048, 2048]} />
+          <directionalLight position={[fx + 6, 5, fz - 9]} intensity={1.7} color="#7BA8FF" />
         </>
       );
     case "moody-night":
@@ -331,6 +350,38 @@ export const Lights: React.FC<{ hdri: string | null; span: number; envIntensity:
           <directionalLight position={[0, 6, 6]} intensity={0.4} color="#9FEFFF" />
         </>
       );
+    case "data-stage":
+      // a dark arena: a top key, an accent rim from behind and a faint cool fill; spotlights come from `fx`
+      return (
+        <>
+          {env}
+          <hemisphereLight args={["#3A4A80", "#05060C", 0.7]} />
+          <directionalLight ref={shadowCam} position={[-3, 11, 6]} intensity={1.5} color="#FFEBC8" {...key} />
+          <directionalLight position={[0, 4, -9]} intensity={1.4} color={palette.accent2 ?? palette.accent} />
+        </>
+      );
+    case "monolith-story":
+      // a raking low key that carves the faces of a tall object, plus a colored rim from behind
+      return (
+        <>
+          {env}
+          <hemisphereLight args={["#8FA0D0", "#171A28", 0.9]} />
+          <directionalLight ref={shadowCam} position={[-6, 4, 6]} intensity={2.3} color="#FFE3C0" {...key} />
+          <directionalLight position={[5, 3, -8]} intensity={1.3} color={palette.accent2 ?? palette.accent} />
+        </>
+      );
+    case "cutaway-explainer":
+    case "engineering-explainer":
+    case "process-explainer":
+      // soft daylight: a sky/ground hemisphere, one warm key with a soft shadow, a faint cool fill from the left
+      return (
+        <>
+          <hemisphereLight args={["#F2F8FF", "#D8C7A8", 2.3]} />
+          <directionalLight ref={shadowCam} position={[4, 9, 8]} intensity={1.5} color="#FFE2B5" {...key} />
+          <directionalLight position={[-6, 3, 4]} intensity={0.45} color="#CFE0FF" />
+        </>
+      );
+    case "clay-mascot":
     case "clay-diorama":
     default:
       return (
@@ -449,7 +500,7 @@ export const Floor: React.FC<{ half: [number, number]; center: [number, number] 
       return (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[center[0], -0.01, center[1]]} receiveShadow>
           <planeGeometry args={[200, 200]} />
-          <meshStandardMaterial color={mixHex(palette.bg[1] ?? palette.bg[0], "#000000", 0.25)} roughness={0.85} />
+          <meshStandardMaterial color={look.ground ? look.ground(palette) : mixHex(palette.bg[1] ?? palette.bg[0], "#000000", 0.25)} roughness={0.85} />
         </mesh>
       );
     case "holopad": {

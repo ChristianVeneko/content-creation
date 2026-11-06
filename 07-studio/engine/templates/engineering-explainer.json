@@ -1,0 +1,54 @@
+{
+  "id": "engineering-explainer",
+  "name": "Engineering & Process Explainer 3D",
+  "category": "3d",
+  "format": "engineering-explainer",
+  "description": "Engineering explainer look (physical, mechanical and architectural cutaways). For any video built on a persistent `stage` with beats and builders, use `process-explainer` instead: it is the master template and this one only differs in its framing. Cutaway dioramas (earth strata, foundations, piping, structural framing), the 5 engineering archetypes (como-funciona, paso-a-paso, que-paso, para-que-sirve, fuerzas-ingenieria) and the dig, pour, fill, drain, collapse, buoyancy and insert presets still work. No emoji.",
+  "prompt_hint": "5-8 scenes (4-8 s) explaining a physical or engineering system. Prefer a top-level `stage` (ONE world for the whole video, built from `{ \"build\": ... }` calls: see `node cli.mjs builders`) with word-timed `beats` for every state change and camera `shots`; do NOT build a new world per scene and do not rely on loop presets (dig, pour, fill, drain, collapse, buoyancy, insert are only short idle loops: real changes are beats, carve and liquid levels). Parts are rich models (40-150 parts from builders, up to 160 per actor), not 2-6 primitives. Overlays: flow strips, concept pills, limit bars. Captions at the bottom. No emoji.",
+  "best_for": [
+    "civil and mechanical engineering",
+    "construction and step-by-step processes",
+    "failure forensics (what happened / why it failed)",
+    "fluid dynamics, valves, and piping networks",
+    "hydrostatic and structural physics"
+  ],
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#CFE8FF",
+      "#F6EFD9",
+      "#0077B6"
+    ],
+    "accent": "#0077B6",
+    "sample_text": "INGENIERÍA"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#BFE0FF",
+          "#F4EBD3"
+        ],
+        "text": "#14213D",
+        "accent": "#0077B6",
+        "accent2": "#E63946",
+        "accent3": "#2A9D8F"
+      },
+      "font": "Poppins",
+      "captionStyle": "pills"
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.03
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "volume": 0.25
+    }
+  }
+}

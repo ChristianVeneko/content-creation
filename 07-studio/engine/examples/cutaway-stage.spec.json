@@ -1,0 +1,5349 @@
+{
+  "version": 1,
+  "title": "Apagon: como la bateria mantiene tu casa",
+  "template": "cutaway-explainer",
+  "language": "es",
+  "brand": {
+    "handle": "@tucanal"
+  },
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "a home battery and inverter keeping the house on during a blackout",
+    "world": {
+      "concept": "low-poly suburban house cut open, a yard, a power pole and a street lamp",
+      "ground": {
+        "kind": "plane",
+        "color": "#6DBE55",
+        "size": 60
+      },
+      "backdrop": "#8FD0F5",
+      "parts": [
+        {
+          "build": "house",
+          "id": "home",
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "params": {
+            "cutaway": true,
+            "furnish": false,
+            "stairs": true,
+            "partition": true,
+            "backWindows": true,
+            "floors": 2,
+            "floorHeight": 1.45,
+            "width": 5.6,
+            "depth": 3.2,
+            "roof": "gable",
+            "style": "cozy",
+            "chimney": true,
+            "wall": "#F0DFA8",
+            "roofColor": "#B8453A"
+          },
+          "seed": 3
+        },
+        {
+          "build": "grass-tufts",
+          "id": "grass",
+          "params": {
+            "count": 120,
+            "blades": 3,
+            "area": [
+              -6.5,
+              -3,
+              8,
+              4.5
+            ],
+            "avoid": [
+              [
+                -3.1,
+                -1.7,
+                3.1,
+                1.9
+              ]
+            ],
+            "color": "#4F9A38",
+            "color2": "#79B94A"
+          },
+          "seed": 4
+        },
+        {
+          "build": "flowers",
+          "id": "flowers",
+          "params": {
+            "count": 14,
+            "area": [
+              -6,
+              1.8,
+              6,
+              4.3
+            ],
+            "avoid": [
+              [
+                -3.1,
+                -1.7,
+                3.1,
+                1.9
+              ]
+            ]
+          },
+          "seed": 5
+        },
+        {
+          "id": "path",
+          "shape": "box",
+          "size": [
+            1.1,
+            0.04,
+            2.6
+          ],
+          "pos": [
+            0.9,
+            0.02,
+            3
+          ],
+          "color": "#D9CBAA"
+        }
+      ]
+    },
+    "actors": [
+      {
+        "build": "person",
+        "id": "mateo",
+        "pos": [
+          0.9,
+          0,
+          2.7
+        ],
+        "size": 1,
+        "params": {
+          "height": 1.3,
+          "hat": "beanie",
+          "hatColor": "#C8381A",
+          "shirt": "#2FA36B",
+          "pants": "#3B4A6B",
+          "skin": "#E8B48A",
+          "expression": "smile",
+          "outfit": "casual"
+        },
+        "seed": 4,
+        "motion": [
+          {
+            "type": "breathe",
+            "amp": 0.012
+          },
+          {
+            "type": "blink",
+            "parts": [
+              "eye",
+              "eye-1"
+            ]
+          }
+        ]
+      },
+      {
+        "build": "appliance",
+        "id": "fridge",
+        "pos": [
+          -2.35,
+          0.35,
+          -1
+        ],
+        "size": 0.85,
+        "params": {
+          "kind": "fridge",
+          "on": true
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "counter",
+        "pos": [
+          -1.5,
+          0.35,
+          -1.15
+        ],
+        "size": 0.85,
+        "params": {
+          "kind": "table",
+          "width": 1,
+          "color": "#C9B79A"
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "kettle",
+        "pos": [
+          -1.75,
+          0.96,
+          -1.15
+        ],
+        "size": 0.6,
+        "params": {
+          "kind": "kettle",
+          "color": "#C8CDD4"
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "microwave",
+        "pos": [
+          -1.3,
+          0.96,
+          -1.18
+        ],
+        "size": 0.55,
+        "params": {
+          "kind": "microwave"
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "tv",
+        "pos": [
+          -0.15,
+          0.35,
+          -1.1
+        ],
+        "size": 0.85,
+        "params": {
+          "kind": "tv",
+          "width": 1.5
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "sofa",
+        "pos": [
+          -0.15,
+          0.35,
+          0.45
+        ],
+        "rot": [
+          0,
+          180,
+          0
+        ],
+        "size": 0.85,
+        "params": {
+          "kind": "sofa",
+          "width": 1.5,
+          "color": "#B8453A"
+        },
+        "seed": 2
+      },
+      {
+        "build": "appliance",
+        "id": "lamp",
+        "pos": [
+          1.35,
+          0.35,
+          0.5
+        ],
+        "size": 0.9,
+        "params": {
+          "kind": "lamp",
+          "on": true
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "heater",
+        "pos": [
+          2.15,
+          0.35,
+          0.15
+        ],
+        "size": 0.8,
+        "params": {
+          "kind": "heater"
+        },
+        "seed": 1
+      },
+      {
+        "build": "appliance",
+        "id": "bed",
+        "pos": [
+          -1.55,
+          2.15,
+          -0.7
+        ],
+        "size": 0.85,
+        "params": {
+          "kind": "bed",
+          "width": 1.5
+        },
+        "seed": 3
+      },
+      {
+        "build": "battery",
+        "id": "battery",
+        "pos": [
+          3.5,
+          0,
+          0.7
+        ],
+        "size": 0.75,
+        "params": {
+          "cells": 3,
+          "width": 1.4,
+          "height": 2.2,
+          "segments": 8,
+          "charge": 1,
+          "body": "#2B3550",
+          "glow": "#5CF2A8"
+        },
+        "seed": 1
+      },
+      {
+        "build": "machine-box",
+        "id": "inverter",
+        "pos": [
+          4.75,
+          0,
+          0.7
+        ],
+        "size": 0.55,
+        "params": {
+          "width": 2,
+          "height": 1.4,
+          "depth": 1.2,
+          "vents": 6,
+          "lights": 3,
+          "body": "#E8EEF2",
+          "panel": "#2B3550",
+          "screen": true
+        },
+        "seed": 2
+      },
+      {
+        "id": "pole",
+        "pos": [
+          5.4,
+          0,
+          0.6
+        ],
+        "parts": [
+          {
+            "id": "trunk",
+            "shape": "cylinder",
+            "size": [
+              0.11,
+              0.14,
+              4.1
+            ],
+            "pos": [
+              0,
+              2.05,
+              0
+            ],
+            "color": "#7A4F2C",
+            "facets": 8
+          },
+          {
+            "id": "arm",
+            "shape": "box",
+            "size": [
+              1.5,
+              0.1,
+              0.12
+            ],
+            "pos": [
+              0,
+              3.65,
+              0
+            ],
+            "color": "#5E3E22"
+          },
+          {
+            "id": "arm2",
+            "shape": "box",
+            "size": [
+              1.1,
+              0.09,
+              0.12
+            ],
+            "pos": [
+              0,
+              3.2,
+              0
+            ],
+            "color": "#5E3E22"
+          },
+          {
+            "id": "ins-0",
+            "shape": "cylinder",
+            "size": [
+              0.06,
+              0.07,
+              0.16
+            ],
+            "pos": [
+              -0.6,
+              3.78,
+              0
+            ],
+            "color": "#3FB6C8",
+            "facets": 6
+          },
+          {
+            "id": "ins-1",
+            "shape": "cylinder",
+            "size": [
+              0.06,
+              0.07,
+              0.16
+            ],
+            "pos": [
+              0,
+              3.78,
+              0
+            ],
+            "color": "#3FB6C8",
+            "facets": 6
+          },
+          {
+            "id": "ins-2",
+            "shape": "cylinder",
+            "size": [
+              0.06,
+              0.07,
+              0.16
+            ],
+            "pos": [
+              0.6,
+              3.78,
+              0
+            ],
+            "color": "#3FB6C8",
+            "facets": 6
+          },
+          {
+            "id": "transformer",
+            "shape": "cylinder",
+            "size": [
+              0.28,
+              0.28,
+              0.6
+            ],
+            "pos": [
+              0.35,
+              2.7,
+              0.2
+            ],
+            "color": "#8D9AAE",
+            "facets": 10
+          },
+          {
+            "id": "transformer-cap",
+            "shape": "cylinder",
+            "size": [
+              0.3,
+              0.3,
+              0.06
+            ],
+            "pos": [
+              0.35,
+              3.03,
+              0.2
+            ],
+            "color": "#5B6270",
+            "facets": 10
+          },
+          {
+            "id": "spark",
+            "shape": "sphere",
+            "size": [
+              0.22
+            ],
+            "pos": [
+              -0.6,
+              3.9,
+              0
+            ],
+            "color": "#FFE07A",
+            "material": "emissive",
+            "emissive": 2
+          }
+        ]
+      },
+      {
+        "id": "wires",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "parts": [
+          {
+            "id": "grid",
+            "shape": "tube",
+            "size": [
+              0.035
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                5.4,
+                3.78,
+                0.6
+              ],
+              [
+                4.4,
+                3.25,
+                0.8
+              ],
+              [
+                3.3,
+                3,
+                1.1
+              ],
+              [
+                2.98,
+                2.9,
+                1.25
+              ],
+              [
+                2.98,
+                1.62,
+                1.25
+              ]
+            ]
+          },
+          {
+            "id": "meter-inv",
+            "shape": "tube",
+            "size": [
+              0.035
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                2.98,
+                1,
+                1.25
+              ],
+              [
+                2.98,
+                0.4,
+                1.3
+              ],
+              [
+                4.3,
+                0.25,
+                1.3
+              ],
+              [
+                4.7,
+                0.4,
+                1.05
+              ]
+            ]
+          },
+          {
+            "id": "bat-inv",
+            "shape": "tube",
+            "size": [
+              0.035
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                4,
+                0.6,
+                0.98
+              ],
+              [
+                4.4,
+                0.6,
+                0.98
+              ]
+            ]
+          },
+          {
+            "id": "inv-home",
+            "shape": "tube",
+            "size": [
+              0.035
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                4.75,
+                0.95,
+                0.7
+              ],
+              [
+                4.75,
+                1.95,
+                0.7
+              ],
+              [
+                2.95,
+                1.95,
+                0.7
+              ]
+            ]
+          },
+          {
+            "id": "inside",
+            "shape": "tube",
+            "size": [
+              0.035
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                2.7,
+                1.95,
+                0.7
+              ],
+              [
+                2.7,
+                1.95,
+                -1.38
+              ],
+              [
+                -2.5,
+                1.95,
+                -1.38
+              ]
+            ]
+          },
+          {
+            "id": "drop-tv",
+            "shape": "tube",
+            "size": [
+              0.03
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                -0.15,
+                1.95,
+                -1.38
+              ],
+              [
+                -0.15,
+                1.45,
+                -1.38
+              ]
+            ]
+          },
+          {
+            "id": "drop-kettle",
+            "shape": "tube",
+            "size": [
+              0.03
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                -1.75,
+                1.95,
+                -1.38
+              ],
+              [
+                -1.75,
+                1.2,
+                -1.38
+              ]
+            ]
+          },
+          {
+            "id": "drop-fridge",
+            "shape": "tube",
+            "size": [
+              0.03
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "color": "#F2B705",
+            "points": [
+              [
+                -2.35,
+                1.95,
+                -1.38
+              ],
+              [
+                -2.35,
+                1.5,
+                -1.38
+              ]
+            ]
+          },
+          {
+            "id": "meter",
+            "shape": "box",
+            "size": [
+              0.4,
+              0.55,
+              0.22
+            ],
+            "pos": [
+              2.98,
+              1.3,
+              1.3
+            ],
+            "color": "#E8EEF2",
+            "radius": 0.03
+          },
+          {
+            "id": "meter-glass",
+            "shape": "box",
+            "size": [
+              0.28,
+              0.3,
+              0.04
+            ],
+            "pos": [
+              2.98,
+              1.36,
+              1.42
+            ],
+            "color": "#1B2230"
+          },
+          {
+            "id": "meter-led",
+            "shape": "sphere",
+            "size": [
+              0.04
+            ],
+            "pos": [
+              2.98,
+              1.14,
+              1.43
+            ],
+            "color": "#5CF2A8",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 6
+          },
+          {
+            "id": "panel",
+            "shape": "box",
+            "size": [
+              0.5,
+              0.7,
+              0.1
+            ],
+            "pos": [
+              -2.55,
+              1.15,
+              -1.5
+            ],
+            "color": "#8D9AAE",
+            "radius": 0.03
+          },
+          {
+            "id": "panel-led",
+            "shape": "sphere",
+            "size": [
+              0.04
+            ],
+            "pos": [
+              -2.55,
+              1.35,
+              -1.43
+            ],
+            "color": "#5CF2A8",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 6
+          }
+        ]
+      },
+      {
+        "id": "streetlamp",
+        "pos": [
+          -4,
+          0,
+          1.7
+        ],
+        "parts": [
+          {
+            "id": "pole",
+            "shape": "cylinder",
+            "size": [
+              0.06,
+              0.08,
+              2.6
+            ],
+            "pos": [
+              0,
+              1.3,
+              0
+            ],
+            "color": "#2B2F38",
+            "facets": 8
+          },
+          {
+            "id": "base",
+            "shape": "cylinder",
+            "size": [
+              0.14,
+              0.17,
+              0.25
+            ],
+            "pos": [
+              0,
+              0.12,
+              0
+            ],
+            "color": "#3A404C",
+            "facets": 8
+          },
+          {
+            "id": "arm",
+            "shape": "box",
+            "size": [
+              0.5,
+              0.06,
+              0.06
+            ],
+            "pos": [
+              0.22,
+              2.62,
+              0
+            ],
+            "color": "#2B2F38"
+          },
+          {
+            "id": "hood",
+            "shape": "cone",
+            "size": [
+              0.32,
+              0.25
+            ],
+            "pos": [
+              0.45,
+              2.7,
+              0
+            ],
+            "color": "#2B2F38",
+            "facets": 8
+          },
+          {
+            "id": "bulb",
+            "shape": "sphere",
+            "size": [
+              0.16
+            ],
+            "pos": [
+              0.45,
+              2.5,
+              0
+            ],
+            "color": "#FFE9A8",
+            "material": "emissive",
+            "emissive": 1.6,
+            "facets": 8
+          },
+          {
+            "id": "halo",
+            "shape": "sphere",
+            "size": [
+              0.55
+            ],
+            "pos": [
+              0.45,
+              2.45,
+              0
+            ],
+            "color": "#FFF1C4",
+            "opacity": 0.2,
+            "material": "glass"
+          }
+        ]
+      },
+      {
+        "id": "sky",
+        "pos": [
+          0.7,
+          1,
+          -4.8
+        ],
+        "parts": [
+          {
+            "id": "dome",
+            "shape": "box",
+            "size": [
+              4,
+              4,
+              0.08
+            ],
+            "pos": [
+              0,
+              4.5,
+              0
+            ],
+            "color": "#8FD0F5",
+            "material": "emissive",
+            "emissive": 1
+          },
+          {
+            "id": "sun",
+            "shape": "sphere",
+            "size": [
+              0.7
+            ],
+            "pos": [
+              -3.8,
+              3.6,
+              0.2
+            ],
+            "color": "#FFE27A",
+            "material": "emissive",
+            "emissive": 1.6,
+            "facets": 10
+          },
+          {
+            "id": "moon",
+            "shape": "sphere",
+            "size": [
+              0.55
+            ],
+            "pos": [
+              -3.8,
+              0.2,
+              0.2
+            ],
+            "color": "#F4F1E6",
+            "material": "emissive",
+            "emissive": 1.2,
+            "facets": 10
+          },
+          {
+            "id": "star-0",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              -4.6,
+              3.6,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          },
+          {
+            "id": "star-1",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              -1.2,
+              3.9,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          },
+          {
+            "id": "star-2",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              2.6,
+              3.4,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          },
+          {
+            "id": "star-3",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              4.8,
+              3.8,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          },
+          {
+            "id": "star-4",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              0.6,
+              2.6,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          },
+          {
+            "id": "star-5",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              -4.8,
+              2.2,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          },
+          {
+            "id": "star-6",
+            "shape": "sphere",
+            "size": [
+              0.07
+            ],
+            "pos": [
+              4.4,
+              2.3,
+              0.3
+            ],
+            "color": "#FFFFFF",
+            "material": "emissive",
+            "emissive": 1.4,
+            "facets": 4
+          }
+        ]
+      },
+      {
+        "id": "nightveil",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "parts": [
+          {
+            "id": "sheet",
+            "shape": "box",
+            "size": [
+              8,
+              0.04,
+              8
+            ],
+            "pos": [
+              0.7,
+              0.03,
+              0.2
+            ],
+            "color": "#0A1030"
+          }
+        ]
+      },
+      {
+        "id": "blackout",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "parts": [
+          {
+            "id": "sheet",
+            "shape": "box",
+            "size": [
+              5.7,
+              3.55,
+              0.05
+            ],
+            "pos": [
+              0,
+              2.05,
+              1.78
+            ],
+            "color": "#070B22"
+          }
+        ]
+      },
+      {
+        "build": "fence",
+        "id": "fence",
+        "pos": [
+          0.7,
+          0,
+          -3.2
+        ],
+        "size": 0.9,
+        "params": {
+          "length": 8,
+          "style": "picket",
+          "height": 0.9
+        },
+        "seed": 1
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-a",
+        "pos": [
+          -3.2,
+          5.8,
+          -3.5
+        ],
+        "size": 0.9,
+        "params": {
+          "size": 1.2
+        },
+        "seed": 1
+      },
+      {
+        "build": "cloud",
+        "id": "cloud-b",
+        "pos": [
+          3.6,
+          6.4,
+          -3.5
+        ],
+        "size": 0.8,
+        "params": {
+          "size": 1.2
+        },
+        "seed": 5
+      },
+      {
+        "build": "tree",
+        "id": "tree-l",
+        "pos": [
+          -4.6,
+          0,
+          -2.4
+        ],
+        "size": 1.1,
+        "params": {
+          "kind": "lowpoly",
+          "height": 3.2
+        },
+        "seed": 6
+      },
+      {
+        "build": "tree",
+        "id": "tree-r",
+        "pos": [
+          6.2,
+          0,
+          -2.2
+        ],
+        "size": 1,
+        "params": {
+          "kind": "round",
+          "height": 3
+        },
+        "seed": 8
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "¿Qué pasa en tu casa cuando se va la luz?",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "mateo/head",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "wide",
+            "at": 1.7,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.23
+            }
+          },
+          {
+            "at": 1.7,
+            "target": "camera",
+            "dur": 1.4,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 0,
+            "target": "kettle/steam",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "kettle/steam-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "kettle/steam-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "pole/spark",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "streetlamp/halo",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/moon",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-0",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-3",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-4",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-5",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/star-6",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "sky/dome",
+            "dur": 0,
+            "set": {
+              "scale": [
+                10,
+                10,
+                10
+              ]
+            }
+          },
+          {
+            "at": 0,
+            "target": "nightveil/sheet",
+            "dur": 0,
+            "set": {
+              "scale": [
+                10,
+                1,
+                10
+              ],
+              "opacity": 0
+            }
+          },
+          {
+            "at": 0,
+            "target": "blackout/sheet",
+            "dur": 0,
+            "set": {
+              "opacity": 0
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "mateo/arm-r",
+            "dur": 0.4,
+            "to": {
+              "rot": [
+                -150,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -125,
+                0,
+                14
+              ]
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -150,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "mateo/arm-r",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "grid",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "ON"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "grid",
+      "narration": "Tu casa vive conectada a la red de la calle.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "pole",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "wide",
+            "at": 2,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 2,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "pole/ins-1",
+            "dur": 0.4,
+            "to": {
+              "emissive": 1
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "grid",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "ON"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "concept",
+            "text": "LA RED ELECTRICA",
+            "at": 0.6
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                5.4,
+                3.78,
+                0.6
+              ],
+              [
+                4.4,
+                3.25,
+                0.8
+              ],
+              [
+                3.3,
+                3,
+                1.1
+              ],
+              [
+                2.98,
+                2.9,
+                1.25
+              ],
+              [
+                2.98,
+                1.62,
+                1.25
+              ]
+            ],
+            "count": 7,
+            "color": "accent2",
+            "at": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "normal",
+      "narration": "Mientras llega energía, todo funciona sin que lo notes.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "kettle",
+            "at": 0.2,
+            "zoom": 0.3
+          },
+          {
+            "shot": "wide",
+            "at": 2.2,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.2,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.4
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/led",
+            "dur": 0.3,
+            "to": {
+              "color": "#FF6A3D",
+              "emissive": 1.4
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/steam",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/steam-1",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/steam-2",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "mateo",
+            "dur": 0.35,
+            "to": {
+              "rot": [
+                0,
+                180,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "mateo",
+            "dur": 2,
+            "ease": "in-out",
+            "to": {
+              "pos": [
+                0,
+                0.35,
+                -1.4
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "mateo/leg-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "mateo/leg-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "mateo/arm-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "mateo/arm-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8333333333333333,
+            "target": "mateo/leg-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8333333333333333,
+            "target": "mateo/leg-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8333333333333333,
+            "target": "mateo/arm-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8333333333333333,
+            "target": "mateo/arm-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1666666666666665,
+            "target": "mateo/leg-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1666666666666665,
+            "target": "mateo/leg-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1666666666666665,
+            "target": "mateo/arm-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1666666666666665,
+            "target": "mateo/arm-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "mateo/leg-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "mateo/leg-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "mateo/arm-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "mateo/arm-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.8333333333333333,
+            "target": "mateo/leg-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.8333333333333333,
+            "target": "mateo/leg-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.8333333333333333,
+            "target": "mateo/arm-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.8333333333333333,
+            "target": "mateo/arm-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.166666666666667,
+            "target": "mateo/leg-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.166666666666667,
+            "target": "mateo/leg-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.166666666666667,
+            "target": "mateo/arm-l",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.166666666666667,
+            "target": "mateo/arm-r",
+            "dur": 0.3333333333333333,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/leg-l",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/leg-r",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/arm-l",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/arm-r",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo",
+            "dur": 0.4,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "ON"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": [
+              {
+                "at": 2,
+                "values": {
+                  "home": "LUZ"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                2.7,
+                1.95,
+                0.7
+              ],
+              [
+                2.7,
+                1.95,
+                -1.38
+              ],
+              [
+                -2.5,
+                1.95,
+                -1.38
+              ]
+            ],
+            "count": 6,
+            "color": "accent2",
+            "at": 0.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "blackout",
+      "narration": "Pero llega la noche y la red se cae.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.6,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "sky/dome",
+            "dur": 2.6,
+            "to": {
+              "color": "#0F1838"
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "sky/sun",
+            "dur": 2.2,
+            "to": {
+              "pos": [
+                0,
+                -3.6,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/moon",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/moon",
+            "dur": 2,
+            "to": {
+              "pos": [
+                0,
+                3.6,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "sky/star-0",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1.65,
+            "target": "sky/star-1",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "sky/star-2",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1.95,
+            "target": "sky/star-3",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 2.1,
+            "target": "sky/star-4",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 2.25,
+            "target": "sky/star-5",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 2.4,
+            "target": "sky/star-6",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "nightveil/sheet",
+            "dur": 2.6,
+            "to": {
+              "opacity": 0.55
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "cloud-a",
+            "dur": 2.4,
+            "to": {
+              "color": "#4B5578"
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "cloud-b",
+            "dur": 2.4,
+            "to": {
+              "color": "#4B5578"
+            }
+          },
+          {
+            "at": 2.3,
+            "target": "pole/spark",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 2.55,
+            "target": "pole/spark",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.7,
+            "target": "pole/spark",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 2.9,
+            "target": "pole/spark",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "streetlamp/bulb",
+            "dur": 0.3,
+            "to": {
+              "color": "#7C766A",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "streetlamp/halo",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "lamp/bulb",
+            "dur": 0.4,
+            "to": {
+              "color": "#7C766A",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "fridge/light",
+            "dur": 0.3,
+            "to": {
+              "color": "#2B3E36",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "kettle/led",
+            "dur": 0.3,
+            "to": {
+              "color": "#5B3A33",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "kettle/steam",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "kettle/steam-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "kettle/steam-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "wires/meter-led",
+            "dur": 0.2,
+            "to": {
+              "color": "#E5484D"
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "wires/panel-led",
+            "dur": 0.2,
+            "to": {
+              "color": "#E5484D"
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "blackout/sheet",
+            "dur": 0.9,
+            "to": {
+              "opacity": 0.64
+            }
+          },
+          {
+            "at": 2.7,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                180
+              ]
+            }
+          },
+          {
+            "at": 2.7,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                -16
+              ]
+            }
+          },
+          {
+            "at": 2.7,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                16
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "grid",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "ON"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": [
+              {
+                "at": 2.4,
+                "active": "grid",
+                "values": {
+                  "grid": "CAIDA",
+                  "home": "APAGON"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dark",
+      "narration": "Oscuridad total. Hasta la nevera se apaga.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "mateo/head",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "dive",
+            "focus": "fridge",
+            "at": 1.6,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.23
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "camera",
+            "dur": 1.1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.4
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "mateo/arm-l",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                -70,
+                0,
+                18
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "battery",
+      "narration": "Aquí entra la batería de la casa.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "at": 0,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1.4,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "battery/seg",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 0.6799999999999999,
+            "target": "battery/seg-1",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 0.76,
+            "target": "battery/seg-2",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 0.84,
+            "target": "battery/seg-3",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 0.9199999999999999,
+            "target": "battery/seg-4",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 1,
+            "target": "battery/seg-5",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 1.08,
+            "target": "battery/seg-6",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 1.1600000000000001,
+            "target": "battery/seg-7",
+            "dur": 0.25,
+            "to": {
+              "emissive": 2.2
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "battery",
+            "dur": 0.3,
+            "to": {
+              "scale": 1.04
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "bat",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "concept",
+            "text": "LA BATERIA",
+            "at": 0.6
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                4,
+                0.6,
+                0.98
+              ],
+              [
+                4.4,
+                0.6,
+                0.98
+              ]
+            ],
+            "count": 4,
+            "color": "accent2",
+            "at": 1,
+            "size": 1.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "dc-ac",
+      "narration": "Guarda energía continua, pero tus aparatos usan alterna.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "inverter",
+            "at": 2,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.8,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 2,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                180
+              ]
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                -16
+              ]
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                16
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "bat",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "LISTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "versus",
+            "at": 0.8,
+            "left": {
+              "title": "CONTINUA",
+              "sub": "bateria",
+              "icon": "battery-full"
+            },
+            "right": {
+              "title": "ALTERNA",
+              "sub": "tu casa",
+              "icon": "waveform"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "inverter",
+      "narration": "El inversor la convierte y la manda a toda la casa.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "inverter",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "dive",
+            "focus": "tv",
+            "at": 2,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.6,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 2,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.57
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "inverter/led",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "inverter/led-1",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "inverter/led-2",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "inverter/screen",
+            "dur": 0.4,
+            "to": {
+              "color": "#3F8F6A"
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "inv",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "96 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "concept",
+            "text": "EL INVERSOR",
+            "at": 0.5
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                4,
+                0.6,
+                0.98
+              ],
+              [
+                4.4,
+                0.6,
+                0.98
+              ]
+            ],
+            "count": 4,
+            "color": "accent2",
+            "at": 0.3,
+            "size": 1.3
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                4.75,
+                0.95,
+                0.7
+              ],
+              [
+                4.75,
+                1.95,
+                0.7
+              ],
+              [
+                2.95,
+                1.95,
+                0.7
+              ]
+            ],
+            "count": 5,
+            "color": "accent2",
+            "at": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "restore",
+      "narration": "Y en segundos, la luz vuelve.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "mateo",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "dive",
+            "focus": "lamp",
+            "at": 1.8,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.57
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.47
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "blackout/sheet",
+            "dur": 0.8,
+            "to": {
+              "opacity": 0.1
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "lamp/bulb",
+            "dur": 0.4,
+            "to": {
+              "color": "#FFE9A8",
+              "emissive": 1.4
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "fridge/light",
+            "dur": 0.3,
+            "to": {
+              "color": "#5CF2A8",
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "wires/panel-led",
+            "dur": 0.2,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "94 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": [
+              {
+                "at": 0.4,
+                "values": {
+                  "home": "LUZ"
+                }
+              }
+            ]
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                2.7,
+                1.95,
+                0.7
+              ],
+              [
+                2.7,
+                1.95,
+                -1.38
+              ],
+              [
+                -2.5,
+                1.95,
+                -1.38
+              ]
+            ],
+            "count": 7,
+            "color": "accent2",
+            "at": 0.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "sit",
+      "narration": "Mateo se sienta a ver la tele.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          },
+          {
+            "shot": "dive",
+            "focus": "tv",
+            "at": 1.8,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.6,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.57
+            }
+          },
+          {
+            "at": 0.1,
+            "target": "mateo",
+            "dur": 0.35,
+            "to": {
+              "rot": [
+                0,
+                270,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "mateo",
+            "dur": 1.5,
+            "ease": "in-out",
+            "to": {
+              "pos": [
+                -0.4,
+                0.35,
+                -1.6
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.7,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.7,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.7,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.7,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "mateo/leg-l",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "mateo/leg-r",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "mateo/arm-l",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "mateo/arm-r",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "mateo",
+            "dur": 0.4,
+            "to": {
+              "rot": [
+                0,
+                180,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo",
+            "dur": 0.6,
+            "to": {
+              "pos": [
+                -1.05,
+                0.3,
+                -2.18
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/leg-l",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                -80,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/leg-r",
+            "dur": 0.5,
+            "to": {
+              "rot": [
+                -80,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "tv/screen",
+            "dur": 0.4,
+            "to": {
+              "color": "#6CC4FF",
+              "emissive": 0.9
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "tv/screen-bar",
+            "dur": 0.4,
+            "to": {
+              "color": "#FFD23F",
+              "emissive": 0.8
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.6,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "94 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "TV"
+              }
+            ],
+            "steps": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "demand",
+      "narration": "Cada aparato pide su parte de energía.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "tv",
+            "at": 0,
+            "zoom": 0.3
+          },
+          {
+            "shot": "dive",
+            "focus": "kettle",
+            "at": 1.6,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.6,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.57
+            }
+          },
+          {
+            "at": 1.6,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.4
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "kettle/led",
+            "dur": 0.3,
+            "to": {
+              "color": "#FF6A3D",
+              "emissive": 1.4
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "kettle/steam",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "kettle/steam-1",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "kettle/steam-2",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "90 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "TV"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "limit",
+            "at": 0.4,
+            "label": "DEMANDA",
+            "limit": 0.7,
+            "value": 0.2,
+            "steps": [
+              {
+                "at": 1.8,
+                "value": 0.45
+              },
+              {
+                "at": 2.8,
+                "value": 0.55
+              }
+            ],
+            "limitLabel": "LIMITE DEL INVERSOR",
+            "note": "SOBRECARGA",
+            "icons": [
+              "television",
+              "lightbulb",
+              "cooking-pot"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "limit",
+      "narration": "Pero el inversor tiene un límite de potencia.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "heater",
+            "at": 0.6,
+            "zoom": 0.3
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "inverter",
+            "at": 2,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.6,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.47
+            }
+          },
+          {
+            "at": 2,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 1.2,
+            "target": "heater/glow",
+            "dur": 0.4,
+            "to": {
+              "color": "#FF7A3D",
+              "emissive": 1.3
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/mouth",
+            "dur": 0.25,
+            "to": {
+              "scale": [
+                0.6,
+                2.4,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/brow",
+            "dur": 0.25,
+            "to": {
+              "pos": [
+                0,
+                0.02,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/brow-1",
+            "dur": 0.25,
+            "to": {
+              "pos": [
+                0,
+                0.02,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "inverter",
+            "dur": 0.15,
+            "to": {
+              "rot": [
+                0,
+                0,
+                2
+              ]
+            }
+          },
+          {
+            "at": 2.15,
+            "target": "inverter",
+            "dur": 0.15,
+            "to": {
+              "rot": [
+                0,
+                0,
+                -2
+              ]
+            }
+          },
+          {
+            "at": 2.3,
+            "target": "inverter",
+            "dur": 0.15,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "inverter/led",
+            "dur": 0.25,
+            "to": {
+              "color": "#E5484D"
+            }
+          },
+          {
+            "at": 2,
+            "target": "inverter/led-1",
+            "dur": 0.25,
+            "to": {
+              "color": "#E5484D"
+            }
+          },
+          {
+            "at": 2,
+            "target": "inverter/led-2",
+            "dur": 0.25,
+            "to": {
+              "color": "#E5484D"
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "inv",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "88 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "ALTO"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "TV"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "limit",
+            "at": 0.2,
+            "label": "DEMANDA",
+            "limit": 0.7,
+            "value": 0.55,
+            "steps": [
+              {
+                "at": 1.2,
+                "value": 0.62
+              },
+              {
+                "at": 2,
+                "value": 0.97
+              }
+            ],
+            "limitLabel": "LIMITE DEL INVERSOR",
+            "note": "SOBRECARGA",
+            "icons": [
+              "television",
+              "lightbulb",
+              "cooking-pot"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cut",
+      "narration": "Si lo superas, corta la salida para protegerse.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "dive",
+            "focus": "mateo",
+            "at": 0,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.57
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "blackout/sheet",
+            "dur": 0.5,
+            "to": {
+              "opacity": 0.64
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "tv/screen",
+            "dur": 0.4,
+            "to": {
+              "color": "#161C2B",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "tv/screen-bar",
+            "dur": 0.4,
+            "to": {
+              "color": "#1E2538",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "lamp/bulb",
+            "dur": 0.4,
+            "to": {
+              "color": "#7C766A",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "fridge/light",
+            "dur": 0.3,
+            "to": {
+              "color": "#2B3E36",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/led",
+            "dur": 0.3,
+            "to": {
+              "color": "#5B3A33",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/steam",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/steam-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "kettle/steam-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "heater/glow",
+            "dur": 0.4,
+            "to": {
+              "color": "#6B4B42",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "wires/panel-led",
+            "dur": 0.2,
+            "to": {
+              "color": "#E5484D"
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                180
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                -16
+              ]
+            }
+          },
+          {
+            "at": 0.6,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                16
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "88 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "CORTE"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "limit",
+            "at": 0.1,
+            "label": "DEMANDA",
+            "limit": 0.7,
+            "value": 0.97,
+            "steps": [
+              {
+                "at": 2,
+                "value": 0.97
+              }
+            ],
+            "limitLabel": "LIMITE DEL INVERSOR",
+            "note": "SALIDA CORTADA",
+            "icons": [
+              "television",
+              "lightbulb",
+              "cooking-pot"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "power",
+      "narration": "Una cosa es la potencia, otra es la energía.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "at": 0,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "inverter/led",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "inverter/led-1",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 1.5,
+            "target": "inverter/led-2",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "bat",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "88 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "CORTE"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "versus",
+            "at": 0.6,
+            "left": {
+              "title": "POTENCIA",
+              "sub": "cuanto pide ya",
+              "icon": "lightning"
+            },
+            "right": {
+              "title": "ENERGIA",
+              "sub": "cuanto dura",
+              "icon": "battery-full"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "drain",
+      "narration": "Y la batería también se vacía poco a poco.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "battery",
+            "at": 0,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.6,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.67
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "battery/seg-7",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "battery/seg-6",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1.8,
+            "target": "battery/seg-5",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 2.3,
+            "target": "battery/seg-4",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "bat",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "88 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "APAGON"
+              }
+            ],
+            "steps": [
+              {
+                "at": 1,
+                "values": {
+                  "bat": "70 %"
+                }
+              },
+              {
+                "at": 2,
+                "values": {
+                  "bat": "45 %"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "off",
+      "narration": "Por eso conviene apagar lo que no usas.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          },
+          {
+            "shot": "dive",
+            "focus": "heater",
+            "at": 1.4,
+            "zoom": 0.3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 0.6,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "camera",
+            "dur": 1,
+            "ease": "in-out",
+            "to": {
+              "scale": 0.47
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "blackout/sheet",
+            "dur": 0.8,
+            "to": {
+              "opacity": 0.1
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "lamp/bulb",
+            "dur": 0.4,
+            "to": {
+              "color": "#FFE9A8",
+              "emissive": 1.4
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "fridge/light",
+            "dur": 0.3,
+            "to": {
+              "color": "#5CF2A8",
+              "emissive": 1.2
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "tv/screen",
+            "dur": 0.4,
+            "to": {
+              "color": "#6CC4FF",
+              "emissive": 0.9
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "tv/screen-bar",
+            "dur": 0.4,
+            "to": {
+              "color": "#FFD23F",
+              "emissive": 0.8
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "wires/panel-led",
+            "dur": 0.2,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "inverter/led",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "inverter/led-1",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "inverter/led-2",
+            "dur": 0.25,
+            "to": {
+              "color": "#5CF2A8"
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "mateo",
+            "dur": 0.2,
+            "to": {
+              "pos": [
+                -1.05,
+                0.35,
+                -2
+              ]
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.3,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.5,
+            "target": "mateo",
+            "dur": 0.35,
+            "to": {
+              "rot": [
+                0,
+                90,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "mateo",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "pos": [
+                0.8,
+                0.35,
+                -2
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.8,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.1,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.4,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.7,
+            "target": "mateo/leg-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.7,
+            "target": "mateo/leg-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                28,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.7,
+            "target": "mateo/arm-l",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.7,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -22,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/leg-l",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/leg-r",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/arm-l",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/arm-r",
+            "dur": 0.25,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1.9,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -60,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "heater/glow",
+            "dur": 0.4,
+            "to": {
+              "color": "#6B4B42",
+              "emissive": 0
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "scale": [
+                1,
+                1,
+                1
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "mateo/mouth",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "mateo/brow",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.2,
+            "target": "mateo/brow-1",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 2.5,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "45 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "limit",
+            "at": 1.2,
+            "label": "DEMANDA",
+            "limit": 0.7,
+            "value": 0.97,
+            "steps": [
+              {
+                "at": 2,
+                "value": 0.22
+              }
+            ],
+            "limitLabel": "LIMITE DEL INVERSOR",
+            "note": "SOBRECARGA",
+            "icons": [
+              "television",
+              "lightbulb",
+              "cooking-pot"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "end",
+      "narration": "Así tu casa sigue encendida aunque no haya red.",
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "at": 0,
+            "zoom": 0.52,
+            "shift": [
+              0.5,
+              -0.5,
+              0
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "camera",
+            "dur": 1.2,
+            "ease": "in-out",
+            "to": {
+              "scale": 1
+            }
+          },
+          {
+            "at": 0.2,
+            "target": "mateo",
+            "dur": 0.4,
+            "to": {
+              "rot": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "mateo/arm-r",
+            "dur": 0.4,
+            "to": {
+              "rot": [
+                -150,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 0.9,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -125,
+                0,
+                14
+              ]
+            }
+          },
+          {
+            "at": 1.3,
+            "target": "mateo/arm-r",
+            "dur": 0.3,
+            "to": {
+              "rot": [
+                -150,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/dome",
+            "dur": 2.6,
+            "to": {
+              "color": "#8FD0F5"
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/moon",
+            "dur": 2,
+            "to": {
+              "pos": [
+                0,
+                -3.6,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/sun",
+            "dur": 2.4,
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "at": 1,
+            "target": "nightveil/sheet",
+            "dur": 2.4,
+            "to": {
+              "opacity": 0.02
+            }
+          },
+          {
+            "at": 1,
+            "target": "cloud-a",
+            "dur": 2.2,
+            "to": {
+              "color": "#FFFFFF"
+            }
+          },
+          {
+            "at": 1,
+            "target": "cloud-b",
+            "dur": 2.2,
+            "to": {
+              "color": "#FFFFFF"
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-0",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-1",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-2",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-3",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-4",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-5",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          },
+          {
+            "at": 1,
+            "target": "sky/star-6",
+            "dur": 0,
+            "set": {
+              "visible": false
+            }
+          }
+        ],
+        "overlay": [
+          {
+            "type": "flow",
+            "at": 0.3,
+            "active": "home",
+            "chips": [
+              {
+                "id": "grid",
+                "icon": "lightning",
+                "label": "RED",
+                "value": "CAIDA"
+              },
+              {
+                "id": "bat",
+                "icon": "battery-full",
+                "label": "BATERIA",
+                "value": "44 %"
+              },
+              {
+                "id": "inv",
+                "icon": "waveform",
+                "label": "INVERSOR",
+                "value": "AC"
+              },
+              {
+                "id": "home",
+                "icon": "house",
+                "label": "CASA",
+                "value": "LUZ"
+              }
+            ],
+            "steps": []
+          },
+          {
+            "type": "concept",
+            "text": "ENERGIA DE RESPALDO",
+            "at": 0.6
+          }
+        ],
+        "fx": [
+          {
+            "type": "signal",
+            "points": [
+              [
+                4.75,
+                0.95,
+                0.7
+              ],
+              [
+                4.75,
+                1.95,
+                0.7
+              ],
+              [
+                2.95,
+                1.95,
+                0.7
+              ]
+            ],
+            "count": 5,
+            "color": "accent2",
+            "at": 0.4
+          },
+          {
+            "type": "signal",
+            "points": [
+              [
+                2.7,
+                1.95,
+                0.7
+              ],
+              [
+                2.7,
+                1.95,
+                -1.38
+              ],
+              [
+                -2.5,
+                1.95,
+                -1.38
+              ]
+            ],
+            "count": 6,
+            "color": "accent2",
+            "at": 1.2
+          }
+        ]
+      }
+    }
+  ]
+}

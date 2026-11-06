@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import type { DrawingPlan, IconData, Palette, PixelPlan, ResolvedSpec, Scene, ScenePlan, ScenePlan3D, ThreeAssets } from "./types";
 import { Scene3DView } from "./three/Scene3D";
+import { StageView } from "./three/stage";
 import { PixelScene } from "./pixel/PixelScene";
 import { IllustratedScene } from "./illustrated/IllustratedScene";
 import { AnimatedText } from "./components/AnimatedText";
@@ -366,7 +367,10 @@ const IllustratedLayout: React.FC<SceneProps> = ({ scene, index, spec, durationI
   <IllustratedScene scene={scene} index={index} spec={spec} durationInFrames={durationInFrames} plan={(plan as ScenePlan | null) ?? null} icons={icons ?? {}} />
 );
 
-const ThreeLayout: React.FC<SceneProps> = ({ scene, index, spec, durationInFrames, plan, icons, three }) => (
+const ThreeLayout: React.FC<SceneProps> = ({ scene, index, spec, durationInFrames, plan, icons, three }) =>
+  (plan as ScenePlan3D | null)?.stage ? (
+    <StageView scene={scene} index={index} spec={spec} durationInFrames={durationInFrames} plan={plan as ScenePlan3D} icons={icons ?? {}} three={three ?? null} />
+  ) : (
   <Scene3DView scene={scene} index={index} spec={spec} durationInFrames={durationInFrames} plan={(plan as ScenePlan3D | null) ?? null} icons={icons ?? {}} three={three ?? null} />
 );
 
@@ -406,6 +410,10 @@ export const LAYOUTS: Record<ResolvedSpec["template"], React.FC<SceneProps>> = {
   "ui-cards": IllustratedLayout,
   "flat-depth": IllustratedLayout,
   "soft-gradient": IllustratedLayout,
+  "host-tutorial": IllustratedLayout,
+  "checklist-glass": IllustratedLayout,
+  "spotlight-narrative": IllustratedLayout,
+  "data-atlas": IllustratedLayout,
   "clay-diorama": ThreeLayout,
   "iso-toon": ThreeLayout,
   "neon-glass": ThreeLayout,
@@ -417,10 +425,18 @@ export const LAYOUTS: Record<ResolvedSpec["template"], React.FC<SceneProps>> = {
   "pixel-night": PixelLayout,
   "pixel-arcade": PixelLayout,
   "pixel-mono": PixelLayout,
+  "pixel-versus": PixelLayout,
   "neon-grid": ThreeLayout,
   "soft-studio": ThreeLayout,
   "moody-night": ThreeLayout,
   "voxel-world": ThreeLayout,
+  "data-stage": ThreeLayout,
+  "monolith-story": ThreeLayout,
+  "clay-mascot": ThreeLayout,
+  "cutaway-explainer": ThreeLayout,
+  "engineering-explainer": ThreeLayout,
+  "process-explainer": ThreeLayout,
+  "documentary-3d": ThreeLayout,
   // reels-* compositions render src/reels/ReelsVideo (see Root.tsx); these entries only satisfy the type
   "reels-nube": CaptionsVoiceScene,
   "reels-noche": CaptionsVoiceScene,

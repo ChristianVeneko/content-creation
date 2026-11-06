@@ -6,7 +6,9 @@ import { ENGINE_ROOT, PYTHON } from "./env.mjs";
 
 export const KOKORO_MODEL = "mlx-community/Kokoro-82M-bf16";
 export const ELEVENLABS_MODEL = "eleven_multilingual_v2";
-export const ELEVENLABS_DEFAULT_VOICE = "21m00Tcm4TlvDq8ikWAM"; // premade "Rachel", multilingual
+/** The app-wide default ElevenLabs voice (set by the user, 2026-11-03). Used whenever a spec names no voice. */
+export const DEFAULT_VOICE_ID = "WFmom5vWeiir6CN1crV3";
+export const ELEVENLABS_DEFAULT_VOICE = DEFAULT_VOICE_ID;
 
 /** Kokoro lang codes and default voices by spec.language. */
 const KOKORO_LANG = {
@@ -43,7 +45,7 @@ export async function synthesize({ provider, texts, language, voiceId, speed = 1
 }
 
 async function elevenlabs({ texts, voiceId, speed, dir, onItem }) {
-  const voice = voiceId && !/^[a-z][fm]_[a-z]+$/.test(voiceId) ? voiceId : process.env.ELEVENLABS_VOICE_ID || ELEVENLABS_DEFAULT_VOICE;
+  const voice = voiceId && !/^[a-z][fm]_[a-z]+$/.test(voiceId) ? voiceId : DEFAULT_VOICE_ID;
   const files = [];
   for (let i = 0; i < texts.length; i++) {
     const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice)}?output_format=mp3_44100_128`, {

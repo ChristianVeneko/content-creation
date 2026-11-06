@@ -39,6 +39,15 @@ export type DrawingSkin = {
 
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
+/** Turbulence recipes of the part textures: mode "alpha" cuts the shape with the noise, "tone" darkens its fill by it. */
+const TEXTURES: Record<string, { freq: string; octaves: number; type?: "turbulence"; mode: "alpha" | "tone"; slope: number; icpt: number; cut?: number }> = {
+  grain: { freq: "0.85", octaves: 2, mode: "alpha", slope: 2.6, icpt: -0.75 },
+  mottle: { freq: "0.011", octaves: 4, mode: "tone", slope: 1.2, icpt: 0.3 },
+  wood: { freq: "0.0035 0.16", octaves: 3, mode: "tone", slope: 1.5, icpt: 0.12 },
+  cracks: { freq: "0.022", octaves: 2, type: "turbulence", mode: "alpha", slope: 1, icpt: 0, cut: 0.1 },
+  fibers: { freq: "0.5 0.07", octaves: 2, mode: "tone", slope: 0.9, icpt: 0.45 },
+};
+
 /** Resolve a drawing color: a role of `colors` or a hex. */
 export const drawColor = (colors: DrawingColors, c: unknown, fallback: string): string => {
   if (typeof c !== "string" || !c) return fallback;
@@ -64,7 +73,8 @@ export const DrawingSvg: React.FC<{
   uid: string;
   seed?: number;
   style?: React.CSSProperties;
-}> = ({ drawing, colors, skin, t: t0, enter, moments, width, height, uid, seed = 1, style }) => {
+  preserveAspectRatio?: string;
+}> = ({ drawing, colors, skin, t: t0, enter, moments, width, height, uid, seed = 1, style, preserveAspectRatio = "xMidYMid meet" }) => {
   const vb = parseViewBox(drawing.viewBox ?? "0 0 400 400");
   const layout = React.useMemo(() => drawingLayout(drawing.parts), [drawing.parts]);
   const t = skin.stepFps ? Math.floor(t0 * skin.stepFps) / skin.stepFps : t0;
@@ -76,6 +86,48 @@ export const DrawingSvg: React.FC<{
   const drawn = drawing.parts.filter((p) => p.shape !== "group" && p.shape !== "text" && (p.stroke !== undefined || p.fill === "none" || p.shape === "line")).map((p) => p.id as string);
   const strokeMul = skin.stroke ?? 1;
   const defs: React.ReactNode[] = [];
+  const fxIds = new Set<string>();
+
+  /** The filter of a part's `blur` and `texture` (defined once per combination), or undefined. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const partFx = (p: any): string | undefined => {
+    const blur = Number(p.blur) || 0;
+    const tex = p.texture ? TEXTURES[p.texture as string] : undefined;
+    if (!blur && !tex) return undefined;
+    const fid = `${id}-px-${p.texture ?? "n"}-${blur}-${seed % 89}`;
+    if (!fxIds.has(fid)) {
+      fxIds.add(fid);
+      defs.push(
+        <filter key={fid} id={fid} x={blur ? "-25%" : "0%"} y={blur ? "-25%" : "0%"} width={blur ? "150%" : "100%"} height={blur ? "150%" : "100%"} colorInterpolationFilters="sRGB">
+          {tex ? (
+            <>
+              <feTurbulence type={tex.type ?? "fractalNoise"} baseFrequency={tex.freq} numOctaves={tex.octaves} seed={(seed % 89) + 3} result="n" />
+              {tex.mode === "alpha" ? (
+                tex.cut !== undefined ? (
+                  // fissures: where the ridged noise is near zero
+                  <>
+                    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="m" />
+                    <feComponentTransfer in="m" result="m2">
+                      <feFuncA type="discrete" tableValues="1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+                    </feComponentTransfer>
+                  </>
+                ) : (
+                  <feColorMatrix in="n" type="matrix" values={`0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ${tex.slope} 0 0 0 ${tex.icpt}`} result="m2" />
+                )
+              ) : (
+                <feColorMatrix in="n" type="matrix" values={`${tex.slope} 0 0 0 ${tex.icpt}  ${tex.slope} 0 0 0 ${tex.icpt}  ${tex.slope} 0 0 0 ${tex.icpt}  0 0 0 0 1`} result="m2" />
+              )}
+              {tex.mode === "alpha" ? <feComposite in="SourceGraphic" in2="m2" operator="in" result="t" /> : <feComposite in="SourceGraphic" in2="m2" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t" />}
+              {blur ? <feGaussianBlur in="t" stdDeviation={blur} /> : null}
+            </>
+          ) : (
+            <feGaussianBlur stdDeviation={blur} />
+          )}
+        </filter>,
+      );
+    }
+    return `url(#${fid})`;
+  };
 
   const paint = (p: Paint, key: string, fallback: string): string => {
     if (p === undefined) return fallback;
@@ -186,7 +238,7 @@ export const DrawingSvg: React.FC<{
     const cut = skin.cutout && depth === 0 && p.shape !== "text" ? `url(#${id}-cut)` : undefined;
     const op = st.opacity * (p.opacity ?? 1);
     return (
-      <g key={pid} transform={transform} opacity={op < 1 ? op : undefined} filter={cut}>
+      <g key={pid} transform={transform} opacity={op < 1 ? op : undefined} filter={partFx(p) ?? cut} style={p.blend ? { mixBlendMode: p.blend } : undefined}>
         {body}
         {(node.children as string[]).map((c) => renderNode(c, depth + 1))}
       </g>
@@ -204,7 +256,7 @@ export const DrawingSvg: React.FC<{
       viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
       width={width}
       height={height}
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio={preserveAspectRatio}
       style={{ overflow: "visible", filter: skin.shadow, ...style }}
     >
       <defs>

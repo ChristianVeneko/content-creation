@@ -1,17 +1,32 @@
-// Chrome of the format looks (ui-cards, flat-depth, soft-gradient): backgrounds, headlines and HUD skins.
+// Chrome of the format looks (ui-cards, flat-depth, soft-gradient, host-tutorial, checklist-glass, spotlight-narrative):
+// backgrounds, headlines and HUD skins.
 // Their depth layers (parallax, ground, vignette) come from depth.tsx; their elements from format-elements.tsx.
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { noise2D } from "@remotion/noise";
-import { REGIONS } from "../../lib/illustrated.mjs";
+import { REGIONS, parseProgress, splitAccent } from "../../lib/illustrated.mjs";
 import { MONO_FONT, fontStack } from "../fonts";
-import { inkOn, rgba, seeded } from "../util";
+import { inkOn, luminance, rgba, seeded } from "../util";
 import { Grain } from "../components/Background";
 import { type Ink, progress, useKit } from "./kit";
 import type { FormatLookId, Look, LookId } from "./looks";
 import { fitText } from "./headlines";
 
-export const FORMAT_LOOK_IDS: FormatLookId[] = ["ui-cards", "flat-depth", "soft-gradient"];
+export const FORMAT_LOOK_IDS: FormatLookId[] = ["ui-cards", "flat-depth", "soft-gradient", "host-tutorial", "checklist-glass", "spotlight-narrative", "data-atlas"];
+
+const SERIF = "'Fraunces', 'DM Serif Display', Georgia, serif";
+
+/** WCAG contrast ratio of two hex colors. */
+const contrast = (a: string, b: string) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+/** The headline accent when it reads (>= 3:1) on the page, else the first palette accent that does, else the text color. */
+const readableAccent = (ink: Ink, color: string) => {
+  const bg = ink.bg.startsWith("#") ? ink.bg : "#FFFFFF";
+  const pool = [color, ink.accent, ink.accent3, ink.accent2].filter((c) => c.startsWith("#"));
+  return pool.find((c) => contrast(c, bg) >= 3) ?? ink.text;
+};
 export const isFormatLook = (id: LookId): id is FormatLookId => (FORMAT_LOOK_IDS as string[]).includes(id);
 
 /* ================================================================ backgrounds ================================================================ */
@@ -71,6 +86,108 @@ export const FormatBackground: React.FC<{ look: Look; ink: Ink }> = ({ look, ink
           <AbsoluteFill style={{ background: [blob(1, ink.accent2, 160, 420, 620), blob(2, ink.accent3, 980, 900, 680), blob(3, ink.accent, 380, 1500, 700)].join(", ") }} />
           <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 40%)" }} />
           <Grain opacity={0.03} />
+        </AbsoluteFill>
+      );
+    }
+    case "host-tutorial": {
+      // warm paper: a two-stop wash, fine fiber noise, a halftone dot field fading in from the top-right corner,
+      // and a pale disc behind the host slot
+      const dots = Array.from({ length: 11 * 9 }, (_, i) => {
+        const cx = i % 11;
+        const cy = Math.floor(i / 11);
+        const x = width - 40 - cx * 34;
+        const y = 70 + cy * 34;
+        const d = Math.hypot(cx / 10, cy / 8);
+        return { x, y, r: Math.max(0, 11 * (1 - d) * (0.85 + 0.15 * Math.sin(t * 0.8 + i))) };
+      });
+      return (
+        <AbsoluteFill style={{ background: `linear-gradient(170deg, ${ink.bg} 0%, ${ink.bg2} 100%)` }}>
+          <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
+            <defs>
+              <filter id="ht-paper" x="0" y="0" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" />
+                <feColorMatrix values="0 0 0 0 0.35  0 0 0 0 0.25  0 0 0 0 0.15  0 0 0 0.55 -0.12" />
+              </filter>
+            </defs>
+            <rect width={width} height={height} filter="url(#ht-paper)" opacity={0.55} />
+            {dots.map((d, i) => (d.r > 0.8 ? <circle key={i} cx={d.x} cy={d.y} r={d.r} fill={ink.accent} opacity={0.16} /> : null))}
+            <circle cx={380} cy={1850} r={330} fill={ink.accent2} opacity={0.2} />
+          </svg>
+        </AbsoluteFill>
+      );
+    }
+    case "checklist-glass": {
+      // pastel mesh with four drifting color pools and a diagonal sheen, like a glossy phone wallpaper
+      const blob = (k: number, c: string, x: number, y: number, r: number) => {
+        const dx = noise2D(`cgx${k}`, t * 0.07, 0) * 160;
+        const dy = noise2D(`cgy${k}`, t * 0.07, 1) * 160;
+        return `radial-gradient(circle ${r}px at ${x + dx}px ${y + dy}px, ${rgba(c, 0.6)}, ${rgba(c, 0)} 100%)`;
+      };
+      return (
+        <AbsoluteFill style={{ background: `linear-gradient(155deg, ${ink.bg} 0%, ${ink.bg2} 100%)` }}>
+          <AbsoluteFill style={{ background: [blob(1, ink.accent2, 120, 360, 560), blob(2, ink.accent3, 960, 640, 600), blob(3, ink.accent, 260, 1280, 680), blob(4, ink.accent2, 940, 1620, 560)].join(", ") }} />
+          <AbsoluteFill style={{ background: `linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.32) ${44 + Math.sin(t * 0.3) * 4}%, rgba(255,255,255,0) 60%)` }} />
+          <Grain opacity={0.03} />
+        </AbsoluteFill>
+      );
+    }
+    case "spotlight-narrative": {
+      // a dark room: one spotlight cone from the top landing on a glowing floor ellipse, concentric rings,
+      // a slow warm light leak, floating dust in the beam and grain
+      const sway = Math.sin(t * 0.35) * 14;
+      const spotY = 1210;
+      const rings = [0, 1, 2].map((k) => {
+        const ph = (t * 0.22 + k / 3) % 1;
+        return { rx: 120 + ph * 420, a: (1 - ph) * 0.55 };
+      });
+      const dust = Array.from({ length: 34 }, (_, i) => {
+        const y = ((seeded(i * 5 + 1) * spotY - t * (8 + seeded(i) * 14)) % spotY + spotY) % spotY;
+        const k = y / spotY;
+        const half = 40 + k * 330;
+        return { x: 540 + sway * (1 - k) + (seeded(i * 7 + 3) - 0.5) * 2 * half * 0.9, y, r: 1.2 + seeded(i * 9) * 2, a: 0.1 + seeded(i * 13) * 0.35 };
+      });
+      return (
+        <AbsoluteFill style={{ background: `radial-gradient(ellipse 100% 70% at 50% 62%, ${ink.bg} 0%, ${ink.bg2} 100%)` }}>
+          <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
+            <defs>
+              <linearGradient id="sn-cone" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#FFFFFF" stopOpacity={0.34} />
+                <stop offset="1" stopColor={ink.accent2} stopOpacity={0.07} />
+              </linearGradient>
+              <radialGradient id="sn-floor" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0" stopColor={ink.accent2} stopOpacity={0.5} />
+                <stop offset="1" stopColor={ink.accent2} stopOpacity={0} />
+              </radialGradient>
+              <filter id="sn-soft" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="16" />
+              </filter>
+            </defs>
+            <polygon points={`${500 + sway},-20 ${580 + sway},-20 ${900},${spotY} ${180},${spotY}`} fill="url(#sn-cone)" filter="url(#sn-soft)" />
+            <ellipse cx={540} cy={spotY} rx={430} ry={92} fill="url(#sn-floor)" />
+            {rings.map((r, i) => (
+              <ellipse key={i} cx={540} cy={spotY} rx={r.rx} ry={r.rx * 0.2} fill="none" stroke={ink.accent2} strokeWidth={3} opacity={r.a} />
+            ))}
+            {dust.map((d, i) => (
+              <circle key={i} cx={d.x} cy={d.y} r={d.r} fill="#FFFFFF" opacity={d.a * (0.6 + 0.4 * Math.sin(t * 1.4 + i))} />
+            ))}
+          </svg>
+          <AbsoluteFill style={{ background: `radial-gradient(ellipse 55% 38% at ${22 + Math.sin(t * 0.18) * 10}% ${70 + Math.cos(t * 0.15) * 6}%, ${rgba(ink.accent, 0.22)}, transparent 70%)`, mixBlendMode: "screen" }} />
+          <Grain opacity={0.07} />
+        </AbsoluteFill>
+      );
+    }
+    case "data-atlas": {
+      // a deep night sky: a cool glow high up, a warm one low, a field of faint stars; the scene paints its own haze
+      const stars = Array.from({ length: 70 }, (_, i) => ({ x: seeded(i * 3 + 1) * width, y: seeded(i * 7 + 4) * height * 0.75, r: 0.8 + seeded(i * 5) * 1.6, a: 0.25 + seeded(i * 11) * 0.5 }));
+      return (
+        <AbsoluteFill style={{ background: `radial-gradient(ellipse 120% 80% at 50% 38%, ${ink.bg} 0%, ${ink.bg2} 100%)` }}>
+          <AbsoluteFill style={{ background: `radial-gradient(ellipse 70% 30% at 50% 20%, ${rgba(ink.accent3, 0.16)}, transparent 70%), radial-gradient(ellipse 80% 26% at 50% 78%, ${rgba(ink.accent2, 0.1)}, transparent 70%)` }} />
+          <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
+            {stars.map((s, i) => (
+              <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#FFFFFF" opacity={s.a * (0.6 + 0.4 * Math.sin(t * 1.1 + i))} />
+            ))}
+          </svg>
+          <Grain opacity={0.05} />
         </AbsoluteFill>
       );
     }
@@ -191,6 +308,108 @@ const SoftHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote, colo
   );
 };
 
+/**
+ * Accent headline of host-tutorial and checklist-glass: bold sans words with one serif-italic accent word in the accent
+ * color (the word between *asterisks*, else the last). The kicker is a mono "// step 1 . name" tag (host-tutorial) or a
+ * progress pill "Checklist 3 / 12" with a fill track (checklist-glass).
+ */
+const AccentHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote, color: wanted, look }) => {
+  const { ink } = useKit();
+  const color = readableAccent(ink, wanted);
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const r = REGIONS.title;
+  const glass = look.id === "checklist-glass";
+  const plain = (quote ? `"${main}"` : main).replace(/\*/g, "");
+  const parts = splitAccent(quote ? `"${main}"` : main);
+  const KH = kicker ? (glass ? 76 : 58) : 0;
+  const fit = fitText(plain, r.w - 20, r.h - KH - 14, look.displayEm, 108, 2, 1.1);
+  const k = progress(t, 0.04, 0.35);
+  const pg = kicker ? parseProgress(kicker) : null;
+  return (
+    <div style={{ position: "absolute", left: r.x, top: r.y, width: r.w, height: r.h, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+      {kicker ? (
+        glass ? (
+          <div style={{ height: 58, marginBottom: 16, display: "flex", alignItems: "center", gap: 16, padding: "0 26px", borderRadius: 30, background: ink.surface2, border: `2px solid ${luminance(ink.paperInk) > 0.5 ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.98)"}`, boxShadow: `0 14px 28px -12px ${rgba(ink.accent, 0.45)}`, color: ink.paperInk, fontFamily: look.body, fontWeight: 700, fontSize: 30, opacity: k, transform: `translateY(${(1 - k) * 14}px)` }}>
+            <span>{pg ? `${pg.label} ${pg.n} / ${pg.total}` : kicker}</span>
+            {pg ? (
+              <span style={{ position: "relative", width: 170, height: 12, borderRadius: 6, background: rgba(ink.paperInk, 0.14), overflow: "hidden" }}>
+                <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(1, pg.n / Math.max(1, pg.total)) * 100 * progress(t, 0.15, 0.7)}%`, borderRadius: 6, background: `linear-gradient(90deg, ${ink.accent}, ${ink.accent2})` }} />
+              </span>
+            ) : null}
+          </div>
+        ) : (
+          <div style={{ height: KH - 12, marginBottom: 12, display: "flex", alignItems: "center", fontFamily: look.mono, fontWeight: 700, fontSize: 32, letterSpacing: 1, color: ink.muted, opacity: k, transform: `translateX(${(1 - k) * -26}px)` }}>{kicker}</div>
+        )
+      ) : null}
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "baseline", columnGap: Math.round(fit.size * 0.22), rowGap: 2, lineHeight: 1.1 }}>
+        {parts.map((w, i) => {
+          const q = progress(t, 0.12 + i * 0.08, 0.5, Easing.bezier(0.2, 0.9, 0.25, 1.15));
+          return (
+            <span
+              key={i}
+              style={{
+                display: "inline-block",
+                opacity: Math.min(1, q * 2),
+                transform: `translateY(${(1 - q) * 34}px) rotate(${w.accent ? (1 - q) * -4 : 0}deg)`,
+                ...(w.accent
+                  ? { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: Math.round(fit.size * 1.1), letterSpacing: -1, color }
+                  : { fontFamily: look.display, fontWeight: look.displayWeight, fontSize: fit.size, letterSpacing: -1.5, color: ink.text }),
+              }}
+            >
+              {w.text}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+/** spotlight-narrative: a small tracked kicker over a serif line that fades up out of the dark, with a soft glow. */
+const SpotlightHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote, color, look }) => {
+  const { ink } = useKit();
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const r = REGIONS.title;
+  const text = quote ? `"${main}"` : main;
+  const KH = kicker ? 54 : 0;
+  const fit = fitText(text, r.w - 30, r.h - KH - 14, look.displayEm, 88, 2, 1.14);
+  const k = progress(t, 0.05, 0.5);
+  const q = progress(t, 0.2, 0.9, Easing.bezier(0.25, 0.7, 0.3, 1));
+  return (
+    <div style={{ position: "absolute", left: r.x, top: r.y, width: r.w, height: r.h, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+      {kicker ? <div style={{ height: KH - 10, display: "flex", alignItems: "center", marginBottom: 10, fontFamily: look.mono, fontWeight: 700, fontSize: 26, letterSpacing: 7, textTransform: "uppercase", color: ink.muted, opacity: k }}>{kicker}</div> : null}
+      <div style={{ fontFamily: look.display, fontWeight: look.displayWeight, fontSize: fit.size, lineHeight: 1.14, letterSpacing: -1, color: ink.text, opacity: q, transform: `translateY(${(1 - q) * 26}px) scale(${1 + (1 - q) * 0.03})`, filter: q < 1 ? `blur(${(1 - q) * 8}px)` : undefined, textShadow: `0 0 36px ${rgba(color, 0.5)}, 0 10px 24px rgba(0,0,0,0.6)` }}>
+        {text}
+      </div>
+      <div style={{ marginTop: 14, width: 120 * q, height: 4, borderRadius: 2, background: color, boxShadow: `0 0 18px ${color}` }} />
+    </div>
+  );
+};
+
+/**
+ * data-atlas: a chapter tag at the very top (a tracked kicker over one quiet line), clear of the captions band below it.
+ * The format carries its words in the captions, so a scene normally has no title at all.
+ */
+const AtlasHeadline: React.FC<HP & { look: Look }> = ({ kicker, main, quote, color, look }) => {
+  const { ink } = useKit();
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const text = quote ? `"${main}"` : main;
+  const fit = fitText(text, 880, 64, look.displayEm, 52, 1, 1.1);
+  const k = progress(t, 0.05, 0.5);
+  return (
+    <div style={{ position: "absolute", left: 90, top: 236, width: 900, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", opacity: k, transform: `translateY(${(1 - k) * -10}px)` }}>
+      {kicker ? <div style={{ fontFamily: look.mono, fontWeight: 700, fontSize: 24, letterSpacing: 6, textTransform: "uppercase", color: ink.muted, marginBottom: 8 }}>{kicker}</div> : null}
+      <div style={{ fontFamily: look.display, fontWeight: look.displayWeight, fontSize: fit.size, lineHeight: 1.1, letterSpacing: -0.5, color: ink.text, textShadow: `0 0 26px ${rgba(color, 0.5)}, 0 6px 16px rgba(0,0,0,0.6)` }}>{text}</div>
+    </div>
+  );
+};
+
 export const FormatHeadline: React.FC<HP & { look: Look }> = (props) => {
   switch (props.look.id) {
     case "ui-cards":
@@ -199,6 +418,13 @@ export const FormatHeadline: React.FC<HP & { look: Look }> = (props) => {
       return <FlatHeadline {...props} />;
     case "soft-gradient":
       return <SoftHeadline {...props} />;
+    case "host-tutorial":
+    case "checklist-glass":
+      return <AccentHeadline {...props} />;
+    case "spotlight-narrative":
+      return <SpotlightHeadline {...props} />;
+    case "data-atlas":
+      return <AtlasHeadline {...props} />;
     default:
       return null;
   }
@@ -231,6 +457,14 @@ export const formatHudSkin = (look: Look, ink: Ink): Partial<FormatSkin> | null 
         chipRadius: 24,
         barRadius: 10,
       };
+    case "host-tutorial":
+      return { box: { borderRadius: 16, border: `3px solid ${ink.paperInk}`, background: "#FFFFFF", boxShadow: `5px 5px 0 ${ink.paperInk}` }, font: look.display, small: look.mono, weight: 800, chipRadius: 10, barRadius: 6 };
+    case "checklist-glass":
+      return { box: { borderRadius: 34, border: "2px solid rgba(255,255,255,0.95)", background: "rgba(255,255,255,0.6)", boxShadow: `0 18px 36px -18px ${rgba(ink.accent, 0.45)}` }, font: look.display, small: look.body, weight: 800, chipRadius: 24, barRadius: 10 };
+    case "spotlight-narrative":
+      return { box: { borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(20,23,34,0.72)", boxShadow: "0 16px 30px rgba(0,0,0,0.5)" }, font: look.display, small: look.mono, weight: 700, chipRadius: 10, barRadius: 4 };
+    case "data-atlas":
+      return { box: { borderRadius: 30, border: "1.5px solid rgba(255,255,255,0.14)", background: "rgba(8,11,22,0.78)", boxShadow: "0 14px 28px rgba(0,0,0,0.5)" }, font: look.display, small: look.mono, weight: 800, chipRadius: 20, barRadius: 6 };
     default:
       return null;
   }

@@ -3,7 +3,7 @@
 // dust, and the per-scene UI (banner, popup / counter / checklist, prop tags).
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 import { AbsoluteFill, random, useCurrentFrame, useVideoConfig } from "remotion";
-import { PARALLAX, PIXEL_LOOKS, PX, cameraOffset, lookPalette, pixelLookOf } from "../../lib/pixel.mjs";
+import { CROWN_ROWS, PARALLAX, PIXEL_LOOKS, PX, cameraOffset, fighterXs, lookPalette, pixelLookOf } from "../../lib/pixel.mjs";
 import { ease, momentSeconds, motionState, spriteLibrary } from "../../lib/pixel-gen.mjs";
 import { drawCustomSet, drawSprite, drawTransformed, type ParsedSprite } from "./gen";
 import { chromaBuf, dissolveBuf, drawFx, emptyScreen, glitchBuf, pixelateBuf, type Screen } from "./fx";
@@ -11,7 +11,7 @@ import { BW, BH, MY, Painter, mix, rgb } from "./painter";
 import { SETS, rgbRoles, type Layer, type Layers, type Ray, type SetInfo } from "./sets";
 import { FLOATING, PROPS, SMALL, burst, type Box } from "./props";
 import { drawCharacter, headBoxes } from "./character";
-import { Banner, bannerBottom, Checklist, Counter, Popup, Tag, type UiColors } from "./ui";
+import { Banner, bannerBottom, Checklist, Counter, Popup, Ranking, RoundCard, Tag, Verdict, VersusHeader, type UiColors } from "./ui";
 import { TAG_FONT } from "../fonts";
 import type { PixelPlan, ResolvedSpec, Scene } from "../types";
 
@@ -149,7 +149,11 @@ export function drawPixelScene(spec: ResolvedSpec, pixel: PixelVisual, plan: Pix
   }
   props.forEach(drawProp);
   // agent-drawn sprites placed in the scene
-  const actors = (pixel.actors ?? []) as PixelVisual[];
+  // versus fighters stand on the stage like actors (the right-hand one is mirrored to face the left), then the agent's actors
+  const fighters = (pixel.fighters ?? []) as PixelVisual[];
+  const fighterX = fighterXs(fighters) as number[];
+  const fighterActors: PixelVisual[] = fighters.map((f, i) => ({ sprite: f.sprite, x: fighterX[i], scale: f.scale ?? 5, flip: fighterX[i] > 0.6, motion: f.anim, crown: f.crown }));
+  const actors = [...fighterActors, ...((pixel.actors ?? []) as PixelVisual[])];
   const free = actors.filter((a) => a.x === undefined).length;
   let fi = 0;
   actors.forEach((a, i) => {
@@ -171,6 +175,7 @@ export function drawPixelScene(spec: ResolvedSpec, pixel: PixelVisual, plan: Pix
     const ay = Math.round((m.y ?? a.y ?? info.floor / PX.h) * PX.h + m.dy);
     if (onFloor && depth === "subject" && a.shadow !== false) T.p.pool(cx, info.floor, Math.max(8, (sp.w * (a.scale ?? 2)) / 2), 3, mix(C.ink, C.floor0, 0.25), 0.9 - Math.min(0.5, Math.max(0, info.floor - ay) / 60));
     drawSprite(T, sp, m.frame, C, { cx, ay, k, rotate: m.rotate, flip: m.flip ?? a.flip, opacity: m.opacity, glowAll: a.glow });
+    if (a.crown) drawCrown(T, cx, Math.round(ay - sp.h * k - 3 + Math.sin(t * 3) * 1.5), C);
     if (a.at !== undefined && since < 0.45) burst(T, cx, ay - (sp.h * k) / 2, 1, C, since);
     if (a.label) labels.push({ box: { x: cx - (sp.w * k) / 2, y: ay - sp.h * k, w: sp.w * k, h: sp.h * k }, text: a.label, sign: false });
   });
@@ -205,6 +210,15 @@ export function drawPixelScene(spec: ResolvedSpec, pixel: PixelVisual, plan: Pix
     fxG.quantize(pal);
   }
   return { L, fx, fxG, rays, labels, look, screen };
+}
+
+/** Pixel crown floating over a fighter's head (gold with a dark outline, glowing). */
+function drawCrown(T: Layer, cx: number, bottom: number, C: ReturnType<typeof rgbRoles>) {
+  const gold = mix(C.glow, C.paper, 0.15);
+  const x0 = cx - Math.floor((CROWN_ROWS[0].length * 2) / 2), y0 = bottom - CROWN_ROWS.length * 2;
+  for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) T.p.sprite(CROWN_ROWS, { x: C.ink }, x0 + dx, y0 + dy, 2);
+  T.p.sprite(CROWN_ROWS, { x: gold }, x0, y0, 2);
+  T.g.sprite(CROWN_ROWS, { x: gold }, x0, y0, 2);
 }
 
 /** Keep a tag (Silkscreen 24 px, about 22 px per character plus padding) inside x 90..990. */
@@ -292,15 +306,21 @@ const Moving: React.FC<{ motion: unknown; t: number; resolve: (a: unknown) => nu
 const SceneUi: React.FC<{ pixel: PixelVisual; plan: PixelPlan; ui: UiColors; fps: number; t: number; sceneSec: number }> = ({ pixel, plan, ui, fps, t, sceneSec }) => {
   const b = pixel.banner;
   // panels sit under the banner (one or two lines) or take its place
-  const top = !b || b.big ? 440 : bannerBottom(b.text, Boolean(b.kicker)) + 40;
+  // versus scenes: the header strip of the fighters takes the top, the banner and the panels sit under it
+  const shift = pixel.fighters ? 130 : 0;
+  const top = (!b || b.big ? 440 : bannerBottom(b.text, Boolean(b.kicker)) + 40) + shift;
   const moments = (plan as PixelPlan & { moments?: Record<string, number> }).moments ?? {};
   const resolve = (at: unknown) => momentSeconds(at, moments, sceneSec, fps) as number;
   const mv = { t, resolve, sceneSec };
   return (
     <>
-      {b ? <Moving motion={b.motion} {...mv}><Banner text={b.text} accent={b.accent} kicker={b.kicker} big={b.big} ui={ui} enterFrame={4} /></Moving> : null}
+      {pixel.fighters ? <VersusHeader fighters={pixel.fighters} ui={ui} enterFrame={4} /> : null}
+      {b ? <Moving motion={b.motion} {...mv}><Banner text={b.text} accent={b.accent} kicker={b.kicker} big={b.big} ui={ui} enterFrame={4} shift={shift} /></Moving> : null}
       {pixel.popup ? <Moving motion={pixel.popup.motion} {...mv}><Popup title={pixel.popup.title} text={pixel.popup.text} accent={pixel.popup.accent} ui={ui} enterFrame={Math.round(plan.panelAt * fps)} top={top} /></Moving> : null}
       {pixel.counter ? <Moving motion={pixel.counter.motion} {...mv}><Counter {...pixel.counter} ui={ui} enterFrame={Math.round(0.3 * fps)} top={top} /></Moving> : null}
+      {pixel.ranking ? <Ranking {...pixel.ranking} times={plan.rows ?? []} ui={ui} top={top} /> : null}
+      {pixel.verdict ? <Verdict {...pixel.verdict} times={plan.rows ?? []} ui={ui} top={top} /> : null}
+      {pixel.round ? <RoundCard {...pixel.round} ui={ui} at={plan.round?.at ?? 0.2} until={plan.round?.until ?? 2} /> : null}
       {pixel.checklist ? <Moving motion={pixel.checklist.motion} {...mv}><Checklist title={pixel.checklist.title} items={pixel.checklist.items} checks={plan.checks} ui={ui} enterFrame={Math.round(0.5 * fps)} sceneStartFrame={0} top={top} /></Moving> : null}
     </>
   );

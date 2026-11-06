@@ -2,6 +2,7 @@
   "id": "paper-world",
   "name": "Paper World 3D",
   "category": "3d",
+  "format": "papercraft",
   "description": "A real 3D (three.js) pop-up book: flat-shaded low-poly paper objects stand up from the page on their hinge, a faceted paper island with cone trees and low-poly hills, warm low sun with long soft shadows, falling paper confetti and a camera that cranes over the spread. Titles are cut paper banners that unfold down; every scene turns in like a page. Gentle and crafty. No emoji.",
   "prompt_hint": "Write 6-10 scenes (3-6 s each). Every scene has title.kicker + title.main and visual.type \"scene3d\" with 1-5 objects that tell a little story (house, tree, building, person, cloud, rocket, pin, globe, coin, chart, lightbulb...). 2-4 objects in a row or flow read best on the paper island. Short labels (1-3 words). Never use emoji.",
   "best_for": [

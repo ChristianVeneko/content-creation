@@ -35,7 +35,7 @@ const mini = (objects, extra = {}, narration = "Hola mundo, esto es una prueba c
   version: 1,
   title: "x",
   template: "clay-diorama",
-  scenes: [{ id: "a", narration, title: { main: "Hola" }, visual: { type: "scene3d", objects, ...extra } }],
+  scenes: [{ id: "a", narration, title: { main: "Hola" }, visual: { type: "scene3d", stock: true, objects, ...extra } }],
 });
 const errorsOf = (spec) => {
   const r = validateSpec(spec);
@@ -81,7 +81,7 @@ test("custom parts are rejected with clear messages: shape, parent cycle, unknow
   hasError(errorsOf(withParts([{ id: "a", shape: "tube" }])), "scenes.0.visual.objects.0.parts.0.points", /tube parts need `points`/);
   hasError(errorsOf(withParts([{ id: "a", shape: "extrude", points: [[0, 0], [1, 0]] }])), "scenes.0.visual.objects.0.parts.0.points", /at least 3/);
   hasError(errorsOf(withParts([{ id: "a", shape: "box", size: [1, 2] }])), "scenes.0.visual.objects.0.parts.0.size", /box `size`/);
-  hasError(errorsOf(withParts(Array.from({ length: 41 }, (_, i) => ({ id: `p${i}`, shape: "box" })))), "scenes.0.visual.objects.0.parts", /40/);
+  hasError(errorsOf(withParts(Array.from({ length: 161 }, (_, i) => ({ id: `p${i}`, shape: "box" })))), "scenes.0.visual.objects.0.parts", /160/);
   hasError(errorsOf(mini([{ kind: "custom", id: "m" }])), "scenes.0.visual.objects.0.parts", /custom objects need `parts`/);
   hasError(errorsOf(withParts([{ id: "a", shape: "box", colour: "red" }])), "scenes.0.visual.objects.0.parts.0", /colour/);
 });
@@ -94,7 +94,10 @@ test("motion, fx and moments are validated against the scene's objects and parts
   hasError(errorsOf(mini([{ ...custom, motion: ["dance"] }])), "scenes.0.visual.objects.0.motion.0", /unknown motion "dance".*bob/);
   hasError(errorsOf(mini([custom], { fx: [{ type: "trail", target: "nope" }] })), "scenes.0.visual.fx.0.target", /no object with id "nope"/);
   hasError(errorsOf(mini([custom], { fx: [{ type: "pulse", target: "m/zz" }] })), "scenes.0.visual.fx.0.target", /no part "zz" in object "m"/);
-  hasError(errorsOf(mini([custom], { fx: [{ type: "particles" }] })), "scenes.0.visual.fx.0.kind", /particles need `kind`/);
+  // a particles fx without `kind` is completed with `dust` instead of rejected (see lenient-authoring.test.mjs)
+  const dust = validateSpec(mini([custom], { fx: [{ type: "particles" }] }));
+  assert.equal(dust.ok, true);
+  assert.equal(dust.spec.scenes[0].visual.fx[0].kind, "dust");
   hasError(errorsOf(mini([custom], { fx: [{ type: "glow" }] })), "scenes.0.visual.fx.0.target", /glow needs `target`/);
   hasError(errorsOf(mini([custom], { cameraKeys: [{ at: 0, focus: "x" }] })), "scenes.0.visual.cameraKeys.0.focus", /no object with id "x"/);
   hasError(errorsOf(mini([{ ...custom, keys: [{ at: "#2", pos: [0, 1, 0] }] }])), "scenes.0.visual.objects.0.keys.0.at", /cannot read the moment/);

@@ -2,7 +2,7 @@
 // The preview recolors live through CSS variables; the chosen palette is written to spec.theme.palette.
 import { useId, useState } from "react";
 import type { Palette, PalettePreset, TemplateInfo } from "../../shared/types.ts";
-import { type PaletteChoice, isHexColor, minTextContrast, paletteVars, resolveChoice, templatePalette } from "../lib/palette.ts";
+import { MIN_CONTRAST, type PaletteChoice, contrastBadges, isHexColor, paletteVars, resolveChoice, templatePalette } from "../lib/palette.ts";
 import { TemplateThumb } from "./TemplateCard.tsx";
 
 const TAGS: { id: string; label: string }[] = [
@@ -31,6 +31,17 @@ function Swatches({ p }: { p: Palette }) {
       {[p.bg[0], p.bg[1] ?? p.bg[0], p.text, p.accent, p.accent2 ?? p.accent].map((c, i) => (
         <span key={i} style={{ background: c }} />
       ))}
+    </span>
+  );
+}
+
+/** Small marker on palettes whose text or accent falls under the minimum contrast. */
+function LowContrast({ p }: { p: Palette }) {
+  if (contrastBadges(p).every((b) => b.ok)) return null;
+  return (
+    <span className="pal-warn" title={`Contraste bajo (mínimo ${MIN_CONTRAST}:1)`}>
+      <span aria-hidden="true">!</span>
+      <span className="visually-hidden">Contraste bajo</span>
     </span>
   );
 }
@@ -75,7 +86,8 @@ export function PalettePicker(props: {
   const resolved = resolveChoice(props.choice, props.presets, props.template);
   const original = templatePalette(props.template);
   const custom: Palette = props.choice.kind === "custom" ? props.choice.palette : { ...resolved.preview, bg: [resolved.preview.bg[0], resolved.preview.bg[1] ?? resolved.preview.bg[0]] };
-  const contrast = minTextContrast(resolved.preview);
+  const badges = contrastBadges(resolved.preview);
+  const lowContrast = badges.some((b) => !b.ok);
   const visible = props.presets?.filter((p) => tag === "all" || p.tags.includes(tag)) ?? [];
 
   function setCustom(key: (typeof CUSTOM_FIELDS)[number]["key"], value: string) {
@@ -97,15 +109,25 @@ export function PalettePicker(props: {
           <p className="palette-current">
             <span className="muted">Paleta</span> {resolved.label}
           </p>
-          <p className={contrast >= 4.5 ? "contrast ok" : "contrast warn"}>
-            Contraste del texto {contrast.toFixed(1)}:1{contrast >= 4.5 ? " · legible" : " · bajo, cuesta leer"}
+          <ul className="contrast-badges" aria-label="Contraste de la paleta">
+            {badges.map((b) => (
+              <li key={b.id} className={b.ok ? "contrast ok" : "contrast warn"}>
+                {b.label}
+                {b.ok ? " · bien" : " · bajo"}
+              </li>
+            ))}
+          </ul>
+          <p className={lowContrast ? "contrast warn" : "contrast ok"} role={lowContrast ? "alert" : undefined}>
+            {lowContrast
+              ? `Contraste por debajo de ${MIN_CONTRAST}:1: el texto o el acento costarán de leer. Prueba otra paleta o ajusta los colores.`
+              : "Buen contraste: se leerá bien sobre el fondo."}
           </p>
           {props.template && (
             <figure className="palette-original">
               <span className="palette-original-frame">
                 <TemplateThumb template={props.template} />
               </span>
-              <figcaption className="muted">Render original de la plantilla</figcaption>
+              <figcaption className="muted">Render original del formato</figcaption>
             </figure>
           )}
         </div>
@@ -117,7 +139,8 @@ export function PalettePicker(props: {
             <input type="radio" name={name} checked={props.choice.kind === "original"} onChange={() => props.onChange({ kind: "original" })} />
             <Swatches p={original} />
             <span className="pal-name">Original</span>
-            <span className="pal-desc">La de la plantilla</span>
+            <span className="pal-desc">La del formato</span>
+            <LowContrast p={original} />
           </label>
         </div>
 
@@ -145,6 +168,7 @@ export function PalettePicker(props: {
               />
               <Swatches p={p.palette} />
               <span className="pal-name">{p.name}</span>
+              <LowContrast p={p.palette} />
             </label>
           ))}
         </div>

@@ -4,12 +4,12 @@
 03-assets/**/*.wav
 03-assets/**/*.mp3
 06-exports/
-node_modules/
+node_modules
 .venv/
 __pycache__/
 .DS_Store
 .env
-**/node_modules/
+**/node_modules
 05-tools/cache/
 05-tools/models/
 05-tools/repos/
@@ -43,3 +43,29 @@ odd/
 !08-channels/_template/
 03-assets/brand/
 
+
+# Video kits: local tools, downloaded assets and test renders stay on disk
+05-tools/science-shorts/home/
+05-tools/whatif-3d/assets/
+05-tools/whatif-3d/.pipcache/
+05-tools/whatif-3d/story_test/
+05-tools/whatif-3d/queue.log
+05-tools/whatif-3d/blender/
+05-tools/story-video/engine/vendor/
+05-tools/story-video/engine/models/
+05-tools/story-video/.venv/
+05-tools/story-video/engine/sfx/
+# opuscar kit: installed packages, models, gallery images and render output (re-created by setup.sh / build.sh)
+05-tools/opuscar/node_modules/
+05-tools/opuscar/.venv/
+05-tools/opuscar/films/
+05-tools/opuscar/styleboard/
+05-tools/opuscar/docs/frames/
+05-tools/opuscar/**/*.jpg
+05-tools/opuscar/core/tts/*.onnx
+05-tools/opuscar/core/tts/*.bin
+05-tools/opuscar/**/.cache/
+
+# Personal channel research and brand art (local only)
+00-docs/granja-*.md
+05-tools/brand-farm/

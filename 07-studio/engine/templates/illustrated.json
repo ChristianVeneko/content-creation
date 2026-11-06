@@ -2,8 +2,9 @@
   "id": "illustrated",
   "name": "Illustrated Explainer",
   "category": "illustrated-2d",
-  "description": "Every scene is drawn in code: diagrams, flows, comparisons, code windows, checklists and icons that draw on, pop and tick in, over a dark blueprint grid. Two-tone headlines, word-pill captions, a live top HUD, sound effects on every beat and a ducked music bed. No emoji, no stock footage.",
-  "prompt_hint": "Write 8-14 short scenes (one idea each, 3-6 s). Every scene has title.kicker + title.main and visual.type \"illustration\" with 2-5 elements that literally depict the idea: compare/split for comparisons, flow/timeline for processes, doc/checklist for specs, code/terminal for code, bars/counter for numbers, icon/svg for objects, callout/stamp for emphasis. Use the HUD to track the story state. Never use emoji.",
+  "format": "explainer-blueprint",
+  "description": "Every scene is drawn in code: diagrams, flows, comparisons, code windows, checklists and icons that draw on, pop and tick in, over a dark blueprint grid. Two-tone headlines, word-pill captions, a live top HUD, sound effects on every beat and a ducked music bed. No emoji, no stock footage. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-14 short scenes (one idea each, 3-6 s). Every scene has title.kicker + title.main and visual.type \"illustration\" with 2-5 elements that literally depict the idea: compare/split for comparisons, flow/timeline for processes, doc/checklist for specs, code/terminal for code, bars/counter for numbers, icon/svg for objects, callout/stamp for emphasis. Use the HUD to track the story state. Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": ["tech explainers", "comparisons", "processes and workflows", "data stories", "tutorials"],
   "preview": {
     "style": "illustrated",

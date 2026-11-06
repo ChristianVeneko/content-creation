@@ -1,10 +1,14 @@
 // VideoSpec schema (zod) — the single source of truth for spec.schema.json.
 // The shape is the "Shared contract" of the Video Studio feature; do not rename fields.
 import { z } from "zod";
+import { adaptPalette } from "./palette-adapt.mjs";
 import { MOODS, MUSIC_PROVIDERS } from "./music-moods.mjs";
 import { elementsSchema, hasEmoji, hudItemSchema, hudOverrideSchema, lookSchema, sceneTitleSchema } from "./illustration-schema.mjs";
 import { ART_LOOKS, FORMAT_2D_LOOKS, usesIllustratedKit } from "./illustrated.mjs";
-import { THREE_D_TEMPLATE_IDS, refineScene3d, scene3dFields, usesThreeKit } from "./scene3d.mjs";
+import { stageSchema, refineStageSpec } from "./scene3d-stage.mjs";
+import { expandBuilders } from "./scene3d-builders.mjs";
+import { normalizeStageAuthoring } from "./scene3d-lenient.mjs";
+import { THREE_D_TEMPLATE_IDS, refineScene3d, refineThreeNovelty, scene3dFields, usesThreeKit } from "./scene3d.mjs";
 import { REELS_TEMPLATE_IDS } from "./reels.mjs";
 import { PIXEL_TEMPLATE_IDS, pixelSceneSchema, refinePixel, refinePixelSpec, usesPixelKit } from "./pixel.mjs";
 import { reelSceneSchema, reelsOptionsSchema, refineReels } from "./reels-schema.mjs";
@@ -12,6 +16,10 @@ import { CAPTION_POSITIONS, CAPTION_SIZES, CAPTION_STYLES } from "./captions.mjs
 import { FX_TYPES as FX3D_TYPES, fx3dSchema } from "./scene3d-motion.mjs";
 import { drawingVisualSchema } from "./drawing.mjs";
 import { FX2D_TYPES, MAX_FX2D, fx2dIssues, fx2dSchema } from "./fx2d.mjs";
+import { RENDERERS, rendererIssue } from "./blender-options.mjs";
+
+/** Moods of the chiptune a HyperFrames format synthesizes itself (provider "format"); mirrors hf/pixel-world/audio-music.mjs (a test keeps them equal). */
+export const FORMAT_MOODS = ["adventure", "calm", "tense", "playful", "mystery"];
 
 export { CAPTION_STYLES };
 
@@ -21,7 +29,22 @@ export const usesClassicLayout = (templateId) => CLASSIC_TEMPLATE_IDS.includes(t
 
 // `illustrated` is listed first: it is the recommended default template. Then the other illustrated-kit looks,
 // the 3D looks (three.js), and the classic templates last.
-export const TEMPLATE_IDS = ["illustrated", "whiteboard", "broadcast", "editorial-chart", "editor-window", "rank-numbers", ...ART_LOOKS, ...FORMAT_2D_LOOKS, ...THREE_D_TEMPLATE_IDS, ...PIXEL_TEMPLATE_IDS, ...REELS_TEMPLATE_IDS, ...CLASSIC_TEMPLATE_IDS];
+/**
+ * HyperFrames formats (hf/<id>/index.mjs). The ids are listed here, not discovered, because this file also reaches the
+ * Remotion browser bundle (no fs): add an id when its module lands. hf/registry.mjs registers the loaded modules
+ * (registerHfSupport) and a test checks every discovered public module is listed. Internal ids (underscore) are
+ * accepted only when CC_HF_INTERNAL=1 is set before this module loads.
+ */
+export const HF_TEMPLATE_IDS = ["pixel-world", "flat-2d", "three-looks", ...(["1", "true", "yes"].includes(String(globalThis.process?.env?.CC_HF_INTERNAL ?? "").toLowerCase()) ? ["_stub"] : [])];
+export const HF_MODES = ["single", "multi"];
+
+export const TEMPLATE_IDS = ["illustrated", "whiteboard", "broadcast", "editorial-chart", "editor-window", "rank-numbers", ...ART_LOOKS, ...FORMAT_2D_LOOKS, ...THREE_D_TEMPLATE_IDS, ...PIXEL_TEMPLATE_IDS, ...REELS_TEMPLATE_IDS, ...HF_TEMPLATE_IDS, ...CLASSIC_TEMPLATE_IDS];
+
+let hfSupport = null;
+/** Registered by hf/registry.mjs: { isHf(id), normalize(raw), parse(spec), modes(id) }. Keeps this file free of Node built-ins. */
+export function registerHfSupport(support) {
+  hfSupport = support;
+}
 /** Old topic-named ids (renamed 2026-11-01 to format names). Saved specs keep working through this map. */
 export const LEGACY_TEMPLATE_IDS = {
   "breaking-news": "broadcast",
@@ -33,6 +56,16 @@ export const LEGACY_TEMPLATE_IDS = {
   "quote-story": "letterbox",
   "hero-product": "pedestal",
   "iso-explainer": "iso-toon",
+  "como-funciona": "engineering-explainer",
+  "paso-a-paso": "engineering-explainer",
+  "que-paso": "engineering-explainer",
+  "para-que-sirve": "engineering-explainer",
+  "fuerzas-ingenieria": "engineering-explainer",
+  "how-it-works": "engineering-explainer",
+  "step-by-step": "engineering-explainer",
+  "failure-forensics": "engineering-explainer",
+  "component-purpose": "engineering-explainer",
+  "engineering-forces": "engineering-explainer",
 };
 /** Map a legacy template id to its current id; unknown ids pass through unchanged. */
 export const canonicalTemplateId = (id) => (typeof id === "string" && LEGACY_TEMPLATE_IDS[id]) || id;
@@ -139,6 +172,7 @@ export const visualSchema = z
 export const sceneSchema = z.object({
   id: z.string().min(1),
   narration: z.string().min(1, "narration must not be empty"),
+  audio: z.string().optional().describe("Pre-recorded voice audio file for this scene (relative to spec or CC root)"),
   onScreenText: z.string().optional(),
   durationSec: z.number().positive().max(60).optional(),
   visual: visualSchema,
@@ -175,8 +209,22 @@ export const videoSpecSchema = z
         look: lookSchema.optional().describe("Illustrated-kit look; defaults to the template's own look"),
         look3d: z.enum(THREE_D_TEMPLATE_IDS).optional().describe("3D look (3D templates only); defaults to the template's own look"),
         captionStyle: z.enum(CAPTION_STYLES).optional().describe("Caption style; captions.style wins when both are set"),
+        renderer: z.enum(RENDERERS, { error: (iss) => `unknown renderer${iss.input === undefined ? "" : ` "${iss.input}"`}; allowed renderers: ${RENDERERS.join(", ")}` }).optional().describe("Render engine: remotion (default) or blender (3D templates only: Eevee frames, slower, cinematic)"),
       })
       .optional(),
+    mode: z.enum(HF_MODES).optional().describe('HyperFrames formats: "single" (one continuous world, stations on one canvas) or "multi" (a sequence of worlds); must be one of the format\'s modes'),
+    hf: z.record(z.string(), z.unknown()).optional().describe("HyperFrames formats: the format-specific payload, validated by the format module (node cli.mjs prompt <format>)"),
+    pace: z.enum(["calm", "normal", "fast"]).optional().describe("HyperFrames formats: rhythm of visual beats (calm about 3 s, normal 2 s, fast 1.5 s between beats)"),
+    camera: z
+      .object({ intensity: z.enum(["none", "subtle", "dynamic"]).optional(), shake: z.boolean().optional().describe("Short camera shake on emphasis beats") })
+      .optional()
+      .describe("HyperFrames formats: camera intensity"),
+    cta: z
+      .object({ type: z.enum(["follow", "comment", "send", "custom"]), text: z.string().min(1).max(60).optional().describe("Word to comment or custom call to action") })
+      .optional()
+      .describe("HyperFrames formats: the closing call to action"),
+    variants: z.object({ count: z.number().int().min(1).max(10) }).optional().describe("HyperFrames formats: re-render the same script in N different worlds"),
+    stage: stageSchema.optional().describe("3D templates: ONE persistent world shared by every scene (actors, terrain, liquids, world); scenes then declare shots, beats, overlay and focus"),
     voice: z
       .object({
         provider: z.enum(VOICE_PROVIDERS),
@@ -187,13 +235,14 @@ export const videoSpecSchema = z
     music: z
       .object({
         provider: z
-          .enum(MUSIC_PROVIDERS)
+          .enum([...MUSIC_PROVIDERS, "format"])
           .optional()
-          .describe('"library" (default: curated CC0/CC BY tracks by mood), "elevenlabs" (generated per video, opt-in, spends credits; falls back to the library), "none" (no music)'),
+          .describe('"library" (default: curated CC0/CC BY tracks by mood), "elevenlabs" (generated per video, opt-in, spends credits; falls back to the library), "format" (HyperFrames formats only: the format synthesizes its own music in code, no credit needed; default of pixel-world), "none" (no music)'),
         mood: z
-          .enum([...MOODS, "auto"])
+          .enum([...MOODS, "auto", ...FORMAT_MOODS])
           .optional()
-          .describe('Library mood, or "auto" (picked from tone, topic keywords and template)'),
+          .describe('Library mood, or "auto" (picked from tone, topic keywords and template). With provider "format": the format mood (pixel-world: adventure, calm, tense, playful, mystery) or "auto" (the style decides)'),
+        seed: z.number().int().min(0).max(4294967295).optional().describe('Provider "format" only: seed of the generated music (default: derived from the title, so each video has its own tune)'),
         track: z.string().min(1).optional().describe('Library track id (03-assets/music/library.json) or "auto"'),
         file: z.string().optional().describe("Local audio file (absolute or relative to the spec); wins over track/mood"),
         volume: z.number().min(0).max(1).default(0.12).describe("Music bed level: 0.12 = 13 dB under the voice; each doubling +6 dB (0.24 = -7 dB, 0.06 = -19 dB)"),
@@ -203,6 +252,8 @@ export const videoSpecSchema = z
       })
       .superRefine((m, ctx) => {
         if (m.prompt && m.provider !== "elevenlabs") ctx.addIssue({ code: "custom", path: ["prompt"], message: 'music.prompt is only used with music.provider "elevenlabs"' });
+        if (m.seed !== undefined && m.provider !== "format") ctx.addIssue({ code: "custom", path: ["seed"], message: 'music.seed is only used with music.provider "format"' });
+        if (m.mood && FORMAT_MOODS.includes(m.mood) && m.provider !== "format") ctx.addIssue({ code: "custom", path: ["mood"], message: `mood "${m.mood}" is a format mood: it needs music.provider "format"` });
       })
       .optional(),
     sfx: z
@@ -220,6 +271,8 @@ export const videoSpecSchema = z
       .object({
         handle: z.string().min(1).max(40).optional(),
         avatar: z.string().min(1).optional().describe("Local image path for the footer avatar"),
+        pill: z.boolean().optional().describe("HyperFrames formats: pin an avatar + handle pill for the whole video"),
+        followClick: z.boolean().optional().describe("HyperFrames formats: animate a fake follow click with a cursor on the pill"),
       })
       .optional(),
     captions: z
@@ -249,7 +302,7 @@ export const videoSpecSchema = z
     scenes: z
       .array(sceneSchema)
       .min(1, "at least one scene is required")
-      .max(14)
+      .max(60)
       .superRefine((scenes, ctx) => {
         const seen = new Set();
         scenes.forEach((s, i) => {
@@ -267,6 +320,19 @@ export const videoSpecSchema = z
       .optional(),
   })
   .superRefine((spec, ctx) => {
+    const rendererMsg = rendererIssue(spec.template, spec.theme?.renderer);
+    if (rendererMsg && RENDERERS.includes(spec.theme?.renderer)) ctx.addIssue({ code: "custom", path: ["theme", "renderer"], message: rendererMsg });
+    if (HF_TEMPLATE_IDS.includes(spec.template)) {
+      if (!hfSupport?.isHf(spec.template)) {
+        ctx.addIssue({ code: "custom", path: ["template"], message: `HyperFrames format "${spec.template}" is not installed (no hf/${spec.template}/index.mjs) or the format registry is not loaded` });
+        return;
+      }
+      const parsed = hfSupport.parse(spec);
+      for (const e of parsed.errors) ctx.addIssue({ code: "custom", path: e.path, message: e.message });
+      if (spec.mode && !hfSupport.modes(spec.template).includes(spec.mode)) ctx.addIssue({ code: "custom", path: ["mode"], message: `format "${spec.template}" supports mode ${hfSupport.modes(spec.template).map((m) => `"${m}"`).join(" or ")}, not "${spec.mode}"` });
+      return;
+    }
+    if (spec.hf !== undefined) ctx.addIssue({ code: "custom", path: ["hf"], message: `\`hf\` is only for HyperFrames formats: ${HF_TEMPLATE_IDS.filter((id) => !id.startsWith("_")).join(", ")}` });
     if (refineReels(spec, ctx)) return;
     if (!usesClassicLayout(spec.template)) {
       spec.scenes.forEach((s, i) => {
@@ -292,6 +358,7 @@ export const videoSpecSchema = z
       return;
     }
     const three = usesThreeKit(spec.template);
+    if (!three && spec.stage) ctx.addIssue({ code: "custom", path: ["stage"], message: `\`stage\` needs a 3D template: ${THREE_D_TEMPLATE_IDS.join(", ")}` });
     if (!three) {
       spec.scenes.forEach((s, i) => {
         if (s.visual?.type === "scene3d") ctx.addIssue({ code: "custom", path: ["scenes", i, "visual", "type"], message: `visual.type "scene3d" needs a 3D template: ${THREE_D_TEMPLATE_IDS.join(", ")}` });
@@ -300,10 +367,13 @@ export const videoSpecSchema = z
     if (three) {
       // 3D looks draw everything; emoji are not allowed in anything shown on screen.
       spec.scenes.forEach((s, i) => {
-        const visible = { onScreenText: s.onScreenText, title: s.title, hud: s.hud, visual: { objects: s.visual?.objects, connect: s.visual?.connect } };
+        const visible = { onScreenText: s.onScreenText, title: s.title, hud: s.hud, visual: { objects: s.visual?.objects, connect: s.visual?.connect, overlay: s.visual?.overlay, world: (s.visual?.world?.parts ?? []).map((p) => p.text) } };
         for (const where of findEmoji(visible)) ctx.addIssue({ code: "custom", path: ["scenes", i, ...where], message: "emoji are not allowed in 3D templates; use a 3D object (kind icon, check, cross...) instead" });
       });
       for (const where of findEmoji(spec.hud)) ctx.addIssue({ code: "custom", path: ["hud", ...where], message: "emoji are not allowed in 3D templates" });
+      for (const where of findEmoji({ labels: (spec.stage?.actors ?? []).map((a) => a.label), signs: (spec.stage?.world?.parts ?? []).map((p) => p.text) })) ctx.addIssue({ code: "custom", path: ["stage", ...where], message: "emoji are not allowed in 3D templates" });
+      refineStageSpec(spec, ctx);
+      if (!spec.stage) refineThreeNovelty(spec.scenes, ctx);
       return;
     }
     if (!usesIllustratedKit(spec.template)) return;
@@ -348,8 +418,18 @@ export function formatIssues(error) {
  * @returns {{ok: true, spec: object, errors: []} | {ok: false, errors: {path: string, message: string}[]}}
  */
 export function validateSpec(raw) {
-  const res = videoSpecSchema.safeParse(migrateLegacyIds(raw));
+  // stage builder calls ({ build, params, seed }) expand to plain parts first, so everything downstream sees ordinary specs
+  let migrated = migrateLegacyIds(raw);
+  // HyperFrames formats: generic lenient fixes plus the module's own `normalize` (never drops content)
+  const isHf = Boolean(hfSupport?.isHf(migrated?.template));
+  if (isHf) migrated = hfSupport.normalize(migrated);
+  const { spec: expanded, errors: buildErrors } = expandBuilders(normalizeStageAuthoring(migrated));
+  if (buildErrors.length) return { ok: false, errors: buildErrors };
+  const res = videoSpecSchema.safeParse(expanded);
   if (!res.success) return { ok: false, errors: formatIssues(res.error) };
+  if (!isHf && res.data.music?.provider === "format") return { ok: false, errors: [{ path: "music.provider", message: 'provider "format" is only available for HyperFrames formats (they synthesize their own music); use "library", "elevenlabs" or "none" here' }] };
+  // the format module's parsed payload (defaults filled) replaces spec.hf
+  if (isHf) res.data.hf = hfSupport.parse(res.data).data;
   return { ok: true, spec: res.data, errors: [] };
 }
 
@@ -383,6 +463,8 @@ export function resolveSpec(spec, template) {
   const merged = deepMerge(base, spec);
   merged.scenes = spec.scenes.map((s) => ({ ...s, animation: s.animation ?? base.animation }));
   delete merged.animation;
+  // the palette the user picked or typed gets the full contrast rule; a template's own palette only guarantees readable text
+  merged.theme.palette = adaptPalette(merged.theme.palette, { accents: Boolean(spec.theme?.palette) });
   merged.post = spec.post ?? { tiktok: "", instagram: "", youtube: { title: spec.title, description: "" }, hashtags: [] };
   return merged;
 }

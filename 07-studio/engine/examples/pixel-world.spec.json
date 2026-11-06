@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "title": "Ejemplo pixel-world",
+  "template": "pixel-world",
+  "language": "es",
+  "mode": "multi",
+  "captions": {
+    "enabled": true
+  },
+  "hf": {
+    "style": "pixel-snes-16bit",
+    "hero": "hoodie",
+    "worlds": [
+      {
+        "scenario": "factory",
+        "beats": []
+      }
+    ]
+  },
+  "sfx": {
+    "enabled": true,
+    "volume": 1
+  },
+  "music": {
+    "provider": "library",
+    "mood": "auto",
+    "duck": true
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "narration": "Esto es un ejemplo del formato.",
+      "visual": {
+        "type": "gradient"
+      }
+    }
+  ]
+}

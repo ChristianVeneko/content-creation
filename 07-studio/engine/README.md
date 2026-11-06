@@ -23,13 +23,14 @@ environment as `env.sh` by itself, so it is safe to spawn from other processes.
 
 ```bash
 node cli.mjs templates                                  # JSON array of the templates (~92 KB)
-node cli.mjs templates --brief                          # one line per template: id, category, name, best for (~5 KB, for agents)
+node cli.mjs templates --brief                          # one line per template: id, category, format, name, best for (~5 KB, for agents)
 node cli.mjs template <id>                              # one template's full entry (defaults, prompt hint)
 node cli.mjs prompt <template>                          # spec-writer prompt trimmed to that template's family (9-19 KB of 42 KB)
 node cli.mjs music                                      # JSON: moods (id, label, count), library tracks, level references
 node cli.mjs voices [--gender male|female] [--pick <seed>] # JSON: trending Latin American Spanish ElevenLabs voices (or the auto pick)
 node cli.mjs validate <spec.json|->                     # {"ok":true|false,"errors":[{"path","message"}]}; exit 0/1
-node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work]
+node cli.mjs build <spec.json> --out <dir> [--json-logs] [--keep-work] [--renderer remotion|blender] [--quality draft|looks|delivery]  # --quality: HyperFrames formats only
+node cli.mjs hyperframes-brief <spec.json> [--audio-secs <n>] # prints a Markdown brief for authoring in HyperFrames
 ```
 
 `build` writes into `<dir>`:
@@ -64,7 +65,7 @@ Without `--json-logs`, human-readable progress goes to stderr.
 
 1. **validate**: zod schema (`lib/spec.mjs`), then template defaults fill anything the spec omits.
 2. **tts**: per scene.
-   - `voice.provider: "elevenlabs"` and `ELEVENLABS_API_KEY` set: `POST https://api.elevenlabs.io/v1/text-to-speech/{voiceId}` with `eleven_multilingual_v2` (voice from `voiceId`; for Spanish with no `voiceId` the build picks one of the 5 most trending Latin American Spanish male voices from the ElevenLabs library, stable per title, and writes it into the output `spec.json`; `node cli.mjs voices [--pick <seed>]` lists them or shows the pick, cached 24 h in `$CC_CACHE/elevenlabs`; otherwise `ELEVENLABS_VOICE_ID`, else a premade multilingual voice). Without a key, or on API error, it falls back to Kokoro.
+   - `voice.provider: "elevenlabs"` and `ELEVENLABS_API_KEY` set: `POST https://api.elevenlabs.io/v1/text-to-speech/{voiceId}` with `eleven_multilingual_v2` (voice from `voiceId`; with no `voiceId` the build uses the app-wide default voice `WFmom5vWeiir6CN1crV3` (any language) and writes it into the output `spec.json`; `node cli.mjs voices [--pick <seed>]` still lists trending Latin American voices to browse, cached 24 h in `$CC_CACHE/elevenlabs`; `ELEVENLABS_VOICE_ID` is no longer read). Without a key, or on API error, it falls back to Kokoro.
    - `kokoro`: local `mlx-community/Kokoro-82M-bf16` via `scripts/kokoro_batch.py` (model loaded once). Spanish voices: `ef_dora` (female), `em_alex`, `em_santa` (male).
    - `none`: no audio; scene length is `durationSec` or ~0.3 s per word.
    Silence is trimmed, then scene lengths are computed from audio length plus padding (`lib/timeline.mjs`).
@@ -159,6 +160,13 @@ CC BY tracks are loaded (`lib/music.mjs` drops NC / ND / SA licenses, entries wi
 `templates/*.json` hold defaults (`theme`, `voice`, `music`, `captions`, `animation`) plus gallery metadata
 (`name`, `description`, `prompt_hint`, `best_for`, `preview.emoji` or `preview.style`, `preview.gradient`, `preview.accent`, `preview.sample_text`).
 
+`format` (optional kebab slug, `^[a-z0-9]+(-[a-z0-9]+)*$`) names the video format the template implements (how it looks and
+moves); when missing it defaults to the template id. It shows up in `templates`, `templates --brief` (third column, right
+after `category`), `template <id>` and the web gallery, which groups formats by family.
+
+Video length: 15 to 180 s in total (15, 30, 45, 60, 90, 120, 150, 180 in the UI). A scene is capped at 60 s and a spec at
+60 scenes; long videos are more 3-6 s scenes, never longer ones (`prompts/spec-writer.md` says so to the writer).
+
 | id | Look |
 |---|---|
 | `illustrated` | Default. Drawn-in-code illustrations on a navy blueprint grid, two-tone headlines, word-pill captions, live HUD, SFX + ducked music |
@@ -170,6 +178,11 @@ CC BY tracks are loaded (`lib/music.mjs` drops NC / ND / SA licenses, entries wi
 | `ui-cards` | Illustrated kit, depth format: dark navy grid + dust, HUD of labeled bars, two-line header, UI cards (post with highlighter + magnifier, chart with dashed "expected", jar meter + stamp, hourglass, hanging price tags, stat badge, timer, panels) |
 | `flat-depth` | Illustrated kit, depth format: flat-shaded 2.5D sets on a wooden table in perspective (laptops, phones, coin stacks, boxes, books, mugs, monitors, plants), round-headed characters with moods, yellow stat badge, karaoke headline |
 | `soft-gradient` | Illustrated kit, depth format: drifting pastel mesh gradients, frosted glass cards with soft long shadows, gradient accent word |
+| `host-tutorial` | Illustrated kit format: numbered step tutorial on warm paper, a persistent cutout host (`host` element, pose and expression per scene), `roadmap` card, `window` UI mockups, halftone-dot transition |
+| `checklist-glass` | Illustrated kit format: "Checklist n / N" pill, frosted `window` mockups with cursor and highlight, a persistent `mascot` slot, pastel mesh |
+| `spotlight-narrative` | Illustrated kit format: dark spotlight story, one `beacon` (icon in glowing rings with a counting number) or layered `drawing` per scene |
+| `data-atlas` | Illustrated kit format: data documentary. One agent-drawn `backdrop` per scene (1-5 full-bleed depth layers, up to 240 parts each, plus `gen` generators: `globe`, `starfield`, `sky`, `terrain`, `rails`, `grain-field`, `water`, `surface`, `map`; part fields `blur`, `blend`, `texture`; example `examples/data-atlas-documentary.spec.json`) in a **2.5D** mode (per-layer parallax, dolly, depth of field; default) or `flat` (one picture, one push-in), plus `counter-pill`, `particle-field`, `route` and `ledger` props; captions top, no title |
+| `pixel-versus` | Pixel family format: arena stage, `round` cards, `fighters` with a header strip of stars, `ranking` and `verdict` panels, crowns, `energy-beam` / `power-up` / `hit-flash` fx |
 
 **Depth pass.** Looks listed in `LOOK_DEPTH` (`lib/illustrated.mjs`) get soft contact shadows under elements, lit gradient
 panels with a top highlight, parallax background layers, a ground plane (`grid`, `floor`, `stage`, `table`) and a vignette
@@ -185,10 +198,15 @@ formats. The hand-drawn and printed looks (whiteboard and the art styles) keep t
 | `pixel-night` | Pixel: navy/violet night, moonlight, neon signs, glow, popup chat windows, counters |
 | `pixel-arcade` | Pixel: saturated magenta/cyan/yellow CRT with scanlines, mystery blocks and pickups that burst |
 | `pixel-mono` | Pixel: strict 4-color handheld green, every layer quantized, dithered light |
-| `neon-grid` | 3D low-poly set: dark grid world with glowing grid floor, pillars and wall, blocky characters, glide camera |
-| `soft-studio` | 3D low-poly set: pastel objects on a wooden desk, warm window light, lamp, books, slow dolly |
-| `moody-night` | 3D low-poly set: highway at blue dusk, street lamps, cars with headlight glow, traffic into the fog |
-| `voxel-world` | 3D low-poly set: voxel island with trees and clouds over water, blocky characters, slow orbit |
+| `neon-grid` | 3D style (format `synthwave`): navy matte bodies, cyan rims, bloom, depth fog, glide camera; no scenery |
+| `soft-studio` | 3D style (format `soft-product`): pastel soft-matte look, warm key, wide soft shadow, slow dolly; no scenery |
+| `moody-night` | 3D style (format `night-cinematic`): dusk-blue fill, one warm key, fog, low cinematic and hand-held camera; no scenery |
+| `voxel-world` | 3D style (format `voxel`): flat-shaded sharp blocks, snap-in placement, low hero angle; no scenery |
+| `data-stage` | 3D format: dark arena, volumetric spotlights, instanced crowd, rows receding into depth, scales and tubes built from parts |
+| `monolith-story` | 3D format: one recurring monolith, a color-keyed backdrop per scene, pixel-font signs, push and orbit camera |
+| `clay-mascot` | 3D format: soft clay look, a persistent mascot pinned to a screen corner, pastel backdrop, soft shadows |
+| `cutaway-explainer` | 3D format: low-poly cutaway cross-section in soft daylight, close-up to pull-out reveal camera, diegetic overlay kit (`visual.overlay`: flow chips, concept pill, limit bar, not-equal card) and `signal` fx along pipes |
+| `documentary-3d` | 3D format: dark cinematic data documentary on ONE persistent stage laid out as a gallery of set pieces (globe, train, domed building, particle map, ledger, wheat field...); the camera flies from piece to piece, `counter` overlay (a number that ticks up in a dark pill), word-synced captions at the top, bloom, haze and `spotlight` light shafts |
 | `captions-voice` | Voiceover + kinetic captions over gradients, photos or b-roll |
 | `kinetic-type` | Huge animated words, ghost outline type, no b-roll |
 | `countdown` | Hook with TOP N chip, big numbered items, payoff |
@@ -258,7 +276,7 @@ Dev loop: `node scripts/illustrated-stills.mjs <spec> <outDir> --at=0.5,0.97` re
 ## 3D templates
 
 The 3D templates (`clay-diorama`, `iso-toon`, `neon-glass`, `pedestal`, `paper-world`, `toy-blocks`, `holo-studio`,
-`neon-grid`, `soft-studio`, `moody-night`, `voxel-world`) render each scene as a real three.js scene through
+`neon-grid`, `soft-studio`, `moody-night`, `voxel-world`, `data-stage`, `monolith-story`, `clay-mascot`, `cutaway-explainer`) render each scene as a real three.js scene through
 [`@remotion/three`](https://www.remotion.dev/docs/three) (React Three Fiber 9, drei 10, three 0.186). Headline, captions,
 HUD, footer, SFX beats and the music bed are the illustrated kit's, so they stay 2D, sharp and in the safe zone.
 
@@ -271,8 +289,15 @@ exist; `chart` needs `values`, `stat` a `value`, `icon` an `icon`, `model` a lis
 | `objects[].kind` | Procedural: `cube`, `sphere`, `phone`, `laptop`, `monitor`, `server`, `database`, `cloud`, `document`, `folder`, `envelope`, `coin`, `chart`, `stat`, `lock`, `key`, `gear`, `globe`, `chip`, `battery`, `rocket`, `lightbulb`, `person`, `building`, `house`, `tree`, `pin`, `card`, `check`, `cross`, `icon` (extruded Phosphor icon), `model` (local CC0 GLB), `car` (CC0 low-poly car, `model` picks one of `CAR_MODELS`), `character` (CC0 blocky character, `model` `character-a/d/k`, `anim` idle/walk/sprint/yes/no/sit/pick-up) |
 | `objects[]` extras | `id`, `label` (2D tag locked to the object), `color` (hex or token), `icon`, `value`, `values` + `items` (chart), `model`, `anim`, `size`, `pos`, `at`, `highlight` |
 | `layout` | `auto` (by count), `row`, `grid`, `flow` (zigzag, auto arrows), `circle`, `stack` (layers), `hero` |
-| `camera` | `auto` (the look's rotation), `orbit`, `dolly`, `push`, `crane`, `pan`, `turntable`, `topdown`, `static`, `glide` (lateral truck), `rise` (pedestal up) |
-| `set` | The world the camera is inside: `auto` (the look's default), `none` (the look's own floor), `road`, `desk`, `room`, `grid`, `stage`, `city`, `voxel` (`src/three/sets.tsx`; set props are CC0 GLBs listed in `SET_MODELS`) |
+| `camera` | `auto` (the look's rotation), `orbit`, `dolly`, `push`, `crane`, `pan`, `turntable`, `topdown`, `static`, `glide` (lateral truck), `rise` (pedestal up), `handheld` (slow deterministic drift) |
+| `world` | The set the agent builds from scratch for the scene: `concept` (required, a few words), `ground` (`look`, `none`, `plane`, `disc`, `grid`, `mirror`), `backdrop` (flat color, blended toward the palette background), `parts` (custom parts, `pos` up to +-30, sizes up to 40, `repeat` copies, `sign` pixel-font signs; max 120, 1500 after `repeat` and `scatter`, copies of big worlds are instanced), `scatter` (seeded instanced copies of a template part over an area, with keep-out zones) and `crowd` (instanced silhouettes). Renders in `src/three/world.tsx` |
+| `shots` | 2-4 camera shots (`wide`, `medium`, `close`, `low`, `high`, `overhead`, `left`, `right`, each with optional `at`, `focus`, `yaw`, `pitch`, `zoom`) expanded to camera keys; use instead of `cameraKeys` |
+| `objects[].corner` | Custom object pinned to a screen corner (`bl`, `br`, `tl`, `tr`) as a persistent mascot that follows the camera |
+| `set`, `stock` | Stock catalog scenery (`road`, `desk`, `room`, `grid`, `stage`, `city`, `voxel`; props are CC0 GLBs in `SET_MODELS`). No look has a default set (`auto` = `none`); a named set, or a `character`/`car`/`model` object, needs `stock: true` on the scene (or on the object) |
+
+3D templates supply only style (camera, light, materials, motion, fx). Models and worlds are built from scratch for each
+video: a scene must contain a `custom` object or a `world` with `parts` or a `crowd`, unless it sets `stock: true`; three or
+more scenes that all show the identical subject and world are rejected. Isometric (orthographic) is `iso-toon` only.
 
 How it works:
 
@@ -297,6 +322,47 @@ How it works:
 Dev loop: `node scripts/illustrated-stills.mjs examples/clay-diorama.spec.json <outDir> --at=0.3,0.9` (also `--frames=`,
 `--png`, `--verbose`). Rendering needs an awake display on macOS: if the Mac display sleeps, headless Chrome stalls on
 "Waiting for root component to load"; wrap long renders in `02-scripts/keepawake.sh` (uses `caffeinate` on macOS).
+
+### Persistent stage (process explainers)
+
+A top-level `stage` (`lib/scene3d-stage.mjs`) is ONE world shared by every scene of a spec: `{concept, world, actors, terrain, liquids}`.
+Scenes then declare only `shots`, `beats`, `overlay`, `focus` and `title`. State is a pure function of global seconds, so the stage at
+the start of scene N+1 is exactly the stage at the end of scene N (a hole dug in scene 2 is still dug in scene 3).
+
+- `beats: [{at, target, dur, ease, set | to | carve}]`: real tweens between states (`pos`, `rot`, `scale`, `color`, `opacity`, `visible`,
+  `emissive`, liquid `level`, camera), applied cumulatively; `at` is seconds into the scene or a narration word. Targets: `actor`,
+  `actor/part`, a liquid id, `terrain`, `camera`. Unknown targets and parts are rejected by name.
+- `terrain`: low-poly heightfield (24-64 grid) with a strata cutaway face; `carve` beats `dig`, `raise` or `collapse` a `box` or `disc`
+  region. `liquids`: translucent volumes with a waved surface, `level` 0..1 tweened by beats, vapor while it drops.
+- `world.scatter`: deterministic (seeded) instanced copies; caps: 160 parts per object, 400 world parts, 1500 expanded.
+- Camera: one continuous path over all scenes (`shots` are keys on one timeline; `cut: true` for a hard cut); `zoom-to` a `focus` (actor,
+  `terrain:<carve id>`...) and `dive` to the cutaway face. The title sits on a slim palette-derived pill in the top band (y 200-350).
+- Portrait framing: the default framing fills the 9:16 frame (`STAGE_FRAME` in `lib/scene3d.mjs`: the world is cropped to about 9.5 units
+  across, a low zoom floor, the whole lower area is used for the soil cutaway or the action). A shot takes `frame: wide | medium | close
+  | cutaway` (`SHOT_FRAMES` in `lib/scene3d-motion.mjs`): the camera distance and a lift that seats the subject below the title; in a
+  stage `wide`, `medium` and `close` shots default to their own frame, other punch-in presets ease off. Actors with `noFrame: true`
+  (sky bodies, far props, a world-sized veil) do not pull the camera back.
+- Callout labels (`actor.label`) are laid out automatically (`src/three/label-layout.mjs`, pure and unit tested): projected to the screen,
+  placed greedily with fixed-size boxes in priority order (the actor of the current `focus` first), staggered vertically, never over the
+  title band or the caption line; at most four are shown, the lowest-priority overlaps are hidden.
+- `process-explainer` captions default to a small word-by-word style (`clean`, size `s`, white with a dark outline, 2 words per page,
+  `position: center`, about the middle of the frame); override with `captions.*`.
+- Energy builders added with `examples/process-solar.spec.json` (a standalone 2-minute "how solar panels work" explainer, 29 scenes,
+  one stage with soil cutaway, flow / limit / concept / versus overlays, day-night and cloud beats, a cost chart): `sun` (sun or moon),
+  `pv-cell` (layered cell cross-section with electrons and holes), `night-veil` (a translucent box that tints the world to night with an
+  `opacity` beat) and `power-pole`. `grass-tufts` are cheaper (group plus 3 blades) so denser fields fit the 1500-part budget, and
+  `tree` carries extra faceted layers (a skirt and a light tier on pines, an underside and a cap on crowns).
+- `documentary-3d` (see `examples/documentary-3d-clavo.spec.json`, "El clavo de oro", about 50 s, 16 scenes, rendered with `voice.provider: none`
+  in about 1.5 min on a laptop; `examples/documentary-3d.spec.json` is the short sample): the look is a dusk stage (hemisphere sky, a warm low key
+  that follows the camera with a 2048 shadow map, a cool rim from behind, ACES, bloom on the emissive practicals, linear haze); the transition is a
+  cross-dissolve because the camera is one continuous flight. New builders: `globe` (continent tiles from `LAND`, a route in 8 segments, pins),
+  `train` (+ `rail-track`), `dome-building`, `aircraft`, `ledger`, `blueprint-sheet`, `desk-wood`, `wheat-field` (instanced stalks that sway: a
+  `wobble` motion on a scatter template rocks every copy as a traveling wave), `bowl`, `cracked-ground`, `particle-map`; `ship` takes `lights`,
+  `mountain` `rim` and `sun` `corona` / `rays: 0`. The `counter` overlay (`value`, `from`, `dur`, `unit`, `prefix`, `label`, `decimals`, `sep`,
+  `steps`) counts with `counterValueAt` / `formatCounter` (lib/scene3d.mjs) and sits low in the safe box; labels avoid it. Shots accept `zoom`
+  down to 0.12 for close-ups of small set pieces (the stage frame is about 15 units wide at zoom 1).
+- Example: `examples/stage-yard.spec.json` (render: `node cli.mjs build examples/stage-yard.spec.json --out <dir>`, about 19 s for 16 s of video).
+  Known limit: the 3D looks' scene transitions (iris, wipe...) still run between staged scenes; a stage-aware fade belongs in `src/Video.tsx`.
 
 ## Pixel templates
 
@@ -325,6 +391,47 @@ How it works:
    build transcribes the narration for pixel templates even with captions disabled.
 
 Fonts (OFL, `public/fonts/`, copies in `03-assets/fonts/`): Pixelify Sans, Press Start 2P, Silkscreen.
+
+## HyperFrames formats
+
+Formats whose look is a HyperFrames composition (`hf/<id>/index.mjs`, e.g. `pixel-world`, `flat-2d`) go through the
+same spec -> `build` pipeline as every other template, so LLM providers and the web app can make them. Set
+`template` to the format id; the format-specific part of the spec lives in `hf`, and `mode` is `single` (one continuous
+world) or `multi` (a sequence of worlds). Scenes still carry `narration` (the voice) and `onScreenText`.
+
+Route (`lib/build-hf.mjs`, wired in `lib/build.mjs`): validate `spec.hf` with the module's `payloadSchema` -> TTS
+(`lib/tts.mjs`, ElevenLabs or Kokoro) -> word timings (the engine's mlx-whisper transcription aligned to the script;
+text-timed fallback, logged) -> `compose()` -> `npx hyperframes@0.9.6 render --quality <draft|looks|delivery>` twice
+(captions on and off) -> voice + music + the format's SFX cues mixed to -14 LUFS (two-pass loudnorm) -> cover. Outputs:
+`video.mp4` (captions on, or off when `captions.enabled` is false), `video-sin-subtitulos.mp4`, `cover.jpg`, `post.md`,
+`spec.json`, `words.json`. Same `--json-logs` steps as the other routes. `--quality` (HyperFrames formats only; default
+`looks`) sets the render quality; HyperFrames caches stay in `05-tools/cache/hyperframes`.
+
+**Captions rule.** The composition draws its OWN captions (boolean variable `captions`, read with
+`window.__hyperframes.getVariables()`). The engine never applies its caption layer (`lib/captions.mjs`, the Remotion caption
+components, the Blender/ASS burn-in) to these formats, and the final mux copies the video stream. `captions.enabled=false`
+renders the composition with captions off. UIs should hide the caption style panel for them (`ownsCaptions: true` in the
+template entry).
+
+**Module contract** (`hf/registry.mjs` checks it at load and fails with the format name and every problem):
+
+```js
+export const meta = { id, name, about, modes: ["single", "multi"], styles: [{ id, name, about }], settings: [{ id, name, about }] };
+export const payloadSchema;   // zod: the format-specific part of the spec, stored at spec.hf
+export const promptSection;   // spec-writer guidance for LLM providers (`node cli.mjs prompt <id>` = common rules + this)
+export async function compose({ spec, words, durationSec, outDir, assetsDir, captions: { enabled }, scenes }) {
+  // write a deterministic composition into outDir; words = [{ text, start, end }] seconds; scenes = [{ id, startSec, endSec, speechStartSec, speechSec }]
+  return { entry: "index.html", sfx: [{ at: 1.2, kind: "pop" }], durationSec, coverAtSec /* optional */ };
+}
+export function normalize(spec) {}   // optional: lenient authoring, called before validation (fix slips, never drop content)
+```
+
+Optional `meta.defaults` ({ theme, voice, music, sfx, captions, hf }), `meta.category`, `meta.best_for`, `meta.preview`
+fill the catalog entry. SFX `kind`s are mapped onto the sound kit in `03-assets/sfx` (`whoosh`, `pop`, `tick`, `type`,
+`hit`, `ding`, `page`, ... see `HF_SFX_ALIASES`) or can be a file path under it. Directories starting with `_`
+(`hf/_stub/`, the reference module to copy) are internal: hidden unless `CC_HF_INTERNAL=1`. To add a format: create
+`hf/<id>/index.mjs` and add its id to `HF_TEMPLATE_IDS` in `lib/spec.mjs` (that file also reaches the Remotion browser
+bundle, so ids are listed, not discovered); `test/hf-registry.test.mjs` fails when they disagree.
 
 ## LLM prompt
 

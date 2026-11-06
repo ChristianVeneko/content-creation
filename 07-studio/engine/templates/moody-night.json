@@ -2,14 +2,15 @@
   "id": "moody-night",
   "name": "Moody Night 3D",
   "category": "3d",
-  "description": "Low-poly 3D on a highway at blue dusk: lane lines, guard rails, warm street lamps with light pools, cars with headlight glow and traffic driving into the fog, one warm key light with a single soft shadow. A low chase camera rises and glides over the road. Tense what-if stories. No emoji.",
-  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with 1-2 objects: car (model car-sedan, car-sedan-sports, car-suv, car-taxi, car-truck), character, stat. set \"city\" for a street. No emoji.",
+  "format": "night-cinematic",
+  "description": "Night-cinema 3D style: a dusk-blue sky fill with one warm accent key, drifting fog, deep contrast, satin materials and a low cinematic camera that rises, glides and drifts hand-held. A style only: the agent builds the world and every subject from scratch for each video. No emoji.",
+  "prompt_hint": "6-10 scenes (3-5 s). Each: title.kicker + title.main, visual.type \"scene3d\" with a `world` (concept, ground, backdrop, parts) and `custom` objects built from scratch for THIS video; no stock set, character or car. Use fx (dust, embers, glow, spotlight), camera moves and `shots` for the cinematic feel. No emoji.",
   "best_for": [
-    "what-if stories",
-    "cars and driving",
     "night-time hooks",
-    "safety explainers",
-    "cinematic stories"
+    "what-if stories",
+    "suspense and thrillers",
+    "cinematic stories",
+    "dark-mood explainers"
   ],
   "preview": {
     "style": "three",

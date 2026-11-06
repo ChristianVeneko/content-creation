@@ -1,0 +1,87 @@
+{
+  "id": "documentary-3d",
+  "name": "Documentary 3D",
+  "category": "3d",
+  "format": "documentary-3d",
+  "description": "Dark cinematic 3D data documentary for history, economy, science, technology and geography stories. ONE persistent stage laid out as a gallery of set pieces along a path (a lit globe with a glowing route, blueprint sheets on a wood desk, a domed building at dusk, a locomotive driving toward the camera, a particle map with a flowing route, a ledger with a red underline, a night aircraft, a wheat field at sunset, an empty bowl on cracked earth); the camera flies from one set piece to the next, each scene one metaphor with real beats (trains moving, particles flowing, counters ticking, light rising). Dusk lighting with a warm low key and a cool rim, haze, volumetric light shafts, bloom, a dissolve between scenes, big animated number pills (`counter` overlay) and word-synced captions in the upper middle. Parametric builders for the set pieces: globe, train, rail-track, dome-building, aircraft, ledger, blueprint-sheet, desk-wood, wheat-field, bowl, cracked-ground, particle-map. No emoji.",
+  "prompt_hint": "10-18 scenes (2.5-4 s) about ONE story told with numbers (any topic: a historical project, an economy, a scientific discovery, a technology, a place). Build the world ONCE in a top-level `stage` (gallery: every set piece is an actor at its own spot along a path, 8-10 units apart; add a dark `world.ground` plane and plinths) from `{ \"build\": \"<name>\", \"params\": {...}, \"seed\": n }` calls (run `node cli.mjs builders`). One scene = one metaphor: the camera flies to the next set piece with `shots` (`focus` + `frame`; a hard `cut: true` only for a deliberate jump), the set piece does something real with `beats` (a train drives toward the camera, particles flow along a route, light rises, a hammer drives a spike) and a `counter` overlay counts the key number. Use `spotlight` fx for light shafts and `signal` fx for particles on a path. Narration in short sentences; captions are word by word in the upper middle. No emoji.",
+  "best_for": [
+    "history told with numbers (a railway, a canal, a war, a discovery)",
+    "economy and finance stories (trade, prices, debt, harvests)",
+    "science and technology milestones",
+    "geography and logistics: routes, flows, distances",
+    "data documentaries with big counters"
+  ],
+  "recipes": {
+    "gallery-flight": {
+      "subject": "A story with 8-10 set pieces along a path, for example how a country was connected by a railway.",
+      "when": "Each scene needs its own recognizable metaphor but the video must feel like one continuous camera shot.",
+      "beats": "wide on the first set piece -> light rises on it (a spotlight fx, an emissive beat) -> its real action (a beat) -> the camera flies on to the next set piece while the narration continues -> repeat -> pull out over the whole gallery.",
+      "shots": "wide -> zoom-to each set piece in order (frame medium or close, a low or orbit yaw) -> wide at the end; `cut: true` only for a jump on purpose.",
+      "builders": "globe, blueprint-sheet, desk-wood, dome-building, train, rail-track, particle-map, ledger, aircraft, wheat-field, bowl, cracked-ground, ship, mountain, sun"
+    },
+    "number-story": {
+      "subject": "One quantity that grows, for example people, days, kilometres or money.",
+      "when": "The point of the video is a number that changes over the scenes.",
+      "beats": "a set piece that stands for the quantity (a particle map, a ledger, a chart) -> the `counter` overlay counts to the first value -> steps raise it scene after scene -> the set piece reacts (more particles, a taller stack) -> the last counter is the punchline.",
+      "shots": "zoom-to the set piece, slow push-in with each step.",
+      "builders": "particle-map, ledger, chart-3d, coin-stack, globe"
+    },
+    "journey": {
+      "subject": "Something that travels, for example a train, a ship or an aircraft across the map.",
+      "when": "A route is the story: A to B, with places in between.",
+      "beats": "the vehicle starts far away on the path -> beat pos moves it toward the camera -> trail fx behind it -> the globe or map route lights up segment by segment (`route-k` beats) -> arrival and a counter with the duration.",
+      "shots": "low hero angle on the vehicle, orbit, fly-through, pull-back to the map.",
+      "builders": "train, rail-track, ship, aircraft, globe, particle-map, mountain"
+    }
+  },
+  "preview": {
+    "style": "three",
+    "gradient": [
+      "#0F1B3D",
+      "#C2663A",
+      "#FFB547"
+    ],
+    "accent": "#FFB547",
+    "sample_text": "THE NUMBERS"
+  },
+  "defaults": {
+    "theme": {
+      "palette": {
+        "bg": [
+          "#0F1B3D",
+          "#05070F"
+        ],
+        "text": "#F3F6FF",
+        "accent": "#FFB547",
+        "accent2": "#FFE3A3",
+        "accent3": "#5B8CFF",
+        "good": "#3DDC97",
+        "bad": "#FF4D6D"
+      },
+      "font": "Montserrat",
+      "captionStyle": "hormozi"
+    },
+    "captions": {
+      "enabled": true,
+      "style": "two-tone",
+      "size": "s",
+      "wordsPerPage": 3,
+      "position": "top",
+      "uppercase": false
+    },
+    "voice": {
+      "provider": "kokoro",
+      "voiceId": "ef_dora",
+      "speed": 1.03
+    },
+    "music": {
+      "track": "auto",
+      "volume": 0.1,
+      "duck": true
+    },
+    "sfx": {
+      "volume": 0.25
+    }
+  }
+}

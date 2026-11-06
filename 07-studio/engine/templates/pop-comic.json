@@ -2,8 +2,9 @@
   "id": "pop-comic",
   "name": "Pop Art Comic",
   "category": "illustrated-2d",
-  "description": "A retro pop-art comic page: yellow stock with Ben-Day dots and speed rays, heavy black panel borders with hard offset shadows, outlined comic titles that slam in on a dutch angle, caption boxes, speech-bubble chats, starburst halos, action-burst stamps and a printed dot screen. Every element slams in with an overshoot and every scene is a new panel slammed in on a diagonal with speed lines and an impact burst. Loud, fun and fast. No emoji.",
-  "prompt_hint": "Write 8-12 fast scenes (3-5 s each) like comic panels. title.main punchy (2-5 words, set in caps); title.kicker reads like a caption box; use title.number for countdowns. visual.type \"illustration\" with 1-3 bold elements: chat (rendered as speech bubbles), icon (size l, on a burst), badge, compare, counter, stamp (an action burst with one word such as BOOM or NOPE). Never use emoji.",
+  "format": "comic-panels",
+  "description": "A retro pop-art comic page: yellow stock with Ben-Day dots and speed rays, heavy black panel borders with hard offset shadows, outlined comic titles that slam in on a dutch angle, caption boxes, speech-bubble chats, starburst halos, action-burst stamps and a printed dot screen. Every element slams in with an overshoot and every scene is a new panel slammed in on a diagonal with speed lines and an impact burst. Loud, fun and fast. No emoji. This is a format (look, camera, motion and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-12 fast scenes (3-5 s each) like comic panels. title.main punchy (2-5 words, set in caps); title.kicker reads like a caption box; use title.number for countdowns. visual.type \"illustration\" with 1-3 bold elements: chat (rendered as speech bubbles), icon (size l, on a burst), badge, compare, counter, stamp (an action burst with one word such as BOOM or NOPE). Never use emoji. Draw new subjects every video: invent the icons, svg sketches and drawing elements for this topic, and never reuse the example spec's scenery, objects or wording.",
   "best_for": [
     "myth busting",
     "security and scam warnings",

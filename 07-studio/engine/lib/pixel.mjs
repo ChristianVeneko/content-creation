@@ -10,6 +10,7 @@ import { syntheticCaptions } from "./timeline.mjs";
 import {
   ROLES,
   customSetSchema,
+  FX_TYPES,
   fxSchema,
   LAYER_VARIANTS,
   momentAt,
@@ -25,7 +26,7 @@ import {
 export { ROLES };
 
 /** Templates rendered with the pixel kit. Each one is a look of the same family. */
-export const PIXEL_TEMPLATE_IDS = ["pixel-dusk", "pixel-night", "pixel-arcade", "pixel-mono"];
+export const PIXEL_TEMPLATE_IDS = ["pixel-dusk", "pixel-night", "pixel-arcade", "pixel-mono", "pixel-versus"];
 export const usesPixelKit = (templateId) => PIXEL_TEMPLATE_IDS.includes(templateId);
 /** The pixel look of a resolved spec: its template id when it is a pixel template, else pixel-dusk. */
 export const pixelLookOf = (spec) => (usesPixelKit(spec?.template) ? spec.template : "pixel-dusk");
@@ -44,6 +45,7 @@ export const PIXEL_SETS = {
   forest: "forest clearing: layered trees, fireflies, grass, a trail",
   lab: "lab: glass tubes, screens, cables, bench with flasks",
   space: "space: starfield, planet, station window frame, floating debris",
+  arena: "versus arena: crowd silhouettes with glow sticks, truss lights, a lit fighting floor with a neon ring (the fixed stage of pixel-versus)",
 };
 export const SET_IDS = Object.keys(PIXEL_SETS);
 
@@ -74,7 +76,7 @@ export const PROP_KINDS = Object.keys(PIXEL_PROPS);
 export const POSES = ["idle", "walk", "point", "hold"];
 export const PIXEL_CAMERAS = ["auto", "pan-left", "pan-right", "rise", "tilt-down", "push-in", "static"];
 export const PIXEL_TRANSITIONS = ["auto", "iris", "dissolve", "cut", "diamond", "wipe", "glitch"];
-export const PANEL_TYPES = ["popup", "counter", "checklist"];
+export const PANEL_TYPES = ["popup", "counter", "checklist", "ranking", "verdict"];
 
 const hex = z.string().regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "must be a hex color like #1A2B3C");
 const noEmojiText = (max) => z.string().min(1).max(max);
@@ -119,12 +121,79 @@ export const actorSchema = z.object({
   motion: motionSchema.optional(),
 });
 
+
+// ---------------- versus format (pixel-versus): rounds, fighters, ranking / verdict panels, fight fx ----------------
+
+/** Fight effects added by the versus format (rendered by src/pixel/fx.ts); the generic ones live in lib/pixel-gen.mjs. */
+export const VERSUS_FX = ["energy-beam", "power-up", "hit-flash"];
+/** Default length in seconds of the versus fx (pixel-gen only knows its own FX_DURATION table). */
+export const VERSUS_FX_DURATION = { "energy-beam": 1.4, "power-up": 1.6, "hit-flash": 0.4 };
+const ALL_FX = [...FX_TYPES, ...VERSUS_FX];
+const near = (min = -0.2, max = 1.2) => z.number().min(min).max(max);
+
+/** The pixel fx schema: every generic fx of pixel-gen plus the versus ones; `to` is the target of an energy beam. */
+export const pixelFxSchema = z.object({
+  ...fxSchema.shape,
+  type: z.enum(ALL_FX, { error: (iss) => `unknown pixel fx${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${ALL_FX.join(", ")}` }),
+  to: z.object({ x: near(), y: near() }).optional().describe("energy-beam: the target point, 0..1 of the view (default: across the stage)"),
+});
+
+/** A versus fx with its own defaults filled in: the default duration, and the 0.4 s start of one-shots. */
+export const versusFxOf = (f) => (VERSUS_FX.includes(f?.type) ? { ...f, duration: f.duration ?? VERSUS_FX_DURATION[f.type], at: f.at ?? 0.4 } : f);
+
+export const FIGHTER_ANIMS = ["bob", "jump", "shake", "pulse", "sway"];
+/** A contestant: an agent-drawn sprite on the stage plus its cell (name, stars) in the header strip. */
+export const fighterSchema = z.object({
+  sprite: z.string().min(1).describe("Id of a sprite defined in any scene's `sprites` (draw it facing right; the right-hand fighter is mirrored)"),
+  name: noEmojiText(12).describe("Name in the header strip"),
+  stars: z.number().min(0).max(5).multipleOf(0.5).describe("Rating 0-5 in half-star steps, drawn under the name"),
+  side: z.enum(["left", "center", "right"]).optional().describe("Stage position (default: spread by count)"),
+  scale: z.number().int().min(1).max(8).optional().describe("Pixel size of one sprite pixel (default 5)"),
+  crown: z.boolean().optional().describe("A crown over the header cell and over the sprite"),
+  anim: z.enum(FIGHTER_ANIMS).optional().describe("In-place animation"),
+});
+
+export const roundSchema = z
+  .object({ n: z.number().int().min(1).max(99), of: z.number().int().min(1).max(99), title: noEmojiText(24).optional().describe("Under the ROUND n/N card") })
+  .refine((r) => r.n <= r.of, { message: "round.n cannot be greater than round.of", path: ["n"] });
+
+const rankingRow = z.object({ name: noEmojiText(14), score: z.number().min(0), crown: z.boolean().optional() });
+export const rankingSchema = z.object({
+  title: noEmojiText(20).optional(),
+  unit: z.string().max(4).optional().describe("Suffix of every score (e.g. pts)"),
+  max: z.number().positive().optional().describe("Score that fills a bar (default: the best score)"),
+  rows: z.array(rankingRow).min(2).max(5),
+});
+const verdictRow = z.object({ name: noEmojiText(14), score: z.union([z.number(), noEmojiText(8)]), note: noEmojiText(10).optional() });
+export const verdictSchema = z.object({
+  title: noEmojiText(18).optional(),
+  rows: z.array(verdictRow).min(2).max(5),
+  winner: z.number().int().min(0).max(4).optional().describe("0-based row that wins and gets the crown (default: the highest score)"),
+});
+
+/** Stage x (0..1) of each fighter: spread by count, a `side` overrides. */
+export function fighterXs(fighters) {
+  const base = { 1: [0.5], 2: [0.27, 0.73], 3: [0.2, 0.5, 0.8] }[Math.min(3, Math.max(1, fighters.length))];
+  const side = { left: 0.27, center: 0.5, right: 0.73 };
+  return fighters.map((f, i) => (f.side ? side[f.side] : base[i] ?? 0.5));
+}
+/** The five stars of a rating: "full" | "half" | "empty". */
+export const starsOf = (rating) => Array.from({ length: 5 }, (_, i) => (rating >= i + 1 ? "full" : rating >= i + 0.5 ? "half" : "empty"));
+/** Ranking rows with their rank (by score, ties share) and bar ratio (score / max, default the best score). */
+export function rankRows(rows, max) {
+  const top = max ?? Math.max(0, ...rows.map((r) => r.score));
+  return rows.map((r) => ({ ...r, rank: 1 + rows.filter((o) => o.score > r.score).length, ratio: top > 0 ? r.score / top : 0 }));
+}
+/** Pixel art of the crown (9x6) and the star (7x7) of the versus UI; `x` cells are drawn. */
+export const CROWN_ROWS = ["x...x...x", "xx..x..xx", "xxx.x.xxx", "xxxxxxxxx", "xxxxxxxxx", ".xxxxxxx."];
+export const STAR_ROWS = ["...x...", "...x...", "xxxxxxx", ".xxxxx.", "..xxx..", ".xx.xx.", ".x...x."];
+
 const presetSet = z.enum(SET_IDS, { error: (iss) => `unknown pixel set${iss.input === undefined ? "" : ` "${iss.input}"`}; use one of: ${SET_IDS.join(", ")} or a custom set object {sky, layers}` });
 export const pixelSceneSchema = z.object({
   set: z.union([presetSet, customSetSchema], { error: unionError }).describe("A custom set {sky, floor, layers} drawn from seeds (preferred) or a preset set id"),
   sprites: z.array(spriteSchema).max(8).optional().describe("Sprites drawn by the agent; ids are shared by the whole video"),
   actors: z.array(actorSchema).max(8).optional().describe("Sprites placed and animated in this scene"),
-  fx: z.array(fxSchema).max(10).optional().describe("Visual effects: particles, bursts, lightning, glitch, CRT..."),
+  fx: z.array(pixelFxSchema).max(10).optional().describe("Visual effects: particles, bursts, lightning, glitch, CRT, energy beams, power-ups, hit flashes..."),
   props: z.array(pixelPropSchema).max(6).optional(),
   character: characterSchema.optional().describe("Optional generic chibi character (off unless set)"),
   banner: z
@@ -155,6 +224,10 @@ export const pixelSceneSchema = z.object({
     .object({ title: noEmojiText(20).optional(), items: z.array(noEmojiText(26)).min(1).max(5), motion: motionSchema.optional() })
     .optional()
     .describe("Checklist panel; items tick in order"),
+  round: roundSchema.optional().describe('"ROUND n/N" title card shown at the start of the scene (pixel-versus)'),
+  fighters: z.array(fighterSchema).min(1).max(3).optional().describe("Contestants on the stage with a header strip of names and star ratings (pixel-versus)"),
+  ranking: rankingSchema.optional().describe("Ranking panel: rows with rank, name, score and a bar (pixel-versus)"),
+  verdict: verdictSchema.optional().describe("Verdict panel that fills in row by row, the winner gets a crown (pixel-versus)"),
   speaker: z.string().min(1).max(14).optional().describe("Dialog box speaker name for this scene"),
   camera: z.enum(PIXEL_CAMERAS).optional(),
   transition: z.enum(PIXEL_TRANSITIONS).optional().describe("Transition into the next scene"),
@@ -180,6 +253,10 @@ export function refinePixel(v, ctx) {
   }
   if (p.character?.pose === "hold" && !p.character.item) ctx.addIssue({ code: "custom", path: ["pixel", "character", "item"], message: 'pose "hold" needs character.item (the prop held up)' });
   if (p.character?.item && p.character.pose !== "hold") ctx.addIssue({ code: "custom", path: ["pixel", "character", "pose"], message: 'character.item is only drawn with pose "hold"' });
+  if (p.verdict?.winner !== undefined && p.verdict.winner >= p.verdict.rows.length) ctx.addIssue({ code: "custom", path: ["pixel", "verdict", "winner"], message: `winner must be one of the ${p.verdict.rows.length} rows (0-based)` });
+  (p.fx ?? []).forEach((f, i) => {
+    if (f.to && f.type !== "energy-beam") ctx.addIssue({ code: "custom", path: ["pixel", "fx", i, "to"], message: "`to` is only used by energy-beam" });
+  });
   if ((p.props ?? []).filter((q) => q.big).length > 1) ctx.addIssue({ code: "custom", path: ["pixel", "props"], message: "at most one big prop per scene" });
   (p.sprites ?? []).forEach((sp, i) => {
     for (const iss of spriteIssues(sp)) ctx.addIssue({ code: "custom", path: ["pixel", "sprites", i, ...iss.path], message: `sprite "${sp.id}": ${iss.message}` });
@@ -217,6 +294,9 @@ export function refinePixelSpec(spec, ctx) {
     const base = ["scenes", i, "visual", "pixel"];
     (p.actors ?? []).forEach((a, k) => {
       if (!ids.has(a.sprite)) ctx.addIssue({ code: "custom", path: [...base, "actors", k, "sprite"], message: unknown(a.sprite) });
+    });
+    (p.fighters ?? []).forEach((f, k) => {
+      if (!ids.has(f.sprite)) ctx.addIssue({ code: "custom", path: [...base, "fighters", k, "sprite"], message: unknown(f.sprite) });
     });
     if (p.set && typeof p.set === "object")
       (p.set.layers ?? []).forEach((l, k) => {
@@ -313,6 +393,24 @@ export const PIXEL_LOOKS = {
     scanlines: false,
     strict: true,
     ui: { box: "#0F380F", border: "#9BBC0F", text: "#9BBC0F", accent: "#8BAC0F", name: "#8BAC0F" },
+  },
+  // fighting-game arena: hot red and gold on deep indigo, electric cyan lights, scanlines
+  "pixel-versus": {
+    roles: {
+      sky0: "#0B0720", sky1: "#2A0F4C", sky2: "#7A1E5E", sky3: "#E4503A",
+      far0: "#1A0F3A", far1: "#2E1659",
+      wall0: "#150C2E", wall1: "#2A1A52", wall2: "#46308A",
+      wood0: "#3A1020", wood1: "#7A2236", wood2: "#C24A3A",
+      floor0: "#10081F", floor1: "#2B1A55",
+      metal0: "#2E3A6E", metal1: "#6C86D8",
+      leaf0: "#104A4A", leaf1: "#1FA39A",
+      glow: "#FFD23F", glow2: "#4FE6FF", accent: "#FF3B5C", accent2: "#FFD23F", ink: "#080414", paper: "#FFFFFF",
+    },
+    light: { rayColor: "#FFE08A", rayOpacity: 0.3, glowOpacity: 0.95, vignette: 0.55, haze: "#E4503A" },
+    sky: "neon",
+    scanlines: true,
+    strict: false,
+    ui: { box: "#0B0620", border: "#4FE6FF", text: "#FFFFFF", accent: "#FFD23F", name: "#FF6B8A" },
   },
 };
 
@@ -449,11 +547,17 @@ export function planPixelScene(p, sceneSec, index = 0, moments = {}) {
   const placed = props.map((q, i) => ({ x: xs[i], enter: round(q.at ?? first + i * step) }));
   const panelAt = round(p.popup?.at ?? 0.6);
   const checks = p.checklist ? p.checklist.items.map((_, k) => round(0.7 + k * Math.min(0.8, Math.max(0.35, (sceneSec - 1.6) / p.checklist.items.length)))) : [];
+  // versus format: the ROUND card holds for ~2 s, then the ranking / verdict rows fill in one by one
+  const roundCard = p.round ? { at: 0.2, until: round(Math.min(2, Math.max(1, sceneSec - 1))) } : null;
+  const panelRows = p.ranking?.rows ?? p.verdict?.rows;
+  const rows = panelRows ? rowTimes(panelRows.length, sceneSec, roundCard ? roundCard.until + 0.2 : 0.8) : null;
   const elements = [
     ...placed.map((q, i) => ({ el: { type: props[i].kind === "item" || props[i].open ? "stamp" : "icon" }, box: null, enter: q.enter, items: [] })),
     ...(p.popup ? [{ el: { type: "doc" }, box: null, enter: panelAt, items: [] }] : []),
     ...(p.counter ? [{ el: { type: "counter" }, box: null, enter: 0.3, items: [] }] : []),
     ...(p.checklist ? [{ el: { type: "checklist" }, box: null, enter: 0.5, items: checks }] : []),
+    ...(roundCard ? [{ el: { type: "stamp" }, box: null, enter: roundCard.at, items: [] }] : []),
+    ...(rows ? [{ el: { type: "checklist" }, box: null, enter: round(rows[0] - 0.2), items: rows }] : []),
     ...actorBeats(p, moments, sceneSec),
     ...fxBeats(p, moments, sceneSec),
   ];
@@ -466,8 +570,18 @@ export function planPixelScene(p, sceneSec, index = 0, moments = {}) {
     props: placed,
     panelAt,
     checks,
+    ...(roundCard ? { round: roundCard } : {}),
+    ...(rows ? { rows } : {}),
     elements,
   };
+}
+
+/** Reveal times (seconds) of the n rows of a ranking / verdict panel: one after another, the last before the closing hold. */
+export function rowTimes(n, sceneSec, start = 0.8) {
+  const first = Math.min(start, Math.max(0.5, sceneSec - 2.6));
+  const last = Math.max(first, sceneSec - 1.4);
+  const step = n > 1 ? Math.min(0.9, Math.max(0.35, (last - first) / (n - 1))) : 0;
+  return Array.from({ length: n }, (_, i) => round(first + i * step));
 }
 
 const secOf = (at, moments) => (typeof at === "number" ? at : typeof at === "string" && at in moments ? moments[at] : null);
@@ -480,7 +594,7 @@ function actorBeats(p, moments) {
 }
 function fxBeats(p, moments) {
   return (p.fx ?? []).flatMap((f) => {
-    if (!["burst", "lightning", "shockwave"].includes(f.type)) return [];
+    if (!["burst", "lightning", "shockwave", "energy-beam", "hit-flash"].includes(f.type)) return [];
     const t = f.at === undefined ? 0.4 : secOf(f.at, moments);
     return t === null ? [] : [{ el: { type: "stamp" }, box: null, enter: round(Math.max(0, t - 0.18)), items: [] }];
   });

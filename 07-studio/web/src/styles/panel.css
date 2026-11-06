@@ -818,3 +818,18 @@ a.content-title:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.channel-banner {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2560 / 1440;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: var(--radius-md, var(--radius-sm));
+  margin-bottom: 16px;
+}
+.channel-description {
+  white-space: pre-wrap;
+  max-width: 72ch;
+  line-height: 1.55;
+}

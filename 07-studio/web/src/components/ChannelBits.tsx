@@ -14,6 +14,12 @@ export function ChannelAvatar(props: { slug: string; name: string; hasAvatar?: b
   );
 }
 
+export function ChannelBanner(props: { slug: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return <img className="channel-banner" src={api.bannerUrl(props.slug)} alt="" loading="lazy" onError={() => setFailed(true)} />;
+}
+
 export function StageChip({ stage }: { stage: ContentStage }) {
   return (
     <span className="stage-chip" data-stage={stage}>

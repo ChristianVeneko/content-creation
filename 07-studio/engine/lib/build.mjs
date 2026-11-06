@@ -7,8 +7,7 @@ import { renderCover, bundleProject, renderVideo } from "./render.mjs";
 import { resolveSpec, usesClassicLayout, validateSpec } from "./spec.mjs";
 import { getTemplate } from "./templates.mjs";
 import { alignToScript, computeTimeline, paginateCaptions, syntheticCaptions } from "./timeline.mjs";
-import { effectiveProvider, synthesize } from "./tts.mjs";
-import { pickVoice, trendingVoices } from "./voices.mjs";
+import { DEFAULT_VOICE_ID, effectiveProvider, synthesize } from "./tts.mjs";
 import { computeBeats, planIllustration, scheduleSfx, usesIllustratedKit } from "./illustrated.mjs";
 import { collectIconNames, loadIcons } from "./icons.mjs";
 import { planThree, usesThreeKit } from "./scene3d.mjs";
@@ -19,6 +18,10 @@ import { buildBed, loadKit } from "./audio-bed.mjs";
 import { musicDuckedLevelDb, musicLevelDb, resolveMusic } from "./music.mjs";
 import { computeReelsTimeline, reelsTtsText, usesReelsKit } from "./reels.mjs";
 import { prepareReels, renderReelsCover } from "./reels-build.mjs";
+import { chooseRenderer } from "./blender-options.mjs";
+import { renderBlenderVideo } from "./blender.mjs";
+import { buildHf } from "./build-hf.mjs";
+import { isHfTemplate } from "../hf/registry.mjs";
 
 export class StepError extends Error {
   constructor(step, message) {
@@ -69,9 +72,12 @@ export function postMarkdown(spec) {
 
 /**
  * Build a video from a spec file.
- * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean}} opts
+ * @param {{specPath: string, outDir: string, log: (step: string, status: string, message: string, progress: number, extra?: object) => void, keepWork?: boolean, renderer?: "remotion" | "blender", voice?: {provider: string, voiceId?: string}, quality?: "draft" | "looks" | "delivery", hfDeps?: object}} opts
+ *   renderer: overrides `theme.renderer` (the CLI's --renderer); blender is for the 3D templates
+ *   quality: HyperFrames render quality (HyperFrames formats only; the CLI's --quality)
+ *   hfDeps: test seam of the HyperFrames route (see lib/build-hf.mjs)
  */
-export async function build({ specPath, outDir, log, keepWork = false }) {
+export async function build({ specPath, outDir, log, keepWork = false, renderer: rendererOverride, voice: voiceOverride, quality, hfDeps }) {
   let step = "validate";
   const fail = (message) => {
     throw new StepError(step, message);
@@ -88,7 +94,16 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     const v = validateSpec(raw);
     if (!v.ok) fail(`Invalid spec: ${v.errors.map((e) => `${e.path}: ${e.message}`).join("; ")}`);
     const spec = resolveSpec(v.spec, getTemplate(v.spec.template));
+    const hf = isHfTemplate(spec.template);
+    if (quality !== undefined && !hf) fail(`--quality is only for HyperFrames formats; template "${spec.template}" renders with Remotion`);
+    if (hf && rendererOverride !== undefined) fail(`Invalid renderer: HyperFrames format "${spec.template}" renders with HyperFrames; --renderer does not apply`);
+    const choice = hf ? { renderer: "hyperframes" } : chooseRenderer(spec, rendererOverride);
+    if (choice.error) fail(`Invalid renderer: ${choice.error}`);
+    if (rendererOverride) spec.theme = { ...spec.theme, renderer: rendererOverride };
+    if (voiceOverride) spec.voice = voiceOverride.provider === "none" ? { ...spec.voice, provider: "none" } : { ...spec.voice, ...voiceOverride };
     const specDir = dirname(resolve(specPath));
+    // HyperFrames formats: their own route (the composition draws its own captions; no Remotion, no caption overlay)
+    if (hf) return await buildHf({ spec, specDir, outDir, log, keepWork, quality, deps: hfDeps, helpers: { StepError, resolveAssetPath, needsAutoVoice, postMarkdown } });
     outDir = resolve(outDir);
     const work = join(outDir, ".work");
     const pub = join(work, "public");
@@ -110,41 +125,51 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     const wantWords = spec.captions.enabled || reelsKit || pixelKit;
     let audioSecs = spec.scenes.map(() => null);
     let speechFiles = [];
-    let { provider, fallback } = effectiveProvider(spec.voice);
-    if (fallback) log(step, "running", fallback, 0.06);
-    if (provider === "none") {
-      log(step, "done", "Voice disabled (provider none): timing from durationSec / reading time", 0.35);
-    } else {
-      if (provider === "elevenlabs" && needsAutoVoice(spec)) {
-        // No voice chosen: take a trending Latin American Spanish voice (stable per title) and record it in spec.json.
-        const auto = pickVoice(await trendingVoices({ gender: "male" }), spec.title);
-        if (auto) {
-          spec.voice.voiceId = auto.voiceId;
-          log(step, "running", `Auto voice: ${auto.name} (${auto.accent}, trending on ElevenLabs)`, 0.06);
-        }
-      }
-      log(step, "running", `Synthesizing ${spec.scenes.length} scenes with ${provider}`, 0.06);
-      const onItem = (done, total) => log(step, "running", `Voice ${done}/${total}`, 0.06 + 0.25 * (done / total));
-      let rawFiles;
-      try {
-        rawFiles = await synthesize({
-          provider,
-          texts: ttsTexts,
-          language: spec.language,
-          voiceId: spec.voice.voiceId,
-          speed: spec.voice.speed ?? 1,
-          dir: join(work, "audio"),
-          onItem,
-        });
-      } catch (e) {
-        if (provider !== "elevenlabs") throw e;
-        log(step, "running", `${e.message} — falling back to local Kokoro`, 0.1);
-        provider = "kokoro";
-        rawFiles = await synthesize({ provider, texts: ttsTexts, language: spec.language, voiceId: undefined, speed: spec.voice.speed ?? 1, dir: join(work, "audio"), onItem });
-      }
+    const hasSceneAudio = spec.scenes.every((s) => s.audio);
+    if (hasSceneAudio) {
+      log(step, "running", `Using pre-recorded voice audio for ${spec.scenes.length} scenes`, 0.06);
+      const rawFiles = spec.scenes.map((s, i) => {
+        const found = resolveAssetPath(s.audio, specDir);
+        if (!found) fail(`Cannot find scene ${i} audio file: "${s.audio}"`);
+        return found;
+      });
       speechFiles = rawFiles.map((_, i) => join(work, "audio", `speech-${i}.wav`));
       audioSecs = await Promise.all(rawFiles.map((f, i) => normalizeSpeech(f, speechFiles[i])));
-      log(step, "done", `Voice ready (${provider}): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
+      log(step, "done", `Voice ready (pre-recorded): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
+    } else {
+      let { provider, fallback } = effectiveProvider(spec.voice);
+      if (fallback) log(step, "running", fallback, 0.06);
+      if (provider === "none") {
+        log(step, "done", "Voice disabled (provider none): timing from durationSec / reading time", 0.35);
+      } else {
+        if (provider === "elevenlabs" && needsAutoVoice(spec)) {
+          // No voice chosen: use the app-wide default ElevenLabs voice and record it in spec.json.
+          spec.voice.voiceId = DEFAULT_VOICE_ID;
+          log(step, "running", "Default ElevenLabs voice", 0.06);
+        }
+        log(step, "running", `Synthesizing ${spec.scenes.length} scenes with ${provider}`, 0.06);
+        const onItem = (done, total) => log(step, "running", `Voice ${done}/${total}`, 0.06 + 0.25 * (done / total));
+        let rawFiles;
+        try {
+          rawFiles = await synthesize({
+            provider,
+            texts: ttsTexts,
+            language: spec.language,
+            voiceId: spec.voice.voiceId,
+            speed: spec.voice.speed ?? 1,
+            dir: join(work, "audio"),
+            onItem,
+          });
+        } catch (e) {
+          if (provider !== "elevenlabs") throw e;
+          log(step, "running", `${e.message} — falling back to local Kokoro`, 0.1);
+          provider = "kokoro";
+          rawFiles = await synthesize({ provider, texts: ttsTexts, language: spec.language, voiceId: undefined, speed: spec.voice.speed ?? 1, dir: join(work, "audio"), onItem });
+        }
+        speechFiles = rawFiles.map((_, i) => join(work, "audio", `speech-${i}.wav`));
+        audioSecs = await Promise.all(rawFiles.map((f, i) => normalizeSpeech(f, speechFiles[i])));
+        log(step, "done", `Voice ready (${provider}): ${audioSecs.reduce((a, b) => a + b, 0).toFixed(1)}s of narration`, 0.35);
+      }
     }
     const timeline = (reelsKit ? computeReelsTimeline : computeTimeline)(
       spec.scenes.map((s, i) => ({ audioSec: audioSecs[i], durationSec: s.durationSec, narration: s.narration })),
@@ -306,29 +331,56 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     step = "render";
     mkdirSync(outDir, { recursive: true });
     const inputProps = { spec, timeline, captionPages, assets: { narration, music, visuals, bed, avatar, three }, illustration, icons, reels };
-    log(step, "running", "Bundling Remotion project", 0.46);
-    const serveUrl = await bundleProject({ publicDir: pub, outDir: join(work, "bundle"), onProgress: (p) => log(step, "running", `Bundling ${Math.round(p * 100)}%`, 0.46 + 0.04 * p) });
-    const videoTmp = join(work, "video.mp4");
-    let last = -1;
-    const composition = await renderVideo({
-      serveUrl,
-      compositionId: spec.template,
-      inputProps,
-      output: videoTmp,
-      onProgress: (p) => {
-        const pct = Math.floor(p * 20);
-        if (pct !== last) {
-          last = pct;
-          log(step, "running", `Rendering ${Math.round(p * 100)}%`, 0.5 + 0.42 * p);
-        }
-      },
-    });
     const videoPath = join(outDir, "video.mp4");
-    // With a mixed bed (voice + SFX + music) re-normalize the final audio to -14 LUFS; otherwise copy as before.
-    const audioArgs = bed ? ["-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "320k"] : ["-c", "copy"];
-    await run("ffmpeg", ["-y", "-v", "error", "-i", videoTmp, ...audioArgs, "-movflags", "+faststart", join(work, "video.faststart.mp4")]);
-    renameSync(join(work, "video.faststart.mp4"), videoPath);
-    log(step, "done", `Rendered ${totalSec.toFixed(1)}s · ${spec.format.width}x${spec.format.height}@${fps}`, 0.92);
+    let serveUrl = null;
+    let composition = null;
+    let blenderDone = false;
+    if (choice.renderer === "blender") {
+      // Eevee frames from Blender + ffmpeg (captions, headlines and labels as an ASS layer); any Blender problem falls back to Remotion
+      try {
+        log(step, "running", "Rendering with Blender (Eevee)", 0.46);
+        const r = await renderBlenderVideo({
+          spec,
+          timeline,
+          plans: illustration,
+          captionPages,
+          models: three?.models ?? {},
+          pubDir: pub,
+          work,
+          audio: { narration: narration ? join(pub, narration) : null, bed: bed ? join(pub, bed) : null, music: music && !isRemote(music) ? join(pub, music) : null, musicVolume: spec.music.volume },
+          out: videoPath,
+          log: (msg, p) => log(step, "running", msg, 0.46 + 0.46 * Math.min(1, p)),
+        });
+        log(step, "done", `Blender rendered ${r.frames} frames in ${r.seconds.toFixed(0)}s (${r.perFrame.toFixed(2)} s/frame)${r.captionsBurned ? "" : "; no 2D layer"}`, 0.92);
+        blenderDone = true;
+      } catch (e) {
+        log(step, "running", `Blender renderer failed (${String(e.message).slice(0, 300)}); falling back to the Remotion renderer for this video`, 0.46);
+      }
+    }
+    if (!blenderDone) {
+      log(step, "running", "Bundling Remotion project", 0.46);
+      serveUrl = await bundleProject({ publicDir: pub, outDir: join(work, "bundle"), onProgress: (p) => log(step, "running", `Bundling ${Math.round(p * 100)}%`, 0.46 + 0.04 * p) });
+      const videoTmp = join(work, "video.mp4");
+      let last = -1;
+      composition = await renderVideo({
+        serveUrl,
+        compositionId: spec.template,
+        inputProps,
+        output: videoTmp,
+        onProgress: (p) => {
+          const pct = Math.floor(p * 20);
+          if (pct !== last) {
+            last = pct;
+            log(step, "running", `Rendering ${Math.round(p * 100)}%`, 0.5 + 0.42 * p);
+          }
+        },
+      });
+      // With a mixed bed (voice + SFX + music) re-normalize the final audio to -14 LUFS; otherwise copy as before.
+      const audioArgs = bed ? ["-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "320k"] : ["-c", "copy"];
+      await run("ffmpeg", ["-y", "-v", "error", "-i", videoTmp, ...audioArgs, "-movflags", "+faststart", join(work, "video.faststart.mp4")]);
+      renameSync(join(work, "video.faststart.mp4"), videoPath);
+      log(step, "done", `Rendered ${totalSec.toFixed(1)}s · ${spec.format.width}x${spec.format.height}@${fps}`, 0.92);
+    }
 
     // ---------- cover ----------
     step = "cover";
@@ -336,7 +388,8 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
     const coverFrame = Math.max(0, Math.min(timeline.totalFrames - 1, s0.from + s0.durationInFrames - timeline.transitionFrames - 6));
     const coverPath = join(outDir, "cover.jpg");
     // reels: a designed cover (spec.reels.cover) plus cover-check.png with the 3:4 profile-grid crop
-    if (reelsKit) await renderReelsCover({ serveUrl, inputProps, outDir });
+    if (blenderDone) await run("ffmpeg", ["-y", "-v", "error", "-ss", (coverFrame / fps).toFixed(3), "-i", videoPath, "-frames:v", "1", "-q:v", "2", coverPath]);
+    else if (reelsKit) await renderReelsCover({ serveUrl, inputProps, outDir });
     else await renderCover({ serveUrl, composition, inputProps, frame: coverFrame, output: coverPath });
     writeFileSync(join(outDir, "post.md"), postMarkdown(spec));
     const { post, ...rest } = spec;
@@ -354,9 +407,8 @@ export async function build({ specPath, outDir, log, keepWork = false }) {
   }
 }
 
-/** ElevenLabs with no explicit library voice (missing, or a Kokoro id) and Spanish narration. */
+/** ElevenLabs with no explicit library voice (missing, or a Kokoro id): the app-wide default voice applies, in any language. */
 export function needsAutoVoice(spec) {
   const id = spec.voice?.voiceId;
-  const explicit = id && !/^[a-z][fm]_[a-z]+$/.test(id);
-  return !explicit && String(spec.language || "es").startsWith("es");
+  return !(id && !/^[a-z][fm]_[a-z]+$/.test(id));
 }

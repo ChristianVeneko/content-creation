@@ -2,7 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { listTemplates } from "../lib/templates.mjs";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { listTemplates, validateTemplate } from "../lib/templates.mjs";
 import { validateSpec } from "../lib/spec.mjs";
 
 const cli = fileURLToPath(new URL("../cli.mjs", import.meta.url));
@@ -44,4 +47,36 @@ test("cli validate exits 0 for the example and 1 with errors for a bad spec", ()
   const bad = JSON.parse(out);
   assert.equal(bad.ok, false);
   assert.ok(bad.errors.some((e) => e.path === "title"));
+});
+
+test("template format: optional kebab slug, validated; templates without one default to their id", () => {
+  assert.doesNotThrow(() => validateTemplate({ id: "x", format: "host-tutorial" }));
+  assert.doesNotThrow(() => validateTemplate({ id: "x" }));
+  for (const bad of ["Host", "a_b", "a--b", "-a", "", 3]) {
+    assert.throws(() => validateTemplate({ id: "x", format: bad }), /format/, String(bad));
+  }
+  const dir = mkdtempSync(join(tmpdir(), "tpl-"));
+  writeFileSync(join(dir, "illustrated.json"), JSON.stringify({ id: "illustrated" }));
+  writeFileSync(join(dir, "whiteboard.json"), JSON.stringify({ id: "whiteboard", format: "sketch-board" }));
+  const byId = Object.fromEntries(listTemplates(dir).map((t) => [t.id, t.format]));
+  assert.deepEqual(byId, { illustrated: "illustrated", whiteboard: "sketch-board" });
+  for (const t of listTemplates()) assert.match(t.format, /^[a-z0-9]+(-[a-z0-9]+)*$/, t.id);
+});
+
+test("durations: a 180 s video is valid (many scenes of 3-6 s), a single scene stays capped at 60 s", () => {
+  const scene = (i, d) => ({ id: `s${i}`, narration: "x", durationSec: d, visual: { type: "gradient" } });
+  const ok = validateSpec({ version: 1, title: "x", template: "illustrated", scenes: Array.from({ length: 36 }, (_, i) => scene(i, 5)) });
+  assert.equal(ok.ok, true, JSON.stringify(ok.errors));
+  const bad = validateSpec({ version: 1, title: "x", template: "illustrated", scenes: [scene(0, 61)] });
+  assert.equal(bad.ok, false);
+});
+
+test("previous behavior kept: without HyperFrames formats installed/visible the catalog, --brief and prompt output are the classic ones", () => {
+  const env = { ...process.env, CC_HF_INTERNAL: "" };
+  const brief = execFileSync(process.execPath, [cli, "templates", "--brief"], { encoding: "utf8", env }).trim().split("\n");
+  assert.deepEqual(brief.map((l) => l.split("\t")[0]), listTemplates().map((t) => t.id).filter((id) => !id.startsWith("_")));
+  assert.ok(brief.every((l) => l.split("\t").length === 5));
+  assert.ok(brief.some((l) => l.startsWith("countdown\t")));
+  const p = execFileSync(process.execPath, [cli, "prompt", "countdown"], { encoding: "utf8", env });
+  assert.ok(!p.includes("## HyperFrames format"), "non-HF prompt has no HF section");
 });

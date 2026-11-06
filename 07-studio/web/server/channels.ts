@@ -9,10 +9,10 @@ import {
   type ChannelDefaults,
   type ChannelDetail,
   type ChannelPlatform,
-  type GenerateOptions,
   type VoiceProvider,
 } from "../shared/types.ts";
 import { isCaptionStyle, cleanCaptionSettings } from "../shared/captions.ts";
+import { isDurationSec } from "../shared/durations.ts";
 import { isValidJobId, slugify } from "./jobs.ts";
 
 export class ChannelError extends Error {
@@ -40,16 +40,16 @@ export function isValidChannelSlug(slug: unknown): slug is string {
 }
 
 const VOICE_PROVIDERS: VoiceProvider[] = ["kokoro", "elevenlabs", "none"];
-const DURATIONS: GenerateOptions["durationSec"][] = [15, 30, 45, 60];
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 const MAX_VOICE = 50_000;
+const MAX_DESCRIPTION = 5_000; // YouTube's channel description limit
 
 const isObj = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
 const str = (v: unknown, max = 400): string | undefined => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
 const strList = (v: unknown, max = 12): string[] =>
   Array.isArray(v) ? v.flatMap((x) => (typeof x === "string" && x.trim() ? [x.trim().slice(0, 200)] : [])).slice(0, max) : [];
 
-function sanitizeDefaults(v: unknown): ChannelDefaults {
+export function sanitizeDefaults(v: unknown): ChannelDefaults {
   if (!isObj(v)) return {};
   const d: ChannelDefaults = {};
   if (str(v.template, 80)) d.template = str(v.template, 80);
@@ -62,7 +62,7 @@ function sanitizeDefaults(v: unknown): ChannelDefaults {
   const captions = cleanCaptionSettings(v.captions);
   if (captions) d.captions = captions;
   if (str(v.musicMood, 80)) d.musicMood = str(v.musicMood, 80);
-  if (DURATIONS.includes(v.durationSec as GenerateOptions["durationSec"])) d.durationSec = v.durationSec as GenerateOptions["durationSec"];
+  if (isDurationSec(v.durationSec)) d.durationSec = v.durationSec;
   if (str(v.tone, 400)) d.tone = str(v.tone, 400);
   return d;
 }
@@ -71,6 +71,7 @@ function sanitizeBrand(v: unknown): Channel["brand"] | undefined {
   if (!isObj(v)) return undefined;
   const brand: NonNullable<Channel["brand"]> = {};
   if (str(v.avatar, 400)) brand.avatar = str(v.avatar, 400);
+  if (str(v.banner, 400)) brand.banner = str(v.banner, 400);
   const colors = strList(v.colors, 8).filter((c) => HEX_RE.test(c));
   if (colors.length) brand.colors = colors;
   return brand;
@@ -85,6 +86,7 @@ function sanitizeFields(input: Record<string, unknown>): Partial<Channel> {
   if ("language" in input) out.language = str(input.language, 12) ?? "es";
   if ("niche" in input) out.niche = str(input.niche, 400);
   if ("audience" in input) out.audience = str(input.audience, 600);
+  if ("description" in input) out.description = typeof input.description === "string" && input.description.trim() ? input.description.trim().slice(0, MAX_DESCRIPTION) : undefined;
   if ("pillars" in input) out.pillars = strList(input.pillars);
   if ("defaults" in input) out.defaults = sanitizeDefaults(input.defaults);
   if ("brand" in input) out.brand = sanitizeBrand(input.brand);
@@ -131,6 +133,7 @@ export class ChannelStore {
       language: f.language ?? "es",
       ...(f.niche ? { niche: f.niche } : {}),
       ...(f.audience ? { audience: f.audience } : {}),
+      ...(f.description ? { description: f.description } : {}),
       pillars: f.pillars ?? [],
       createdAt: typeof raw.createdAt === "string" ? raw.createdAt : "",
       defaults: f.defaults ?? {},
@@ -185,6 +188,7 @@ export class ChannelStore {
       language: fields.language ?? "es",
       ...(fields.niche ? { niche: fields.niche } : {}),
       ...(fields.audience ? { audience: fields.audience } : {}),
+      ...(fields.description ? { description: fields.description } : {}),
       pillars: fields.pillars ?? [],
       createdAt: now.toISOString(),
       defaults: fields.defaults ?? {},

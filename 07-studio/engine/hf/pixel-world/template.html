@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="__LANG__" data-resolution="portrait" data-composition-variables='[{"id":"captions","type":"boolean","label":"Captions","default":__CAPS__}]'>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<style>
+@font-face { font-family: "PS2P"; src: url('assets/fonts/PressStart2P-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: "PXS"; src: url('assets/fonts/PixelifySans-Variable.ttf'); font-weight: 400 700; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: __BG__; }
+#root { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: __BG__; }
+#stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+canvas.l { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; image-rendering: pixelated; }
+#cb { filter: blur(__BLURB__px) brightness(0.94); }
+#cf { filter: blur(__BLURF__px); }
+#post { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; __POST__ }
+#shade { position: absolute; left: 0; top: 0; width: 1080px; height: 720px; background: linear-gradient(180deg, __SHADE__ 0%, rgba(0,0,0,0) 100%); }
+#brand { position: absolute; left: 60px; top: 236px; height: 76px; padding: 8px 18px 8px 10px; display: flex; align-items: center; gap: 14px; background: __PILL__; border: 4px solid __CAPFG__; box-shadow: 6px 6px 0 __CAPINK__; font: 700 44px "PXS"; color: __CAPFG__; transform-origin: 0 50%; }
+#brand canvas { image-rendering: pixelated; }
+#av { width: 56px; height: 56px; }
+#avs { display: block; transform-origin: center; }
+#fbc { width: 48px; height: 48px; border: 3px solid __CAPINK__; }
+#cur { position: absolute; left: 330px; top: 40px; width: 40px; height: 40px; display: none; }
+#cur i { position: absolute; left: 0; top: 0; width: 0; height: 0; border-left: 14px solid #fff; border-right: 14px solid transparent; border-bottom: 34px solid #fff; transform: rotate(-20deg); filter: drop-shadow(3px 3px 0 __CAPINK__); }
+#dlg { position: absolute; left: 60px; width: 960px; top: __CAPTOP__px; display: none; align-items: center; gap: 24px; padding: 18px 24px; background: __PILL__; border: 6px solid __CAPFG__; box-shadow: 8px 8px 0 __CAPINK__, inset 0 0 0 4px __CAPINK__; }
+#dp { flex: none; width: 128px; height: 128px; image-rendering: pixelated; border: 4px solid __CAPFG__; background: __CAPINK__; }
+#caps { flex: 1; min-width: 0; text-align: left; min-height: 142px; display: flex; align-items: center; }
+.cg { display: none; line-height: 1.3; }
+.cw { display: inline-block; font: 700 54px "PXS"; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0, "clig" 0; color: __CAPFG__; padding: 0 14px; margin: 0 2px 6px; text-shadow: -4px 0 __CAPINK__, 4px 0 __CAPINK__, 0 -4px __CAPINK__, 0 4px __CAPINK__, 4px 4px __CAPINK__, -4px -4px __CAPINK__, 4px -4px __CAPINK__, -4px 4px __CAPINK__; }
+.cw.on { box-shadow: 0 6px 0 __CAPINK__; }
+#stamp { position: absolute; left: 0; top: __STAMPTOP__px; width: 1080px; text-align: center; font: 400 74px "PS2P"; display: none; transform-origin: 50% 50%; -webkit-text-stroke: 14px __CAPINK__; paint-order: stroke fill; letter-spacing: 2px; }
+#flash { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #fff; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <div id="stage">
+    <canvas class="l" data-layout-allow-overflow id="cb" width="270" height="480"></canvas>
+    <canvas class="l" data-layout-allow-overflow id="cm" width="270" height="480"></canvas>
+    <canvas class="l" data-layout-allow-overflow id="cf" width="270" height="480"></canvas>
+    <canvas class="l" data-layout-allow-overflow id="cu" width="270" height="480"></canvas>
+  </div>
+  <canvas class="l" data-layout-allow-overflow id="ch" width="270" height="480"></canvas>
+  <div id="post"></div>
+  <div id="shade"></div>
+  <div id="brand"><span id="avs"><canvas id="av" width="28" height="28"></canvas></span><span id="handle"></span><canvas id="fbc" width="16" height="16"></canvas><div id="cur"><i></i></div></div>
+  <div id="stamp"></div>
+  <div id="dlg"><canvas id="dp" width="32" height="32"></canvas><div id="caps"></div></div>
+  <div id="flash"></div>
+</div>
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>

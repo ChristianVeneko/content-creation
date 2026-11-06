@@ -2,6 +2,7 @@
   "id": "neon-glass",
   "name": "Neon Glass 3D",
   "category": "3d",
+  "format": "glass-ui",
   "description": "Dark futuristic 3D: frosted glass objects with glowing neon edges over a reflective black floor, bloom and light sparks, a camera that punches in on every cut and sweeps around the subject. High-energy AI / crypto / cyber aesthetic. Karaoke captions. No emoji.",
   "prompt_hint": "Write 6-10 punchy scenes (3-5 s each). Every scene has title.kicker + title.main and visual.type \"scene3d\" with 1-4 objects: one glowing hero (chip, lock, server, globe, phone, coin, rocket, lightbulb, icon) or a small system with connect arrows. Mark the key object with highlight: true. Short labels. Strong numbers go in a stat object. Never use emoji.",
   "best_for": ["AI and tech news", "cybersecurity", "crypto and fintech", "futuristic hooks", "product launches"],

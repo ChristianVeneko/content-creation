@@ -1,0 +1,28 @@
+{
+  "id": "data-atlas",
+  "name": "Data Atlas",
+  "category": "illustrated-2d",
+  "format": "data-atlas",
+  "description": "Data documentary with one dramatic illustrated metaphor per scene, drawn fresh for the topic by the agent. Each scene is a full-bleed backdrop of 2-5 depth layers (far map or sky, mid, the subject, a near framing layer), painted with generators (lit globe with continents and route arcs, starfield, sky and sun, terrain ridges, rails in perspective, wheat rows, night sea, wood desk, cracked earth, flat map) plus many-part objects with glow, rim light, textures and soft shadows; scenes dissolve into each other with slow push-ins, atmospheric glow, horizon haze, drifting motes and a heavy vignette. Props on top: a dark rounded pill counter with a big number that counts up, a map of lit points that fills in with a route line that draws itself, and a paper ledger or blueprint sheet with a table and a red underline. Word-synced captions sit in the upper-middle with the spoken word highlighted. Two modes: 2.5D (default, every layer drifts at its own speed with a dolly and depth of field) and flat (the same layers as one picture with a single push-in). This is a format (camera, motion, effects and layout), not a fixed subject: every video brings new subjects.",
+  "prompt_hint": "Write 8-14 short scenes (3-5 s each) for a data documentary: each scene is one concrete image that carries one number or one fact. Open every scene with a backdrop element: 3-5 layers drawn by you for THIS topic (depth far = sky, globe or map; mid; subject = the hero object or place; near = foreground framing such as grass, rails, sheets or a window edge), using generators (`gen`: globe, starfield, sky, terrain, rails, grain-field, water, surface, map) for the environment and your own many-part `parts` for the objects, with gradients, glows (blur + screen), rim lights and textures so the scene looks lit and deep. Never leave an empty frame, use viewBox 0 0 540 960, and vary glow per scene. Draw new subjects every video: invent the metaphors for the topic and never reuse the example spec's scenery. Scenes normally have no title, because the captions carry the words. Add the props that fit the beat: counter-pill for the big number, particle-field plus route for a spread across a map, ledger for a table or a document (parchment or blueprint). Pick the mode on the backdrop: 2.5D (default) for parallax depth, flat for the same story as a single picture. Keep every illustration accent clear against its surface, and never use emoji.",
+  "best_for": ["data documentaries", "history and geopolitics explainers", "economics and statistics stories", "how big is it comparisons", "investigations"],
+  "preview": {
+    "style": "illustrated",
+    "gradient": ["#12204A", "#060914", "#FFB547"],
+    "accent": "#FFB547",
+    "sample_text": "6.056.296"
+  },
+  "defaults": {
+    "theme": {
+      "look": "data-atlas",
+      "palette": { "bg": ["#0F1B3D", "#05070F"], "text": "#F3F6FF", "accent": "#FFB547", "accent2": "#FFE3A3", "accent3": "#5B8CFF" },
+      "font": "Montserrat",
+      "captionStyle": "two-tone"
+    },
+    "voice": { "provider": "kokoro", "voiceId": "ef_dora", "speed": 0.98 },
+    "music": { "track": "auto", "volume": 0.1, "duck": true },
+    "sfx": { "enabled": true, "volume": 0.9 },
+    "captions": { "enabled": true, "wordsPerPage": 4, "size": "m", "position": "top" },
+    "animation": "pop"
+  }
+}

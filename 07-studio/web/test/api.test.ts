@@ -23,12 +23,19 @@ test("health and templates", async () => {
   assert.equal(res.status, 200);
   const { templates } = (await res.json()) as Json;
   assert.equal(templates.length, 5);
-  assert.deepEqual(Object.keys(templates[0]).sort(), ["accent", "description", "emoji", "gradient", "id", "name", "promptHint", "sampleText"]);
+  assert.deepEqual(Object.keys(templates[0]).sort(), ["accent", "description", "emoji", "format", "gradient", "id", "name", "promptHint", "sampleText"]);
+  assert.equal(templates[0].format, templates[0].id, "format defaults to the template id");
 });
 
 test("spec request validation errors are 400", async () => {
   const res = await app.request("/api/spec", { method: "POST", body: JSON.stringify({ prompt: "", provider: "anthropic" }) });
   assert.equal(res.status, 400);
+});
+
+test("an unknown render engine option is a 400 naming the allowed ones", async () => {
+  const res = await app.request("/api/spec", { method: "POST", body: JSON.stringify({ prompt: "x", provider: "anthropic", template: "kinetic-type", options: { renderer: "cycles" } }) });
+  assert.equal(res.status, 400);
+  assert.match(((await res.json()) as Json).error, /Motor de render inválido: usa remotion o blender/);
 });
 
 test("render streams engine progress and ends done with outputs", async () => {

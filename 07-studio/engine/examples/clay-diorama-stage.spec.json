@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "title": "A clay town grows",
+  "template": "clay-diorama",
+  "language": "en",
+  "voice": {
+    "provider": "none"
+  },
+  "music": {
+    "provider": "none"
+  },
+  "captions": {
+    "enabled": true
+  },
+  "stage": {
+    "concept": "tiny clay town: a house, a tree and a builder",
+    "actors": [
+      {
+        "build": "house",
+        "id": "house",
+        "pos": [
+          -1.4,
+          0,
+          -0.6
+        ],
+        "params": {
+          "floors": 2,
+          "width": 3.2,
+          "depth": 2.4,
+          "wall": "#F6E3C4",
+          "roofColor": "#E07A5F",
+          "style": "cozy"
+        },
+        "seed": 4
+      },
+      {
+        "build": "tree",
+        "id": "tree",
+        "pos": [
+          1.8,
+          0,
+          -0.8
+        ],
+        "params": {
+          "kind": "lowpoly",
+          "height": 3,
+          "leaf": "#8DC891",
+          "leaf2": "#B5DDB0"
+        },
+        "seed": 2
+      },
+      {
+        "build": "person",
+        "id": "builder",
+        "pos": [
+          0.6,
+          0,
+          1.4
+        ],
+        "params": {
+          "hat": "cap",
+          "shirt": "#7C9CE0",
+          "tool": "wrench"
+        },
+        "seed": 5
+      }
+    ],
+    "world": {
+      "concept": "clay town with soft fence and rocks",
+      "ground": {
+        "kind": "look"
+      },
+      "parts": [
+        {
+          "build": "fence",
+          "id": "fence",
+          "pos": [
+            0,
+            0,
+            -2.4
+          ],
+          "params": {
+            "length": 6,
+            "height": 0.7,
+            "color": "#F3E3C8"
+          },
+          "seed": 2
+        },
+        {
+          "build": "rocks",
+          "id": "rocks",
+          "pos": [
+            3.6,
+            0,
+            -0.8
+          ],
+          "params": {
+            "count": 6,
+            "size": 0.7,
+            "color": "#C9B8A5"
+          },
+          "seed": 3
+        }
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "a",
+      "narration": "A tiny clay town starts with one builder and an empty plot.",
+      "title": {
+        "kicker": "Step 1",
+        "main": "The plot"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "wide",
+            "zoom": 0.6
+          },
+          {
+            "shot": "zoom-to",
+            "focus": "builder",
+            "zoom": 0.5,
+            "at": 2
+          }
+        ],
+        "beats": [
+          {
+            "at": 0,
+            "target": "house",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                2.5,
+                0
+              ],
+              "visible": false
+            }
+          },
+          {
+            "at": 0,
+            "target": "tree",
+            "dur": 0,
+            "set": {
+              "pos": [
+                0,
+                2.5,
+                0
+              ],
+              "visible": false
+            }
+          },
+          {
+            "at": 2.4,
+            "target": "builder/arm-r",
+            "dur": 0.6,
+            "to": {
+              "rot": [
+                -60,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "b",
+      "narration": "Then the house rises, wall by wall, under a warm orange roof.",
+      "title": {
+        "kicker": "Step 2",
+        "main": "The house"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "house",
+            "zoom": 0.5
+          },
+          {
+            "shot": "wide",
+            "zoom": 0.6,
+            "at": 3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "house",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "house",
+            "dur": 2.0,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "narration": "And a tree finishes the scene: soft shapes, one continuous clay world.",
+      "title": {
+        "kicker": "Step 3",
+        "main": "The tree"
+      },
+      "visual": {
+        "type": "scene3d",
+        "shots": [
+          {
+            "shot": "zoom-to",
+            "focus": "tree",
+            "zoom": 0.5
+          },
+          {
+            "shot": "wide",
+            "zoom": 0.6,
+            "at": 3
+          }
+        ],
+        "beats": [
+          {
+            "at": 0.4,
+            "target": "tree",
+            "dur": 0,
+            "set": {
+              "visible": true
+            }
+          },
+          {
+            "at": 0.4,
+            "target": "tree",
+            "dur": 1.6,
+            "ease": "out",
+            "to": {
+              "pos": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

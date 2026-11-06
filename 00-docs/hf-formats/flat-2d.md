@@ -1,0 +1,68 @@
+# flat-2d (HyperFrames format)
+
+Data-driven flat 2D explainers: flat vector worlds, rigged characters, app replicas and a travelling camera, drawn in SVG/HTML and animated with one paused GSAP timeline (1080x1920, 30 fps). An LLM drives it through a JSON payload (`spec.hf`); no coding agent is involved.
+
+Code: `07-studio/engine/hf/flat-2d/`. Contract (`meta`, `payloadSchema`, `promptSection`, `normalize`, `compose`) is `index.mjs`; `compose` returns `{ entry, sfx, durationSec, warnings }` (warnings include those `normalize` attached as a non-enumerable `__warnings` on the spec and payload it returned, because the registry calls `normalize(spec)` without a way to get them back; they survive only while the same object reaches `compose`, not a JSON round trip) where `entry` is the absolute path of `index.html`. The composition draws its OWN captions (variable `captions`), so the engine's caption overlay must not be applied.
+
+## Modes
+`spec.mode` (top level) is the single source of truth. `hf.mode` does not exist: `normalize` drops it (moving it to `spec.mode` only when that is missing) and warns; the prompt tells the LLM never to set it.
+
+- `single` (default): one world, one camera. Scenes are stations on a snake path; the path draws itself while the camera travels (zoom-out dip plus light blur); a recap zoom-out closes long videos. Use for process, step-by-step, duels.
+- `multi`: scenes side by side, joined by `slide`, `whip`, `up`, `wipe` or `iris`. Use for stories and rankings.
+Both modes work with every style and setting.
+
+## Styles (12): `styles.mjs`
+flat-soft-gradient, flat-dark-neon-ui (default look of the guru videos), flat-memphis, flat-paper-cut, flat-blueprint, flat-neo-brutalist, flat-risograph-duotone, flat-glass-ui, flat-sticker-cartoon, flat-clay-2d, flat-isometric, flat-low-poly. A style = semantic color roles + shape rules (radius, stroke, shadow kind, gradient, facets) + texture + fonts + caption colors + cast mode (color, duo, line). Palettes are proposals, not sourced from a palette site.
+
+## Settings (24): `settings/*.mjs`
+Each carries `topics` tags (shown compactly in `promptSection`; the prompt forbids a setting that contradicts the topic). Tech additions in `settings/tech.mjs`: phone-home, cloud-sky, cafe-laptops, wifi-street, app-store, vault-door, helpdesk, hardware-lab. Original 16: desktop-browser, phone-ui, server-room, city-street, office, barbershop, kitchen, classroom, factory-line, airport, data-center, bank, hospital, home-office, store, void. Each draws 3 depth layers (far, mid, near) with parallax and 4-6 named props that beats can target (`pulse`, `chip`, `camera`, `act ... to`). Props with an empty group (window, mirror, shelf, blackboard, columns...) are decor targets: transform effects on them fall back to a pulse ring.
+
+## Replicas (13): `kit/*.mjs`
+browser (URL typed letter by letter, page draws itself), chat (typing dots), stats (rolling counters), chart (line, bars, donut that draw themselves), notification (toasts drop in), phone, list (directory/table with scan and pick), rack (LEDs, lever), router (blinking), calendar, stamp-card, progress, card. Dynamic extras created from beats: cursor (click), packet and line (send), chip, emote, hero stamp, burst, ring, tint.
+
+## Cast: `rig.mjs`, `clips.mjs`
+Six designs (nico, dora, beto, luz, tomas, mica) with head, torso, 2-segment arms, legs, blinking eyes and a talking mouth. Views: `front` or a 3/4 profile facing left/right (far limbs behind the torso, nose, shifted features). Sizes S/M/L = 12/18/28 % of frame height. Clips: idle, talk, walk, run, point, react, celebrate, shrug, wave, pull, click, think, turn, shades. Breathing and seeded blinking are automatic.
+
+## Beats: `schema.mjs` (BEAT_SPEC), `beats.mjs`
+`{ on: { word, n? }, do, ...params }` with 28 kinds: show, hide, type, message, count, draw, drop, click, scan, pick, send, light, mark, punch, fill, toggle, lever, grow, recolor, shake, bounce, pulse, emote, chip, hero, burst, act, camera. `n` is the n-th occurrence of the word (accent and punctuation insensitive). Unresolved words fall back (stem, then edit distance <= 2, then proportional placement) and are reported in `warnings`; nothing is dropped. `normalize()` fixes aliases (style, setting, kind, do, clip, icon, role), `on` shorthands, string numbers, case of targets, and adds characters used by a beat to the scene.
+
+## Payload example
+`example.mjs` holds a valid payload (the "type a URL" reel) and its word timings; the same JSON is embedded in `promptSection`.
+
+```json
+{ "style": "flat-dark-neon-ui", "mode": "single",
+  "scenes": [{ "id": "pc", "setting": "desktop-browser", "label": "TU PC",
+    "props": [{ "id": "web", "kind": "browser", "at": "top", "url": "ejemplo.com" }],
+    "cast": [{ "who": "nico", "at": "floor-left", "facing": "right" }],
+    "beats": [{ "on": { "word": "URL" }, "do": "type", "target": "web", "text": "ejemplo.com" }] }] }
+```
+
+## Layout and safe zones
+Stage 960x1040 at frame (60,450). Project rule: text inside the centre 900x1300 box (x 90-990, y 310-1610); nothing important in the top 220 px, bottom 420 px or 60 px at the sides (`safe.mjs`).
+- Captions own the band y 320-470 (x 90-990, 2-4 words, at most 22 characters, two lines max); the world sits behind a mask with a clean clip at y 454-456 (no soft fade, so nothing ghosts at the edge while the camera travels), so a card in transit is cut at the band and never crosses the captions.
+- Labels, chips, hero stamps and emotes are registered tags (`plan.tags`). At every camera state the player clamps them to their own panel and to the content box (x 90-990, y 480-1610) with the CSS `translate` property (pure function of the camera state); `placeTagCore` in `safe.mjs` is inlined into the player and unit tested.
+- `place.mjs` (`separateCast`): a character never stands over a replica; it moves to the nearest free column, else the replica is lifted (never above y 104) and, last, shrunk to at most 60 %.
+- `place.mjs` (`separateProps`): two replicas of a scene never overlap and none covers a character. The replica the beats mention most (then the biggest) is the active subject and keeps its place; the others move to the nearest free spot of the stage (grid of 20 px), shrinking down to 60 %; when even that is not enough the biggest replica involved is shrunk a little more and the scene is settled again. A tall kit at size `l` (chat, phone, calendar) next to a second replica and a character can still be infeasible: the least-overlap spot is used.
+- `place.mjs` (`placeStamp`): the hero stamp goes to a free band: never over a character or a cursor click target (cursor boxes are exposed as `plan.placed[i].cursor`), off the replicas while it keeps at least 70 % of its size, scaled down to 55 % to fit, always inside x 30-930, y 104-960 of the stage. `clear` is false only when no room exists at the smallest scale.
+Caption text 58-66 px, replica text 34-48 px (base size l).
+
+## Assets and licenses
+Icons: Phosphor only (MIT, `@phosphor-icons/core`), inlined from the engine's node_modules. Fonts: files from `03-assets/fonts` (SIL OFL) copied to `assetsDir/fonts`. `assetsDir/LICENSES.md` carries both notices. GSAP loads from the jsDelivr CDN pin used by the reference reel (`gsap@3.15.0`).
+
+## SFX cues
+`whoosh` (travel, transitions, send, walk), `pop`, `click`, `keyboard` (while typing), `hit` (shake, lever), `stamp` (hero, mark, punch).
+
+## Add a style
+Add an entry to `STYLES` in `styles.mjs` (all roles in `c`, `shape`, `fonts` from `FONTS`, `cast`, `cap`). If it needs a new shadow kind add it to `SHADOWS` (css.mjs) and `build` (draw.mjs); a texture goes in `css.mjs`. The id appears in `meta`, the schema and the prompt automatically.
+
+## Add a setting
+Create `{ id, name, about, build(d) }` in `settings/*.mjs` returning `{ far, mid, near, props }` (stage coordinates, use roles only, draw with `d.rect/circle/path/...`, name props with `named(d, "lamp", svg, box)`), then register it in `settings/index.mjs`. Keep kit slots (upper 100-620) free of important decor.
+
+## Add a replica
+Add `{ about, base:{w,h}, fields, css, build(ctx,p) }` in `kit/*.mjs`, register it in `kit/index.mjs`, and add the beat handling in `beats.mjs` (ops are plain data: set, to, fromTo, cycle, roll, path).
+
+## Verification and showcase
+`04-projects/hf-showcase/flat-2d/`: `build-showcase.mjs` (12 style and 24 setting compositions), `build-sheets.sh` (snapshots and tiles the sheets), `build-main.mjs` (22 s reel), `contact-sheet-12-styles.png`, `contact-sheet-24-settings.png`, `flat-2d-showcase.mp4` (not re-rendered in U8). Tests: `node --test test/hf-flat-2d*.test.mjs` from `07-studio/engine`.
+
+## Known weaknesses
+Characters are rigid-limb puppets (no cloth or hair secondary motion); 3/4 view is a mirrored side rig, not a true turn; the isometric style is extruded shapes, not true isometric projection; a replica pushed off its slot by the solver may land far from the `at` the author chose; setting decor can still sit behind a replica; tag sizes are estimated in tests and measured only in the browser.

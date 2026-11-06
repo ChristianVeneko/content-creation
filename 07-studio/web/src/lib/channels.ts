@@ -47,6 +47,8 @@ export interface ChannelDraft {
   pillarsText: string;
   voice: string;
   avatar: string;
+  banner: string;
+  description: string;
   defaults: ChannelDefaults;
 }
 
@@ -60,6 +62,8 @@ export const EMPTY_CHANNEL: ChannelDraft = {
   pillarsText: "",
   voice: "",
   avatar: "",
+  banner: "",
+  description: "",
   defaults: { voiceProvider: "elevenlabs", durationSec: 30, musicMood: "auto" },
 };
 
@@ -74,6 +78,8 @@ export function draftFromChannel(c: ChannelDetail): ChannelDraft {
     pillarsText: c.pillars.join("\n"),
     voice: c.voice,
     avatar: c.brand?.avatar ?? "",
+    banner: c.brand?.banner ?? "",
+    description: c.description ?? "",
     defaults: c.defaults,
   };
 }
@@ -89,9 +95,10 @@ export function channelInput(d: ChannelDraft, brand?: ChannelDetail["brand"]): C
     audience: d.audience,
     pillars: d.pillarsText.split("\n").map((p) => p.trim()).filter(Boolean),
     voice: d.voice,
+    description: d.description,
     defaults: d.defaults,
-    // Keep brand colors set elsewhere (terminal skills); only the avatar path is edited here.
-    brand: { ...(brand ?? {}), avatar: d.avatar.trim() || undefined },
+    // Keep brand colors set elsewhere (terminal skills); only the avatar and banner paths are edited here.
+    brand: { ...(brand ?? {}), avatar: d.avatar.trim() || undefined, banner: d.banner.trim() || undefined },
   };
 }
 
