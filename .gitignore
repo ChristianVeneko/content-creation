@@ -65,3 +65,7 @@ odd/
 05-tools/opuscar/core/tts/*.onnx
 05-tools/opuscar/core/tts/*.bin
 05-tools/opuscar/**/.cache/
+
+# Personal channel research and brand art (local only)
+00-docs/granja-*.md
+05-tools/brand-farm/
