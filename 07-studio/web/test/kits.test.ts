@@ -51,7 +51,14 @@ test("kits report which folders exist, with the engine always available", () => 
   assert.equal(by.get("whatif-3d")!.available, false);
   assert.equal(by.get("opuscar")!.styles, 2);
   for (const k of kits) {
-    assert.ok(k.name && k.look && k.bestFor && k.length && k.ask, `${k.id} has its copy`);
+    assert.ok(k.name && k.look && k.bestFor && k.length, `${k.id} has its copy`);
+    assert.ok(k.examples.length >= 2, `${k.id} has at least two example requests`);
+    for (const e of k.examples) {
+      assert.match(e, /^\/video \S/, `${k.id} example starts with /video`);
+      assert.doesNotMatch(e, /[<>]/, `${k.id} example is concrete, no <placeholders>: ${e}`);
+    }
+    assert.ok(k.delivers.length >= 2, `${k.id} lists what it delivers`);
+    assert.ok(k.delivers.some((d) => /video\.mp4/.test(d)), `${k.id} delivers video.mp4`);
   }
   assert.equal(by.get("moment-reel")!.researched, true);
 });

@@ -403,8 +403,10 @@ export interface KitInfo {
   length: string;
   /** Machine render time, one line. */
   renderTime: string;
-  /** What to tell /video to use this kit. */
-  ask: string;
+  /** Concrete requests to type in Claude Code, e.g. "/video cómo funciona una VPN ...". */
+  examples: string[];
+  /** What a finished run leaves in the project folder. */
+  delivers: string[];
   /** Builds on a checked fact table (sources.md) before the script. */
   researched: boolean;
   /** Its folder exists on disk (the engine is always available). */

@@ -14,7 +14,8 @@ const KITS: KitCopy[] = [
     bestFor: "Explicadores rápidos, listas y tutoriales con tu paleta y tu voz",
     length: "15 s a 3 min",
     renderTime: "2-6 min",
-    ask: "/video <idea> (elige un formato en el paso 1)",
+    examples: ["/video cómo funciona una VPN en 45 segundos", "/video 5 errores al pedir un préstamo, formato ranking"],
+    delivers: ["video.mp4 (1080x1920, 30 fps, -14 LUFS)", "cover.jpg", "post.md con título, descripción y hashtags"],
     researched: true,
   },
   {
@@ -25,7 +26,8 @@ const KITS: KitCopy[] = [
     bestFor: "Historias con un look de autor; cada estilo fija color, tipografía, movimiento y sonido",
     length: "30-60 s",
     renderTime: "Según el estilo: 2D rápido, three.js lento",
-    ask: "/video <idea> con estilo de cine en código (<estilo>)",
+    examples: ["/video por qué el Titanic no tenía suficientes botes, estilo cine en código: Expediente de semitono", "/video cómo viaja un correo electrónico, estilo cine en código: Pizarra de tiza"],
+    delivers: ["video.mp4 (1080x1920, 30 fps, -14 LUFS)", "cover.jpg", "post.md con título, descripción y hashtags", "film/ con el código de la película"],
     researched: true,
   },
   {
@@ -36,7 +38,8 @@ const KITS: KitCopy[] = [
     bestFor: "Cómo pasó un momento famoso: una jugada, un lanzamiento, un juicio, un descubrimiento",
     length: "30-50 s",
     renderTime: "~15 min de máquina",
-    ask: "/video el momento de <hecho> en caricatura",
+    examples: ["/video la mano de Dios de Maradona en caricatura", "/video el día que Apple presentó el iPhone en caricatura"],
+    delivers: ["video.mp4 (1080x1920, 30 fps, -14 LUFS)", "cover.jpg", "post.md con título, descripción y hashtags", "reel/sources.md con cada dato y su fuente"],
     researched: true,
   },
   {
@@ -47,7 +50,8 @@ const KITS: KitCopy[] = [
     bestFor: "Un dato de ciencia sorprendente: cuánto pesa, qué tan grande, por qué pasa",
     length: "45-80 s",
     renderTime: "~10 min",
-    ask: "/video <dato de ciencia> como ciencia animada",
+    examples: ["/video cuánto pesa una nube, como ciencia animada", "/video por qué el cielo es azul, como ciencia animada"],
+    delivers: ["video.mp4 (1080x1920, 30 fps, -14 LUFS)", "cover.jpg", "post.md con título, descripción y hashtags", "sources.md con cada dato y su fuente"],
     researched: true,
   },
   {
@@ -58,7 +62,8 @@ const KITS: KitCopy[] = [
     bestFor: "Cómo funciona un sistema cotidiano bajo tierra o en el patio, paso a paso",
     length: "60-75 s",
     renderTime: "Lento: ~2,5 h para 90 s en Blender",
-    ask: "/video qué pasa si <idea> en patio en corte 3D",
+    examples: ["/video qué pasa si cavas un pozo en tu patio, patio en corte 3D", "/video cómo llega el agua a tu casa, patio en corte 3D"],
+    delivers: ["video.mp4 (1080x1920, 30 fps, -14 LUFS)", "cover.jpg", "post.md con título, descripción y hashtags", "story/ con la escena de Blender"],
     researched: false,
   },
   {
@@ -69,7 +74,8 @@ const KITS: KitCopy[] = [
     bestFor: "Un relato de terror tecnológico con giro final y dos opciones para los comentarios",
     length: "60-75 s",
     renderTime: "30-60 min en CPU",
-    ask: "/video imagina que <situación> como historia de supervivencia 3D",
+    examples: ["/video imagina que un agente de IA borra producción un viernes, historia de supervivencia 3D", "/video imagina que instalas un paquete npm envenenado, historia de supervivencia 3D"],
+    delivers: ["video.mp4 (1080x1920, 30 fps, -14 LUFS)", "cover.jpg", "post.md con título, descripción y hashtags"],
     researched: false,
   },
 ];
