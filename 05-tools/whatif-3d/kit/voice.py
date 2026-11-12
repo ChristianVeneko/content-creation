@@ -128,11 +128,13 @@ def offline(text, path):
     elif platform.system() == "Darwin": subprocess.run(["say", "-f", txt, "-o", path, "--data-format=LEI16@22050"], check=True)
     else: subprocess.run(["espeak-ng", "-f", txt, "-w", path], check=True)
 
-def eleven(text, path, voice, speed):
-    """ElevenLabs with character timestamps -> word bounds (no whisper needed). Key: ELEVENLABS_API_KEY."""
+def eleven(text, path, voice, speed, prev="", nxt=""):
+    """ElevenLabs with character timestamps -> word bounds (no whisper needed). Key: ELEVENLABS_API_KEY.
+    prev/nxt: the neighbouring lines, so each line is read as part of one continuous take (no flat, glued-on lines)."""
     import base64
     key = os.environ["ELEVENLABS_API_KEY"]
     body = json.dumps({"text": text, "model_id": spec.get("model", "eleven_multilingual_v2"),
+                       **({"previous_text": prev} if prev else {}), **({"next_text": nxt} if nxt else {}),
                        "voice_settings": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": True,
                                           "speed": max(0.7, min(1.2, speed))}}).encode()
     req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{voice}/with-timestamps?output_format=mp3_44100_128",
@@ -159,7 +161,9 @@ async def speak(i, line):
         a, sr = kokoro().create(text, voice=line.get("voice", VOICE), speed=float(line.get("speed", SPEED)), lang="en-us")
         sf.write(path + ".wav", a, sr); raw = decode(path + ".wav"); return raw, align(text, raw)
     if engine == "elevenlabs":
-        bounds = eleven(text, path + ".mp3", line.get("voice", VOICE), float(line.get("speed", SPEED))); return decode(path + ".mp3"), bounds
+        L = spec["lines"]
+        prev = " ".join(l["text"].strip() for l in L[max(0, i - 2):i]); nxt = L[i + 1]["text"].strip() if i + 1 < len(L) else ""
+        bounds = eleven(text, path + ".mp3", line.get("voice", VOICE), float(line.get("speed", SPEED)), prev, nxt); return decode(path + ".mp3"), bounds
     if engine == "edge":
         bounds = await edge(text, line.get("voice", VOICE), path + ".mp3"); return decode(path + ".mp3"), bounds
     offline(text, path + ".wav"); raw = decode(path + ".wav"); return raw, align(text, raw)
