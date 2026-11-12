@@ -19,4 +19,5 @@ Goal: produce vertical short-form videos (Reels, TikTok, Shorts) at 1080x1920, 3
 - API keys go in `.env` (see `.env.example`). Never commit `.env`.
 - Run commands from the repo root, starting with `source ./env.sh && ...`. Never install globally or write caches/models to `~`; everything stays inside the repo.
 - ffmpeg: `env.sh` puts `05-tools/bin` first on PATH, so a local build there (with libass) wins over the system one. Burned-in ASS captions need libass.
+- Caricature commentary videos use the `caricatura` skill and `05-tools/caricature-stage/` (every scene needs a detailed SCENERY set, never a plain colour background; real people stay in its git-ignored `private/`).
 - "hazme un video" means use the `video` skill; `/canal` manages channels, stages and week plans; `/hooks` scores hooks and title/cover pairs; `/lote` makes an overnight batch for one channel (never uploads). Engine contract: `07-studio/engine/README.md`.

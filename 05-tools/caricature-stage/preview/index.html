@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}
+@font-face{font-family:Montserrat;src:url(../kit/fonts/Montserrat-Black.ttf);font-weight:900}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="../kit/stage.js"></script><script src="../kit/cast.js"></script><script src="../kit/props.js"></script><script src="../kit/scenery.js"></script>
+<script>const c=document.getElementById('c').getContext('2d');window.DUR=10;
+const Q=new URLSearchParams(location.search);const which=Q.get('bg')||'lobby';
+window.render=(t)=>{c.setTransform(1,0,0,1,0,0);SCENERY[which](c,t,{});if(Q.get('cast')!=='0')CAST.draw(c,'host',{x:540,y:1250,s:0.9,t});
+c.font='900 46px Montserrat';c.textAlign='center';c.lineWidth=10;c.strokeStyle='#000';c.strokeText(which.toUpperCase(),540,1800);c.fillStyle='#ffd23f';c.fillText(which.toUpperCase(),540,1800);};
+document.fonts.load('900 40px Montserrat').then(()=>{window.render(0);window.READY=true;});</script></body></html>
