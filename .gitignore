@@ -70,3 +70,7 @@ odd/
 # Personal channel research and brand art (local only)
 00-docs/granja-*.md
 05-tools/brand-farm/
+
+# caricature-stage: real people drawn for the user's TikTok only (never commit)
+05-tools/caricature-stage/private/
+05-tools/caricature-stage/preview/stills/
